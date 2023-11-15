@@ -10,11 +10,11 @@
           @submit.native.prevent>
           <el-row :gutter="15">
             <el-col :lg="6" :md="12">
-              <el-form-item label="客户名称:">
+              <el-form-item label="查询:">
                 <el-input
                   clearable
-                  v-model="where.client_name"
-                  placeholder="请输入客户名称"/>
+                  v-model="where.keyword"
+                  placeholder="客户名称、规格型号或客户名称"/>
               </el-form-item>
             </el-col>
             <el-col :lg="6" :md="12">
@@ -22,7 +22,7 @@
                 <el-button
                   type="primary"
                   icon="el-icon-search"
-                  class="ele-btn-icon"
+                  class="ele-btn-icon"                
                   @click="reload">查询
                 </el-button>
                 <el-button @click="reset">重置</el-button>
@@ -46,7 +46,7 @@
               icon="el-icon-plus"
               class="ele-btn-icon"
               @click="openEdit(null)"
-              v-if="permission.includes('sys:output:add')">添加
+              v-if="permission.includes('sys:debug:add')">添加
             </el-button>
             <el-button
               size="small"
@@ -54,7 +54,7 @@
               icon="el-icon-delete"
               class="ele-btn-icon"
               @click="removeBatch"
-              v-if="permission.includes('sys:output:dall')">删除
+              v-if="permission.includes('sys:debug:dall')">删除
             </el-button>
             <!-- <el-button
               @click="showImport=true"
@@ -68,7 +68,7 @@
               icon="el-icon-download"
               class="ele-btn-icon"
               @click="exportExcel"
-              v-if="permission.includes('sys:output:export')">导出
+              v-if="permission.includes('sys:debug:export')">导出
             </el-button>
           </template>
           <!-- 操作列 -->
@@ -78,7 +78,7 @@
               :underline="false"
               icon="el-icon-edit"
               @click="openEdit(row)"
-              v-if="permission.includes('sys:output:update')">修改
+              v-if="permission.includes('sys:debug:update')">修改
             </el-link>
             <el-popconfirm
               class="ele-action"
@@ -89,7 +89,7 @@
                 slot="reference"
                 :underline="false"
                 icon="el-icon-delete"
-                v-if="permission.includes('sys:output:delete')">删除
+                v-if="permission.includes('sys:debug:delete')">删除
               </el-link>
             </el-popconfirm>
           </template>
@@ -104,7 +104,7 @@
         </ele-pro-table>
       </el-card>
       <!-- 编辑弹窗 -->
-    <output-edit
+    <debug-edit
       :data="current"
       :visible.sync="showEdit"
       @done="reload"/>
@@ -113,18 +113,20 @@
   
   <script>
   import { mapGetters } from "vuex";
-  import OutputEdit from './output-edit';
+  import DebugEdit from './debug-edit';
 
   export default {
-    name: 'SystemOutput',
-    components: {OutputEdit},
+    name: 'SystemDebug',
+    components: {DebugEdit},
     computed: {
       ...mapGetters(["permission"]),
     },
     data() {
       return {
+        // 表格搜索条件
+        where: {},
         // 表格数据接口
-        url: '/output/list',
+        url: '/debug/list',
         // 表格列配置
         columns: [
           {
@@ -148,6 +150,13 @@
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
+            sortable: 'custom',
+            order: '', // 初始化排序方式为空字符串
+            sortableMethod: ()=> {
+              // 在这里实现自定义的排序逻辑
+            this.where.order = this.order;
+            this.reload();
+            }
           },
           {
             prop: 'client_name',
@@ -183,6 +192,13 @@
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
+            sortable: 'custom',
+            order: '', // 初始化排序方式为空字符串
+            sortableMethod: ()=> {
+              // 在这里实现自定义的排序逻辑
+            this.where.order = this.order;
+            this.reload();
+            }
           },
           {
             prop: 'start_time',
@@ -190,6 +206,13 @@
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center', 
+            sortable: 'custom',
+            order: '', // 初始化排序方式为空字符串
+            sortableMethod: ()=> {
+              // 在这里实现自定义的排序逻辑
+            this.where.order = this.order;
+            this.reload();
+            } 
           },
           {
             prop: 'finish_time',
@@ -197,6 +220,13 @@
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
+            sortable: 'custom',
+            order: '', // 初始化排序方式为空字符串
+            sortableMethod: ()=> {
+              // 在这里实现自定义的排序逻辑
+            this.where.order = this.order;
+            this.reload();
+            }
           },
           {
             prop: 'work_hours',
@@ -229,8 +259,6 @@
             fixed: "right"
           }
         ],
-        // 表格搜索条件
-        where: {},
         // 表格选中数据
         selection: [],
         // 当前编辑数据
@@ -260,7 +288,7 @@
         } else {
           // 编辑
           this.loading = true;
-          this.$http.get('/output/detail/' + row.id).then((res) => {
+          this.$http.get('/debug/detail/' + row.id).then((res) => {
             this.loading = false;
             if (res.data.code === 0) {
               this.current = Object.assign({}, res.data.data);
@@ -277,7 +305,7 @@
       /* 删除 */
       remove(row) {
         const loading = this.$loading({lock: true});
-        this.$http.delete('/output/delete/' + row.id).then(res => {
+        this.$http.delete('/debug/delete/' + row.id).then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -300,7 +328,7 @@
           type: 'warning'
         }).then(() => {
           const loading = this.$loading({lock: true});
-          this.$http.delete('/output/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
+          this.$http.delete('/debug/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
             loading.close();
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
@@ -314,26 +342,6 @@
           });
         }).catch(() => {
         });
-      },
- 
-      /* 导出数据Excel */
-      exportExcel() {
-        let info = JSON.parse(JSON.stringify(this.where));
-        this.$http
-          .get("/output/exportExcel", info)
-          .then((res) => {
-            let data = res.data;
-            if (data.code == 0) {
-              // 下载文件
-              window.location.href = data.data;
-              this.$message({
-                type: "success",
-                message: "导出成功",
-              });
-            } else {
-              this.$message.error("导出失败");
-            }
-          })
       },
     }
   }

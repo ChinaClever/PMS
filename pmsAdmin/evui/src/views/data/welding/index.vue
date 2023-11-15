@@ -22,7 +22,7 @@
                 <el-button
                   type="primary"
                   icon="el-icon-search"
-                  class="ele-btn-icon"
+                  class="ele-btn-icon"                
                   @click="reload">查询
                 </el-button>
                 <el-button @click="reset">重置</el-button>
@@ -148,6 +148,13 @@
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
+            sortable: 'custom',
+            order: '', // 初始化排序方式为空字符串
+            sortableMethod: ()=> {
+              // 在这里实现自定义的排序逻辑
+            this.where.order = this.order;
+            this.reload();
+            }
           },
           {
             prop: 'client_name',
@@ -183,13 +190,27 @@
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
+            sortable: 'custom',
+            order: '', // 初始化排序方式为空字符串
+            sortableMethod: ()=> {
+              // 在这里实现自定义的排序逻辑
+            this.where.order = this.order;
+            this.reload();
+            }
           },
           {
             prop: 'start_time',
             label: '开始日期',
             showOverflowTooltip: true,
             minWidth: 120,
-            align: 'center', 
+            align: 'center',
+            sortable: 'custom',
+            order: '', // 初始化排序方式为空字符串
+            sortableMethod: ()=> {
+              // 在这里实现自定义的排序逻辑
+            this.where.order = this.order;
+            this.reload();
+            } 
           },
           {
             prop: 'finish_time',
@@ -197,6 +218,13 @@
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
+            sortable: 'custom',
+            order: '', // 初始化排序方式为空字符串
+            sortableMethod: ()=> {
+              // 在这里实现自定义的排序逻辑
+            this.where.order = this.order;
+            this.reload();
+            }
           },
           {
             prop: 'work_hours',
@@ -204,6 +232,13 @@
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
+            sortable: 'custom',
+            order: '', // 初始化排序方式为空字符串
+            sortableMethod: ()=> {
+              // 在这里实现自定义的排序逻辑
+            this.where.order = this.order;
+            this.reload();
+            }
           },
           {
             prop: 'instruction',
