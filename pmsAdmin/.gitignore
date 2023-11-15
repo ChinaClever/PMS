@@ -17,6 +17,7 @@ cbuild
 */.DS_Store
 .vscode
 
-.svn
+.svn/
+evui/node_modules/
 document/
 node_modules/
