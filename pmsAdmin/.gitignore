@@ -18,6 +18,5 @@ cbuild
 .vscode
 
 .svn
-evui/
 document/
 node_modules/
