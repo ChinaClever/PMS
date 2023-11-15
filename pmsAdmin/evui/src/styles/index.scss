@@ -1,0 +1,63 @@
+/** 全局样式 */
+// 如果需要覆盖更多样式变量请查看文档
+$--ele-font-path: "~ele-admin/packages/style/fonts";
+// 如果不需要切换主题使用这个
+//@import "~ele-admin/packages/style/themes/default.scss";
+// 如果不需要切换主题固定为夜间主题使用这个
+//@import "~ele-admin/packages/style/themes/dark.scss";
+// 需要在线切换主题使用这个
+@import "~ele-admin/packages/style/themes/dynamic.scss";
+
+/* 异常页面 */
+.ele-exception {
+  margin: 145px 0;
+
+  .ele-exception-img,
+  .ele-exception-content {
+    margin: 15px 30px;
+    display: inline-block;
+    vertical-align: middle;
+
+    img {
+      filter: $--content-image-filter;
+    }
+  }
+
+  .ele-exception-content > h1 {
+    font-size: 72px;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+  }
+
+  .ele-exception-content > p {
+    font-size: 20px;
+    margin: 0 0 25px 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .ele-exception {
+    margin: 40px 0;
+
+    .ele-exception-img {
+      margin: 0;
+
+      img {
+        max-height: 200px;
+        max-width: 100%;
+      }
+    }
+
+    .ele-exception-content {
+      text-align: center;
+    }
+  }
+}
+
+[ele-resizable].el-dialog__wrapper > .el-dialog > .el-dialog__header {
+  flex-shrink: 0;
+}
+
+.ele-admin-sidebar .ele-admin-sidebar-menus > .el-menu {
+  overflow: hidden;
+}

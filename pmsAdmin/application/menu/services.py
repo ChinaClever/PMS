@@ -304,7 +304,7 @@ def setPermission(menu_type, checked_list, name, path, parent_id, user_id):
     if len(pathArr) < 3:
         return
     # 模块名
-    moduleName = pathArr[len(pathArr) - 2]
+    moduleName = pathArr[len(pathArr) - 1]
     # 遍历数据源
     for v in checked_list:
         # 实例化菜单对象

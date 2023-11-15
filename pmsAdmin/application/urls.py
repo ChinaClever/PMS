@@ -90,4 +90,7 @@ urlpatterns = [
     path('menu/', include('application.menu.urls')),
     # 网站配置总路由
     path('configweb/', include('application.config_web.urls')),
+    # 焊接报表
+    path('welding/', include('application.welding.urls')),
+
 ]
