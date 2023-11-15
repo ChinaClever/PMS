@@ -92,5 +92,7 @@ urlpatterns = [
     path('configweb/', include('application.config_web.urls')),
     # 焊接报表
     path('welding/', include('application.welding.urls')),
+    #供应商管理总路由
+    path('supplier/', include('application.supplier.urls')),
 
 ]
