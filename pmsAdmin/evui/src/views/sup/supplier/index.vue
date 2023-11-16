@@ -203,7 +203,9 @@ export default {
           align: 'center',
           formatter: (row, column, cellValue) => {
             return this.$util.toDateString(cellValue);
-          }
+          },
+          order: ''// 初始化排序方式为空字符串
+
         },
         {
           prop: 'update_time',
@@ -214,7 +216,9 @@ export default {
           align: 'center',
           formatter: (row, column, cellValue) => {
             return this.$util.toDateString(cellValue);
-          }
+          },
+          order: ''// 初始化排序方式为空字符串
+
         },
         {
           columnKey: 'action',
@@ -239,6 +243,12 @@ export default {
     };
   },
   methods: {
+    //排序
+    sortableMethod: ()=> {
+            // 在这里实现自定义的排序逻辑
+            this.where.order = this.order;
+            this.reload();
+          },
     /* 刷新表格 */
     reload() {
       this.$refs.table.reload({page: 1, where: this.where});

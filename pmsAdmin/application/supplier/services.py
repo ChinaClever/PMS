@@ -48,7 +48,14 @@ def DictList(request):#查询设置，从前端返回order_id字段，再到数�
     if order_id:
         query = query.filter(order_id__contains=order_id)
     # 排序
-    query = query.order_by("-id")
+    #query = query.order_by("-id")
+    # 排序
+    sort = request.GET.get('sort')
+    order = request.GET.get('order')
+    if sort and order:
+        query = query.order_by(f'-{sort}' if order == 'desc' else sort)
+    else:
+        query = query.order_by("-id")
     # 设置分页
     paginator = Paginator(query, limit)
     # 记录总数
