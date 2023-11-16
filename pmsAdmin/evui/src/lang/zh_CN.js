@@ -73,7 +73,7 @@ export default {
       document: {_name: '案卷调整'},
       choose: {_name: '批量选择'},
     },
-    'https://www.djangoadmin.cn/goods/detail/2': {_name: '获取授权'}
+    // 'https://www.djangoadmin.cn/goods/detail/2': {_name: '获取授权'}
   },
   // 主框架
   layout: {
@@ -87,7 +87,7 @@ export default {
       website: '官网',
       document: '文档',
       authorization: '授权',
-      copyright: 'Copyright © 2021~2023 北京DjangoAdmin研发中心'
+      copyright: 'Copyright © 2023 深圳市克莱沃电子有限公司'
     },
     logout: {
       title: '提示',
@@ -96,7 +96,7 @@ export default {
   },
   // 登录界面
   login: {
-    title: 'Django+EleVue前后端分离版',
+    title: '克莱沃生产管理系统',
     username: '请输入登录账号',
     password: '请输入登录密码',
     captcha: '请输入验证码',

@@ -51,7 +51,7 @@
         </el-button>
       </div>
     </el-form>
-    <div class="login-copyright">copyright © 2021~2023 djangoadmin.cn all rights reserved.</div>
+    <div class="login-copyright">copyright © 2023 ShenZhen Clever Electronic Co.Ltd.</div>
   </div>
 </template>
 
