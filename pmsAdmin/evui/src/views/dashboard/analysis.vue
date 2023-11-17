@@ -225,23 +225,12 @@ export default {
 
       //生产数量数据
       ProcedureNumData:[],
-      yearprocedureNumberData:[],
-      monthprocedureNumberData:[],
-      weekprocedureNumberData:[],
-      dayprocedureNumberData:[],
 
       // 效率数据
       EfficiencyData:[],
-      yearefficiencyData: [],
-      monthefficiencyData: [],
-      weekefficiencyData: [],
-      dayefficiencyData: [],
+
       //通过率数据
       PassData:[],
-      yearpassData:[],
-      monthpassData:[],
-      weekpassData:[],
-      daypassData:[],
 
       // 最近1小时访问情况数据
       visitHourData: [],
