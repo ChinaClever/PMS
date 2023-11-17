@@ -116,7 +116,7 @@
           </el-tabs>
         </div>
         <div class="ele-inline-block ele-text-right">
-          <el-radio-group v-model="saleSearch.dateType" size="small">
+          <el-radio-group v-model="saleSearch.dateType" size="small" @change="onRadioChange">
             <el-radio-button
               v-for="button in buttons"
               :key="button.value"
@@ -141,86 +141,24 @@
       <el-row>
         <el-col :lg="48" :md="58">
           <!--本年的数据-->
-          <div v-if="saleSearch.type === 'procedureNumber' && saleSearch.dateType === 'year'">
+          <div v-if="saleSearch.type === 'procedureNumber'">
                <ele-chart
               ref="saleChart"
               style="height: 285px;"
-              :option="yearPNsaleChartOption" />
+              :option="ProcedureNumberChartOption" />
           </div>
-          <div v-else-if="saleSearch.type === 'efficiency' && saleSearch.dateType === 'year'">
+          <div v-else-if="saleSearch.type === 'efficiency' ">
               <ele-chart
               ref="saleChart"
               style="height: 285px;"
-              :option="yearEFsaleChartOption"/>
+              :option="EfficiencyChartOption"/>
           </div>
-          <div v-else-if="saleSearch.type === 'pass' && saleSearch.dateType === 'year'">
+          <div v-else-if="saleSearch.type === 'pass'">
               <ele-chart
                 ref="saleChart"
                 style="height: 285px;"
-                :option="yearPSsaleChartOption"/>
+                :option="PassChartOption"/>
           </div>
-
-          <!--本月的数据-->
-          <div v-if="saleSearch.type === 'procedureNumber' && saleSearch.dateType === 'month'">
-              <ele-chart
-                ref="saleChart"
-                style="height: 285px;"
-                :option="monthPNsaleChartOption"/>
-          </div>
-          <div v-else-if="saleSearch.type === 'efficiency' && saleSearch.dateType === 'month' ">
-               <ele-chart
-                ref="saleChart"
-                style="height: 285px;"
-                :option="monthEFsaleChartOption"/>
-          </div>
-
-          <div v-else-if="saleSearch.type === 'pass' && saleSearch.dateType === 'month'">
-              <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="monthPSsaleChartOption"/>
-          </div>
-
-          <!--本周的数据-->
-          <div v-if="saleSearch.type === 'procedureNumber' &&saleSearch.dateType === 'week' ">
-              <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="weekPNsaleChartOption"/>
-          </div>
-          <div v-else-if="saleSearch.type === 'efficiency' && saleSearch.dateType === 'week'">
-              <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="weekEFsaleChartOption"/>
-          </div>
-          <div v-else-if="saleSearch.type === 'pass' && saleSearch.dateType === 'week'">
-              <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="weekPSsaleChartOption"/>
-          </div>
-
-          <!--今日的数据-->
-          <div v-if="saleSearch.type === 'procedureNumber' && saleSearch.dateType === 'today'">
-            <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="dayPNsaleChartOption"/>
-          </div>
-          <div v-else-if="saleSearch.type === 'efficiency' && saleSearch.dateType === 'today'">
-              <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="dayEFsaleChartOption"/>
-          </div>
-          <div v-else-if="saleSearch.type === 'pass' && saleSearch.dateType === 'today'">
-              <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="dayPSsaleChartOption"/>
-          </div>
-
 <!--          时间选择显示柱状图-->
           <div v-if="saleSearch.datetime && saleSearch.type === 'procedureNumber'">
             <ele-chart
@@ -286,17 +224,20 @@ export default {
       startandendprocedureData:[],
 
       //生产数量数据
+      ProcedureNumData:[],
       yearprocedureNumberData:[],
       monthprocedureNumberData:[],
       weekprocedureNumberData:[],
       dayprocedureNumberData:[],
 
       // 效率数据
+      EfficiencyData:[],
       yearefficiencyData: [],
       monthefficiencyData: [],
       weekefficiencyData: [],
       dayefficiencyData: [],
       //通过率数据
+      PassData:[],
       yearpassData:[],
       monthpassData:[],
       weekpassData:[],
@@ -330,7 +271,7 @@ export default {
             show: false,
             type: 'category',
             boundaryGap: false,
-            data: this.yearefficiencyData.map(d => d.month)
+            data: this.ProcedureNumData.map(d => d.data)
           }
         ],
         yAxis: [
@@ -350,7 +291,7 @@ export default {
             areaStyle: {
               opacity: 0.5
             },
-            data: this.yearefficiencyData.map(d => d.value)
+            data: this.ProcedureNumData.map(d => d.value)
           }
         ]
       };
@@ -372,7 +313,7 @@ export default {
           {
             show: false,
             type: 'category',
-            data: this.yearpassData.map(d => d.month)
+            data: this.PassData.map(d => d.data)
           }
         ],
         yAxis: [
@@ -387,12 +328,87 @@ export default {
         series: [
           {
             type: 'bar',
-            data: this.yearpassData.map(d => d.value)
+            data: this.PassData.map(d => d.value)
           }
         ]
       }
     },
 
+    //生产数量柱状图
+    ProcedureNumberChartOption(){
+      return {
+            tooltip: {
+              trigger: 'axis'
+            },
+            xAxis: [
+              {
+                type: 'category',
+                data: this.ProcedureNumData.map(d => d.data)
+              }
+            ],
+            yAxis: [
+              {
+                type: 'value'
+              }
+            ],
+            series: [
+              {
+                type: 'bar',
+                data: this.ProcedureNumData.map(d => d.value)
+              }
+            ]
+          };
+    },
+    //生产效率柱状图
+    EfficiencyChartOption(){
+      return {
+            tooltip: {
+              trigger: 'axis'
+            },
+            xAxis: [
+              {
+                type: 'category',
+                data: this.EfficiencyData.map(d => d.data)
+              }
+            ],
+            yAxis: [
+              {
+                type: 'value'
+              }
+            ],
+            series: [
+              {
+                type: 'bar',
+                data: this.EfficiencyData.map(d => d.value)
+              }
+            ]
+          };
+    },
+    //生产效率柱状图
+    PassChartOption(){
+        return {
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: this.PassData.map(d => d.data)
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            type: 'bar',
+            data: this.PassData.map(d => d.value)
+          }
+        ]
+      };
+    },
     //选择时间显示柱状图（）
     chooseTimeShow(){
       return {
@@ -418,314 +434,7 @@ export default {
               ]
             };
     },
-    //生产数量柱状图（年）
-    yearPNsaleChartOption(){
-      return {
-            tooltip: {
-              trigger: 'axis'
-            },
-            xAxis: [
-              {
-                type: 'category',
-                data: this.yearprocedureNumberData.map(d => d.month)
-              }
-            ],
-            yAxis: [
-              {
-                type: 'value'
-              }
-            ],
-            series: [
-              {
-                type: 'bar',
-                data: this.yearprocedureNumberData.map(d => d.value)
-              }
-            ]
-          };
-    },
-    //生产数量柱状图（月）
-    monthPNsaleChartOption(){
-      return {
-              tooltip: {
-                trigger: 'axis'
-              },
-              xAxis: [
-                {
-                  type: 'category',
-                  data: this.monthprocedureNumberData.map(d => d.day)
-                }
-              ],
-              yAxis: [
-                {
-                  type: 'value'
-                }
-              ],
-              series: [
-                {
-                  type: 'bar',
-                  data: this.monthprocedureNumberData.map(d => d.value)
-                }
-              ]
-            };
 
-    },
-    //生产数量柱状图（周）
-    weekPNsaleChartOption(){
-      return {
-              tooltip: {
-                trigger: 'axis'
-              },
-              xAxis: [
-                {
-                  type: 'category',
-                  data: this.weekprocedureNumberData.map(d => d.day)
-                }
-              ],
-              yAxis: [
-                {
-                  type: 'value'
-                }
-              ],
-              series: [
-                {
-                  type: 'bar',
-                  data: this.weekprocedureNumberData.map(d => d.value)
-                }
-              ]
-            };
-
-    },
-    //生产数量柱状图（日）
-    dayPNsaleChartOption(){
-      return {
-              tooltip: {
-                trigger: 'axis'
-              },
-              xAxis: [
-                {
-                  type: 'category',
-                  data: this.dayprocedureNumberData.map(d => d.hour)
-                }
-              ],
-              yAxis: [
-                {
-                  type: 'value'
-                }
-              ],
-              series: [
-                {
-                  type: 'bar',
-                  data: this.dayprocedureNumberData.map(d => d.value)
-                }
-              ]
-            };
-
-    },
-
-    //生产效率(年)
-    yearEFsaleChartOption(){
-     return {
-              tooltip: {
-                trigger: 'axis'
-              },
-              xAxis: [
-                {
-                  type: 'category',
-                  data: this.yearefficiencyData.map(d => d.month)
-                }
-              ],
-              yAxis: [
-                {
-                  type: 'value'
-                }
-              ],
-              series: [
-                {
-                  type: 'bar',
-                  data: this.yearefficiencyData.map(d => d.value)
-                }
-              ]
-            };
-    },
-    //生产效率（月）
-    monthEFsaleChartOption(){
-      return {
-              tooltip: {
-                trigger: 'axis'
-              },
-              xAxis: [
-                {
-                  type: 'category',
-                  data: this.monthefficiencyData.map(d => d.day)
-                }
-              ],
-              yAxis: [
-                {
-                  type: 'value'
-                }
-              ],
-              series: [
-                {
-                  type: 'bar',
-                  data: this.monthefficiencyData.map(d => d.value)
-                }
-              ]
-            };
-
-    },
-    //生产效率（周）
-    weekEFsaleChartOption(){
-      return {
-              tooltip: {
-                trigger: 'axis'
-              },
-              xAxis: [
-                {
-                  type: 'category',
-                  data: this.weekefficiencyData.map(d => d.day)
-                }
-              ],
-              yAxis: [
-                {
-                  type: 'value'
-                }
-              ],
-              series: [
-                {
-                  type: 'bar',
-                  data: this.weekefficiencyData.map(d => d.value)
-                }
-              ]
-            };
-
-    },
-    //生产效率（日）
-    dayEFsaleChartOption(){
-      return {
-              tooltip: {
-                trigger: 'axis'
-              },
-              xAxis: [
-                {
-                  type: 'category',
-                  data: this.dayefficiencyData.map(d => d.hour)
-                }
-              ],
-              yAxis: [
-                {
-                  type: 'value'
-                }
-              ],
-              series: [
-                {
-                  type: 'bar',
-                  data: this.dayefficiencyData.map(d => d.value)
-                }
-              ]
-            };
-
-    },
-
-    //合格率(年)
-    yearPSsaleChartOption(){
-     return {
-              tooltip: {
-                trigger: 'axis'
-              },
-              xAxis: [
-                {
-                  type: 'category',
-                  data: this.yearpassData.map(d => d.month)
-                }
-              ],
-              yAxis: [
-                {
-                  type: 'value'
-                }
-              ],
-              series: [
-                {
-                  type: 'bar',
-                  data: this.yearpassData.map(d => d.value)
-                }
-              ]
-            };
-    },
-    //合格率(月)
-    monthPSsaleChartOption(){
-     return {
-              tooltip: {
-                trigger: 'axis'
-              },
-              xAxis: [
-                {
-                  type: 'category',
-                  data: this.monthpassData.map(d => d.month)
-                }
-              ],
-              yAxis: [
-                {
-                  type: 'value'
-                }
-              ],
-              series: [
-                {
-                  type: 'bar',
-                  data: this.monthpassData.map(d => d.value)
-                }
-              ]
-            };
-    },
-    //合格率(周)
-    weekPSsaleChartOption(){
-     return {
-              tooltip: {
-                trigger: 'axis'
-              },
-              xAxis: [
-                {
-                  type: 'category',
-                  data: this.weekpassData.map(d => d.day)
-                }
-              ],
-              yAxis: [
-                {
-                  type: 'value'
-                }
-              ],
-              series: [
-                {
-                  type: 'bar',
-                  data: this.weekpassData.map(d => d.value)
-                }
-              ]
-            };
-    },
-    //合格率(天)
-    dayPSsaleChartOption(){
-     return {
-              tooltip: {
-                trigger: 'axis'
-              },
-              xAxis: [
-                {
-                  type: 'category',
-                  data: this.daypassData.map(d => d.hour)
-                }
-              ],
-              yAxis: [
-                {
-                  type: 'value'
-                }
-              ],
-              series: [
-                {
-                  type: 'bar',
-                  data: this.daypassData.map(d => d.value)
-                }
-              ]
-            };
-    },
     // 最近1小时访问情况折线图配置
     visitHourChartOption() {
       /*if (!this.visitHourData.length) {
@@ -804,45 +513,48 @@ export default {
       const totalDays = new Date(currentYear, currentMonth+1, 0).getDate();//获取当月总天数
 
       //清空之前的数据
-      this.yearprocedureNumberData=[];
-      for(let i =0; i<12; i++)
+      this.ProcedureNumData=[];
+      if(this.saleSearch.dateType === 'year')
       {
+
+        for(let i =0; i<12; i++)
+        {
           const getMonthData = {
-            month:this.convertoChineseDate(new Date(currentYear, i)),
+            data:this.convertoChineseDate(new Date(currentYear, i)),
             value:Math.floor(Math.random() * 100)
           }
-          this.yearprocedureNumberData.push(getMonthData)
+          this.ProcedureNumData.push(getMonthData)
         }
-
-      this.monthprocedureNumberData=[];
-      for(let i =1; i<=totalDays; i++){
-        const getDayData = {
-          day: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
-          value: Math.floor(Math.random() * 100)
-        };
-      this.monthprocedureNumberData.push(getDayData)
       }
-
-      this.weekprocedureNumberData=[];
-      for(let i=1; i<=7; i++) {
-        const dayOffset = i-currentDay;
-        const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
-        const getWeekData = {
-          day: this.convertoChineseDate(dayDate),
-          value: Math.floor(Math.random() * 100)
-        };
-        this.weekprocedureNumberData.push(getWeekData)
+      else if(this.saleSearch.dateType === 'month'){
+        for(let i =1; i<=totalDays; i++){
+          const getDayData = {
+            data: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
+            value: Math.floor(Math.random() * 100)
+          };
+        this.ProcedureNumData.push(getDayData)
+        }
       }
-
-      this.dayprocedureNumberData=[];
-      for(let i=8; i<21; i++) {
-        const gethourData = {
-          hour: i,
-          value: Math.floor(Math.random() * 100)
-        };
-        this.dayprocedureNumberData.push(gethourData)
+      else if(this.saleSearch.dateType === 'week'){
+        for(let i=1; i<=7; i++) {
+          const dayOffset = i-currentDay;
+          const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
+          const getWeekData = {
+            data: this.convertoChineseDate(dayDate),
+            value: Math.floor(Math.random() * 100)
+          };
+          this.ProcedureNumData.push(getWeekData)
+        }
       }
-
+      else{
+        for(let i=8; i<21; i++) {
+          const gethourData = {
+            data: i,
+            value: Math.floor(Math.random() * 100)
+          };
+          this.ProcedureNumData.push(gethourData)
+        }
+      }
     },
     // 生产效率获取数据
     getEfficiencyData(){
@@ -851,43 +563,48 @@ export default {
       const currentMonth = currentDate.getMonth();
       const currentDay = currentDate.getDay();
       const totalDays = new Date(currentYear, currentMonth+1, 0).getDate();//获取当月总天数
-      this.yearefficiencyData=[];
-      for(let i =0; i<12; i++)
+      this.EfficiencyData=[];
+      if(this.saleSearch.dateType === 'year')
       {
-        const getMonthData = {
-          month:this.convertoChineseDate(new Date(currentYear, i)),
-          value:Math.floor(Math.random() * 100)
+        for(let i =0; i<12; i++)
+        {
+          const getMonthData = {
+            data:this.convertoChineseDate(new Date(currentYear, i)),
+            value:Math.floor(Math.random() * 100)
+          }
+          this.EfficiencyData.push(getMonthData)
         }
-        this.yearefficiencyData.push(getMonthData)
       }
-
-      this.monthefficiencyData=[];
-      for(let i =1; i<=totalDays; i++){
-        const getDayData = {
-          day: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
-          value: Math.floor(Math.random() * 100)
-        };
-      this.monthefficiencyData.push(getDayData)
+      else if(this.saleSearch.dateType === 'month')
+      {
+        for(let i =1; i<=totalDays; i++){
+          const getDayData = {
+            data: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
+            value: Math.floor(Math.random() * 100)
+          };
+        this.EfficiencyData.push(getDayData)
+        }
       }
-
-      this.weekefficiencyData=[];
-      for(let i=1; i<=7; i++) {
-        const dayOffset = i-currentDay;
-        const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
-        const getWeekData = {
-          day: this.convertoChineseDate(dayDate),
-          value: Math.floor(Math.random() * 100)
-        };
-        this.weekefficiencyData.push(getWeekData)
+      else if(this.saleSearch.dateType === 'week')
+      {
+        for(let i=1; i<=7; i++) {
+          const dayOffset = i-currentDay;
+          const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
+          const getWeekData = {
+            data: this.convertoChineseDate(dayDate),
+            value: Math.floor(Math.random() * 100)
+          };
+          this.EfficiencyData.push(getWeekData)
+        }
       }
-
-      this.dayefficiencyData=[];
-      for(let i=8; i<21; i++) {
-        const gethourData = {
-          hour: i,
-          value: Math.floor(Math.random() * 100)
-        };
-        this.dayefficiencyData.push(gethourData)
+      else {
+        for(let i=8; i<21; i++) {
+          const gethourData = {
+            data: i,
+            value: Math.floor(Math.random() * 100)
+          };
+          this.EfficiencyData.push(gethourData)
+        }
       }
     },
     //生产合格率获取数据
@@ -898,45 +615,50 @@ export default {
       const currentDay = currentDate.getDay();
       const totalDays = new Date(currentYear, currentMonth+1, 0).getDate();//获取当月总天数
 
-      this.yearpassData=[];
-      for(let i =0; i<12; i++)
+      this.PassData=[];
+      if(this.saleSearch.dateType === 'year')
       {
-        const getMonthData = {
-          month:this.convertoChineseDate(new Date(currentYear, i)),
-          value:Math.floor(Math.random() * 100)
+        for(let i =0; i<12; i++)
+        {
+          const getMonthData = {
+            data:this.convertoChineseDate(new Date(currentYear, i)),
+            value:Math.floor(Math.random() * 100)
+          }
+          this.PassData.push(getMonthData)
         }
-        this.yearpassData.push(getMonthData)
       }
-
-      this.monthpassData=[];
-      for(let i =1; i<= totalDays; i++){
-        const getDayData = {
-          month: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
-          value: Math.floor(Math.random() * 100)
-        };
-      this.monthpassData.push(getDayData)
+      else if(this.saleSearch.dateType === 'month')
+      {
+        for(let i =1; i<= totalDays; i++){
+          const getDayData = {
+            data: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
+            value: Math.floor(Math.random() * 100)
+          };
+        this.PassData.push(getDayData)
+        }
       }
-
-      this.weekpassData=[];
-      for(let i=1; i<=7; i++) {
-        const dayOffset = i-currentDay;
-        const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
-        const getWeekData = {
-          day:this.convertoChineseDate(dayDate),
-          value: Math.floor(Math.random() * 100)
-        };
-        this.weekpassData.push(getWeekData)
+      else if(this.saleSearch.dateType === 'week')
+      {
+        for(let i=1; i<=7; i++) {
+          const dayOffset = i-currentDay;
+          const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
+          const getWeekData = {
+            data:this.convertoChineseDate(dayDate),
+            value: Math.floor(Math.random() * 100)
+          };
+          this.PassData.push(getWeekData)
+        }
       }
-
-      this.daypassData=[];
-      for(let i=8; i<21; i++) {
-        const gethourData = {
-          hour: i,
-          value: Math.floor(Math.random() * 100)
-        };
-        this.daypassData.push(gethourData)
+      else
+      {
+        for(let i=8; i<21; i++) {
+          const gethourData = {
+            data: i,
+            value: Math.floor(Math.random() * 100)
+          };
+          this.PassData.push(gethourData)
+        }
       }
-
     },
 
     //选择时间获取到的数据
@@ -995,6 +717,13 @@ export default {
 
     /* 表头tab选择改变事件 */
     onSaleTypeChange() {
+      this.getProNumData();
+      this.getPassData();
+      this.getEfficiencyData();
+      this.getStartEndData();
+    },
+    //表头日期选择改变事件
+    onRadioChange(){
       this.getProNumData();
       this.getPassData();
       this.getEfficiencyData();
