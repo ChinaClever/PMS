@@ -15,7 +15,7 @@ from utils import R
 @method_decorator(check_login, name="get")
 class SuggestionListView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ("sys:test:list",)
+    permission_required = ("sys:suggestion:list",)
 
     # 接收GET请求
     def get(self, request):
@@ -27,7 +27,7 @@ class SuggestionListView(PermissionRequired, View):
 @method_decorator(check_login, name="post")
 class SuggestionAddView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ("sys:test:add",)
+    permission_required = ("sys:suggestion:add",)
 
     # 接收POST请求
     def post(self, request):
