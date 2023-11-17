@@ -81,7 +81,7 @@
             icon="el-icon-plus"
             class="ele-btn-icon"
             @click="openEdit(null)"
-            v-if="permission.includes('sys:suggestion:add')">添加
+            v-if="permission.includes('sys:feedback:add')">添加
           </el-button>
           <el-button
             size="small"
@@ -89,7 +89,7 @@
             icon="el-icon-delete"
             class="ele-btn-icon"
             @click="removeBatch"
-            v-if="permission.includes('sys:suggestion:dall')">删除
+            v-if="permission.includes('sys:feedback:dall')">删除
           </el-button>
         </template>
         <!-- 操作列 -->
@@ -99,7 +99,7 @@
             :underline="false"
             icon="el-icon-edit"
             @click="openEdit(row)"
-            v-if="permission.includes('sys:suggestion:update')">修改
+            v-if="permission.includes('sys:feedback:update')">修改
           </el-link>
           <el-popconfirm
             class="ele-action"
@@ -110,7 +110,7 @@
               slot="reference"
               :underline="false"
               icon="el-icon-delete"
-              v-if="permission.includes('sys:suggestion:delete')">删除
+              v-if="permission.includes('sys:feedback:delete')">删除
             </el-link>
           </el-popconfirm>
         </template>
