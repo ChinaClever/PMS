@@ -1,11 +1,11 @@
 
 from django import forms
 
-from application.welding import models
+from application.debugreport import models
 
 
 # 表单验证
-class WeldingForm(forms.ModelForm):
+class DebugForm(forms.ModelForm):
     # 下单日期
     order_time = forms.DateField(
         input_formats=['%Y-%m-%d'],
@@ -93,7 +93,7 @@ class WeldingForm(forms.ModelForm):
 
     class Meta:
         # 绑定模型
-        model = models.Welding
+        model = models.Debug
         # 指定部分字段验证
         fields = ['order_time', 'client_name', 'shape', 'product_name', 'product_count', 'submit_time', 'start_time', 'finish_time', 'work_hours',
                   'instruction', 'remark']

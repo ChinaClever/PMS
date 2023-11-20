@@ -48,12 +48,12 @@ class LoginForm(forms.ModelForm):
     )
     # 验证码
     captcha = forms.CharField(
-        min_length=6,
-        max_length=6,
+        min_length=2,
+        max_length=2,
         error_messages={
             'required': '验证码不能为空',
-            'min_length': '验证码长度为6个字符',
-            'max_length': '验证码长度为6个字符',
+            'min_length': '验证码长度为2个字符',
+            'max_length': '验证码长度为2个字符',
         }
     )
     # 验证码KEY

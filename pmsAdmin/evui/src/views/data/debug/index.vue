@@ -22,7 +22,7 @@
                 <el-button
                   type="primary"
                   icon="el-icon-search"
-                  class="ele-btn-icon"                
+                  class="ele-btn-icon"
                   @click="reload">查询
                 </el-button>
                 <el-button @click="reset">重置</el-button>
@@ -46,7 +46,7 @@
               icon="el-icon-plus"
               class="ele-btn-icon"
               @click="openEdit(null)"
-              v-if="permission.includes('sys:weldingreport:add')">添加
+              v-if="permission.includes('sys:debugreport:add')">添加
             </el-button>
             <el-button
               size="small"
@@ -54,7 +54,7 @@
               icon="el-icon-delete"
               class="ele-btn-icon"
               @click="removeBatch"
-              v-if="permission.includes('sys:weldingreport:dall')">删除
+              v-if="permission.includes('sys:debugreport:dall')">删除
             </el-button>
             <!-- <el-button
               @click="showImport=true"
@@ -68,7 +68,7 @@
               icon="el-icon-download"
               class="ele-btn-icon"
               @click="exportExcel"
-              v-if="permission.includes('sys:weldingreport:export')">导出
+              v-if="permission.includes('sys:debugreport:export')">导出
             </el-button>
           </template>
           <!-- 操作列 -->
@@ -78,7 +78,7 @@
               :underline="false"
               icon="el-icon-edit"
               @click="openEdit(row)"
-              v-if="permission.includes('sys:weldingreport:update')">修改
+              v-if="permission.includes('sys:debugreport:update')">修改
             </el-link>
             <el-popconfirm
               class="ele-action"
@@ -89,7 +89,7 @@
                 slot="reference"
                 :underline="false"
                 icon="el-icon-delete"
-                v-if="permission.includes('sys:weldingreport:delete')">删除
+                v-if="permission.includes('sys:debugreport:delete')">删除
               </el-link>
             </el-popconfirm>
           </template>
@@ -104,27 +104,29 @@
         </ele-pro-table>
       </el-card>
       <!-- 编辑弹窗 -->
-    <welding-edit
+    <debug-edit
       :data="current"
       :visible.sync="showEdit"
       @done="reload"/>
     </div>
   </template>
-  
+
   <script>
   import { mapGetters } from "vuex";
-  import WeldingEdit from './welding-edit';
+  import DebugEdit from './debug-edit';
 
   export default {
-    name: 'SystemWelding',
-    components: {WeldingEdit},
+    name: 'SystemDebug',
+    components: {DebugEdit},
     computed: {
       ...mapGetters(["permission"]),
     },
     data() {
       return {
+        // 表格搜索条件
+        where: {},
         // 表格数据接口
-        url: '/welding/list',
+        url: '/debug/list',
         // 表格列配置
         columns: [
           {
@@ -210,7 +212,7 @@
               // 在这里实现自定义的排序逻辑
             this.where.order = this.order;
             this.reload();
-            } 
+            }
           },
           {
             prop: 'finish_time',
@@ -232,13 +234,6 @@
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
-            sortable: 'custom',
-            order: '', // 初始化排序方式为空字符串
-            sortableMethod: ()=> {
-              // 在这里实现自定义的排序逻辑
-            this.where.order = this.order;
-            this.reload();
-            }
           },
           {
             prop: 'instruction',
@@ -264,8 +259,6 @@
             fixed: "right"
           }
         ],
-        // 表格搜索条件
-        where: {},
         // 表格选中数据
         selection: [],
         // 当前编辑数据
@@ -295,7 +288,7 @@
         } else {
           // 编辑
           this.loading = true;
-          this.$http.get('/welding/detail/' + row.id).then((res) => {
+          this.$http.get('/debug/detail/' + row.id).then((res) => {
             this.loading = false;
             if (res.data.code === 0) {
               this.current = Object.assign({}, res.data.data);
@@ -312,7 +305,7 @@
       /* 删除 */
       remove(row) {
         const loading = this.$loading({lock: true});
-        this.$http.delete('/welding/delete/' + row.id).then(res => {
+        this.$http.delete('/debug/delete/' + row.id).then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -335,7 +328,7 @@
           type: 'warning'
         }).then(() => {
           const loading = this.$loading({lock: true});
-          this.$http.delete('/welding/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
+          this.$http.delete('/debug/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
             loading.close();
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
@@ -353,8 +346,7 @@
     }
   }
   </script>
-  
+
   <style scoped>
   </style>
-  
-  
+
