@@ -35,7 +35,7 @@ class Welding(BaseModel):
 
     class Meta:
         # 数据表名
-        db_table = settings.TABLE_PREFIX + "welding"
+        db_table = settings.TABLE_PREFIX + "weldingreport"
         verbose_name = "焊接报表"
         verbose_name_plural = verbose_name
 

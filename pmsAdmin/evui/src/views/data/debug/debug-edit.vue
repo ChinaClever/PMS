@@ -1,7 +1,7 @@
-<!-- 职级编辑弹窗 -->
+<!-- 编辑弹窗 -->
 <template>
     <el-dialog
-      :title="isUpdate?'修改焊接报表':'添加焊接报表'"
+      :title="isUpdate?'修改调试报表':'添加调试报表'"
       :visible="visible"
       width="580px"
       :destroy-on-close="true"
@@ -131,7 +131,7 @@
 
   <script>
   export default {
-    name: 'WeldingEdit',
+    name: 'DebugEdit',
     props: {
       // 弹窗是否打开
       visible: Boolean,
@@ -195,7 +195,7 @@
         this.$refs['form'].validate((valid) => {
           if (valid) {
             this.loading = true;
-            this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/weldingreport/update' : '/weldingreport/add', this.form).then(res => {
+            this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/debugreport/update' : '/debugreport/add', this.form).then(res => {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);

@@ -1,345 +1,103 @@
-<template>
-    <div class="ele-body">
-      <el-card shadow="never">
-        <!-- 搜索表单 -->
-        <el-form
-          :model="where"
-          label-width="77px"
-          class="ele-form-search"
-          @keyup.enter.native="reload"
-          @submit.native.prevent>
-          <el-row :gutter="15">
-            <el-col :lg="6" :md="12">
-              <el-form-item label="客户名称:">
-                <el-input
-                  clearable
-                  v-model="where.client_name"
-                  placeholder="请输入客户名称"/>
-              </el-form-item>
-            </el-col>
-            <el-col :lg="6" :md="12">
-              <div class="ele-form-actions">
-                <el-button
-                  type="primary"
-                  icon="el-icon-search"
-                  class="ele-btn-icon"
-                  @click="reload">查询
-                </el-button>
-                <el-button @click="reset">重置</el-button>
-              </div>
-            </el-col>
-          </el-row>
-        </el-form>
-        <!-- 数据表格 -->
-        <ele-pro-table
-          ref="table"
-          :where="where"
-          :datasource="url"
-          :columns="columns"
-          :selection.sync="selection"
-          height="calc(100vh - 315px)">
-          <!-- 表头工具栏 -->
-          <template slot="toolbar">
-            <el-button
-              size="small"
-              type="primary"
-              icon="el-icon-plus"
-              class="ele-btn-icon"
-              @click="openEdit(null)"
-              v-if="permission.includes('sys:output:add')">添加
-            </el-button>
-            <el-button
-              size="small"
-              type="danger"
-              icon="el-icon-delete"
-              class="ele-btn-icon"
-              @click="removeBatch"
-              v-if="permission.includes('sys:output:dall')">删除
-            </el-button>
-            <!-- <el-button
-              @click="showImport=true"
-              icon="el-icon-upload2"
-              class="ele-btn-icon"
-              size="small">导入
-            </el-button> -->
-            <el-button
-              size="small"
-              type="success"
-              icon="el-icon-download"
-              class="ele-btn-icon"
-              @click="exportExcel"
-              v-if="permission.includes('sys:output:export')">导出
-            </el-button>
-          </template>
-          <!-- 操作列 -->
-          <template slot="action" slot-scope="{row}">
-            <el-link
-              type="primary"
-              :underline="false"
-              icon="el-icon-edit"
-              @click="openEdit(row)"
-              v-if="permission.includes('sys:output:update')">修改
-            </el-link>
-            <el-popconfirm
-              class="ele-action"
-              title="确定要删除此数据吗？"
-              @confirm="remove(row)">
-              <el-link
-                type="danger"
-                slot="reference"
-                :underline="false"
-                icon="el-icon-delete"
-                v-if="permission.includes('sys:output:delete')">删除
-              </el-link>
-            </el-popconfirm>
-          </template>
-          <!-- 状态列 -->
-          <template slot="status" slot-scope="{row}">
-            <el-switch
-              v-model="row.status"
-              @change="editStatus(row)"
-              :active-value="1"
-              :inactive-value="2"/>
-          </template>
-        </ele-pro-table>
-      </el-card>
-      <!-- 编辑弹窗 -->
-    <output-edit
-      :data="current"
-      :visible.sync="showEdit"
-      @done="reload"/>
-    </div>
-  </template>
-  
-  <script>
-  import { mapGetters } from "vuex";
-  import OutputEdit from './output-edit';
 
-  export default {
-    name: 'SystemOutput',
-    components: {OutputEdit},
-    computed: {
-      ...mapGetters(["permission"]),
+<template>
+  <div class="card-container" ref="scrollContainer" @scroll="handleScroll">
+    <div class="column" v-for="(columnItems, columnIndex) in columns" :key="columnIndex">
+      <div v-for="(item, _itemIndex) in columnItems" :key="item.id" class="card-wrapper">
+        <el-card :body-style="{ padding: '20px' }">
+          <!-- 卡片内容 -->
+          <p>{{ item.title }}</p>
+          <p>{{ item.description }}</p>
+        </el-card>
+      </div>
+    </div>
+    <div v-if="isLoading" class="loading-indicator">Loading...</div>
+  </div>
+</template>
+
+<style>
+.card-container {
+  display: flex;
+}
+
+.column {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.card-wrapper {
+  margin-bottom: 20px;
+}
+
+.loading-indicator {
+  text-align: center;
+}
+</style>
+
+<script>
+export default {
+  data() {
+    return {
+      columns: [],
+      isLoading: false,
+    };
+  },
+  mounted() {
+    this.splitItemsIntoColumns();
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.handleScroll);
+  },
+  methods: {
+    splitItemsIntoColumns() {
+      // 你提供的代码
+      const items = [
+      { id: 1, title: 'Card 1', description: 'Description for Card 1Descra Card 3Description for Card 1Description for Card 1D Card 3Descra Card 3Description for Card 1Description for Card 1D Card 3Description for Card 1Description for Card 1Description for Card 1' },
+        { id: 2, title: 'Card 2', description: 'Description for Card 2' },
+        { id: 3, title: 'Card 3', description: 'Description for Ca Card 3Description for Card 1Description for Card 1D Card 3Description for Card 1Description for Card 1D Card 3Description for Card 1Description for Card 1D Card 3Description for Card 1Description for Card 1D Card 3Description for Card 1Description for Card 1D Card 3Description for Card 1Description for Card 1D Card 3Description for Card 1Description for Card 1D Card 3Description for Card 1Description for Card 1D Card 3Description for Card 1Description for Card 1Drd 3' },
+        { id: 4, title: 'Card 1', description: 'Description for Card 1Description for Card 1' },
+        { id: 5, title: 'Card 2', description: 'Description for Card 2' },
+        { id: 6, title: 'Card 3', description: 'Description fDescription for Card 1Description for Card 1or Card 3Description for Card 1Description for Card 1Description for Card 1Description for Card 1vDescription for Card 1' },
+        { id: 7, title: 'Card 1', description: 'Description for Card 1' },
+        { id: 8, title: 'Card 2', description: 'DescriptioDescrip Card 3Description for Card 1Description for Card 1D Card 3Description for Card 1Description for Card 1D Card 3Description for Card 1Description for Card 1D Card 3Description for Card 1Description for Card 1D Card 3Description for Card 1Description for Card 1D Card 3Description for Card 1Description for Card 1Dtion for Card 1n for Card 2' },
+        { id: 9, title: 'Card 3', description: 'Description for Card 3Description for Card 1Description for Card 1Description for Card 1' },
+     
+        // ...
+      ];
+
+      const numColumns = 3;
+      const columnCount = Math.ceil(items.length / numColumns);
+
+      for (let i = 0; i < numColumns; i++) {
+        const start = i * columnCount;
+        const end = start + columnCount;
+        this.columns.push(items.slice(start, end));
+      }
     },
-    data() {
-      return {
-        // 表格数据接口
-        url: '/output/list',
-        // 表格列配置
-        columns: [
-          {
-            columnKey: 'selection',
-            type: 'selection',
-            width: 45,
-            align: 'center',
-            fixed: "left"
-          },
-          {
-            prop: 'id',
-            label: 'ID',
-            width: 60,
-            align: 'center',
-            showOverflowTooltip: true,
-            fixed: "left"
-          },
-          {
-            prop: 'order_time',
-            label: '下单日期',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-          },
-          {
-            prop: 'client_name',
-            label: '客户名称',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-          },
-          {
-            prop: 'shape',
-            label: '规格型号',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-          },
-          {
-            prop: 'product_name',
-            label: '产品名称',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-          },
-          {
-            prop: 'product_count',
-            label: '产品数量',
-            width: 120,
-            align: 'center',
-            showOverflowTooltip: true,
-          },
-          {
-            prop: 'submit_time',
-            label: '交期',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-          },
-          {
-            prop: 'start_time',
-            label: '开始日期',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center', 
-          },
-          {
-            prop: 'finish_time',
-            label: '完成日期',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-          },
-          {
-            prop: 'work_hours',
-            label: '工时',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-          },
-          {
-            prop: 'instruction',
-            label: '具体说明',
-            showOverflowTooltip: true,
-            minWidth: 200,
-            align: 'center',
-          },
-          {
-            prop: 'remark',
-            label: '备注',
-            showOverflowTooltip: true,
-            minWidth: 200,
-            align: 'center',
-          },
-          {
-            columnKey: 'action',
-            label: '操作',
-            width: 150,
-            align: 'center',
-            resizable: false,
-            slot: 'action',
-            fixed: "right"
-          }
-        ],
-        // 表格搜索条件
-        where: {},
-        // 表格选中数据
-        selection: [],
-        // 当前编辑数据
-        current: null,
-        // 是否显示编辑弹窗
-        showEdit: false,
-        // 是否显示导入弹窗
-        showImport: false
-      };
+    handleScroll() {
+      if (this.isLoading) return;
+      const scrollContainer = this.$refs.scrollContainer;
+      const scrollHeight = scrollContainer.scrollHeight;
+      const scrollTop = scrollContainer.scrollTop;
+      const clientHeight = scrollContainer.clientHeight;
+      const bottomOffset = 20; // 触发加载更多的底部偏移量
+
+      if (scrollTop + clientHeight >= scrollHeight - bottomOffset) {
+        this.loadMore();
+        console.log("xinshuju")
+      }
     },
-    methods: {
-      /* 刷新表格 */
-      reload() {
-        this.$refs.table.reload({page: 1, where: this.where});
-      },
-      /* 重置搜索 */
-      reset() {
-        this.where = {};
-        this.reload();
-      },
-      /* 显示编辑 */
-      openEdit(row) {
-        if (!row) {
-          // 添加
-          this.current = null;
-          this.showEdit = true;
-        } else {
-          // 编辑
-          this.loading = true;
-          this.$http.get('/output/detail/' + row.id).then((res) => {
-            this.loading = false;
-            if (res.data.code === 0) {
-              this.current = Object.assign({}, res.data.data);
-              this.showEdit = true;
-            } else {
-              this.$message.error(res.data.msg);
-            }
-          }).catch((e) => {
-            this.loading = false;
-            this.$message.error(e.message);
-          });
-        }
-      },
-      /* 删除 */
-      remove(row) {
-        const loading = this.$loading({lock: true});
-        this.$http.delete('/output/delete/' + row.id).then(res => {
-          loading.close();
-          if (res.data.code === 0) {
-            this.$message.success(res.data.msg);
-            this.reload();
-          } else {
-            this.$message.error(res.data.msg);
-          }
-        }).catch(e => {
-          loading.close();
-          this.$message.error(e.message);
-        });
-      },
-      /* 批量删除 */
-      removeBatch() {
-        if (!this.selection.length) {
-          this.$message.error('请至少选择一条数据');
-          return;
-        }
-        this.$confirm('确定要删除选中的数据吗?', '提示', {
-          type: 'warning'
-        }).then(() => {
-          const loading = this.$loading({lock: true});
-          this.$http.delete('/output/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
-            loading.close();
-            if (res.data.code === 0) {
-              this.$message.success(res.data.msg);
-              this.reload();
-            } else {
-              this.$message.error(res.data.msg);
-            }
-          }).catch(e => {
-            loading.close();
-            this.$message.error(e.message);
-          });
-        }).catch(() => {
-        });
-      },
- 
-      /* 导出数据Excel */
-      exportExcel() {
-        let info = JSON.parse(JSON.stringify(this.where));
-        this.$http
-          .get("/output/exportExcel", info)
-          .then((res) => {
-            let data = res.data;
-            if (data.code == 0) {
-              // 下载文件
-              window.location.href = data.data;
-              this.$message({
-                type: "success",
-                message: "导出成功",
-              });
-            } else {
-              this.$message.error("导出失败");
-            }
-          })
-      },
-    }
-  }
-  </script>
-  
-  <style scoped>
-  </style>
-  
-  
+    loadMore() {
+      this.isLoading = true;
+      // 模拟异步加载更多数据
+      setTimeout(() => {
+        const newItems = [
+          // 新加载的数据
+        ];
+        this.columns.push(newItems);
+        this.isLoading = false;
+      }, 1000);
+    },
+  },
+};
+</script>

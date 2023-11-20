@@ -31,7 +31,7 @@ sys.path.insert(1, os.path.join(BASE_DIR, 'apps'))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-!kjxf&e0pn4nrl%0&9sqp7n!ld)(gtw7v@i3fwf3sqcsh4ymat'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# SECURITY WARNING: don't run with debugreport turned on in production!
 DEBUG = True
 
 # 跨域处理配置
@@ -116,8 +116,6 @@ INSTALLED_APPS = [
     'application.menu',
     'application.config_web',
     'application.upload',
-    'application.burning',
-    'application.welding',
 ]
 
 MIDDLEWARE = [

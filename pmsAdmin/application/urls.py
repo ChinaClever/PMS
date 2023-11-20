@@ -91,8 +91,8 @@ urlpatterns = [
     # 网站配置总路由
     path('configweb/', include('application.config_web.urls')),
     # 焊接报表
-    path('welding/', include('application.welding.urls')),
-    # 烧录报表
-    path('burning/', include('application.burning.urls')),
+    path('weldingreport/', include('application.weldingreport.urls')),
+    # 调试报表
+    path('debugreport/', include('application.debugreport.urls')),
 
 ]
