@@ -44,7 +44,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="7">
             <el-form-item label="优先级:">
               <el-input
                 clearable
