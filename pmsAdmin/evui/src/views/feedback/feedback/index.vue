@@ -9,7 +9,7 @@
         @keyup.enter.native="reload"
         @submit.native.prevent>
         <el-row :gutter="10">
-          <el-col span="5">
+          <el-col :span="5">
             <el-form-item label="提交者:">
               <el-input
                 clearable
@@ -17,7 +17,7 @@
                 placeholder="请输入提交者"/>
             </el-form-item>
           </el-col>
-          <el-col span="6">
+          <el-col :span="5">
             <el-form-item label="状态:">
               <el-select
                 clearable
@@ -31,7 +31,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col span="6">
+          <el-col :span="5">
             <el-form-item label="类型:">
               <el-select
                 clearable
@@ -44,7 +44,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col span="7">
+          <el-col :span="6">
             <el-form-item label="优先级:">
               <el-input
                 clearable
