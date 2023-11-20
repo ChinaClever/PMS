@@ -1,6 +1,6 @@
 from django.urls import path  # 导入路径相关配置
 
-from application.welding import views
+from application.weldingreport import views
 
 
 urlpatterns = [

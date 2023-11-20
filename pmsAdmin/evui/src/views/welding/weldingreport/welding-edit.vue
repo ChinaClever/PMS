@@ -166,7 +166,8 @@
           {required: true, message: '请输入开始时间', trigger: 'blur'}
         ],
           finish_time: [
-          {required: true, message: '请输入完成时间', trigger: 'blur'}
+          {required: true, message: '请输入完成时间', trigger: 'blur'},
+          { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
         ],
           work_hours: [
           {required: true, message: '请输入所用工时', trigger: 'blur'}
@@ -219,6 +220,20 @@
       /* 更新visible */
       updateVisible(value) {
         this.$emit('update:visible', value);
+      },
+
+       // 自定义校验规则函数
+      checkFinishTime(rule, value, callback) {
+        const startTime = this.form.start_time; // 获取开始时间的值
+        const finishTime = value; // 获取完成时间的值
+
+        if (!startTime || !finishTime) {
+          callback(); // 如果开始时间或完成时间为空，则不进行校验
+        } else if (startTime > finishTime) {
+          callback(new Error('完成日期必须晚于开始日期')); // 如果完成时间早于开始时间，则返回错误信息
+        } else {
+          callback(); // 校验通过
+        }
       }
     }
   }

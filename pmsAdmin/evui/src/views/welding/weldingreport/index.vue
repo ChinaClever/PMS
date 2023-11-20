@@ -124,7 +124,7 @@
     data() {
       return {
         // 表格数据接口
-        url: '/welding/list',
+        url: '/weldingreport/list',
         // 表格列配置
         columns: [
           {
@@ -295,7 +295,7 @@
         } else {
           // 编辑
           this.loading = true;
-          this.$http.get('/welding/detail/' + row.id).then((res) => {
+          this.$http.get('/weldingreport/detail/' + row.id).then((res) => {
             this.loading = false;
             if (res.data.code === 0) {
               this.current = Object.assign({}, res.data.data);
@@ -312,7 +312,7 @@
       /* 删除 */
       remove(row) {
         const loading = this.$loading({lock: true});
-        this.$http.delete('/welding/delete/' + row.id).then(res => {
+        this.$http.delete('/weldingreport/delete/' + row.id).then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -335,7 +335,7 @@
           type: 'warning'
         }).then(() => {
           const loading = this.$loading({lock: true});
-          this.$http.delete('/welding/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
+          this.$http.delete('/weldingreport/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
             loading.close();
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
