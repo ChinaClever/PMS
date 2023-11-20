@@ -30,31 +30,42 @@ from config.env import TABLE_PREFIX
 
 
 # 烧录表格
-class burning(BaseModel):
-    # 客户名称
+class Software(BaseModel):
+    # 程序名称
     name = models.CharField(null=False, max_length=6, verbose_name="客户名称", help_text="客户名称")
-    # 规格型号
-    code = models.CharField(null=False, max_length=20, verbose_name="规格型号", help_text="规格型号")
-    # 版本号
-    version = models.CharField(null=True, max_length=20, verbose_name="版本号", help_text="版本号")
-    # 程序要求
-    require = models.CharField(null=False, max_length=6, verbose_name="程序要求", help_text="程序要求")
-    # 订单日期
+    # 使用产品
+    products = models.CharField(null=False, max_length=20, verbose_name="规格型号", help_text="规格型号")
+    # 历史版本
+    history_version = models.CharField(null=True, max_length=20, verbose_name="版本号", help_text="版本号")
+    # 当前版本
+    version = models.CharField(null=False, max_length=6, verbose_name="程序要求", help_text="程序要求")
+    # 修改日期
     order_time = models.DateTimeField(null=False, max_length=18, verbose_name="订单日期", help_text="订单日期")
-    # 交货日期
-    delivery_time = models.DateTimeField(null=True, max_length=18, verbose_name="交货日期", help_text="交货日期")
-    # 数量
-    quantity = models.IntegerField(null=True, verbose_name="数量", help_text="数量")
-    # 备注
-    remark = models.CharField(null=True, max_length=150, verbose_name="备注", help_text="备注")
-    # rcerder
-    rcerder = models.CharField(null=True, max_length=150, verbose_name="rcerder", help_text="rcerder")
-
+    # 版本说明
+    delivery_time = models.CharField(null=True, max_length=18, verbose_name="交货日期", help_text="交货日期")
+    # 此次更新
+    quantity = models.CharField(null=True, verbose_name="数量", help_text="数量")
+    # 烧录方法
+    burn_method = models.CharField(null=True, verbose_name="数量", help_text="数量")
+    # 升级方法
+    upgade_method = models.CharField(null=True, max_length=150, verbose_name="备注", help_text="备注")
+    # 校准方法
+    calibration_method = models.CharField(null=True, max_length=150, verbose_name="rcerder", help_text="rcerder")
+    # 用户手册
+    User_Manual = models.CharField(null=True, max_length=150, verbose_name="rcerder", help_text="rcerder")
+    # 升级原因
+    upgrade_cause = models.CharField(null=True, max_length=150, verbose_name="rcerder", help_text="rcerder")
+    # 图片
+    image = models.ImageField(upload_to='images/')
+    # 程序和文档公盘位置
+    documentation_position = models.FileField(upload_to='files/')
+    # 用户使用手册和协议公盘位置
+    User_Manual_position = models.FileField(upload_to='files/')
     class Meta:
         # 数据表名
-        db_table = TABLE_PREFIX + "burning"
-        verbose_name = ("烧录表")
+        db_table = TABLE_PREFIX + "software"
+        verbose_name = ("出厂报告表")
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return '客户{}'.format(self.id)
+        return '程序名{}'.format(self.id)

@@ -117,6 +117,7 @@ INSTALLED_APPS = [
     'application.config_web',
     'application.upload',
     'application.burning',
+    'application.welding',
 ]
 
 MIDDLEWARE = [
@@ -228,7 +229,7 @@ TABLE_PREFIX = locals().get('TABLE_PREFIX', "")
 
 # ======================== 验证码相关配置 ===========================
 CAPTCHA_IMAGE_SIZE = (200, 60)  # 设置 captcha 图片大小
-CAPTCHA_LENGTH = 6  # 字符个数
+CAPTCHA_LENGTH = 2  # 字符个数
 CAPTCHA_TIMEOUT = 1  # 超时(minutes)
 CAPTCHA_OUTPUT_FORMAT = "%(image)s %(text_field)s %(hidden_field)s "
 CAPTCHA_FONT_SIZE = 40  # 字体大小

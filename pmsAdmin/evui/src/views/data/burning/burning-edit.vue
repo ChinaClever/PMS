@@ -136,13 +136,39 @@ export default {
           {required: true, message: '请输入程序要求', trigger: 'blur'}
         ],
         quantity: [
-          {required: true, message: '请输入数量', trigger: 'blur'}
+          { required: true, message: '请输入数量', trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              const intValue = Number(value);
+              if (!Number.isInteger(intValue) || intValue <= 0) {
+                callback(new Error('数量必须为大于0的整数'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
         ],
         order_time: [
           {required: true, message: '请输入订单日期', trigger: 'blur'}
         ],
         delivery_time: [
-          {required: true, message: '请输入交货日期', trigger: 'blur'}
+          {required: true, message: '请输入交货日期', trigger: 'blur'},
+          {
+            validator: (rule, value, callback) => {
+              // 获取订单日期的值
+              const orderTime = new Date(this.form.order_time);
+              // 获取交货日期的值
+              const deliveryTime = new Date(value);
+              // 比较日期
+              if (deliveryTime <= orderTime) {
+                callback(new Error('交货日期必须大于订单日期'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'change'
+          }
         ],
         rcerder: [
           {required: true, message: '请输入rcerder', trigger: 'blur'}

@@ -21,40 +21,21 @@
 # | 法律所允许的合法合规的软件产品研发，详细声明内容请阅读《框架免责声明》附件；
 # +----------------------------------------------------------------------
 
-from django.db import models
+from django.urls import path
 
-# Create your models here.
-from application.models import BaseModel
+from application.burning import views
 
-from config.env import TABLE_PREFIX
+# 部门模块路由
+urlpatterns = [
+    # 查询分页数据
+    path('list', views.BurningListView.as_view()),
+    # 查询详情
+    path('detail/<int:burning_id>', views.BurningDetailView.as_view()),
+    # 添加部门
+    path('add', views.BurningAddView.as_view()),
+    # 更新部门
+    path('update', views.BurningUpdateView.as_view()),
+    # 删除部门
+    path('delete/<str:burning_id>', views.BurningDeleteView.as_view()),
 
-
-# 烧录表格
-class burning(BaseModel):
-    # 客户名称
-    name = models.CharField(null=False, max_length=6, verbose_name="客户名称", help_text="客户名称")
-    # 规格型号
-    code = models.CharField(null=False, max_length=20, verbose_name="规格型号", help_text="规格型号")
-    # 版本号
-    version = models.CharField(null=True, max_length=20, verbose_name="版本号", help_text="版本号")
-    # 程序要求
-    require = models.CharField(null=False, max_length=6, verbose_name="程序要求", help_text="程序要求")
-    # 订单日期
-    order_time = models.DateTimeField(null=False, max_length=18, verbose_name="订单日期", help_text="订单日期")
-    # 交货日期
-    delivery_time = models.DateTimeField(null=True, max_length=18, verbose_name="交货日期", help_text="交货日期")
-    # 数量
-    quantity = models.IntegerField(null=True, verbose_name="数量", help_text="数量")
-    # 备注
-    remark = models.CharField(null=True, max_length=150, verbose_name="备注", help_text="备注")
-    # rcerder
-    rcerder = models.CharField(null=True, max_length=150, verbose_name="rcerder", help_text="rcerder")
-
-    class Meta:
-        # 数据表名
-        db_table = TABLE_PREFIX + "burning"
-        verbose_name = ("烧录表")
-        verbose_name_plural = verbose_name
-
-    def __str__(self):
-        return '客户{}'.format(self.id)
+]
