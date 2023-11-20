@@ -42,7 +42,7 @@
               placeholder="请输入优先级(1-10)"
               clearable/>
           </el-form-item>
-          <el-form-item label="状态:" prop="status" v-if="permission.includes('sys:suggestion:status')">
+          <el-form-item label="状态:" prop="status" v-if="permission.includes('sys:feedback:status')">
             <el-radio-group
               v-model="form.status" >
               <el-radio :label="1">未查看</el-radio>
@@ -61,7 +61,7 @@
                     show-word-limit
                     type="textarea"/>
         </el-form-item>
-      <el-form-item label="反馈意见:" prop="feedback" v-if="permission.includes('sys:suggestion:status')">
+      <el-form-item label="反馈意见:" prop="feedback" v-if="permission.includes('sys:feedback:status')">
                   <el-input
                     v-model="form.feedback"
                     :rows="4"
