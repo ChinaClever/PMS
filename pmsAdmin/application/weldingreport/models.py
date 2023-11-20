@@ -9,7 +9,7 @@ from application.models import BaseModel
 # unique：指定该字段的值是否唯一，默认为False，表示允许多个记录具有相同的client_name值。
 # blank：指定该字段是否可以为空，默认为True，表示允许该字段的值为空。
 # null：指定该字段在数据库中是否允许为空，默认为False，表示不允许该字段的值为空。
-class Debug(BaseModel):
+class Welding(BaseModel):
     # 下单日期
     order_time = models.DateTimeField(auto_now_add=False, verbose_name="下单日期", max_length=11)
     # 客户名称
@@ -35,10 +35,10 @@ class Debug(BaseModel):
 
     class Meta:
         # 数据表名
-        db_table = settings.TABLE_PREFIX + "debug"
-        verbose_name = "调试报表"
+        db_table = settings.TABLE_PREFIX + "weldingreport"
+        verbose_name = "焊接报表"
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return '调试报表{}'.format(self.name)
+        return '焊接报表{}'.format(self.name)
 

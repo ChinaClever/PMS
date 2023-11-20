@@ -16,7 +16,7 @@ from .models import Debug
 @method_decorator(check_login, name='dispatch')
 class DebugListView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:debug:list',)
+    permission_required = ('sys:debugreport:list',)
 
     # POST查询分页数据
     def get(self, request):
@@ -30,7 +30,7 @@ class DebugListView(PermissionRequired, View):
 @method_decorator(check_login, name='dispatch')
 class DebugDetailView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:debug:detail',)
+    permission_required = ('sys:debugreport:detail',)
 
     # GET请求渲染HTML模板
     def get(self, request, debug_id):
@@ -44,7 +44,7 @@ class DebugDetailView(PermissionRequired, View):
 @method_decorator(check_login, name='dispatch')
 class DebugAddView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:debug:add',)
+    permission_required = ('sys:debugreport:add',)
 
     # 接收POST网络请求
     def post(self, request):
@@ -59,7 +59,7 @@ class DebugAddView(PermissionRequired, View):
 @method_decorator(check_login, name="put")
 class DebugUpdateView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:debug:update',)
+    permission_required = ('sys:debugreport:update',)
 
     # 接收PUT请求
     def put(self, request):
@@ -74,7 +74,7 @@ class DebugUpdateView(PermissionRequired, View):
 @method_decorator(check_login, name="delete")
 class DebugDeleteView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:debug:delete',)
+    permission_required = ('sys:debugreport:delete',)
 
     # 接收DELETE请求
     def delete(self, request, debug_id):

@@ -22,7 +22,7 @@
                 <el-button
                   type="primary"
                   icon="el-icon-search"
-                  class="ele-btn-icon"                
+                  class="ele-btn-icon"
                   @click="reload">查询
                 </el-button>
                 <el-button @click="reset">重置</el-button>
@@ -46,7 +46,7 @@
               icon="el-icon-plus"
               class="ele-btn-icon"
               @click="openEdit(null)"
-              v-if="permission.includes('sys:debug:add')">添加
+              v-if="permission.includes('sys:debugreport:add')">添加
             </el-button>
             <el-button
               size="small"
@@ -54,7 +54,7 @@
               icon="el-icon-delete"
               class="ele-btn-icon"
               @click="removeBatch"
-              v-if="permission.includes('sys:debug:dall')">删除
+              v-if="permission.includes('sys:debugreport:dall')">删除
             </el-button>
             <!-- <el-button
               @click="showImport=true"
@@ -68,7 +68,7 @@
               icon="el-icon-download"
               class="ele-btn-icon"
               @click="exportExcel"
-              v-if="permission.includes('sys:debug:export')">导出
+              v-if="permission.includes('sys:debugreport:export')">导出
             </el-button>
           </template>
           <!-- 操作列 -->
@@ -78,7 +78,7 @@
               :underline="false"
               icon="el-icon-edit"
               @click="openEdit(row)"
-              v-if="permission.includes('sys:debug:update')">修改
+              v-if="permission.includes('sys:debugreport:update')">修改
             </el-link>
             <el-popconfirm
               class="ele-action"
@@ -89,7 +89,7 @@
                 slot="reference"
                 :underline="false"
                 icon="el-icon-delete"
-                v-if="permission.includes('sys:debug:delete')">删除
+                v-if="permission.includes('sys:debugreport:delete')">删除
               </el-link>
             </el-popconfirm>
           </template>
@@ -110,7 +110,7 @@
       @done="reload"/>
     </div>
   </template>
-  
+
   <script>
   import { mapGetters } from "vuex";
   import DebugEdit from './debug-edit';
@@ -205,14 +205,14 @@
             label: '开始日期',
             showOverflowTooltip: true,
             minWidth: 120,
-            align: 'center', 
+            align: 'center',
             sortable: 'custom',
             order: '', // 初始化排序方式为空字符串
             sortableMethod: ()=> {
               // 在这里实现自定义的排序逻辑
             this.where.order = this.order;
             this.reload();
-            } 
+            }
           },
           {
             prop: 'finish_time',
@@ -346,8 +346,7 @@
     }
   }
   </script>
-  
+
   <style scoped>
   </style>
-  
-  
+

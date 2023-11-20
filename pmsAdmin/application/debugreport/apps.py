@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class DebugConfig(AppConfig):
-    name = 'application.debug'
+    name = 'application.debugreport'

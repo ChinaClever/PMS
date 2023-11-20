@@ -1,7 +1,7 @@
-<!-- 编辑弹窗 -->
+<!-- 职级编辑弹窗 -->
 <template>
     <el-dialog
-      :title="isUpdate?'修改调试报表':'添加调试报表'"
+      :title="isUpdate?'修改焊接报表':'添加焊接报表'"
       :visible="visible"
       width="580px"
       :destroy-on-close="true"
@@ -131,7 +131,7 @@
 
   <script>
   export default {
-    name: 'DebugEdit',
+    name: 'WeldingEdit',
     props: {
       // 弹窗是否打开
       visible: Boolean,
@@ -166,7 +166,8 @@
           {required: true, message: '请输入开始时间', trigger: 'blur'}
         ],
           finish_time: [
-          {required: true, message: '请输入完成时间', trigger: 'blur'}
+          {required: true, message: '请输入完成时间', trigger: 'blur'},
+          { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
         ],
           work_hours: [
           {required: true, message: '请输入所用工时', trigger: 'blur'}
@@ -195,7 +196,7 @@
         this.$refs['form'].validate((valid) => {
           if (valid) {
             this.loading = true;
-            this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/debugreport/update' : '/debugreport/add', this.form).then(res => {
+            this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/weldingreport/update' : '/weldingreport/add', this.form).then(res => {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -219,6 +220,20 @@
       /* 更新visible */
       updateVisible(value) {
         this.$emit('update:visible', value);
+      },
+
+       // 自定义校验规则函数
+      checkFinishTime(rule, value, callback) {
+        const startTime = this.form.start_time; // 获取开始时间的值
+        const finishTime = value; // 获取完成时间的值
+
+        if (!startTime || !finishTime) {
+          callback(); // 如果开始时间或完成时间为空，则不进行校验
+        } else if (startTime > finishTime) {
+          callback(new Error('完成日期必须晚于开始日期')); // 如果完成时间早于开始时间，则返回错误信息
+        } else {
+          callback(); // 校验通过
+        }
       }
     }
   }

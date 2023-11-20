@@ -1,7 +1,7 @@
-<!-- 编辑弹窗 -->
+<!-- 职级编辑弹窗 -->
 <template>
     <el-dialog
-      :title="isUpdate?'修改调试报表':'添加调试报表'"
+      :title="isUpdate?'修改生产排单':'添加生产排单'"
       :visible="visible"
       width="580px"
       :destroy-on-close="true"
@@ -96,7 +96,7 @@
             controls-position="right"
             class="ele-fluid ele-text-left"/>
         </el-form-item>
-
+          
         <el-form-item label="具体说明:" prop="instruction">
             <el-input
               :rows="3"
@@ -128,10 +128,10 @@
       </div>
     </el-dialog>
   </template>
-
+  
   <script>
   export default {
-    name: 'DebugEdit',
+    name: 'OutputEdit',
     props: {
       // 弹窗是否打开
       visible: Boolean,
@@ -152,24 +152,6 @@
         ],
           shape: [
           {required: true, message: '请输入规格型号', trigger: 'blur'}
-        ],
-          product_name: [
-          {required: true, message: '请输入产品名称', trigger: 'blur'}
-        ],
-          product_count: [
-          {required: true, message: '请输入产品数量', trigger: 'blur'}
-        ],
-          submit_time: [
-          {required: true, message: '请输入交期', trigger: 'blur'}
-        ],
-          start_time: [
-          {required: true, message: '请输入开始时间', trigger: 'blur'}
-        ],
-          finish_time: [
-          {required: true, message: '请输入完成时间', trigger: 'blur'}
-        ],
-          work_hours: [
-          {required: true, message: '请输入所用工时', trigger: 'blur'}
         ],
         },
         // 提交状态
@@ -195,7 +177,7 @@
         this.$refs['form'].validate((valid) => {
           if (valid) {
             this.loading = true;
-            this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/debugreport/update' : '/debugreport/add', this.form).then(res => {
+            this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/output/update' : '/output/add', this.form).then(res => {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -223,7 +205,8 @@
     }
   }
   </script>
-
+  
   <style scoped>
   </style>
-
+  
+  

@@ -96,7 +96,7 @@
             controls-position="right"
             class="ele-fluid ele-text-left"/>
         </el-form-item>
-          
+
         <el-form-item label="具体说明:" prop="instruction">
             <el-input
               :rows="3"
@@ -128,7 +128,7 @@
       </div>
     </el-dialog>
   </template>
-  
+
   <script>
   export default {
     name: 'WeldingEdit',
@@ -195,7 +195,7 @@
         this.$refs['form'].validate((valid) => {
           if (valid) {
             this.loading = true;
-            this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/welding/update' : '/welding/add', this.form).then(res => {
+            this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/weldingreport/update' : '/weldingreport/add', this.form).then(res => {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -223,8 +223,7 @@
     }
   }
   </script>
-  
+
   <style scoped>
   </style>
-  
-  
+

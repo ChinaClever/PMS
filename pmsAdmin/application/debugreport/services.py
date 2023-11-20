@@ -4,8 +4,8 @@ import logging
 from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage, EmptyPage
 from django.db.models import Q
 
-from application.debug import forms
-from application.debug.models import Debug
+from application.debugreport import forms
+from application.debugreport.models import Debug
 from constant.constants import PAGE_LIMIT
 from utils import R, regular
 

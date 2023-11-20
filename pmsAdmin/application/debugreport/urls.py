@@ -1,6 +1,6 @@
 from django.urls import path  # 导入路径相关配置
 
-from application.debug import views
+from application.debugreport import views
 
 
 urlpatterns = [
