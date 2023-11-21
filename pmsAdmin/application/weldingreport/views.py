@@ -16,7 +16,7 @@ from .models import Welding
 @method_decorator(check_login, name='dispatch')
 class WeldingListView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:welding:list',)
+    permission_required = ('sys:weldingreport:list',)
 
     # POST查询分页数据
     def get(self, request):
@@ -30,7 +30,7 @@ class WeldingListView(PermissionRequired, View):
 @method_decorator(check_login, name='dispatch')
 class WeldingDetailView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:welding:detail',)
+    permission_required = ('sys:weldingreport:detail',)
 
     # GET请求渲染HTML模板
     def get(self, request, welding_id):
@@ -44,7 +44,7 @@ class WeldingDetailView(PermissionRequired, View):
 @method_decorator(check_login, name='dispatch')
 class WeldingAddView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:welding:add',)
+    permission_required = ('sys:weldingreport:add',)
 
     # 接收POST网络请求
     def post(self, request):
@@ -59,7 +59,7 @@ class WeldingAddView(PermissionRequired, View):
 @method_decorator(check_login, name="put")
 class WeldingUpdateView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:welding:update',)
+    permission_required = ('sys:weldingreport:update',)
 
     # 接收PUT请求
     def put(self, request):
@@ -74,7 +74,7 @@ class WeldingUpdateView(PermissionRequired, View):
 @method_decorator(check_login, name="delete")
 class WeldingDeleteView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:welding:delete',)
+    permission_required = ('sys:weldingreport:delete',)
 
     # 接收DELETE请求
     def delete(self, request, welding_id):

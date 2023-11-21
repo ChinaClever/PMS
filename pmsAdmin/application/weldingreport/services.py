@@ -4,8 +4,8 @@ import logging
 from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage, EmptyPage
 from django.db.models import Q
 
-from application.welding import forms
-from application.welding.models import Welding
+from application.weldingreport import forms
+from application.weldingreport.models import Welding
 from constant.constants import PAGE_LIMIT
 from utils import R, regular
 

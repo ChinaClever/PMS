@@ -21,50 +21,20 @@
 # | 法律所允许的合法合规的软件产品研发，详细声明内容请阅读《框架免责声明》附件；
 # +----------------------------------------------------------------------
 
-from django import forms
+from django.urls import path  # 导入路径相关配置
 
-from application.user import models
+from application.suggestion import views
 
-
-# 登录表单验证
-class LoginForm(forms.ModelForm):
-    # 登录名
-    username = forms.CharField(
-        max_length=20,
-        error_messages={
-            'required': '登录名不能为空',
-            'max_length': '登录名长度不得超过20个字符',
-        }
-    )
-    # 登录密码
-    password = forms.CharField(
-        min_length=6,
-        max_length=12,
-        error_messages={
-            'required': '登录密码不能为空',
-            'min_length': '登录密码长度为6~12个字符',
-            'max_length': '登录密码长度为6~12个字符',
-        }
-    )
-    # 验证码
-    captcha = forms.CharField(
-        min_length=2,
-        max_length=2,
-        error_messages={
-            'required': '验证码不能为空',
-            'min_length': '验证码长度为2个字符',
-            'max_length': '验证码长度为2个字符',
-        }
-    )
-    # 验证码KEY
-    idKey = forms.CharField(
-        error_messages={
-            'required': '验证码KEY不能为空',
-        }
-    )
-
-    class Meta:
-        # 绑定模型
-        model = models.User
-        # 指定部分字段验证
-        fields = ['username', 'password', 'captcha', 'idKey']
+# 意见反馈模块路由
+urlpatterns = [
+    # 查询意见反馈分页列表
+    path('list', views.SuggestionListView.as_view()),
+    # 添加意见反馈
+    path('add', views.SuggestionAddView.as_view()),
+    # 查询意见反馈详情
+    path('detail/<int:suggestion_id>', views.SuggestionDetailView.as_view()),
+    # 更新意见反馈
+    path('update', views.SuggestionUpdateView.as_view()),
+    # 删除意见反馈
+    path('delete/<str:suggestion_id>', views.SuggestionDeleteView.as_view()),
+]
