@@ -482,7 +482,6 @@ export default {
     this.getEfficiencyData();
     this.getStartEndData();
   },
-
   methods: {
     //转换为中文的时间
     convertoChineseDate(date)
