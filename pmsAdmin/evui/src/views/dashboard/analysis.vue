@@ -5,10 +5,15 @@
       <el-col :lg="6" :md="12">
         <el-card class="analysis-chart-card" shadow="never">
           <div slot="header" class="ele-cell">
-            <div class="ele-cell-content">生产总数量</div>
-            <el-tag size="mini">年</el-tag>
+            <div class="ele-cell-content">年销售额</div>
+            <el-tooltip content="指标说明" placement="top">
+              <i
+                class="el-icon-_question ele-text-placeholder"
+                style="cursor: pointer;">
+              </i>
+            </el-tooltip>
           </div>
-          <div class="analysis-chart-card-num">98724,254</div>
+          <div class="analysis-chart-card-num">¥ 98724,254</div>
           <div class="analysis-chart-card-content" style="padding-top: 18px;">
             <span class="ele-action">
               <span>周同比12%</span>
@@ -20,16 +25,16 @@
             </span>
           </div>
           <el-divider/>
-          <div class="analysis-chart-card-text">本日生产数量 86,585</div>
+          <div class="analysis-chart-card-text">日销售额 ￥86,585</div>
         </el-card>
       </el-col>
       <el-col :lg="6" :md="12">
         <el-card class="analysis-chart-card" shadow="never">
           <div slot="header" class="ele-cell">
-            <div class="ele-cell-content">生产总效率</div>
-            <el-tag size="mini">年</el-tag>
+            <div class="ele-cell-content">订单总数</div>
+            <el-tag size="mini" type="danger">日</el-tag>
           </div>
-          <div class="analysis-chart-card-num">98%</div>
+          <div class="analysis-chart-card-num">9,766</div>
           <div class="analysis-chart-card-content">
             <ele-chart
               ref="visitChart"
@@ -37,53 +42,36 @@
               :option="visitChartOption"/>
           </div>
           <el-divider/>
-          <div class="analysis-chart-card-text">
-            <span class="ele-action">
-              <span>周同比45%</span>
-              <i class="el-icon-caret-top ele-text-danger"/>
-            </span>
-            <span class="ele-action">
-              <span>日同比57%</span>
-              <i class="el-icon-caret-bottom ele-text-success"/>
-            </span>
-          </div>
+          <div class="analysis-chart-card-text">日访问量 1,972</div>
         </el-card>
       </el-col>
       <el-col :lg="6" :md="12">
         <el-card class="analysis-chart-card" shadow="never">
           <div slot="header" class="ele-cell">
-            <div class="ele-cell-content">总合格率</div>
-            <el-tag size="mini">年</el-tag>
+            <div class="ele-cell-content">交易总额</div>
+            <el-tag size="mini">月</el-tag>
           </div>
-          <div class="analysis-chart-card-num">99%</div>
+          <div class="analysis-chart-card-num">8,986</div>
           <div class="analysis-chart-card-content">
             <ele-chart
-              ref="AllProcedureNumChart"
+              ref="payNumChart"
               style="height: 40px;"
-              :option="AllProcedureNumChartOption"/>
+              :option="payNumChartOption"/>
           </div>
           <el-divider/>
-          <div class="analysis-chart-card-text">
-            <span class="ele-action">
-              <span>周同比45%</span>
-              <i class="el-icon-caret-top ele-text-danger"/>
-            </span>
-            <span class="ele-action">
-              <span>日同比57%</span>
-              <i class="el-icon-caret-bottom ele-text-success"/>
-            </span>
-          </div>
+          <div class="analysis-chart-card-text">转化率 85%</div>
         </el-card>
       </el-col>
       <el-col :lg="6" :md="12">
         <el-card class="analysis-chart-card" shadow="never">
           <div slot="header" class="ele-cell">
-            <div class="ele-cell-content">开机率</div>
+            <div class="ele-cell-content">会员增量</div>
+            <el-tag size="mini" type="success">周</el-tag>
           </div>
           <div class="analysis-chart-card-num">97%</div>
           <div class="analysis-chart-card-content" style="padding-top: 25px;">
             <el-progress
-              :percentage="97"
+              :percentage="78"
               :show-text="false"
               :stroke-width="10"
               color="#13c2c2"/>
@@ -110,22 +98,19 @@
             v-model="saleSearch.type"
             class="demo-monitor-tabs"
             @tab-click="onSaleTypeChange">
-            <el-tab-pane label="生产数量" name="procedureNumber"/>
-            <el-tab-pane label="效率" name="efficiency"/>
-            <el-tab-pane label="合格率" name="pass"/>
+            <el-tab-pane label="销售额" name="saleroom"/>
+            <el-tab-pane label="访问量" name="visits"/>
           </el-tabs>
         </div>
-        <div class="ele-inline-block ele-text-right">
-          <el-radio-group v-model="saleSearch.dateType" size="small" @change="onRadioChange">
-            <el-radio-button
-              v-for="button in buttons"
-              :key="button.value"
-              :label="button.value"
-              border>{{button.label}}
-            </el-radio-button>
+        <div class="ele-inline-block hidden-xs-only">
+          <el-radio-group v-model="saleSearch.dateType" size="small">
+            <el-radio-button :label="0">今天</el-radio-button>
+            <el-radio-button :label="1">本周</el-radio-button>
+            <el-radio-button :label="2">本月</el-radio-button>
+            <el-radio-button :label="3">本年</el-radio-button>
           </el-radio-group>
         </div>
-        <div class="ele-inline-block ele-text-right" style="width: 260px;">
+        <div class="ele-inline-block hidden-sm-and-down" style="width: 260px;">
           <el-date-picker
             unlink-panels
             type="daterange"
@@ -133,66 +118,62 @@
             end-placeholder="结束日期"
             start-placeholder="开始日期"
             v-model="saleSearch.datetime"
-            range-separator="至" size="small"
-            @change="onChangeDate"/>
+            range-separator="至" size="small"/>
         </div>
       </div>
       <el-divider/>
       <el-row>
-        <el-col :lg="48" :md="58">
-          <!--本年的数据-->
-          <div v-if="saleSearch.type === 'procedureNumber'">
-               <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="ProcedureNumberChartOption" />
+        <el-col :lg="18" :md="16">
+          <div class="demo-monitor-title">
+            {{ {saleroom: '销售', visits: '访问量'}[saleSearch.type] }}趋势
           </div>
-          <div v-else-if="saleSearch.type === 'efficiency' ">
-              <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="EfficiencyChartOption"/>
+          <ele-chart
+            ref="saleChart"
+            style="height: 285px;"
+            :option="saleChartOption"/>
+        </el-col>
+        <el-col :lg="6" :md="8">
+          <div class="demo-monitor-title">
+            门店{{ {saleroom: '销售额', visits: '访问量'}[saleSearch.type] }}排名
           </div>
-          <div v-else-if="saleSearch.type === 'pass'">
-              <ele-chart
-                ref="saleChart"
-                style="height: 285px;"
-                :option="PassChartOption"/>
+          <div
+            v-for="(item, index) in saleroomRankData"
+            :key="index"
+            class="demo-monitor-rank-item ele-cell">
+            <el-tag
+              size="mini"
+              type="info"
+              :effect="index < 3 ? 'dark' : 'light'"
+              :color="index < 3 ? '#314659' : 'hsla(0, 0%, 60%, .2)'"
+              style="border-color: transparent;"
+              class="ele-tag-round">
+              {{ index + 1 }}
+            </el-tag>
+            <div class="ele-cell-content">{{ item.name }}</div>
+            <div class="ele-text-secondary">{{ item.value }}</div>
           </div>
-<!--          时间选择显示柱状图-->
-          <div v-if="saleSearch.datetime && saleSearch.type === 'procedureNumber'">
-            <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="chooseTimeShow" />
-          </div>
-          <div v-else-if="saleSearch.datetime && saleSearch.type === 'efficiency'">
-            <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="chooseTimeShow" />
-          </div>
-          <div v-else-if="saleSearch.datetime && saleSearch.type === 'pass'">
-            <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="chooseTimeShow" />
-          </div>
-
         </el-col>
       </el-row>
     </el-card>
     <!-- 最近1小时访问情况 -->
-    <el-row :gutter="30">
-      <el-col :lg="36" :md="32">
+    <el-row :gutter="15">
+      <el-col :lg="18" :md="16">
         <el-card
           shadow="never"
-          header="最近24小时生产情况"
-          body-style="padding: 20px 10px 0 0;">
+          header="最近1小时访问情况"
+          body-style="padding: 10px 5px 0 0;">
           <ele-chart
             ref="visitHourChart"
             style="height: 323px;"
             :option="visitHourChartOption"/>
+        </el-card>
+      </el-col>
+      <el-col :lg="6" :md="8">
+        <el-card shadow="never" header="热门搜索">
+          <ele-word-cloud
+            ref="hotSearchChart"
+            :data="hotSearchData"
+            style="height: 303px;"/>
         </el-card>
       </el-col>
     </el-row>
@@ -201,48 +182,37 @@
 
 <script>
 import EleChart from 'ele-admin/packages/ele-chart';
-// import EleWordCloud from 'ele-admin/packages/ele-word-cloud';
+import EleWordCloud from 'ele-admin/packages/ele-word-cloud';
 
 export default {
   name: 'DashboardAnalysis',
-  components: {EleChart},
+  components: {EleChart, EleWordCloud},
   data() {
     return {
-      // 搜索参数
+      // 支付笔数
+      payNumData: [],
+      // 销售量搜索参数
       saleSearch: {
-        type: 'procedureNumber',
-        dateType: 'year',
+        type: 'saleroom',
+        dateType: 0,
         datetime: ''
       },
-      buttons:[
-        {label:'本年',value:'year'},
-        {label:'本月',value:'month'},
-        {label:'本周',value:'week'},
-        {label:'今天',value:'today'},
-      ],
-      //开始和结束日期柱状图数据
-      startandendprocedureData:[],
-
-      //生产数量数据
-      ProcedureNumData:[],
-
-      // 效率数据
-      EfficiencyData:[],
-
-      //通过率数据
-      PassData:[],
-
+      // 销售量数据
+      saleroomData: [],
+      // 销售量排名数据
+      saleroomRankData: [],
       // 最近1小时访问情况数据
       visitHourData: [],
-
-      //开始到结束日期数据
-      StartEndValueData:null,
-
+      // 词云数据
+      hotSearchData: []
     };
   },
   computed: {
-    // 生产总效率折线图配置
+    // 访问量折线图配置
     visitChartOption() {
+      /*if (!this.payNumData.length) {
+        return {};
+      }*/
       return {
         color: '#975fe5',
         tooltip: {
@@ -260,7 +230,7 @@ export default {
             show: false,
             type: 'category',
             boundaryGap: false,
-            data: this.ProcedureNumData.map(d => d.data)
+            data: this.payNumData.map(d => d.date)
           }
         ],
         yAxis: [
@@ -280,13 +250,13 @@ export default {
             areaStyle: {
               opacity: 0.5
             },
-            data: this.ProcedureNumData.map(d => d.value)
+            data: this.payNumData.map(d => d.value)
           }
         ]
       };
     },
-    // 总合格率柱状图配置
-    AllProcedureNumChartOption() {
+    // 支付笔数柱状图配置
+    payNumChartOption() {
       return {
         tooltip: {
           trigger: 'axis',
@@ -302,7 +272,7 @@ export default {
           {
             show: false,
             type: 'category',
-            data: this.PassData.map(d => d.data)
+            data: this.payNumData.map(d => d.date)
           }
         ],
         yAxis: [
@@ -317,72 +287,21 @@ export default {
         series: [
           {
             type: 'bar',
-            data: this.PassData.map(d => d.value)
+            data: this.payNumData.map(d => d.value)
           }
         ]
       }
     },
-
-    //生产数量柱状图
-    ProcedureNumberChartOption(){
+    // 销售额柱状图配置
+    saleChartOption() {
       return {
-            tooltip: {
-              trigger: 'axis'
-            },
-            xAxis: [
-              {
-                type: 'category',
-                data: this.ProcedureNumData.map(d => d.data)
-              }
-            ],
-            yAxis: [
-              {
-                type: 'value'
-              }
-            ],
-            series: [
-              {
-                type: 'bar',
-                data: this.ProcedureNumData.map(d => d.value)
-              }
-            ]
-          };
-    },
-    //生产效率柱状图
-    EfficiencyChartOption(){
-      return {
-            tooltip: {
-              trigger: 'axis'
-            },
-            xAxis: [
-              {
-                type: 'category',
-                data: this.EfficiencyData.map(d => d.data)
-              }
-            ],
-            yAxis: [
-              {
-                type: 'value'
-              }
-            ],
-            series: [
-              {
-                type: 'bar',
-                data: this.EfficiencyData.map(d => d.value)
-              }
-            ]
-          };
-    },
-    //生产效率柱状图
-    PassChartOption(){
-        return {
         tooltip: {
           trigger: 'axis'
         },
         xAxis: [
           {
             type: 'category',
-            data: this.PassData.map(d => d.data)
+            data: this.saleroomData.map(d => d.month)
           }
         ],
         yAxis: [
@@ -393,37 +312,11 @@ export default {
         series: [
           {
             type: 'bar',
-            data: this.PassData.map(d => d.value)
+            data: this.saleroomData.map(d => d.value)
           }
         ]
       };
     },
-    //选择时间显示柱状图（）
-    chooseTimeShow(){
-      return {
-              tooltip: {
-                trigger: 'axis'
-              },
-              xAxis: [
-                {
-                  type: 'category',
-                  data: this.startandendprocedureData.map(d => d.day)
-                }
-              ],
-              yAxis: [
-                {
-                  type: 'value'
-                }
-              ],
-              series: [
-                {
-                  type: 'bar',
-                  data: this.startandendprocedureData.map(d => d.value)
-                }
-              ]
-            };
-    },
-
     // 最近1小时访问情况折线图配置
     visitHourChartOption() {
       /*if (!this.visitHourData.length) {
@@ -434,7 +327,7 @@ export default {
           trigger: 'axis'
         },
         legend: {
-          data: ['生产数量', '合格率'],
+          data: ['浏览量', '访问量'],
           right: 20
         },
         xAxis: [
@@ -451,280 +344,174 @@ export default {
         ],
         series: [
           {
-            name: '生产数量',
+            name: '浏览量',
             type: 'line',
             smooth: true,
             symbol: 'none',
             areaStyle: {
               opacity: 0.5
             },
-            data: this.visitHourData.map(d => d.number)
+            data: this.visitHourData.map(d => d.views)
           },
           {
-            name: '合格率',
+            name: '访问量',
             type: 'line',
             smooth: true,
             symbol: 'none',
             areaStyle: {
               opacity: 0.5
             },
-            data: this.visitHourData.map(d => d.pass)
+            data: this.visitHourData.map(d => d.visits)
           }
         ]
       }
-    },
-
+    }
   },
   mounted() {
+    this.getPayNumData();
+    this.getSaleroomData();
     this.getVisitHourData();
-    this.getProNumData();
-    this.getPassData();
-    this.getEfficiencyData();
-    this.getStartEndData();
+    this.getWordCloudData();
   },
   methods: {
-    //转换为中文的时间
-    convertoChineseDate(date)
-    {
-      return date.toLocaleString('zh-CN',{
-        year:'numeric',
-        month:'long',
-        day:'numeric'
-      });
-    },
-    // 生产数量获取数据
-    getProNumData(){
-      const currentDate = new Date();//当前日期
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = currentDate.getMonth();
-      const currentDay = currentDate.getDay();
-      const totalDays = new Date(currentYear, currentMonth+1, 0).getDate();//获取当月总天数
-
-      //清空之前的数据
-      this.ProcedureNumData=[];
-      if(this.saleSearch.dateType === 'year')
-      {
-
-        for(let i =0; i<12; i++)
-        {
-          const getMonthData = {
-            data:this.convertoChineseDate(new Date(currentYear, i)),
-            value:Math.floor(Math.random() * 100)
-          }
-          this.ProcedureNumData.push(getMonthData)
-        }
-      }
-      else if(this.saleSearch.dateType === 'month'){
-        for(let i =1; i<=totalDays; i++){
-          const getDayData = {
-            data: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
-            value: Math.floor(Math.random() * 100)
-          };
-        this.ProcedureNumData.push(getDayData)
-        }
-      }
-      else if(this.saleSearch.dateType === 'week'){
-        for(let i=1; i<=7; i++) {
-          const dayOffset = i-currentDay;
-          const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
-          const getWeekData = {
-            data: this.convertoChineseDate(dayDate),
-            value: Math.floor(Math.random() * 100)
-          };
-          this.ProcedureNumData.push(getWeekData)
-        }
-      }
-      else{
-        for(let i=8; i<21; i++) {
-          const gethourData = {
-            data: i,
-            value: Math.floor(Math.random() * 100)
-          };
-          this.ProcedureNumData.push(gethourData)
-        }
-      }
-    },
-    // 生产效率获取数据
-    getEfficiencyData(){
-      const currentDate = new Date();//当前日期
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = currentDate.getMonth();
-      const currentDay = currentDate.getDay();
-      const totalDays = new Date(currentYear, currentMonth+1, 0).getDate();//获取当月总天数
-      this.EfficiencyData=[];
-      if(this.saleSearch.dateType === 'year')
-      {
-        for(let i =0; i<12; i++)
-        {
-          const getMonthData = {
-            data:this.convertoChineseDate(new Date(currentYear, i)),
-            value:Math.floor(Math.random() * 100)
-          }
-          this.EfficiencyData.push(getMonthData)
-        }
-      }
-      else if(this.saleSearch.dateType === 'month')
-      {
-        for(let i =1; i<=totalDays; i++){
-          const getDayData = {
-            data: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
-            value: Math.floor(Math.random() * 100)
-          };
-        this.EfficiencyData.push(getDayData)
-        }
-      }
-      else if(this.saleSearch.dateType === 'week')
-      {
-        for(let i=1; i<=7; i++) {
-          const dayOffset = i-currentDay;
-          const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
-          const getWeekData = {
-            data: this.convertoChineseDate(dayDate),
-            value: Math.floor(Math.random() * 100)
-          };
-          this.EfficiencyData.push(getWeekData)
-        }
-      }
-      else {
-        for(let i=8; i<21; i++) {
-          const gethourData = {
-            data: i,
-            value: Math.floor(Math.random() * 100)
-          };
-          this.EfficiencyData.push(gethourData)
-        }
-      }
-    },
-    //生产合格率获取数据
-    getPassData(){
-      const currentDate = new Date();//当前日期
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = currentDate.getMonth();
-      const currentDay = currentDate.getDay();
-      const totalDays = new Date(currentYear, currentMonth+1, 0).getDate();//获取当月总天数
-
-      this.PassData=[];
-      if(this.saleSearch.dateType === 'year')
-      {
-        for(let i =0; i<12; i++)
-        {
-          const getMonthData = {
-            data:this.convertoChineseDate(new Date(currentYear, i)),
-            value:Math.floor(Math.random() * 100)
-          }
-          this.PassData.push(getMonthData)
-        }
-      }
-      else if(this.saleSearch.dateType === 'month')
-      {
-        for(let i =1; i<= totalDays; i++){
-          const getDayData = {
-            data: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
-            value: Math.floor(Math.random() * 100)
-          };
-        this.PassData.push(getDayData)
-        }
-      }
-      else if(this.saleSearch.dateType === 'week')
-      {
-        for(let i=1; i<=7; i++) {
-          const dayOffset = i-currentDay;
-          const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
-          const getWeekData = {
-            data:this.convertoChineseDate(dayDate),
-            value: Math.floor(Math.random() * 100)
-          };
-          this.PassData.push(getWeekData)
-        }
-      }
-      else
-      {
-        for(let i=8; i<21; i++) {
-          const gethourData = {
-            data: i,
-            value: Math.floor(Math.random() * 100)
-          };
-          this.PassData.push(gethourData)
-        }
-      }
-    },
-
-    //选择时间获取到的数据
-    getStartEndData(){
-      if(this.saleSearch.datetime && this.saleSearch.datetime[0] && this.saleSearch.datetime[1]) {
-        const startDate = this.saleSearch.datetime[0];
-        const endDate = this.saleSearch.datetime[1];
-
-        const startTimestamp = startDate.getTime();
-        const endTimestamp = endDate.getTime();
-
-        const days = Math.ceil((endTimestamp - startTimestamp) / (24 * 60 * 60 * 1000));
-        this.startandendprocedureData = [];
-        for (let i = 0; i <= days; i++) {
-          const currentDate = new Date(startTimestamp + i * 24 * 60 * 60 * 1000);
-          if(this.saleSearch.type === 'procedureNumber')
-          {
-            this.StartEndValueData = Math.floor(Math.random() * 100);
-          }
-          else if(this.saleSearch.type === 'efficiency')
-          {
-            this.StartEndValueData = Math.floor(Math.random() * 1000);
-          }
-          else
-          {
-            this.StartEndValueData = Math.floor(Math.random() * 10);
-          }
-          const getStartEnd = {
-            day: this.convertoChineseDate(currentDate),
-            value: this.StartEndValueData,//Math.floor(Math.random() * 100),
-          }
-          this.startandendprocedureData.push(getStartEnd)
-        }
-      }
-      else {
-        this.startandendprocedureData = [];
-      }
-    },
-
-    /* 获取最近24小时访问情况数据 */
-    getVisitHourData() {
-      this.visitHourData = [
-        {time: '8:00', number: 15, pass: 45},
-        {time: '9:00', number: 39, pass: 169},
-        {time: '10:00', number: 152, pass: 400},
-        {time: '11:00', number: 94, pass: 285},
-        {time: '12:00', number: 102, pass: 316},
-        {time: '13:00', number: 86, pass: 148},
-        {time: '14:00', number: 39, pass: 150},
-        {time: '15:00', number: 38, pass: 234},
-        {time: '16:00', number: 95, pass: 158},
-        {time: '17:00', number: 30, pass: 100},
-        {time: '18:00', number: 86, pass: 266}
+    /* 获取支付笔数数据 */
+    getPayNumData() {
+      this.payNumData = [
+        {date: '2020-06-12', value: 7},
+        {date: '2020-06-13', value: 5},
+        {date: '2020-06-14', value: 4},
+        {date: '2020-06-15', value: 2},
+        {date: '2020-06-16', value: 4},
+        {date: '2020-06-17', value: 7},
+        {date: '2020-06-18', value: 5},
+        {date: '2020-06-19', value: 6},
+        {date: '2020-06-20', value: 5},
+        {date: '2020-06-21', value: 9},
+        {date: '2020-06-22', value: 6},
+        {date: '2020-06-23', value: 3},
+        {date: '2020-06-24', value: 1},
+        {date: '2020-06-25', value: 5},
+        {date: '2020-06-26', value: 3},
+        {date: '2020-06-27', value: 6},
+        {date: '2020-06-18', value: 5}
       ];
     },
-
-    /* 表头tab选择改变事件 */
+    /* 获取销售量数据 */
+    getSaleroomData() {
+      if (this.saleSearch.type === 'saleroom') {
+        this.saleroomData = [
+          {month: '1月', value: 816},
+          {month: '2月', value: 542},
+          {month: '3月', value: 914},
+          {month: '4月', value: 781},
+          {month: '5月', value: 355},
+          {month: '6月', value: 796},
+          {month: '7月', value: 714},
+          {month: '8月', value: 1195},
+          {month: '9月', value: 1055},
+          {month: '10月', value: 271},
+          {month: '11月', value: 384},
+          {month: '12月', value: 1098}
+        ];
+      } else {
+        this.saleroomData = [
+          {month: '1月', value: 1098},
+          {month: '2月', value: 384},
+          {month: '3月', value: 271},
+          {month: '4月', value: 1055},
+          {month: '5月', value: 1195},
+          {month: '6月', value: 714},
+          {month: '7月', value: 796},
+          {month: '8月', value: 355},
+          {month: '9月', value: 781},
+          {month: '10月', value: 914},
+          {month: '11月', value: 542},
+          {month: '12月', value: 816}
+        ];
+      }
+      this.saleroomRankData = [
+        {name: '深圳路 1 号店', value: '124,643'},
+        {name: '广州路 2 号店', value: '456,465'},
+        {name: '厦门路 3 号店', value: '776,679'},
+        {name: '福州路 4 号店', value: '456,658'},
+        {name: '北京路 5 号店', value: '245,466'},
+        {name: '上号路 6 号店', value: '887,344'},
+        {name: '南京路 7 号店', value: '897,233'}
+      ];
+    },
+    /* 获取最近1小时访问情况数据 */
+    getVisitHourData() {
+      this.visitHourData = [
+        {time: '16:00', visits: 15, views: 45},
+        {time: '16:05', visits: 39, views: 169},
+        {time: '16:10', visits: 152, views: 400},
+        {time: '16:15', visits: 94, views: 285},
+        {time: '16:20', visits: 102, views: 316},
+        {time: '16:25', visits: 86, views: 148},
+        {time: '16:30', visits: 39, views: 150},
+        {time: '16:35', visits: 38, views: 234},
+        {time: '16:40', visits: 95, views: 158},
+        {time: '16:45', visits: 30, views: 100},
+        {time: '16:50', visits: 86, views: 266}
+      ];
+    },
+    /* 获取词云数据 */
+    getWordCloudData() {
+      this.hotSearchData = [
+        {name: "软妹子", value: 23},
+        {name: "汪星人", value: 23},
+        {name: "长腿欧巴", value: 23},
+        {name: "萝莉", value: 22},
+        {name: "辣~", value: 22},
+        {name: "K歌", value: 22},
+        {name: "大长腿", value: 21},
+        {name: "川妹子", value: 21},
+        {name: "女神", value: 21},
+        {name: "米粉", value: 20},
+        {name: "专注设计", value: 20},
+        {name: "逛街", value: 20},
+        {name: "黑长直", value: 20},
+        {name: "海纳百川", value: 19},
+        {name: "萌萌哒", value: 19},
+        {name: "坚持", value: 19},
+        {name: "话唠", value: 19},
+        {name: "果粉", value: 18},
+        {name: "喵星人", value: 18},
+        {name: "花粉", value: 18},
+        {name: "衬衫控", value: 18},
+        {name: "宅男", value: 17},
+        {name: "小清新", value: 17},
+        {name: "眼镜男", value: 17},
+        {name: "琼瑶", value: 17},
+        {name: "穷游党", value: 16},
+        {name: "铲屎官", value: 16},
+        {name: "正太", value: 16},
+        {name: "中二病", value: 16},
+        {name: "夜猫子", value: 15},
+        {name: "逗比", value: 15},
+        {name: "腹黑", value: 15},
+        {name: "吃鸡", value: 15},
+        {name: "为了联盟", value: 14},
+        {name: "背包客", value: 14},
+        {name: "民谣", value: 14},
+        {name: "为了部落", value: 14},
+        {name: "懒癌患者", value: 13},
+        {name: "追剧", value: 13},
+        {name: "IT民工", value: 13},
+        {name: "CNB成员", value: 13},
+        {name: "选择困难", value: 12},
+        {name: "锤粉", value: 12},
+        {name: "欧皇", value: 12},
+        {name: "仙气十足", value: 12}
+      ];
+    },
+    /* 销售量tab选择改变事件 */
     onSaleTypeChange() {
-      this.getProNumData();
-      this.getPassData();
-      this.getEfficiencyData();
-      this.getStartEndData();
-    },
-    //表头日期选择改变事件
-    onRadioChange(){
-      this.getProNumData();
-      this.getPassData();
-      this.getEfficiencyData();
-      this.getStartEndData();
-    },
-    //时间周期改变事件
-    onChangeDate()
-    {
-      this.getStartEndData();
+      this.getSaleroomData();
     }
   },
   activated() {
-    ['visitChart', 'AllProcedureNumChart', 'saleChart', 'visitHourChart'].forEach((name) => {
+    ['visitChart', 'payNumChart', 'saleChart', 'visitHourChart', 'hotSearchChart'].forEach((name) => {
       this.$refs[name].resize();
     });
   }
@@ -749,7 +536,7 @@ export default {
 
 /* 销售额、访问量工具栏 */
 .demo-monitor-tool {
-  padding: 0 30px;
+  padding: 0 20px;
 }
 
 .demo-monitor-tool ::v-deep .el-tabs__nav-wrap:after {
@@ -770,7 +557,7 @@ export default {
 /* 小标题 */
 .demo-monitor-title {
   padding: 0 20px;
-  margin: 20px 0 10px 0;
+  margin: 15px 0 5px 0;
 }
 
 /* 排名item */
@@ -778,41 +565,5 @@ export default {
   padding: 0 20px;
   line-height: 20px;
   margin-top: 18px;
-}
-
-.container{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.char-container{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.el-dropdown {
-  vertical-align: top;
-}
-.el-dropdown + .el-dropdown {
-  margin-left: 15px;
-}
-.el-icon-arrow-down {
-  font-size: 12px;
-}
-
-.label{
-  margin-right: 400px;
-}
-.selector{
-  margin-top: 10px;
-  margin-left: 40px;
-}
-.left-side{
-  flex-grow: 1;
-  margin-right: 10px;
-}
-.right-side{
-  flex-grow: 1;
-  margin-left: 10px;
 }
 </style>

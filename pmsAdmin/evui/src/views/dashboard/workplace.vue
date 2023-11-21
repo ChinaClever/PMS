@@ -1,305 +1,198 @@
 <template>
   <div class="ele-body ele-body-card">
-    <!-- 顶部卡片 -->
-    <el-card shadow="never" body-style="padding: 20px;">
-      <div class="ele-cell workplace-user-card">
-        <div class="ele-cell-content ele-cell">
-          <el-avatar :size="68" :src="loginUser.avatar"/>
-          <div class="ele-cell-content">
-            <h4 class="ele-elip">早安，{{ loginUser.nickname }}，开始您一天的工作吧！</h4>
-            <div class="ele-text-secondary ele-elip" style="margin-top: 8px;">
-              <i class="el-icon-heavy-rain"></i>
-              <span><s/><s/>今日阴转小雨，22℃ - 32℃，出门记得带伞哦。</span>
-            </div>
-          </div>
-        </div>
-        <div class="workplace-count-group">
-          <div class="workplace-count-item">
-            <div class="workplace-count-header">
-              <el-tag size="small" class="ele-tag-round">
-                <i class="el-icon-menu"></i>
-              </el-tag>
-              <span class="workplace-count-name">项目数</span>
-            </div>
-            <div class="workplace-count-num">3</div>
-          </div>
-          <div class="workplace-count-item">
-            <div class="workplace-count-header">
-              <el-tag type="warning" size="small" class="ele-tag-round">
-                <i class="el-icon-finished"></i>
-              </el-tag>
-              <span class="workplace-count-name">待办项</span>
-            </div>
-            <div class="workplace-count-num">6 / 24</div>
-          </div>
-          <div class="workplace-count-item">
-            <div class="workplace-count-header">
-              <el-tag type="success" size="small" class="ele-tag-round">
-                <i class="el-icon-bell"></i>
-              </el-tag>
-              <span class="workplace-count-name">消息</span>
-            </div>
-            <div class="workplace-count-num">1,689</div>
-          </div>
-        </div>
-      </div>
-    </el-card>
-    <!-- 快捷方式 -->
+    <!-- 顶部统计卡片 -->
     <el-row :gutter="15">
-      <el-col :lg="3" :md="6" :sm="6" :xs="12">
-        <el-card shadow="hover" body-style="padding: 0;">
-          <router-link to="/system/user" class="app-link-block">
-            <i class="app-link-icon el-icon-user"></i>
-            <div class="app-link-title">系统用户</div>
-          </router-link>
+      <el-col :lg="6" :md="12">
+        <el-card class="analysis-chart-card" shadow="never">
+          <div slot="header" class="ele-cell">
+            <div class="ele-cell-content">生产总数量</div>
+            <el-tag size="mini">年</el-tag>
+          </div>
+          <div class="analysis-chart-card-num">98724,254</div>
+          <div class="analysis-chart-card-content" style="padding-top: 18px;">
+            <span class="ele-action">
+              <span>周同比12%</span>
+              <i class="el-icon-caret-top ele-text-danger"></i>
+            </span>
+            <span class="ele-action">
+              <span>日同比11%</span>
+              <i class="el-icon-caret-bottom ele-text-success"></i>
+            </span>
+          </div>
+          <el-divider/>
+          <div class="analysis-chart-card-text">本日生产数量 86,585</div>
         </el-card>
       </el-col>
-      <el-col :lg="3" :md="6" :sm="6" :xs="12">
-        <el-card shadow="hover" body-style="padding: 0;">
-          <router-link to="/system/role" class="app-link-block">
-            <i class="app-link-icon el-icon-data-line" style="color: #95de64;"></i>
-            <div class="app-link-title">角色管理</div>
-          </router-link>
+      <el-col :lg="6" :md="12">
+        <el-card class="analysis-chart-card" shadow="never">
+          <div slot="header" class="ele-cell">
+            <div class="ele-cell-content">生产总效率</div>
+            <el-tag size="mini">年</el-tag>
+          </div>
+          <div class="analysis-chart-card-num">98%</div>
+          <div class="analysis-chart-card-content">
+            <ele-chart
+              ref="visitChart"
+              style="height: 40px;"
+              :option="visitChartOption"/>
+          </div>
+          <el-divider/>
+          <div class="analysis-chart-card-text">
+            <span class="ele-action">
+              <span>周同比45%</span>
+              <i class="el-icon-caret-top ele-text-danger"/>
+            </span>
+            <span class="ele-action">
+              <span>日同比57%</span>
+              <i class="el-icon-caret-bottom ele-text-success"/>
+            </span>
+          </div>
         </el-card>
       </el-col>
-      <el-col :lg="3" :md="6" :sm="6" :xs="12">
-        <el-card shadow="hover" body-style="padding: 0;">
-          <router-link to="/system/menu" class="app-link-block">
-            <i class="app-link-icon el-icon-shopping-cart-2" style="color: #ff9c6e;"></i>
-            <div class="app-link-title">菜单管理</div>
-          </router-link>
+      <el-col :lg="6" :md="12">
+        <el-card class="analysis-chart-card" shadow="never">
+          <div slot="header" class="ele-cell">
+            <div class="ele-cell-content">总合格率</div>
+            <el-tag size="mini">年</el-tag>
+          </div>
+          <div class="analysis-chart-card-num">99%</div>
+          <div class="analysis-chart-card-content">
+            <ele-chart
+              ref="AllProcedureNumChart"
+              style="height: 40px;"
+              :option="AllProcedureNumChartOption"/>
+          </div>
+          <el-divider/>
+          <div class="analysis-chart-card-text">
+            <span class="ele-action">
+              <span>周同比45%</span>
+              <i class="el-icon-caret-top ele-text-danger"/>
+            </span>
+            <span class="ele-action">
+              <span>日同比57%</span>
+              <i class="el-icon-caret-bottom ele-text-success"/>
+            </span>
+          </div>
         </el-card>
       </el-col>
-      <el-col :lg="3" :md="6" :sm="6" :xs="12">
-        <el-card shadow="hover" body-style="padding: 0;">
-          <router-link to="/system/dict" class="app-link-block">
-            <i class="app-link-icon el-icon-tickets" style="color: #b37feb;"></i>
-            <div class="app-link-title">字典管理</div>
-          </router-link>
-        </el-card>
-      </el-col>
-      <el-col :lg="3" :md="6" :sm="6" :xs="12">
-        <el-card shadow="hover" body-style="padding: 0;">
-          <router-link to="/data/config" class="app-link-block">
-            <i class="app-link-icon el-icon-bank-card" style="color: #ffd666;"></i>
-            <div class="app-link-title">配置管理</div>
-          </router-link>
-        </el-card>
-      </el-col>
-      <el-col :lg="3" :md="6" :sm="6" :xs="12">
-        <el-card shadow="hover" body-style="padding: 0;">
-          <router-link to="/message/notice" class="app-link-block">
-            <i class="app-link-icon el-icon-message" style="color: #5cdbd3;"></i>
-            <div class="app-link-title">通知公告</div>
-          </router-link>
-        </el-card>
-      </el-col>
-      <el-col :lg="3" :md="6" :sm="6" :xs="12">
-        <el-card shadow="hover" body-style="padding: 0;">
-          <router-link to="/tool/generate" class="app-link-block">
-            <i class="app-link-icon el-icon-discount" style="color: #ff85c0;"></i>
-            <div class="app-link-title">代码生成器</div>
-          </router-link>
-        </el-card>
-      </el-col>
-      <el-col :lg="3" :md="6" :sm="6" :xs="12">
-        <el-card shadow="hover" body-style="padding: 0;">
-          <router-link to="/user/profile" class="app-link-block">
-            <i class="app-link-icon el-icon-s-operation" style="color: #ffc069;"></i>
-            <div class="app-link-title">个人中心</div>
-          </router-link>
+      <el-col :lg="6" :md="12">
+        <el-card class="analysis-chart-card" shadow="never">
+          <div slot="header" class="ele-cell">
+            <div class="ele-cell-content">开机率</div>
+          </div>
+          <div class="analysis-chart-card-num">97%</div>
+          <div class="analysis-chart-card-content" style="padding-top: 25px;">
+            <el-progress
+              :percentage="97"
+              :show-text="false"
+              :stroke-width="10"
+              color="#13c2c2"/>
+          </div>
+          <el-divider/>
+          <div class="analysis-chart-card-text">
+            <span class="ele-action">
+              <span>周同比45%</span>
+              <i class="el-icon-caret-top ele-text-danger"/>
+            </span>
+            <span class="ele-action">
+              <span>日同比57%</span>
+              <i class="el-icon-caret-bottom ele-text-success"/>
+            </span>
+          </div>
         </el-card>
       </el-col>
     </el-row>
-    <!-- 最新动态、我的任务、本月目标 -->
-    <el-row :gutter="15">
-      <el-col :lg="8" :md="12">
-        <el-card
-          shadow="never"
-          header="版本信息"
-          body-style="padding: 0;">
-          <el-scrollbar
-            style="height: 318px;"
-            wrapStyle="overflow-x: hidden;"
-            viewStyle="padding: 20px 10px;">
-            <el-timeline
-              :reverse="false"
-              class="ele-timeline ele-timeline-act">
-              <el-timeline-item
-                v-for="(act, index) in activities"
-                :key="index"
-                :timestamp="act.timestamp"
-                :type="act.primary ? 'primary' : ''">
-                {{ act.title }}
-              </el-timeline-item>
-            </el-timeline>
-          </el-scrollbar>
-        </el-card>
-      </el-col>
-      <el-col :lg="8" :md="12">
-        <el-card
-          shadow="never"
-          header="升级计划"
-          body-style="padding: 0;"
-          class="workplace-table-card">
-          <el-table-draggable handle=".sort-handle" :animate="300">
-            <el-table :data="taskList" :height="318" class="ele-table-default-head">
-              <el-table-column width="38" align="center">
-                <i class="sort-handle el-icon-_nav ele-text-placeholder"></i>
-              </el-table-column>
-              <el-table-column label="优先级" width="65">
-                <template slot-scope="{row}">
-                  <el-tag
-                    size="mini"
-                    class="ele-tag-round"
-                    :type="['danger','warning','primary'][row.priority-1]">
-                    {{ row.priority }}
-                  </el-tag>
-                </template>
-              </el-table-column>
-              <el-table-column label="任务名称">
-                <template slot-scope="{row}">
-                  <el-link
-                    type="primary"
-                    :underline="false">
-                    {{ row.taskName }}
-                  </el-link>
-                </template>
-              </el-table-column>
-              <el-table-column label="状态" width="70" align="center">
-                <template slot-scope="{row}">
-                  <span
-                    :class="['ele-text-warning','ele-text-success','ele-text-info'][row.state]">
-                      {{ ['未开始', '进行中', '已完成'][row.state] }}
-                  </span>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-table-draggable>
-        </el-card>
-      </el-col>
-      <el-col :lg="8" :md="12" class="hidden-md-and-down">
-        <el-card shadow="never" header="本月目标">
-          <div class="workplace-goal-group">
-            <el-progress
-              :width="170"
-              :percentage="80"
-              type="dashboard"
-              :format="()=>{return ''}"/>
-            <div class="workplace-goal-content">
-              <el-tag
-                size="large"
-                class="ele-tag-round">
-                <i class="el-icon-s-data"></i>
-              </el-tag>
-              <div class="workplace-goal-num">365</div>
-            </div>
-            <div class="workplace-goal-text">恭喜，本月目标已达标！</div>
+    <!-- 销售额、访问量 -->
+    <el-card shadow="never" body-style="padding: 0;">
+      <div class="ele-cell demo-monitor-tool">
+        <div class="ele-cell-content">
+          <el-tabs
+            v-model="saleSearch.type"
+            class="demo-monitor-tabs"
+            @tab-click="onSaleTypeChange">
+            <el-tab-pane label="生产数量" name="procedureNumber"/>
+            <el-tab-pane label="效率" name="efficiency"/>
+            <el-tab-pane label="合格率" name="pass"/>
+          </el-tabs>
+        </div>
+        <div class="ele-inline-block ele-text-right">
+          <el-radio-group v-model="saleSearch.dateType" size="small" @change="onRadioChange">
+            <el-radio-button
+              v-for="button in buttons"
+              :key="button.value"
+              :label="button.value"
+              border>{{button.label}}
+            </el-radio-button>
+          </el-radio-group>
+        </div>
+        <div class="ele-inline-block ele-text-right" style="width: 260px;">
+          <el-date-picker
+            unlink-panels
+            type="daterange"
+            class="ele-fluid"
+            end-placeholder="结束日期"
+            start-placeholder="开始日期"
+            v-model="saleSearch.datetime"
+            range-separator="至" size="small"
+            @change="onChangeDate"/>
+        </div>
+      </div>
+      <el-divider/>
+      <el-row>
+        <el-col :lg="48" :md="58">
+          <!--本年的数据-->
+          <div v-if="saleSearch.type === 'procedureNumber'">
+               <ele-chart
+              ref="saleChart"
+              style="height: 285px;"
+              :option="ProcedureNumberChartOption" />
           </div>
-        </el-card>
-      </el-col>
-      <el-col :lg="16" :md="24">
-        <el-card
-          shadow="never"
-          header="项目进度"
-          body-style="padding: 12px;"
-          class="workplace-table-card">
-          <el-table :data="projectList" height="358">
-            <el-table-column
-              type="index"
-              width="35"
-              min-width="35"
-              align="right"/>
-            <el-table-column
-              label="项目名称"
-              min-width="110">
-              <template slot-scope="{row}">
-                <el-link
-                  type="primary"
-                  :underline="false">
-                  {{ row.projectName }}
-                </el-link>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="开始时间"
-              prop="startDate"
-              width="95"
-              min-width="80"
-              align="center"/>
-            <el-table-column
-              prop="endDate"
-              label="结束时间"
-              width="95"
-              min-width="80"
-              align="center"/>
-            <el-table-column
-              label="状态"
-              width="70"
-              min-width="60"
-              align="center">
-              <template slot-scope="{row}">
-                <span
-                  :class="['ele-text-success','ele-text-danger','ele-text-warning','ele-text-info ele-text-delete'][row.state]">
-                    {{ ['进行中', '已延期', '未开始', '已结束'][row.state] }}
-                </span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="进度"
-              width="160"
-              min-width="100"
-              align="center">
-              <template slot-scope="{row}">
-                <el-progress :percentage="row.progress" class="ele-text-small"/>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-card>
-      </el-col>
-      <el-col :lg="8" :md="12">
-        <el-card
-          shadow="never"
-          header="小组成员"
-          body-style="padding: 19px 0;">
-          <div
-            v-for="(item, index) in userList"
-            :key="index"
-            class="ele-cell user-list-item">
-            <el-avatar :size="42" :src="item.avatar"/>
-            <div class="ele-cell-content">
-              <div class="ele-cell-title">{{ item.name }}</div>
-              <div class="ele-cell-desc">{{ item.desc }}</div>
-            </div>
-            <el-tag
-              size="mini"
-              :type="['success','danger'][item.state]">
-              {{ ['在线', '离线'][item.state] }}
-            </el-tag>
+          <div v-else-if="saleSearch.type === 'efficiency' ">
+              <ele-chart
+              ref="saleChart"
+              style="height: 285px;"
+              :option="EfficiencyChartOption"/>
           </div>
-        </el-card>
-      </el-col>
-      <el-col :lg="8" :md="12" class="hidden-lg-and-up">
+          <div v-else-if="saleSearch.type === 'pass'">
+              <ele-chart
+                ref="saleChart"
+                style="height: 285px;"
+                :option="PassChartOption"/>
+          </div>
+<!--          时间选择显示柱状图-->
+          <div v-if="saleSearch.datetime && saleSearch.type === 'procedureNumber'">
+            <ele-chart
+              ref="saleChart"
+              style="height: 285px;"
+              :option="chooseTimeShow" />
+          </div>
+          <div v-else-if="saleSearch.datetime && saleSearch.type === 'efficiency'">
+            <ele-chart
+              ref="saleChart"
+              style="height: 285px;"
+              :option="chooseTimeShow" />
+          </div>
+          <div v-else-if="saleSearch.datetime && saleSearch.type === 'pass'">
+            <ele-chart
+              ref="saleChart"
+              style="height: 285px;"
+              :option="chooseTimeShow" />
+          </div>
+
+        </el-col>
+      </el-row>
+    </el-card>
+    <!-- 最近1小时访问情况 -->
+    <el-row :gutter="30">
+      <el-col :lg="36" :md="32">
         <el-card
           shadow="never"
-          header="本月目标"
-          body-style="padding: 46px 0;">
-          <div class="workplace-goal-group">
-            <el-progress
-              :width="170"
-              :percentage="80"
-              type="dashboard"
-              :format="()=>{return ''}"/>
-            <div class="workplace-goal-content">
-              <el-tag
-                size="large"
-                class="ele-tag-round">
-                <i class="el-icon-s-data"></i>
-              </el-tag>
-              <div class="workplace-goal-num">365</div>
-            </div>
-            <div class="workplace-goal-text">恭喜，本月目标已达标！</div>
-          </div>
+          header="最近24小时生产情况"
+          body-style="padding: 20px 10px 0 0;">
+          <ele-chart
+            ref="visitHourChart"
+            style="height: 323px;"
+            :option="visitHourChartOption"/>
         </el-card>
       </el-col>
     </el-row>
@@ -307,365 +200,619 @@
 </template>
 
 <script>
+import EleChart from 'ele-admin/packages/ele-chart';
+// import EleWordCloud from 'ele-admin/packages/ele-word-cloud';
+
 export default {
   name: 'DashboardWorkplace',
+  components: {EleChart},
   data() {
     return {
-      // 最新动态数据
-      activities: [
-        {
-          title: '基于Python语言Django+EleVue前后端分离版',
-          timestamp: '20:30',
-          primary: false
-        },
-        {
-          title: '基于Python语言Django+EleVue前后端分离版',
-          timestamp: '19:30',
-          primary: false
-        },
-        {
-          title: '基于Python语言Django+EleVue前后端分离版',
-          timestamp: '18:30',
-          primary: true
-        },
-        {
-          title: '基于Python语言Django+EleVue前后端分离版',
-          timestamp: '17:30',
-          primary: true
-        },
-        {
-          title: '基于Python语言Django+EleVue前后端分离版',
-          timestamp: '16:30',
-          primary: true
-        },
-        {
-          title: '基于Python语言Django+EleVue前后端分离版',
-          timestamp: '15:30',
-          primary: false
-        },
-        {
-          title: '基于Python语言Django+EleVue前后端分离版',
-          timestamp: '14:30',
-          primary: false
-        },
-        {
-          title: '基于Python语言Django+EleVue前后端分离版',
-          timestamp: '12:30',
-          primary: false
-        },
-        {
-          title: '基于Python语言Django+EleVue前后端分离版',
-          timestamp: '11:30',
-          primary: true
-        },
-        {
-          title: '基于Python语言Django+EleVue前后端分离版',
-          timestamp: '10:30',
-          primary: false
-        },
-        {
-          title: '基于Python语言Django+EleVue前后端分离版',
-          timestamp: '09:30',
-          primary: false
-        },
-        {
-          title: '基于Python语言Django+EleVue前后端分离版',
-          timestamp: '08:30',
-          primary: false
-        }
+      // 搜索参数
+      saleSearch: {
+        type: 'procedureNumber',
+        dateType: 'year',
+        datetime: ''
+      },
+      buttons:[
+        {label:'本年',value:'year'},
+        {label:'本月',value:'month'},
+        {label:'本周',value:'week'},
+        {label:'今天',value:'today'},
       ],
-      // 我的任务数据
-      taskList: [
-        {
-          id: 1,
-          priority: 1,
-          taskName: 'DjangoAdmin敏捷开发框架Django+EleVue版本',
-          state: 0
-        },
-        {
-          id: 2,
-          priority: 2,
-          taskName: 'DjangoAdmin敏捷开发框架Django+EleVue版本',
-          state: 0
-        },
-        {
-          id: 3,
-          priority: 2,
-          taskName: 'DjangoAdmin敏捷开发框架Django+EleVue版本',
-          state: 1
-        },
-        {
-          id: 4,
-          priority: 3,
-          taskName: 'DjangoAdmin敏捷开发框架Django+EleVue版本',
-          state: 1
-        },
-        {
-          id: 5,
-          priority: 3,
-          taskName: 'DjangoAdmin敏捷开发框架Django+EleVue版本',
-          state: 2
-        },
-        {
-          id: 6,
-          priority: 3,
-          taskName: 'DjangoAdmin敏捷开发框架Django+EleVue版本',
-          state: 2
-        }
-      ],
-      // 项目进度数据
-      projectList: [
-        {
-          projectName: 'DjangoAdmin敏捷开发框架Django+EleVue版本',
-          state: 0,
-          startDate: '2020-03-01',
-          endDate: '2020-06-01',
-          progress: 30
-        },
-        {
-          projectName: 'DjangoAdmin敏捷开发框架Django+EleVue版本',
-          state: 0,
-          startDate: '2020-03-01',
-          endDate: '2020-08-01',
-          progress: 10
-        },
-        {
-          projectName: 'DjangoAdmin敏捷开发框架Django+EleVue版本',
-          state: 1,
-          startDate: '2020-01-01',
-          endDate: '2020-05-01',
-          progress: 60
-        },
-        {
-          projectName: 'DjangoAdmin敏捷开发框架Django+EleVue版本',
-          state: 1,
-          startDate: '2020-06-01',
-          endDate: '2020-10-01',
-          progress: 0
-        },
-        {
-          projectName: 'DjangoAdmin敏捷开发框架Django+EleVue版本',
-          state: 2, startDate: '2020-01-01',
-          endDate: '2020-03-01',
-          progress: 100
-        },
-        {
-          projectName: 'DjangoAdmin敏捷开发框架Django+EleVue版本',
-          state: 3,
-          startDate: '2020-01-01',
-          endDate: '2020-03-01',
-          progress: 100
-        },
-        {
-          projectName: 'DjangoAdmin敏捷开发框架Django+EleVue版本',
-          state: 3,
-          startDate: '2020-01-01',
-          endDate: '2020-03-01',
-          progress: 100
-        }
-      ],
-      // 小组成员数据
-      userList: [
-        {
-          name: '一米阳光',
-          desc: '系统架构师、高级研发工程师',
-          state: 0,
-          avatar: require('@/assets/logo.png')
-        },
-        {
-          name: '一米阳光',
-          desc: 'WEB前端工程师',
-          state: 0,
-          avatar: require('@/assets/logo.png')
-        },
-        {
-          name: '一米阳光',
-          desc: 'GO后端工程师',
-          state: 0,
-          avatar: require('@/assets/logo.png')
-        },
-        {
-          name: '一米阳光',
-          desc: '产品经理、视觉设计师',
-          state: 1,
-          avatar: require('@/assets/logo.png')
-        },
-        {
-          name: '一米阳光',
-          desc: '测试工程师、运维工程师',
-          state: 1,
-          avatar: require('@/assets/logo.png')
-        }
-      ]
+      //开始和结束日期柱状图数据
+      startandendprocedureData:[],
+
+      //生产数量数据
+      ProcedureNumData:[],
+
+      // 效率数据
+      EfficiencyData:[],
+
+      //通过率数据
+      PassData:[],
+
+      // 最近1小时访问情况数据
+      visitHourData: [],
+
+      //开始到结束日期数据
+      StartEndValueData:null,
+
     };
   },
   computed: {
-    // 当前登录用户信息
-    loginUser() {
-      return this.$store.state.user.user;
+    // 生产总效率折线图配置
+    visitChartOption() {
+      return {
+        color: '#975fe5',
+        tooltip: {
+          trigger: 'axis',
+          formatter: '<i class="ele-chart-dot" style="background: #975fe5;"></i>{b0}: {c0}'
+        },
+        grid: {
+          top: 10,
+          bottom: 0,
+          left: 0,
+          right: 0
+        },
+        xAxis: [
+          {
+            show: false,
+            type: 'category',
+            boundaryGap: false,
+            data: this.ProcedureNumData.map(d => d.data)
+          }
+        ],
+        yAxis: [
+          {
+            show: false,
+            type: 'value',
+            splitLine: {
+              show: false
+            }
+          }
+        ],
+        series: [
+          {
+            type: 'line',
+            smooth: true,
+            symbol: 'none',
+            areaStyle: {
+              opacity: 0.5
+            },
+            data: this.ProcedureNumData.map(d => d.value)
+          }
+        ]
+      };
+    },
+    // 总合格率柱状图配置
+    AllProcedureNumChartOption() {
+      return {
+        tooltip: {
+          trigger: 'axis',
+          formatter: '<i class="ele-chart-dot" style="background: #3aa1ff;"></i>{b0}: {c0}'
+        },
+        grid: {
+          top: 10,
+          bottom: 0,
+          left: 0,
+          right: 0
+        },
+        xAxis: [
+          {
+            show: false,
+            type: 'category',
+            data: this.PassData.map(d => d.data)
+          }
+        ],
+        yAxis: [
+          {
+            show: false,
+            type: 'value',
+            splitLine: {
+              show: false
+            }
+          }
+        ],
+        series: [
+          {
+            type: 'bar',
+            data: this.PassData.map(d => d.value)
+          }
+        ]
+      }
+    },
+
+    //生产数量柱状图
+    ProcedureNumberChartOption(){
+      return {
+            tooltip: {
+              trigger: 'axis'
+            },
+            xAxis: [
+              {
+                type: 'category',
+                data: this.ProcedureNumData.map(d => d.data)
+              }
+            ],
+            yAxis: [
+              {
+                type: 'value'
+              }
+            ],
+            series: [
+              {
+                type: 'bar',
+                data: this.ProcedureNumData.map(d => d.value)
+              }
+            ]
+          };
+    },
+    //生产效率柱状图
+    EfficiencyChartOption(){
+      return {
+            tooltip: {
+              trigger: 'axis'
+            },
+            xAxis: [
+              {
+                type: 'category',
+                data: this.EfficiencyData.map(d => d.data)
+              }
+            ],
+            yAxis: [
+              {
+                type: 'value'
+              }
+            ],
+            series: [
+              {
+                type: 'bar',
+                data: this.EfficiencyData.map(d => d.value)
+              }
+            ]
+          };
+    },
+    //生产效率柱状图
+    PassChartOption(){
+        return {
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: this.PassData.map(d => d.data)
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            type: 'bar',
+            data: this.PassData.map(d => d.value)
+          }
+        ]
+      };
+    },
+    //选择时间显示柱状图（）
+    chooseTimeShow(){
+      return {
+              tooltip: {
+                trigger: 'axis'
+              },
+              xAxis: [
+                {
+                  type: 'category',
+                  data: this.startandendprocedureData.map(d => d.day)
+                }
+              ],
+              yAxis: [
+                {
+                  type: 'value'
+                }
+              ],
+              series: [
+                {
+                  type: 'bar',
+                  data: this.startandendprocedureData.map(d => d.value)
+                }
+              ]
+            };
+    },
+
+    // 最近1小时访问情况折线图配置
+    visitHourChartOption() {
+      /*if (!this.visitHourData.length) {
+        return {};
+      }*/
+      return {
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data: ['生产数量', '合格率'],
+          right: 20
+        },
+        xAxis: [
+          {
+            type: 'category',
+            boundaryGap: false,
+            data: this.visitHourData.map(d => d.time)
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: '生产数量',
+            type: 'line',
+            smooth: true,
+            symbol: 'none',
+            areaStyle: {
+              opacity: 0.5
+            },
+            data: this.visitHourData.map(d => d.number)
+          },
+          {
+            name: '合格率',
+            type: 'line',
+            smooth: true,
+            symbol: 'none',
+            areaStyle: {
+              opacity: 0.5
+            },
+            data: this.visitHourData.map(d => d.pass)
+          }
+        ]
+      }
+    },
+
+  },
+  mounted() {
+    this.getVisitHourData();
+    this.getProNumData();
+    this.getPassData();
+    this.getEfficiencyData();
+    this.getStartEndData();
+  },
+  methods: {
+    //转换为中文的时间
+    convertoChineseDate(date)
+    {
+      return date.toLocaleString('zh-CN',{
+        year:'numeric',
+        month:'long',
+        day:'numeric'
+      });
+    },
+    // 生产数量获取数据
+    getProNumData(){
+      const currentDate = new Date();//当前日期
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth();
+      const currentDay = currentDate.getDay();
+      const totalDays = new Date(currentYear, currentMonth+1, 0).getDate();//获取当月总天数
+
+      //清空之前的数据
+      this.ProcedureNumData=[];
+      if(this.saleSearch.dateType === 'year')
+      {
+
+        for(let i =0; i<12; i++)
+        {
+          const getMonthData = {
+            data:this.convertoChineseDate(new Date(currentYear, i)),
+            value:Math.floor(Math.random() * 100)
+          }
+          this.ProcedureNumData.push(getMonthData)
+        }
+      }
+      else if(this.saleSearch.dateType === 'month'){
+        for(let i =1; i<=totalDays; i++){
+          const getDayData = {
+            data: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
+            value: Math.floor(Math.random() * 100)
+          };
+        this.ProcedureNumData.push(getDayData)
+        }
+      }
+      else if(this.saleSearch.dateType === 'week'){
+        for(let i=1; i<=7; i++) {
+          const dayOffset = i-currentDay;
+          const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
+          const getWeekData = {
+            data: this.convertoChineseDate(dayDate),
+            value: Math.floor(Math.random() * 100)
+          };
+          this.ProcedureNumData.push(getWeekData)
+        }
+      }
+      else{
+        for(let i=8; i<21; i++) {
+          const gethourData = {
+            data: i,
+            value: Math.floor(Math.random() * 100)
+          };
+          this.ProcedureNumData.push(gethourData)
+        }
+      }
+    },
+    // 生产效率获取数据
+    getEfficiencyData(){
+      const currentDate = new Date();//当前日期
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth();
+      const currentDay = currentDate.getDay();
+      const totalDays = new Date(currentYear, currentMonth+1, 0).getDate();//获取当月总天数
+      this.EfficiencyData=[];
+      if(this.saleSearch.dateType === 'year')
+      {
+        for(let i =0; i<12; i++)
+        {
+          const getMonthData = {
+            data:this.convertoChineseDate(new Date(currentYear, i)),
+            value:Math.floor(Math.random() * 100)
+          }
+          this.EfficiencyData.push(getMonthData)
+        }
+      }
+      else if(this.saleSearch.dateType === 'month')
+      {
+        for(let i =1; i<=totalDays; i++){
+          const getDayData = {
+            data: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
+            value: Math.floor(Math.random() * 100)
+          };
+        this.EfficiencyData.push(getDayData)
+        }
+      }
+      else if(this.saleSearch.dateType === 'week')
+      {
+        for(let i=1; i<=7; i++) {
+          const dayOffset = i-currentDay;
+          const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
+          const getWeekData = {
+            data: this.convertoChineseDate(dayDate),
+            value: Math.floor(Math.random() * 100)
+          };
+          this.EfficiencyData.push(getWeekData)
+        }
+      }
+      else {
+        for(let i=8; i<21; i++) {
+          const gethourData = {
+            data: i,
+            value: Math.floor(Math.random() * 100)
+          };
+          this.EfficiencyData.push(gethourData)
+        }
+      }
+    },
+    //生产合格率获取数据
+    getPassData(){
+      const currentDate = new Date();//当前日期
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth();
+      const currentDay = currentDate.getDay();
+      const totalDays = new Date(currentYear, currentMonth+1, 0).getDate();//获取当月总天数
+
+      this.PassData=[];
+      if(this.saleSearch.dateType === 'year')
+      {
+        for(let i =0; i<12; i++)
+        {
+          const getMonthData = {
+            data:this.convertoChineseDate(new Date(currentYear, i)),
+            value:Math.floor(Math.random() * 100)
+          }
+          this.PassData.push(getMonthData)
+        }
+      }
+      else if(this.saleSearch.dateType === 'month')
+      {
+        for(let i =1; i<= totalDays; i++){
+          const getDayData = {
+            data: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
+            value: Math.floor(Math.random() * 100)
+          };
+        this.PassData.push(getDayData)
+        }
+      }
+      else if(this.saleSearch.dateType === 'week')
+      {
+        for(let i=1; i<=7; i++) {
+          const dayOffset = i-currentDay;
+          const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
+          const getWeekData = {
+            data:this.convertoChineseDate(dayDate),
+            value: Math.floor(Math.random() * 100)
+          };
+          this.PassData.push(getWeekData)
+        }
+      }
+      else
+      {
+        for(let i=8; i<21; i++) {
+          const gethourData = {
+            data: i,
+            value: Math.floor(Math.random() * 100)
+          };
+          this.PassData.push(gethourData)
+        }
+      }
+    },
+
+    //选择时间获取到的数据
+    getStartEndData(){
+      if(this.saleSearch.datetime && this.saleSearch.datetime[0] && this.saleSearch.datetime[1]) {
+        const startDate = this.saleSearch.datetime[0];
+        const endDate = this.saleSearch.datetime[1];
+
+        const startTimestamp = startDate.getTime();
+        const endTimestamp = endDate.getTime();
+
+        const days = Math.ceil((endTimestamp - startTimestamp) / (24 * 60 * 60 * 1000));
+        this.startandendprocedureData = [];
+        for (let i = 0; i <= days; i++) {
+          const currentDate = new Date(startTimestamp + i * 24 * 60 * 60 * 1000);
+          if(this.saleSearch.type === 'procedureNumber')
+          {
+            this.StartEndValueData = Math.floor(Math.random() * 100);
+          }
+          else if(this.saleSearch.type === 'efficiency')
+          {
+            this.StartEndValueData = Math.floor(Math.random() * 1000);
+          }
+          else
+          {
+            this.StartEndValueData = Math.floor(Math.random() * 10);
+          }
+          const getStartEnd = {
+            day: this.convertoChineseDate(currentDate),
+            value: this.StartEndValueData,//Math.floor(Math.random() * 100),
+          }
+          this.startandendprocedureData.push(getStartEnd)
+        }
+      }
+      else {
+        this.startandendprocedureData = [];
+      }
+    },
+
+    /* 获取最近24小时访问情况数据 */
+    getVisitHourData() {
+      this.visitHourData = [
+        {time: '8:00', number: 15, pass: 45},
+        {time: '9:00', number: 39, pass: 169},
+        {time: '10:00', number: 152, pass: 400},
+        {time: '11:00', number: 94, pass: 285},
+        {time: '12:00', number: 102, pass: 316},
+        {time: '13:00', number: 86, pass: 148},
+        {time: '14:00', number: 39, pass: 150},
+        {time: '15:00', number: 38, pass: 234},
+        {time: '16:00', number: 95, pass: 158},
+        {time: '17:00', number: 30, pass: 100},
+        {time: '18:00', number: 86, pass: 266}
+      ];
+    },
+
+    /* 表头tab选择改变事件 */
+    onSaleTypeChange() {
+      this.getProNumData();
+      this.getPassData();
+      this.getEfficiencyData();
+      this.getStartEndData();
+    },
+    //表头日期选择改变事件
+    onRadioChange(){
+      this.getProNumData();
+      this.getPassData();
+      this.getEfficiencyData();
+      this.getStartEndData();
+    },
+    //时间周期改变事件
+    onChangeDate()
+    {
+      this.getStartEndData();
     }
+  },
+  activated() {
+    ['visitChart', 'AllProcedureNumChart', 'saleChart', 'visitHourChart'].forEach((name) => {
+      this.$refs[name].resize();
+    });
   }
 }
 </script>
 
 <style scoped>
-/* 顶部用户信息卡片 */
-.workplace-user-card .ele-cell-content {
-  overflow: hidden;
-}
-
-.workplace-count-group {
-  white-space: nowrap;
-}
-
-.workplace-count-item {
-  padding: 0 5px 0 25px;
-  box-sizing: border-box;
-  display: inline-block;
-  text-align: right;
-}
-
-.workplace-count-name {
-  padding-left: 8px;
-}
-
-.workplace-count-num {
-  font-size: 24px;
-  margin-top: 6px;
-}
-
-@media screen and (max-width: 992px) {
-  .workplace-count-item {
-    padding: 0 5px 0 10px;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .workplace-user-card,
-  .workplace-count-group {
-    display: block;
-  }
-
-  .workplace-count-group {
-    margin-top: 15px;
-    text-align: right;
-  }
-
-  .workplace-user-card ::v-deep .el-avatar {
-    width: 45px !important;
-    height: 45px !important;
-  }
-
-  .workplace-user-card h4 {
-    font-size: 16px;
-  }
-
-  .workplace-user-card h4 + .ele-text-secondary {
-    font-size: 12px;
-  }
-
-  .workplace-user-card {
-    margin: -10px;
-  }
-}
-
-/* 快捷方式 */
-.app-link-block {
-  display: block;
-  color: inherit;
-  padding: 15px 0;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.app-link-block .app-link-icon {
-  color: #69c0ff;
+/* 统计卡片 */
+.analysis-chart-card-num {
   font-size: 30px;
-  margin-top: 5px;
 }
 
-.app-link-block .app-link-title {
-  margin-top: 8px;
+.analysis-chart-card-content {
+  height: 40px;
+  box-sizing: border-box;
+  margin-bottom: 12px;
 }
 
-/* 最新动态时间轴 */
-.ele-timeline-act {
-  padding-left: 50px;
+.analysis-chart-card-text {
+  padding-top: 12px;
 }
 
-.ele-timeline-act ::v-deep .el-timeline-item__timestamp {
-  margin: 0;
-  position: absolute;
-  top: 3px;
-  left: -45px;
+/* 销售额、访问量工具栏 */
+.demo-monitor-tool {
+  padding: 0 30px;
 }
 
-.ele-timeline-act ::v-deep .el-timeline-item {
-  padding-bottom: 19px;
-}
-
-.ele-timeline-act ::v-deep .el-timeline-item:last-child {
-  padding-bottom: 0;
-}
-
-/* 表格 */
-.workplace-table-card ::v-deep .el-table tbody > .el-table__row:last-child td {
-  border-bottom: none;
-}
-
-.workplace-table-card ::v-deep .el-table:before {
+.demo-monitor-tool ::v-deep .el-tabs__nav-wrap:after {
   display: none;
 }
 
-.workplace-table-card .sort-handle {
-  cursor: move;
-  font-size: 18px;
-  vertical-align: middle;
+.demo-monitor-tool ::v-deep .el-tabs__item {
+  height: 50px;
+  line-height: 50px;
+  font-size: 15px;
 }
 
-.workplace-table-card ::v-deep .el-table__row.sortable-chosen {
-  background-color: hsla(0, 0%, 60%, .1);
+.demo-monitor-tool .el-date-editor {
+  width: 256px;
+  margin-left: 10px;
 }
 
-.workplace-table-card ::v-deep .el-table__row.sortable-chosen td {
-  background-color: transparent;
+/* 小标题 */
+.demo-monitor-title {
+  padding: 0 20px;
+  margin: 20px 0 10px 0;
 }
 
-/* 本月目标 */
-.workplace-goal-group {
-  text-align: center;
-  position: relative;
-  padding: 48px 0;
+/* 排名item */
+.demo-monitor-rank-item {
+  padding: 0 20px;
+  line-height: 20px;
+  margin-top: 18px;
 }
 
-.workplace-goal-group .workplace-goal-content {
-  position: absolute;
-  top: 90px;
-  left: 0;
-  width: 100%;
+.container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.char-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.el-dropdown {
+  vertical-align: top;
+}
+.el-dropdown + .el-dropdown {
+  margin-left: 15px;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
 }
 
-.workplace-goal-group .workplace-goal-num {
-  font-size: 40px;
-  margin-top: 15px;
+.label{
+  margin-right: 400px;
 }
-
-/* 小组成员 */
-.user-list-item {
-  padding: 13px 18px;
+.selector{
+  margin-top: 10px;
+  margin-left: 40px;
 }
-
-.user-list-item + .user-list-item {
-  border-top: 1px solid hsla(0, 0%, 60%, .15);
+.left-side{
+  flex-grow: 1;
+  margin-right: 10px;
 }
-
-.user-list-item .ele-cell-desc {
-  margin-top: 5px;
-}
-
-/* 小屏幕优化 */
-@media screen and (max-width: 768px) {
-
+.right-side{
+  flex-grow: 1;
+  margin-left: 10px;
 }
 </style>
