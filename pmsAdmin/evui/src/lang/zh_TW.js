@@ -93,7 +93,7 @@ export default {
     }
   },
   login: {
-    title: 'Django+EleVue前后端分离版',
+    title: '克莱沃生产管理系统',
     username: '請輸入登入帳號',
     password: '請輸入登入密碼',
     captcha: '請輸入驗證碼',
