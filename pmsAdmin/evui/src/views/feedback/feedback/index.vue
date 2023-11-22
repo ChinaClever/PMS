@@ -179,14 +179,14 @@ export default {
           align: 'center',
           fixed: "left"
         },
-        {
-          prop: 'id',
-          label: 'ID',
-          width: 60,
-          align: 'center',
-          showOverflowTooltip: true,
-          fixed: "left"
-        },
+        // {
+        //   prop: 'id',
+        //   label: 'ID',
+        //   width: 60,
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   fixed: "left"
+        // },
         {
           prop: 'commit_user',
           label: '提交者',
@@ -240,28 +240,28 @@ export default {
             this.reload();
           }
         },
-        {
-          prop: 'create_time',
-          label: '创建时间',
-          showOverflowTooltip: true,
-          sortable: 'custom',
-          minWidth: 160,
-          align: 'center',
-          formatter: (row, column, cellValue) => {
-            return this.$util.toDateString(cellValue);
-          }
-        },
-        {
-          prop: 'update_time',
-          label: '更新时间',
-          showOverflowTooltip: true,
-          sortable: 'custom',
-          minWidth: 160,
-          align: 'center',
-          formatter: (row, column, cellValue) => {
-            return this.$util.toDateString(cellValue);
-          }
-        },
+        // {
+        //   prop: 'create_time',
+        //   label: '创建时间',
+        //   showOverflowTooltip: true,
+        //   sortable: 'custom',
+        //   minWidth: 160,
+        //   align: 'center',
+        //   formatter: (row, column, cellValue) => {
+        //     return this.$util.toDateString(cellValue);
+        //   }
+        // },
+        // {
+        //   prop: 'update_time',
+        //   label: '更新时间',
+        //   showOverflowTooltip: true,
+        //   sortable: 'custom',
+        //   minWidth: 160,
+        //   align: 'center',
+        //   formatter: (row, column, cellValue) => {
+        //     return this.$util.toDateString(cellValue);
+        //   }
+        // },
         {
           columnKey: 'action',
           label: '操作',
