@@ -47,6 +47,7 @@
           <el-col :span="7">
             <el-form-item label="优先级:">
               <el-input
+                type="number"
                 clearable
                 v-model="where.priority"
                 placeholder="请输入优先级(1-10)"/>
