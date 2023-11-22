@@ -31,7 +31,7 @@ sys.path.insert(1, os.path.join(BASE_DIR, 'apps'))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-!kjxf&e0pn4nrl%0&9sqp7n!ld)(gtw7v@i3fwf3sqcsh4ymat'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# SECURITY WARNING: don't run with debugreport turned on in production!
 DEBUG = True
 
 # 跨域处理配置
@@ -116,7 +116,8 @@ INSTALLED_APPS = [
     'application.menu',
     'application.config_web',
     'application.upload',
-    'application.supplier',#
+    'application.supplier',
+    'application.suggestion'
 ]
 
 MIDDLEWARE = [
@@ -228,7 +229,7 @@ TABLE_PREFIX = locals().get('TABLE_PREFIX', "")
 
 # ======================== 验证码相关配置 ===========================
 CAPTCHA_IMAGE_SIZE = (200, 60)  # 设置 captcha 图片大小
-CAPTCHA_LENGTH = 6  # 字符个数
+CAPTCHA_LENGTH = 2  # 字符个数
 CAPTCHA_TIMEOUT = 1  # 超时(minutes)
 CAPTCHA_OUTPUT_FORMAT = "%(image)s %(text_field)s %(hidden_field)s "
 CAPTCHA_FONT_SIZE = 40  # 字体大小

@@ -19,5 +19,5 @@ cbuild
 
 .svn/
 evui/node_modules/
-document/
+document/*.png
 node_modules/

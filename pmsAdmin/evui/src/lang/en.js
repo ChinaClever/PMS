@@ -85,7 +85,7 @@ export default {
       website: 'Website',
       document: 'Document',
       authorization: 'Authorization',
-      copyright: 'Copyright © 2021~2023 Shenzhen DjangoAdmin R & D Center'
+      copyright: 'Copyright © 2023 ShenZhen Clever Electronic Co.Ltd'
     },
     logout: {
       title: 'Confirm',
