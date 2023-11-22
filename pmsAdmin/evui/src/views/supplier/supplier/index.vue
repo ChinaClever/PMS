@@ -13,7 +13,7 @@
             <el-form-item label="工单号:">
               <el-input
                 clearable
-                v-model="where.order_id"
+                v-model="where.work_order"
                 placeholder="请输入工单号"/>
             </el-form-item>
           </el-col>
@@ -146,7 +146,7 @@ export default {
         },
 
         {
-          prop: 'order_id',
+          prop: 'work_order',
           label: '工单号',
           showOverflowTooltip: true,
           minWidth: 200,
@@ -204,8 +204,7 @@ export default {
           formatter: (row, column, cellValue) => {
             return this.$util.toDateString(cellValue);
           },
-          order: ''// 初始化排序方式为空字符串
-
+          order: '', // 初始化排序方式为空字符串
         },
         {
           prop: 'update_time',
@@ -217,8 +216,7 @@ export default {
           formatter: (row, column, cellValue) => {
             return this.$util.toDateString(cellValue);
           },
-          order: ''// 初始化排序方式为空字符串
-
+          order: '', // 初始化排序方式为空字符串
         },
         {
           columnKey: 'action',
@@ -243,7 +241,6 @@ export default {
     };
   },
   methods: {
-    //排序
     sortableMethod: ()=> {
             // 在这里实现自定义的排序逻辑
             this.where.order = this.order;

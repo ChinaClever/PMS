@@ -21,37 +21,20 @@
 # | 法律所允许的合法合规的软件产品研发，详细声明内容请阅读《框架免责声明》附件；
 # +----------------------------------------------------------------------
 
-from django.db import models
+from django.urls import path
 
-# Create your models here.
-from application.models import BaseModel
+from application.repairreport import views
 
-from config.env import TABLE_PREFIX
-
-
-# 字典模型
-class Dict(BaseModel):
-
-    work_order = models.IntegerField(null=False,verbose_name="工单号",help_text="工单号")
-    customer = models.CharField(null=False, max_length=150, verbose_name="客户", help_text="客户")
-    product_name = models.CharField(null=False, max_length=150, verbose_name="产品", help_text="产品")
-    product_type = models.CharField(null=False, max_length=150, verbose_name="产品类型", help_text="产品类型")
-    supplier = models.CharField(null=False, max_length=150, verbose_name="供应商", help_text="供应商")
-    parts = models.CharField(null=False, max_length=150, verbose_name="部件", help_text="部件")
-    # 字典名称
-    #name = models.CharField(null=False, max_length=150, verbose_name="字典名称", help_text="字典名称")
-    # 字典编码
-    #code = models.CharField(null=False, max_length=150, verbose_name="字典编码", help_text="字典编码")
-    # 字典排序
-    #sort = models.IntegerField(default=0, verbose_name="字典排序", help_text="字典排序")
-    # 字典备注
-    #note = models.CharField(null=True, max_length=255, verbose_name="字典备注", help_text="字典备注")
-
-    class Meta:
-        # 数据表名
-        db_table = TABLE_PREFIX + "supplier"
-        verbose_name = "供应商管理"
-        verbose_name_plural = verbose_name
-
-    def __str__(self):
-        return "字典{}".format(self.id)
+# 字典模块路由
+urlpatterns = [
+    # 查询字典分页列表
+    path('list', views.DictListView.as_view()),
+    # 查询字典详情
+    path('detail/<int:dict_id>', views.DictDetailView.as_view()),
+    # 添加字典
+    path('add', views.DictAddView.as_view()),
+    # 更新字典
+    path('update', views.DictUpdateView.as_view()),
+    # 删除字典
+    path('delete/<str:dict_id>', views.DictDeleteView.as_view()),
+]

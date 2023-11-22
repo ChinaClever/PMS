@@ -17,7 +17,7 @@
         prop="order_id">
         <el-input
           :maxlength="20"
-          v-model="form.order_id"
+          v-model="form.work_order"
           placeholder="请输入工单号"
           clearable/>
       </el-form-item>

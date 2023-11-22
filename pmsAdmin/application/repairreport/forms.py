@@ -62,44 +62,53 @@ class DictForm(forms.ModelForm):
             'max_length': '字典备注长度不得超过255个字符',
         }
     )'''
+    name = forms.CharField(
+        max_length=150,
+        error_messages={
+            'required': '产品名字不能为空',
+            'max_length': '产品名字不得超过150个字符',
+        }
+    )
     work_order = forms.IntegerField(
         error_messages={
             'required': '工单号不能为空',
         }
     )
-    customer = forms.CharField(
-        max_length=150,
+    bad_number = forms.IntegerField(
         error_messages={
-            'required': '客户不能为空',
-            'max_length': '客户长度不得超过150个字符',
+            'required': '不良数量不能为空',
         }
     )
-    product_name = forms.CharField(
+    bad_phenomenon = forms.CharField(
         max_length=150,
         error_messages={
-            'required': '产品不能为空',
-            'max_length': '产品长度不得超过150个字符',
+            'required': '不良现象不能为空',
+            'max_length': '不良现象长度不得超过150个字符',
         }
     )
-    product_type= forms.CharField(
+    analysis = forms.CharField(
         max_length=150,
         error_messages={
-            'required': '产品类型不能为空',
-            'max_length': '产品类型长度不得超过150个字符',
+            'required': '原因分析不能为空',
+            'max_length': '原因分析长度不得超过150个字符',
         }
     )
-    supplier = forms.CharField(
+    solution = forms.CharField(
         max_length=150,
         error_messages={
-            'required': '供应商不能为空',
-            'max_length': '供应商长度不得超过150个字符',
+            'required': '解决方法不能为空',
+            'max_length': '解决方法长度不得超过150个字符',
         }
     )
-    parts = forms.CharField(
+    notes = forms.CharField(
         max_length=150,
         error_messages={
-            'required': '部件不能为空',
-            'max_length': '部件长度不得超过150个字符',
+            'max_length': '备注长度不得超过150个字符',
+        }
+    )
+    repair_time = forms.DateTimeField(
+        error_messages={
+            'required': '维修时间不能为空',
         }
     )
 
@@ -109,4 +118,4 @@ class DictForm(forms.ModelForm):
         model = models.Dict
         # 指定部分字段验证
         #fields = ['name', 'code', 'sort', 'note']
-        fields = ['work_order', 'customer', 'product_name', 'product_type', 'supplier', 'parts']
+        fields = ['name','work_order','bad_number','bad_phenomenon','analysis','solution','notes','repair_time']

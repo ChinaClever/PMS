@@ -23,11 +23,11 @@
 
 import json
 import logging
-
+from application.user.services import UserDetail#绑定维修员真实id
 from django.core.paginator import Paginator
-
-from application.supplier import forms
-from application.supplier.models import Dict
+from django.db.models import Q#查询用的
+from application.repairreport import forms
+from application.repairreport.models import Dict
 from constant.constants import PAGE_LIMIT
 from utils import R, regular
 
@@ -46,7 +46,19 @@ def DictList(request):#查询设置，从前端返回order_id字段，再到数�
     # 字典名称模糊筛选
     work_order = request.GET.get('work_order')#前端返回的字段
     if work_order:
-        query = query.filter(work_order__contains=work_order)
+       query = query.filter(work_order__contains=work_order)
+    repair_user = request.GET.get('repair_user')
+    if repair_user:
+       query = query.filter(repair_user__contains=repair_user)
+
+    # 按关键字查询
+    # keyword = request.GET.get('keyword')
+    # if keyword:
+    #     query = query.filter(
+    #         Q(commit_user__icontains=keyword) |  # commit_user字段包含关键字
+    #         Q(item_number__icontains=keyword) |  # item_number字段包含关键字
+    #         Q(work_order_id__icontains=keyword)  # work_order_id字段包含关键字
+    #    )
     # 排序
     #query = query.order_by("-id")
     # 排序
@@ -66,27 +78,20 @@ def DictList(request):#查询设置，从前端返回order_id字段，再到数�
     result = []
     # 遍历数据源
     if len(dict_list) > 0:
-        '''for item in dict_list:
-            data = {
-                'id': item.id,
-                'name': item.name,
-                'code': item.code,
-                'sort': item.sort,
-                'note': item.note,
-                'create_time': str(item.create_time.strftime('%Y-%m-%d %H:%M:%S')) if item.create_time else None,
-                'update_time': str(item.update_time.strftime('%Y-%m-%d %H:%M:%S')) if item.update_time else None,
-            }
-            
-            result.append(data)'''
         for item in dict_list:
+
             data = {
                 'id': item.id,
+                'repair_user': item.repair_user,
+                'name': item.name,
                 'work_order': item.work_order,
-                'customer': item.customer,
-                'product_name': item.product_name,
-                'product_type': item.product_type,
-                'supplier': item.supplier,
-                'parts': item.parts,
+                'bad_number': item.bad_number,
+                'bad_phenomenon': item.bad_phenomenon,
+                'analysis': item.analysis,
+                'solution': item.solution,
+                'notes': item.notes,
+                'create_user':item.create_user,
+                'repair_time': str(item.repair_time.strftime('%Y-%m-%d %H:%M:%S')) if item.repair_time else None,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d %H:%M:%S')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d %H:%M:%S')) if item.update_time else None,
             }
@@ -105,21 +110,19 @@ def DictDetail(dict_id):
     if not dict:
         return None
     # 声明结构体
-    '''data = {
-        'id': dict.id,
-        'name': dict.name,
-        'code': dict.code,
-        'sort': dict.sort,
-        'note': dict.note,
-    }'''
+
     data = {
         'id': dict.id,
+        'repair_user': dict.repair_user,
+        'name': dict.name,
         'work_order': dict.work_order,
-        'customer': dict.customer,
-        'product_name': dict.product_name,
-        'product_type': dict.product_type,
-        'supplier': dict.supplier,
-        'parts': dict.parts,
+        'bad_number': dict.bad_number,
+        'bad_phenomenon': dict.bad_phenomenon,
+        'analysis': dict.analysis,
+        'solution': dict.solution,
+        'notes': dict.notes,
+        'repair_time': str(dict.repair_time.strftime('%Y-%m-%d %H:%M:%S')) if dict.repair_time else None,
+
     }
     # 返回结果
     return data
@@ -136,9 +139,9 @@ def DictAdd(request):
             return R.failed("参数不能为空")
         # 数据类型转换
         dict_data = json.loads(json_data)
-        goods = Dict.objects.filter(work_order=dict_data.get('work_order')).first()
-        if goods:
-            return R.failed("工单号已存在")
+        #goods = Dict.objects.filter(name=dict_data.get('order_id')).first()
+        #if goods:
+            #return R.failed("工单号已存在")
 
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
@@ -154,24 +157,29 @@ def DictAdd(request):
         #sort = form.cleaned_data.get('sort')
         # 字典备注
         #note = form.cleaned_data.get('note')
+        name = form.cleaned_data.get('name')
         work_order = form.cleaned_data.get('work_order')
-        customer = form.cleaned_data.get('customer')
-        product_name = form.cleaned_data.get('product_name')
-        product_type = form.cleaned_data.get('product_type')
-        supplier = form.cleaned_data.get('supplier')
-        parts = form.cleaned_data.get('parts')
+        bad_number = form.cleaned_data.get('bad_number')
+        bad_phenomenon = form.cleaned_data.get('bad_phenomenon')
+        analysis = form.cleaned_data.get('analysis')
+        solution = form.cleaned_data.get('solution')
+        notes = form.cleaned_data.get('notes')
+        repair_time = form.cleaned_data.get('repair_time')
         # 创建数据
         Dict.objects.create(
             #name=name,
             #code=code,
             #sort=sort,
             #note=note,
+            repair_user=UserDetail(uid(request)).get("realname"),
+            name=name,
             work_order=work_order,
-            customer=customer,
-            product_name=product_name,
-            product_type=product_type,
-            supplier=supplier,
-            parts=parts,
+            bad_number=bad_number,
+            bad_phenomenon=bad_phenomenon,
+            analysis=analysis,
+            solution=solution,
+            notes=notes,
+            repair_time=repair_time,
             create_user=uid(request)
         )
         # 返回结果
@@ -212,12 +220,14 @@ def DictUpdate(request):
         #sort = form.cleaned_data.get('sort')
         # 字典备注
         #note = form.cleaned_data.get('note')
+        name = form.cleaned_data.get('name')
         work_order = form.cleaned_data.get('work_order')
-        customer = form.cleaned_data.get('customer')
-        product_name = form.cleaned_data.get('product_name')
-        product_type = form.cleaned_data.get('product_type')
-        supplier = form.cleaned_data.get('supplier')
-        parts = form.cleaned_data.get('parts')
+        bad_number = form.cleaned_data.get('bad_number')
+        bad_phenomenon = form.cleaned_data.get('bad_phenomenon')
+        analysis = form.cleaned_data.get('analysis')
+        solution = form.cleaned_data.get('solution')
+        notes = form.cleaned_data.get('notes')
+        repair_time = form.cleaned_data.get('repair_time')
     else:
         # 获取错误信息
         err_msg = regular.get_err(form)
@@ -235,12 +245,14 @@ def DictUpdate(request):
     dict.code = code
     dict.sort = sort
     dict.note = note'''
-    dict.work_order = work_order
-    dict.customer = customer
-    dict.product_name = product_name
-    dict.product_type = product_type
-    dict.supplier = supplier
-    dict.parts = parts
+    dict.name = name
+    dict.work_order=work_order
+    dict.bad_number = bad_number
+    dict.bad_phenomenon = bad_phenomenon
+    dict.analysis = analysis
+    dict.solution = solution
+    dict.notes = notes
+    dict.repair_time = repair_time
     dict.update_user = uid(request)
 
     # 更新数据
