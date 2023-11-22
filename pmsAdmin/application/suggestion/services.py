@@ -218,6 +218,5 @@ def SuggestionDelete(suggestion_id):
             suggestion.save()
             # 计数器+1
             count += 1
-            #hello
     # 返回结果
     return R.ok(msg="本次共删除{0}条数据".format(count))
