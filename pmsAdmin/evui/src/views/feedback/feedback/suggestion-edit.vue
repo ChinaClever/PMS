@@ -108,7 +108,18 @@ export default {
           {required: true, message: '请输入', trigger: 'blur'}
         ],
         priority:[
-          {required: true, message: '请输入优先值', trigger: 'blur'}
+          {required: true, message: '请输入优先值', trigger: 'blur'},
+          {
+            validator: (rule, value, callback) => {
+              const intValue = Number(value);
+              if (!Number.isInteger(intValue) || intValue <= 0) {
+                callback(new Error('数量必须为大于0的整数'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
         ],
       },
       // 提交状态

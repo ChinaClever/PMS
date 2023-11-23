@@ -1,56 +1,20 @@
 <template>
   <div class="ele-body">
     <el-card shadow="never">
-      <!-- 意见反馈表单 -->
+      <!-- 搜索表单 -->
       <el-form
         :model="where"
         label-width="77px"
         class="ele-form-search"
         @keyup.enter.native="reload"
         @submit.native.prevent>
-        <el-row :gutter="10">
-          <el-col :span="5">
-            <el-form-item label="提交者:">
+        <el-row :gutter="15">
+          <el-col :lg="6" :md="12">
+            <el-form-item label="工单号:">
               <el-input
                 clearable
-                v-model="where.commit_user"
-                placeholder="请输入提交者"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item label="状态:">
-              <el-select
-                clearable
-                v-model="where.status"
-                placeholder="请选择状态"
-                class="ele-fluid">
-                <el-option label="未查看" value="1"/>
-                <el-option label="确认" value="2"/>
-                <el-option label="完成" value="3"/>
-                <el-option label="未通过" value="4"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item label="类型:">
-              <el-select
-                clearable
-                v-model="where.type"
-                placeholder="请选择类型"
-                class="ele-fluid">
-                <el-option label="问题" value="1"/>
-                <el-option label="建议" value="2"/>
-                <el-option label="新需求" value="3"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item label="优先级:">
-              <el-input
-                type="number"
-                clearable
-                v-model="where.priority"
-                placeholder="请输入优先级(1-10)"/>
+                v-model="where.order_id"
+                placeholder="请输入工单号"/>
             </el-form-item>
           </el-col>
           <el-col :lg="6" :md="12">
@@ -82,7 +46,7 @@
             icon="el-icon-plus"
             class="ele-btn-icon"
             @click="openEdit(null)"
-            v-if="permission.includes('sys:feedback:add')">添加
+            v-if="permission.includes('sys:supplier:add')">添加
           </el-button>
           <el-button
             size="small"
@@ -90,8 +54,22 @@
             icon="el-icon-delete"
             class="ele-btn-icon"
             @click="removeBatch"
-            v-if="permission.includes('sys:feedback:dall')">删除
+            v-if="permission.includes('sys:supplier:dall')">删除
           </el-button>
+          <!-- <el-button
+            @click="showImport=true"
+            icon="el-icon-upload2"
+            class="ele-btn-icon"
+            size="small">导入
+          </el-button>
+          <el-button
+            size="small"
+            type="success"
+            icon="el-icon-download"
+            class="ele-btn-icon"
+            @click="exportExcel"
+            v-if="permission.includes('sys:level:export')">导出
+          </el-button> -->
         </template>
         <!-- 操作列 -->
         <template slot="action" slot-scope="{row}">
@@ -100,76 +78,55 @@
             :underline="false"
             icon="el-icon-edit"
             @click="openEdit(row)"
-            v-if="permission.includes('sys:feedback:update')">修改
+            v-if="permission.includes('sys:supplier:update')">修改
           </el-link>
           <el-popconfirm
             class="ele-action"
-            title="确定要删除此通知吗？"
+            title="确定要删除此职级吗？"
             @confirm="remove(row)">
             <el-link
               type="danger"
               slot="reference"
               :underline="false"
               icon="el-icon-delete"
-              v-if="permission.includes('sys:feedback:delete')">删除
+              v-if="permission.includes('sys:supplier:delete')">删除
             </el-link>
           </el-popconfirm>
         </template>
-        <template slot="type" slot-scope="{row}">
-          <el-tag v-if="row.type === 1" size="small">问题</el-tag>
-          <el-tag v-if="row.type === 2" size="small">建议</el-tag>
-          <el-tag v-if="row.type === 3" size="small">新需求</el-tag>
-        </template>
+        <!-- 状态列 -->
         <template slot="status" slot-scope="{row}">
-          <el-tag v-if="row.status === 1" type="warning" size="small">未查看</el-tag>
-          <el-tag v-if="row.status === 2" type="success" size="small">确认</el-tag>
-          <el-tag v-if="row.status === 3" type="success" size="small">完成</el-tag>
-          <el-tag v-if="row.status === 4" type="success" size="small">未通过</el-tag>
-        </template>
-        <template slot="expand_1" slot-scope="{row}">
-          <el-popover
-            placement="top-start"
-            title="内容"
-            width="1000"
-            trigger="click"
-            :content=row.content>
-            <el-button slot="reference">{{ row.content }}</el-button>
-          </el-popover>
-        </template>
-        <template slot="expand_2" slot-scope="{row}" v-if="row.feedback">
-          <el-popover
-            placement="top-start"
-            title="反馈"
-            width="1000"
-            trigger="click"
-            :content=row.feedback>
-            <el-button slot="reference">{{ row.feedback }}</el-button>
-          </el-popover>
+          <el-switch
+            v-model="row.status"
+            @change="editStatus(row)"
+            :active-value="1"
+            :inactive-value="2"/>
         </template>
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
-    <suggestion-edit
+    <supplier-edit
       :data="current"
       :visible.sync="showEdit"
       @done="reload"/>
+    <!-- 导入弹窗 -->
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import SuggestionEdit from './suggestion-edit';
+import SupplierEdit from './supplier-edit';
+//import LevelImport from './level-import';
 
 export default {
-  name: 'suggestion',
-  components: {SuggestionEdit},
+  name: 'supplier',
+  components: {SupplierEdit},
   computed: {
     ...mapGetters(["permission"]),
   },
   data() {
     return {
       // 表格数据接口
-      url: '/suggestion/list',
+      url: '/supplier/list',
       // 表格列配置
       columns: [
         {
@@ -179,89 +136,90 @@ export default {
           align: 'center',
           fixed: "left"
         },
-        // {
-        //   prop: 'id',
-        //   label: 'ID',
-        //   width: 60,
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   fixed: "left"
-        // },
         {
-          prop: 'commit_user',
-          label: '提交者',
-          width: 70,
+          prop: 'id',
+          label: 'ID',
+          width: 60,
           align: 'center',
           showOverflowTooltip: true,
+          fixed: "left"
         },
+
         {
-          prop: 'type',
-          label: '类型',
+          prop: 'order_id',
+          label: '工单号',
           showOverflowTooltip: true,
-          minWidth: 100,
+          minWidth: 200,
           align: 'center',
-          resizable: false,
-          slot: 'type',
         },
         {
-          prop: 'content',
-          label: '需求或建议',
-          width: 150,
+          prop: 'customer',
+          label: '客户',
+          showOverflowTooltip: true,
+          minWidth: 200,
           align: 'center',
-          slot: 'expand_1',
         },
-        {
+        /*{
           prop: 'status',
-          label: '状态',
-          minWidth: 100,
+          label: '职级状态',
+          sortable: 'custom',
           align: 'center',
+          width: 150,
           resizable: false,
           slot: 'status',
-        },
+        },*/
         {
-          prop: 'feedback',
-          label: '反馈内容',
-          width: 150,
+          prop: 'product_name',
+          label: '产品',
           align: 'center',
-          slot: 'expand_2',
-        },
-        {
-          prop: 'priority',
-          label: '优先级',
           showOverflowTooltip: true,
-          minWidth: 95,
-          align: 'center',
-
-          sortable: 'custom',
-          order: '', // 初始化排序方式为空字符串
-          sortableMethod: ()=> {
-            // 在这里实现自定义的排序逻辑
-            this.where.order = this.order;
-            this.reload();
-          }
+          width: 100
         },
-        // {
-        //   prop: 'create_time',
-        //   label: '创建时间',
-        //   showOverflowTooltip: true,
-        //   sortable: 'custom',
-        //   minWidth: 160,
-        //   align: 'center',
-        //   formatter: (row, column, cellValue) => {
-        //     return this.$util.toDateString(cellValue);
-        //   }
-        // },
-        // {
-        //   prop: 'update_time',
-        //   label: '更新时间',
-        //   showOverflowTooltip: true,
-        //   sortable: 'custom',
-        //   minWidth: 160,
-        //   align: 'center',
-        //   formatter: (row, column, cellValue) => {
-        //     return this.$util.toDateString(cellValue);
-        //   }
-        // },
+        {
+          prop: 'product_type',
+          label: '产品类型',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        }, {
+          prop: 'supplier',
+          label: '供应商',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        }, {
+          prop: 'parts',
+          label: '部件',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'create_time',
+          label: '创建时间',
+          sortable: 'custom',
+          showOverflowTooltip: true,
+          minWidth: 160,
+          align: 'center',
+          formatter: (row, column, cellValue) => {
+            return this.$util.toDateString(cellValue);
+          },
+          order: ''// 初始化排序方式为空字符串
+
+        },
+        {
+          prop: 'update_time',
+          label: '更新时间',
+          sortable: 'custom',
+          showOverflowTooltip: true,
+          minWidth: 160,
+          align: 'center',
+          formatter: (row, column, cellValue) => {
+            return this.$util.toDateString(cellValue);
+          },
+          order: ''// 初始化排序方式为空字符串
+
+        },
         {
           columnKey: 'action',
           label: '操作',
@@ -280,9 +238,17 @@ export default {
       current: null,
       // 是否显示编辑弹窗
       showEdit: false,
+      // 是否显示导入弹窗
+      showImport: false
     };
   },
   methods: {
+    //排序
+    sortableMethod: ()=> {
+            // 在这里实现自定义的排序逻辑
+            this.where.order = this.order;
+            this.reload();
+          },
     /* 刷新表格 */
     reload() {
       this.$refs.table.reload({page: 1, where: this.where});
@@ -296,12 +262,12 @@ export default {
     openEdit(row) {
       if (!row) {
         // 添加
-        this.current = row;
+        this.current = null;
         this.showEdit = true;
       } else {
         // 编辑
         this.loading = true;
-        this.$http.get('/suggestion/detail/' + row.id).then((res) => {
+        this.$http.get('/supplier/detail/' + row.id).then((res) => {
           this.loading = false;
           if (res.data.code === 0) {
             this.current = Object.assign({}, res.data.data);
@@ -318,12 +284,12 @@ export default {
     /* 删除 */
     remove(row) {
       const loading = this.$loading({lock: true});
-      this.$http.delete('/suggestion/delete/' + row.id).then(res => {
+      this.$http.delete('/supplier/delete/' + row.id).then(res => {
         loading.close();
         if (res.data.code === 0) {
           this.$message.success(res.data.msg);
           this.reload();
-        } else {
+        } else {0
           this.$message.error(res.data.msg);
         }
       }).catch(e => {
@@ -337,11 +303,11 @@ export default {
         this.$message.error('请至少选择一条数据');
         return;
       }
-      this.$confirm('确定要删除选中的通知吗?', '提示', {
+      this.$confirm('确定要删除选中的数据吗?', '提示', {
         type: 'warning'
       }).then(() => {
         const loading = this.$loading({lock: true});
-        this.$http.delete('/suggestion/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
+        this.$http.delete('/supplier/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -359,10 +325,10 @@ export default {
     /* 更改状态 */
     editStatus(row) {
       const loading = this.$loading({lock: true});
-      this.$http.put('/notice/status',  {id: row.id, status: row.status}).then(res => {
+      this.$http.put('/supplier/status', {id: row.id, status: row.status}).then(res => {
         loading.close();
         if (res.data.code === 0) {
-          this.$message({type: 'success', message: res.data.msg});
+          this.$message.success(res.data.msg);
         } else {
           row.status = !row.status ? 1 : 2;
           this.$message.error(res.data.msg);
@@ -372,7 +338,25 @@ export default {
         this.$message.error(e.message);
       });
     },
-    
+    /* 导出数据Excel */
+    /*exportExcel() {
+      let info = JSON.parse(JSON.stringify(this.where));
+      this.$http
+        .get("/level/exportExcel", info)
+        .then((res) => {
+          let data = res.data;
+          if (data.code == 0) {
+            // 下载文件
+            window.location.href = data.data;
+            this.$message({
+              type: "success",
+              message: "导出成功",
+            });
+          } else {
+            this.$message.error("导出失败");
+          }
+        })
+    },*/
   }
 }
 </script>

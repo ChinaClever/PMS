@@ -89,14 +89,19 @@ urlpatterns = [
     # 菜单总路由
     path('menu/', include('application.menu.urls')),
     # 网站配置总路由
-    path('configweb/', include('application.config_web.urls')),
+    path('configweb/', include('application.config_web.urls')),    
+    #供应商管理总路由
+    path('supplier/', include('application.supplier.urls')),
     # 焊接报表
     path('weldingreport/', include('application.weldingreport.urls')),
     # 调试报表
     path('debugreport/', include('application.debugreport.urls')),
+    # 意见反馈总路由
+    path('suggestion/', include('application.suggestion.urls')),
+    # 质检报表总路由
+    path('inspectreport/', include('application.inspectreport.urls')),
     # 烧录报表
     path('burningreport/', include('application.burning.urls')),
     # 软件发布
     path('softwarerelease/', include('application.softwarerelease.urls')),
-
 ]
