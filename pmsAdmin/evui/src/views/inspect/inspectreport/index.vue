@@ -201,6 +201,7 @@ export default {
         },
         {
           prop: 'examine_a_bad_amount',
+          sortable: 'custom',
           label: '检验不良数量',
           width: 70,
           align: 'center',
@@ -232,6 +233,7 @@ export default {
         },
         {
           prop: 'target_actual_pass_rate',
+          sortable: 'custom',
           label: '实际合格率',
           width: 70,
           align: 'center',

@@ -16,10 +16,10 @@
         <el-col :sm="12">
           <el-form-item
             label="工单号:"
-            prop="work_order_id">
+            prop="work_order">
             <el-input
               :maxlength="20"
-              v-model="form.work_order_id"
+              v-model="form.work_order"
               placeholder="请输入工单号"
               clearable/>
           </el-form-item>
@@ -144,7 +144,7 @@ export default {
       form: Object.assign({}, this.data),
       // 表单验证规则
       rules: {
-        work_order_id:[
+        work_order:[
           {required: true, message: '请输入工单号', trigger: 'blur'},
         ],
         start_time:[

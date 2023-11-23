@@ -4,7 +4,7 @@ from application.inspectreport import models
 
 class InspectreportForm(forms.ModelForm):
     # 工单号
-    work_order_id = forms.CharField(
+    work_order = forms.CharField(
         required=True,
         error_messages={
             'required': '工单号不能为空',
