@@ -118,7 +118,7 @@ INSTALLED_APPS = [
     'application.upload',
     'application.supplier',
     'application.suggestion',
-    'application.inspectreport'
+    'application.inspectreport',
     'application.burning',
     'application.weldingreport',
 
