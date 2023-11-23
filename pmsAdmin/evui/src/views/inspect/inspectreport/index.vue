@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body">
     <el-card shadow="never">
-      <!-- 意见反馈表单 -->
+      <!-- 质检报表表单 -->
       <el-form
         :model="where"
         label-width="77px"
@@ -9,48 +9,24 @@
         @keyup.enter.native="reload"
         @submit.native.prevent>
         <el-row :gutter="10">
-          <el-col :span="5">
-            <el-form-item label="提交者:">
+          <el-col :span="9">
+            <el-form-item label="搜索:">
               <el-input
                 clearable
-                v-model="where.commit_user"
-                placeholder="请输入提交者"/>
+                v-model="where.keyword"
+                placeholder="请输入填写人或产品型号或工单号"/>
             </el-form-item>
           </el-col>
-          <el-col :span="5">
-            <el-form-item label="状态:">
+          <el-col :span="6">
+            <el-form-item label="信号:">
               <el-select
                 clearable
-                v-model="where.status"
-                placeholder="请选择状态"
+                v-model="where.signal"
+                placeholder="请选择信号"
                 class="ele-fluid">
-                <el-option label="未查看" value="1"/>
-                <el-option label="确认" value="2"/>
-                <el-option label="完成" value="3"/>
-                <el-option label="未通过" value="4"/>
+                <el-option label="红色" value="1"/>
+                <el-option label="绿色" value="2"/>
               </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item label="类型:">
-              <el-select
-                clearable
-                v-model="where.type"
-                placeholder="请选择类型"
-                class="ele-fluid">
-                <el-option label="问题" value="1"/>
-                <el-option label="建议" value="2"/>
-                <el-option label="新需求" value="3"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item label="优先级:">
-              <el-input
-                type="number"
-                clearable
-                v-model="where.priority"
-                placeholder="请输入优先级(1-10)"/>
             </el-form-item>
           </el-col>
           <el-col :lg="6" :md="12">
@@ -82,7 +58,7 @@
             icon="el-icon-plus"
             class="ele-btn-icon"
             @click="openEdit(null)"
-            v-if="permission.includes('sys:feedback:add')">添加
+            v-if="permission.includes('sys:inspectreport:add')">添加
           </el-button>
           <el-button
             size="small"
@@ -90,7 +66,7 @@
             icon="el-icon-delete"
             class="ele-btn-icon"
             @click="removeBatch"
-            v-if="permission.includes('sys:feedback:dall')">删除
+            v-if="permission.includes('sys:inspectreport:dall')">删除
           </el-button>
         </template>
         <!-- 操作列 -->
@@ -100,7 +76,7 @@
             :underline="false"
             icon="el-icon-edit"
             @click="openEdit(row)"
-            v-if="permission.includes('sys:feedback:update')">修改
+            v-if="permission.includes('sys:inspectreport:update')">修改
           </el-link>
           <el-popconfirm
             class="ele-action"
@@ -111,45 +87,38 @@
               slot="reference"
               :underline="false"
               icon="el-icon-delete"
-              v-if="permission.includes('sys:feedback:delete')">删除
+              v-if="permission.includes('sys:inspectreport:delete')">删除
             </el-link>
           </el-popconfirm>
         </template>
-        <template slot="type" slot-scope="{row}">
-          <el-tag v-if="row.type === 1" size="small">问题</el-tag>
-          <el-tag v-if="row.type === 2" size="small">建议</el-tag>
-          <el-tag v-if="row.type === 3" size="small">新需求</el-tag>
+        <template slot="singal" slot-scope="{row}">
+          <el-tag v-if="row.signal === 1"  effect="dark" type="danger" size="medium"></el-tag>
+          <el-tag v-if="row.signal === 2"  effect="dark" type="success" size="medium"></el-tag>
         </template>
-        <template slot="status" slot-scope="{row}">
-          <el-tag v-if="row.status === 1" type="warning" size="small">未查看</el-tag>
-          <el-tag v-if="row.status === 2" type="success" size="small">确认</el-tag>
-          <el-tag v-if="row.status === 3" type="success" size="small">完成</el-tag>
-          <el-tag v-if="row.status === 4" type="success" size="small">未通过</el-tag>
-        </template>
-        <template slot="expand_1" slot-scope="{row}">
+        <template slot="expand_1" slot-scope="{row}" v-if="row.problems">
           <el-popover
             placement="top-start"
-            title="内容"
+            title="问题"
             width="1000"
             trigger="click"
-            :content=row.content>
-            <el-button slot="reference">{{ row.content }}</el-button>
+            :content=row.problems>
+            <el-button slot="reference">{{ row.problems }}</el-button>
           </el-popover>
         </template>
-        <template slot="expand_2" slot-scope="{row}" v-if="row.feedback">
+        <template slot="expand_2" slot-scope="{row}" v-if="row.actions">
           <el-popover
             placement="top-start"
-            title="反馈"
+            title="行动"
             width="1000"
             trigger="click"
-            :content=row.feedback>
-            <el-button slot="reference">{{ row.feedback }}</el-button>
+            :content=row.actions>
+            <el-button slot="reference">{{ row.actions }}</el-button>
           </el-popover>
         </template>
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
-    <suggestion-edit
+    <inspectreport-edit
       :data="current"
       :visible.sync="showEdit"
       @done="reload"/>
@@ -158,18 +127,18 @@
 
 <script>
 import { mapGetters } from "vuex";
-import SuggestionEdit from './suggestion-edit';
+import InspectreportEdit from './inspectreport-edit';
 
 export default {
-  name: 'suggestion',
-  components: {SuggestionEdit},
+  name: 'inspectreport',
+  components: {InspectreportEdit},
   computed: {
     ...mapGetters(["permission"]),
   },
   data() {
     return {
       // 表格数据接口
-      url: '/suggestion/list',
+      url: '/inspectreport/list',
       // 表格列配置
       columns: [
         {
@@ -179,66 +148,121 @@ export default {
           align: 'center',
           fixed: "left"
         },
-        // {
-        //   prop: 'id',
-        //   label: 'ID',
-        //   width: 60,
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   fixed: "left"
-        // },
         {
-          prop: 'commit_user',
-          label: '提交者',
-          width: 70,
+          prop: 'work_order',
+          label: '工单号',
+          width: 80,
           align: 'center',
           showOverflowTooltip: true,
         },
         {
-          prop: 'type',
-          label: '类型',
+          prop: 'start_time',
+          label: '开始时间',
           showOverflowTooltip: true,
-          minWidth: 100,
-          align: 'center',
-          resizable: false,
-          slot: 'type',
-        },
-        {
-          prop: 'content',
-          label: '需求或建议',
-          width: 150,
-          align: 'center',
-          slot: 'expand_1',
-        },
-        {
-          prop: 'status',
-          label: '状态',
-          minWidth: 100,
-          align: 'center',
-          resizable: false,
-          slot: 'status',
-        },
-        {
-          prop: 'feedback',
-          label: '反馈内容',
-          width: 150,
-          align: 'center',
-          slot: 'expand_2',
-        },
-        {
-          prop: 'priority',
-          label: '优先级',
-          showOverflowTooltip: true,
-          minWidth: 95,
-          align: 'center',
-
           sortable: 'custom',
+          minWidth: 160,
+          align: 'center',
           order: '', // 初始化排序方式为空字符串
           sortableMethod: ()=> {
             // 在这里实现自定义的排序逻辑
             this.where.order = this.order;
             this.reload();
           }
+        },
+        {
+          prop: 'end_time',
+          label: '结束时间',
+          showOverflowTooltip: true,
+          sortable: 'custom',
+          minWidth: 160,
+          align: 'center',
+          order: '', // 初始化排序方式为空字符串
+        },
+        {
+          prop: 'commit_user',
+          label: '填写者',
+          width: 80,
+          align: 'center',
+          showOverflowTooltip: true,
+        },
+        {
+          prop: 'item_number',
+          label: '产品型号',
+          width: 70,
+          align: 'center',
+          showOverflowTooltip: true,
+        },
+        {
+          prop: 'examine_an_amount',
+          label: '检验数量',
+          width: 70,
+          align: 'center',
+          showOverflowTooltip: true,
+        },
+        {
+          prop: 'examine_a_bad_amount',
+          sortable: 'custom',
+          label: '检验不良数量',
+          width: 70,
+          align: 'center',
+          showOverflowTooltip: true,
+        },
+        {
+          prop: 'examine_amount_total_amount',
+          label: '检验数量累计',
+          width: 70,
+          align: 'center',
+          showOverflowTooltip: true,
+        },
+        {
+          prop: 'examine_bad_total_amount',
+          label: '检验不良累计',
+          width: 70,
+          align: 'center',
+          showOverflowTooltip: true,
+        },
+        {
+          prop: 'target_pass_rate',
+          label: 'ERP目标合格率',
+          width: 70,
+          align: 'center',
+          showOverflowTooltip: true,
+          formatter: (row, column, cellValue) => {
+            return cellValue + '%';
+          }
+        },
+        {
+          prop: 'target_actual_pass_rate',
+          sortable: 'custom',
+          label: '实际合格率',
+          width: 70,
+          align: 'center',
+          showOverflowTooltip: true,
+          formatter: (row, column, cellValue) => {
+            return cellValue + '%';
+          }
+        },
+        {
+          prop: 'singal',
+          label: '信号',
+          minWidth: 100,
+          align: 'center',
+          resizable: false,
+          slot: 'singal',
+        },
+        {
+          prop: 'problems',
+          label: '问题',
+          width: 150,
+          align: 'center',
+          slot: 'expand_1',
+        },
+        {
+          prop: 'actions',
+          label: '行动',
+          width: 150,
+          align: 'center',
+          slot: 'expand_2',
         },
         // {
         //   prop: 'create_time',
@@ -249,6 +273,12 @@ export default {
         //   align: 'center',
         //   formatter: (row, column, cellValue) => {
         //     return this.$util.toDateString(cellValue);
+        //   },
+        //   order: '', // 初始化排序方式为空字符串
+        //   sortableMethod: ()=> {
+        //     // 在这里实现自定义的排序逻辑
+        //     this.where.order = this.order;
+        //     this.reload();
         //   }
         // },
         // {
@@ -301,7 +331,7 @@ export default {
       } else {
         // 编辑
         this.loading = true;
-        this.$http.get('/suggestion/detail/' + row.id).then((res) => {
+        this.$http.get('/inspectreport/detail/' + row.id).then((res) => {
           this.loading = false;
           if (res.data.code === 0) {
             this.current = Object.assign({}, res.data.data);
@@ -318,7 +348,7 @@ export default {
     /* 删除 */
     remove(row) {
       const loading = this.$loading({lock: true});
-      this.$http.delete('/suggestion/delete/' + row.id).then(res => {
+      this.$http.delete('/inspectreport/delete/' + row.id).then(res => {
         loading.close();
         if (res.data.code === 0) {
           this.$message.success(res.data.msg);
@@ -337,11 +367,11 @@ export default {
         this.$message.error('请至少选择一条数据');
         return;
       }
-      this.$confirm('确定要删除选中的通知吗?', '提示', {
+      this.$confirm('确定要删除选中的报表吗?', '提示', {
         type: 'warning'
       }).then(() => {
         const loading = this.$loading({lock: true});
-        this.$http.delete('/suggestion/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
+        this.$http.delete('/inspectreport/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);

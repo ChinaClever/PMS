@@ -96,4 +96,8 @@ urlpatterns = [
     path('weldingreport/', include('application.weldingreport.urls')),
     # 调试报表
     path('debugreport/', include('application.debugreport.urls')),
+    # 意见反馈总路由
+    path('suggestion/', include('application.suggestion.urls')),
+    # 质检报表总路由
+    path('inspectreport/', include('application.inspectreport.urls')),
 ]
