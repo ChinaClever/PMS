@@ -1,7 +1,7 @@
-<!-- 职级编辑弹窗 -->
+<!-- 编辑弹窗 -->
 <template>
     <el-dialog
-      :title="isUpdate?'修改生产排单':'添加生产排单'"
+      :title="isUpdate?'修改调试报表':'添加调试报表'"
       :visible="visible"
       width="580px"
       :destroy-on-close="true"
@@ -12,6 +12,16 @@
         :model="form"
         :rules="rules"
         label-width="82px">
+
+        <el-form-item
+          label="工单号:"
+          prop="work_order">
+          <el-input
+            :maxlength="20"
+            v-model="form.work_order"
+            placeholder="请输入工单号"
+            clearable/>
+        </el-form-item>
 
         <el-form-item label="下单日期:" prop="order_time">
             <el-date-picker
@@ -79,7 +89,7 @@
               placeholder="请选择开始日期"/>
           </el-form-item>
 
-          <el-form-item label="完成日期:" prop="finish_time">
+          <el-form-item label="完成日期:" prop="finish_time" >
             <el-date-picker
               type="date"
               class="ele-fluid"
@@ -96,7 +106,7 @@
             controls-position="right"
             class="ele-fluid ele-text-left"/>
         </el-form-item>
-          
+
         <el-form-item label="具体说明:" prop="instruction">
             <el-input
               :rows="3"
@@ -128,10 +138,10 @@
       </div>
     </el-dialog>
   </template>
-  
+
   <script>
   export default {
-    name: 'OutputEdit',
+    name: 'DebugEdit',
     props: {
       // 弹窗是否打开
       visible: Boolean,
@@ -144,6 +154,9 @@
         form: Object.assign({status: 1}, this.data),
         // 表单验证规则
         rules: {
+          work_order: [
+          {required: true, message: '请输入工单号', trigger: 'blur'}
+        ],
           order_time: [
           {required: true, message: '请输入下单时间', trigger: 'blur'}
         ],
@@ -152,6 +165,25 @@
         ],
           shape: [
           {required: true, message: '请输入规格型号', trigger: 'blur'}
+        ],
+          product_name: [
+          {required: true, message: '请输入产品名称', trigger: 'blur'}
+        ],
+          product_count: [
+          {required: true, message: '请输入产品数量', trigger: 'blur'}
+        ],
+          submit_time: [
+          {required: true, message: '请输入交期', trigger: 'blur'}
+        ],
+          start_time: [
+          {required: true, message: '请输入开始时间', trigger: 'blur'}
+        ],
+          finish_time: [
+          {required: true, message: '请输入完成时间', trigger: 'blur'},
+          { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
+        ],
+          work_hours: [
+          {required: true, message: '请输入所用工时', trigger: 'blur'}
         ],
         },
         // 提交状态
@@ -177,7 +209,7 @@
         this.$refs['form'].validate((valid) => {
           if (valid) {
             this.loading = true;
-            this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/output/update' : '/output/add', this.form).then(res => {
+            this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/debugreport/update' : '/debugreport/add', this.form).then(res => {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -201,12 +233,25 @@
       /* 更新visible */
       updateVisible(value) {
         this.$emit('update:visible', value);
+      },
+
+      // 自定义校验规则函数
+      checkFinishTime(rule, value, callback) {
+        const startTime = this.form.start_time; // 获取开始日期的值
+        const finishTime = value; // 获取完成日期的值
+
+        if (!startTime || !finishTime) {
+          callback(); // 如果开始日期或完成日期为空，则不进行校验
+        } else if (startTime > finishTime) {
+          callback(new Error('完成日期必须晚于开始日期')); // 如果完成日期早于开始日期，则返回错误信息
+        } else {
+          callback(); // 校验通过
+        }
       }
     }
   }
   </script>
-  
+
   <style scoped>
   </style>
-  
-  
+

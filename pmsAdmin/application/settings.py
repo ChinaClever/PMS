@@ -116,6 +116,8 @@ INSTALLED_APPS = [
     'application.menu',
     'application.config_web',
     'application.upload',
+    'application.debugdata',
+    'application.debugdata_teststep',
 ]
 
 MIDDLEWARE = [
