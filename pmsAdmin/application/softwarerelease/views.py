@@ -28,7 +28,7 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from application.burning import services
+from application.softwarerelease import services
 from application.constants import CITY_LEVEL_LIST
 from config.env import DEBUG
 from middleware.login_middleware import check_login
@@ -39,88 +39,77 @@ from utils import R
 
 # 查询分页数据
 @method_decorator(check_login, name='get')
-class BurningListView(PermissionRequired, View):
+class SoftwarereleaseListView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:burning:list',)
+    permission_required = ('sys:softwarerelease:list',)
 
     # 接收GET请求
     def get(self, request):
         # 调用查询分页数据
-        result = services.BurningList(request)
+        result = services.SoftwarereleaseList(request)
         # 返回结果
         return result
 
 
 # 查询数据
 @method_decorator(check_login, name='get')
-class BurningDetailView(PermissionRequired, View):
+class SoftwarereleaseDetailView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:burning:detail',)
+    permission_required = ('sys:softwarerelease:detail',)
 
     # 接收GET请求
-    def get(self, request, burning_id):
+    def get(self, request, softwarerelease_id):
         # 调用查询方法
-        data = services.BurningDetail(burning_id)
+        data = services.SoftwarereleaseDetail(softwarerelease_id)
         # 返回结果
         return R.ok(data=data)
 
 
 # 添加
 @method_decorator(check_login, name='post')
-class BurningAddView(PermissionRequired, View):
+class SoftwarereleaseAddView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:burning:add',)
+    permission_required = ('sys:softwarerelease:add',)
 
     # 接收POST请求
     def post(self, request):
         if DEBUG:
             return R.failed("演示环境，暂无操作权限")
         # 调用添加方法
-        result = services.BurningAdd(request)
+        result = services.SoftwarereleaseAdd(request)
         # 返回结果
         return result
 
 
 # 更新
 @method_decorator(check_login, name='put')
-class BurningUpdateView(PermissionRequired, View):
+class SoftwarereleaseUpdateView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:burning:update',)
+    permission_required = ('sys:softwarerelease:update',)
 
     # 接收PUT请求
     def put(self, request):
         if DEBUG:
             return R.failed("演示环境，暂无操作权限")
         # 调用更新方法
-        result = services.BurningUpdate(request)
+        result = services.SoftwarereleaseUpdate(request)
         # 返回结果
         return result
 
 
 # 删除
 @method_decorator(check_login, name='delete')
-class BurningDeleteView(PermissionRequired, View):
+class SoftwarereleaseDeleteView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:burning:delete',)
+    permission_required = ('sys:softwarerelease:delete',)
 
     # 接收delete请求
-    def delete(self, request, burning_id):
+    def delete(self, request, softwarerelease_id):
         if DEBUG:
             return R.failed("演示环境，暂无操作权限")
         # 调用删除方法
-        result = services.BurningDelete(burning_id)
+        result = services.SoftwarereleaseDelete(softwarerelease_id)
         # 返回结果
         return result
 
 
-
-# 获取JSON格式化数据(废弃代码)
-# @method_decorator(check_login, name='get')
-# class BurningJsonView(View):
-#
-#     # 接收GET请求
-#     def get(self, request):
-#         # 调用查询详情方法
-#         data = services.getBurningJson()
-#         # 返回结果
-#         return R.ok(data)

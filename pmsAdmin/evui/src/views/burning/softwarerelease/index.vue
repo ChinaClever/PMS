@@ -10,11 +10,11 @@
         @submit.native.prevent>
         <el-row :gutter="15">
           <el-col :lg="6" :md="12">
-            <el-form-item label="客户名称:">
+            <el-form-item label="程序名称:">
               <el-input
                 clearable
                 v-model="where.name"
-                placeholder="请输入客户名称"/>
+                placeholder="请输入程序名称"/>
             </el-form-item>
           </el-col>
           <el-col :lg="6" :md="12">
@@ -46,7 +46,7 @@
             icon="el-icon-plus"
             class="ele-btn-icon"
             @click="openEdit(null)"
-            v-if="permission.includes('sys:burning:add')">添加
+            v-if="permission.includes('sys:softwarerelease:add')">添加
           </el-button>
           <el-button
             size="small"
@@ -54,7 +54,7 @@
             icon="el-icon-delete"
             class="ele-btn-icon"
             @click="removeBatch"
-            v-if="permission.includes('sys:burning:dall')">删除
+            v-if="permission.includes('sys:softwarerelease:dall')">删除
           </el-button>
           <!-- <el-button
             @click="showImport=true"
@@ -68,7 +68,7 @@
             icon="el-icon-download"
             class="ele-btn-icon"
             @click="exportExcel"
-            v-if="permission.includes('sys:burning:export')">导出
+            v-if="permission.includes('sys:softwarerelease:export')">导出
           </el-button> -->
         </template>
         <!-- 操作列 -->
@@ -78,7 +78,7 @@
             :underline="false"
             icon="el-icon-edit"
             @click="openEdit(row)"
-            v-if="permission.includes('sys:burning:update')">修改
+            v-if="permission.includes('sys:softwarerelease:update')">修改
           </el-link>
           <el-popconfirm
             class="ele-action"
@@ -89,7 +89,7 @@
               slot="reference"
               :underline="false"
               icon="el-icon-delete"
-              v-if="permission.includes('sys:burning:delete')">删除
+              v-if="permission.includes('sys:softwarerelease:delete')">删除
             </el-link>
           </el-popconfirm>
         </template>
@@ -104,7 +104,7 @@
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
-    <burning-edit
+    <softwarerelease-edit
       :data="current"
       :visible.sync="showEdit"
       @done="reload"/>
@@ -114,19 +114,19 @@
 
 <script>
 import { mapGetters } from "vuex";
-import BurningEdit from './burning-edit';
+import softwarereleaseEdit from './softwarerelease-edit';
 
 
 export default {
-  name: 'SystemBurning',
-  components: {BurningEdit},
+  name: 'Systemsoftwarerelease',
+  components: {softwarereleaseEdit},
   computed: {
     ...mapGetters(["permission"]),
   },
   data() {
     return {
       // 表格数据接口
-      url: '/burning/list',
+      url: '/softwarerelease/list',
       // 表格列配置
       columns: [
         {
@@ -146,35 +146,35 @@ export default {
         },
         {
           prop: 'name',
-          label: '客户名称',
+          label: '程序名称',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
         },
         {
-          prop: 'code',
-          label: '规格型号',
+          prop: 'products',
+          label: '使用产品',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'history_version',
+          label: '历史版本',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
         },
         {
           prop: 'version',
-          label: '版本号',
+          label: '当前版本',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
         },
         {
-          prop: 'require',
-          label: '程序需求',
-          showOverflowTooltip: true,
-          minWidth: 200,
-          align: 'center',
-        },
-        {
-          prop: 'order_time',
-          label: '订单日期',
+          prop: 'modify_time',
+          label: '修改日期',
           sortable:'custom',
           order:'',
           sortableMethod:()=>{
@@ -187,29 +187,64 @@ export default {
           align: 'center',
         },
         {
-          prop: 'delivery_time',
-          label: '交货日期',
-          sortable:'custom',
-          order:'',
-          sortableMethod:()=>{
-            //排序逻辑
-            this.where.order = this.order
-            this.reload();
-          },
+          prop: 'version_explain',
+          label: '版本说明',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
         },
         {
-          prop: 'remark',
-          label: '备注',
+          prop: 'updata',
+          label: '此次更新',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
         },
         {
-          prop: 'rcerder',
-          label: 'rcerder',
+          prop: 'burn_method',
+          label: '烧录方法',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'upgrade_method',
+          label: '升级方法',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'calibration_method',
+          label: '校准方法',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'User_Manual',
+          label: '用户手册',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'upgrade_cause',
+          label: '升级原因',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'documentation_position',
+          label: '程序和文档公盘位置',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'User_Manual_position',
+          label: '用户使用手册和协议公盘位置',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
@@ -277,7 +312,7 @@ export default {
       } else {
         // 编辑
         this.loading = true;
-        this.$http.get('/burning/detail/' + row.id).then((res) => {
+        this.$http.get('/softwarerelease/detail/' + row.id).then((res) => {
           this.loading = false;
           if (res.data.code === 0) {
             this.current = Object.assign({}, res.data.data);
@@ -294,7 +329,7 @@ export default {
     /* 删除 */
     remove(row) {
       const loading = this.$loading({lock: true});
-      this.$http.delete('/burning/delete/' + row.id).then(res => {
+      this.$http.delete('/softwarerelease/delete/' + row.id).then(res => {
         loading.close();
         if (res.data.code === 0) {
           this.$message.success(res.data.msg);
@@ -317,7 +352,7 @@ export default {
         type: 'warning'
       }).then(() => {
         const loading = this.$loading({lock: true});
-        this.$http.delete('/burning/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
+        this.$http.delete('/softwarerelease/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -335,7 +370,7 @@ export default {
     /* 更改状态 */
     editStatus(row) {
       const loading = this.$loading({lock: true});
-      this.$http.put('/burning/status', {id: row.id, status: row.status}).then(res => {
+      this.$http.put('/softwarerelease/status', {id: row.id, status: row.status}).then(res => {
         loading.close();
         if (res.data.code === 0) {
           this.$message.success(res.data.msg);
@@ -352,7 +387,7 @@ export default {
     exportExcel() {
       let info = JSON.parse(JSON.stringify(this.where));
       this.$http
-        .get("/burning/exportExcel", info)
+        .get("/softwarerelease/exportExcel", info)
         .then((res) => {
           let data = res.data;
           if (data.code == 0) {

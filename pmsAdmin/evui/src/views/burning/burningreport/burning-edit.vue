@@ -13,6 +13,15 @@
       :rules="rules"
       label-width="82px">
       <el-form-item
+        label="工单号:"
+        prop="work_order_id">
+        <el-input
+          :maxlength="20"
+          v-model="form.work_order_id"
+          placeholder="请输入工单号"
+          clearable/>
+      </el-form-item>
+      <el-form-item
         label="客户名称:"
         prop="name">
         <el-input
@@ -43,7 +52,7 @@
         label="程序要求:"
         prop="require">
         <el-input
-          :maxlength="20"
+          :maxlength="150"
           v-model="form.require"
           placeholder="请输入程序要求"
           clearable/>
@@ -82,7 +91,7 @@
         label="备注:"
         prop="remark">
         <el-input
-          :maxlength="20"
+          :maxlength="150"
           v-model="form.remark"
           placeholder="请输入备注"
           clearable/>
@@ -91,7 +100,7 @@
         label="rcerder:"
         prop="rcerder">
         <el-input
-          :maxlength="20"
+          :maxlength="150"
           v-model="form.rcerder"
           placeholder="请输入rcerder"
           clearable/>
@@ -123,6 +132,9 @@ export default {
       form: Object.assign({status: 1}, this.data),
       // 表单验证规则
       rules: {
+        work_order_id: [
+          {required: true, message: '请输入工单号', trigger: 'blur'}
+        ],
         name: [
           {required: true, message: '请输入客户名称', trigger: 'blur'}
         ],
@@ -197,7 +209,7 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.loading = true;
-          this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/burning/update' : '/burning/add', this.form).then(res => {
+          this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/burningreport/update' : '/burningreport/add', this.form).then(res => {
             this.loading = false;
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);

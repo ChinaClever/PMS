@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class BurningConfig(AppConfig):
+class Softwarerelease(AppConfig):
     name = 'application.softwarerelease'

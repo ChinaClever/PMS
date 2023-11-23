@@ -22,101 +22,129 @@
 # +----------------------------------------------------------------------
 
 from django import forms
-# 客户表单验证
+# 城市表单验证
 from application.softwarerelease import models
 
 
-class BurningForm(forms.ModelForm):
-    # 客户名称
-    work_order_id = forms.CharField(
-        required=True,
-        max_length=150,
-        error_messages={
-            'required': '工单号不能为空',
-            'max_length': '工单号不得超过150个字符'
-        }
-    )
+class SoftwarereleaseForm(forms.ModelForm):
+    # 程序名称
     name = forms.CharField(
         required=True,
         max_length=150,
         error_messages={
-            'required': '客户名称不能为空',
-            'max_length': '客户名称长度不得超过150个字符'
+            'required': '程序名称不能为空',
+            'max_length': '程序名称长度不得超过150个字符'
         }
     )
-    # 规格型号
-    code = forms.CharField(
+    # 使用产品
+    products = forms.CharField(
         required=True,
         max_length=150,
         error_messages={
-            'required': '规格型号不能为空',
-            'max_length': '规格型号长度不得超过150个字符'
+            'required': '使用产品不能为空',
+            'max_length': '使用产品长度不得超过150个字符'
         }
     )
-    # 版本号
+    # 历史版本
+    history_version = forms.CharField(
+        required=True,
+        max_length=150,
+        error_messages={
+            'required': '历史版本不能为空',
+            'max_length': '历史版本长度不得超过150个字符'
+        }
+    )
+    # 当前版本
     version = forms.CharField(
         required=True,
         max_length=150,
         error_messages={
-            'required': '版本号不能为空',
-            'max_length': '版本号长度不得超过150个字符'
+            'required': '当前版本不能为空',
+            'max_length': '当前版本长度不得超过150个字符'
         }
     )
-    # 程序要求
-    require = forms.CharField(
-        required=True,
-        max_length=20,
-        error_messages={
-            'required': '程序要求不能为空',
-            'max_length': '程序要求不得超过20个字符'
-        }
-    )
-    # 订单日期
-    order_time = forms.DateTimeField(
+    # 修改日期
+    modify_time = forms.DateTimeField(
         # max_length=18,
         error_messages={
-            'required': '订单日期不能为空',
-            'max_length': '订单日期长度不得超过18个字符'
+            'required': '修改日期不能为空',
         }
     )
-    # 交货日期
-    delivery_time = forms.DateTimeField(
-        # max_length=18,
-        error_messages={
-            'required': '交货日期不能为空',
-            'max_length': '交货日期长度不得超过18个字符'
-        }
-    )
-
-    #  数量
-    quantity= forms.IntegerField(
-        required=True,
-        error_messages={
-            'required': '数量不能为空',
-        }
-    )
-    print(type(quantity))
-    # 备注
-    remark = forms.CharField(
-        required=False,
-        max_length=150,
-        error_messages={
-            'max_length': '备注长度不得超过150个字符'
-        }
-    )
-    # rcerder
-    rcerder = forms.CharField(
+    # 版本说明
+    version_explain = forms.CharField(
         required=True,
         max_length=150,
         error_messages={
-            'required': '备注不能为空',
-            'max_length': '备注长度不得超过150个字符'
+            'required': '版本说明不能为空',
+            'max_length': '版本说明不得超过150个字符'
         }
+    )
+    # 此次更新
+    updata = forms.CharField(
+        required=True,
+        max_length=150,
+        error_messages={
+            'required': '此次更新不能为空',
+            'max_length': '此次更新不得超过150个字符'
+        }
+    )
+    # 烧录方法
+    burn_method = forms.CharField(
+        required=True,
+        max_length=150,
+        error_messages={
+            'required': '烧录方法不能为空',
+            'max_length': '烧录方法不得超过150个字符'
+        }
+    )
+    # 升级方法
+    upgrade_method = forms.CharField(
+        required=True,
+        max_length=150,
+        error_messages={
+            'required': '升级方法不能为空',
+            'max_length': '升级方法不得超过20个字符'
+        }
+    )
+    # 校准方法
+    calibration_method = forms.CharField(
+        required=True,
+        max_length=150,
+        error_messages={
+            'required': '校准方法不能为空',
+            'max_length': '校准方法不得超过150个字符'
+        }
+    )
+    # 用户手册
+    User_Manual = forms.CharField(
+        required=True,
+        max_length=150,
+        error_messages={
+            'required': '用户手册不能为空',
+            'max_length': '用户手册不得超过150个字符'
+        }
+    )
+    # 升级原因
+    upgrade_cause = forms.CharField(
+        required=True,
+        max_length=150,
+        error_messages={
+            'required': '升级原因不能为空',
+            'max_length': '升级原因不得超过150个字符'
+        }
+    )
+    # 程序和文档公盘位置
+    documentation_position = forms.CharField(
+        required= False,
+    )
+    # 用户使用手册和协议公盘位置
+    User_Manual_position =forms.CharField(
+        required= False,
     )
 
     class Meta:
         # 绑定模型
         model = models.Softwarerelease
         # 指定部分字段验证
-        fields = ['work_order_id','name', 'code', 'version', 'require', 'order_time', 'delivery_time', 'quantity', 'remark', 'rcerder',
+        fields = ['name', 'products', 'history_version', 'version', 'modify_time', 'version_explain', 'updata', 'burn_method', 'upgrade_method','calibration_method','User_Manual','upgrade_cause','documentation_position','User_Manual_position'
                   ]

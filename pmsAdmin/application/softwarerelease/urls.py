@@ -23,19 +23,19 @@
 
 from django.urls import path
 
-from application.burning import views
+from application.softwarerelease import views
 
-# 部门模块路由
+# 模块路由
 urlpatterns = [
     # 查询分页数据
-    path('list', views.BurningListView.as_view()),
+    path('list', views.SoftwarereleaseListView.as_view()),
     # 查询详情
-    path('detail/<int:burning_id>', views.BurningDetailView.as_view()),
-    # 添加部门
-    path('add', views.BurningAddView.as_view()),
-    # 更新部门
-    path('update', views.BurningUpdateView.as_view()),
-    # 删除部门
-    path('delete/<str:burning_id>', views.BurningDeleteView.as_view()),
+    path('detail/<int:softwarerelease_id>', views.SoftwarereleaseDetailView.as_view()),
+    # 添加数据
+    path('add', views.SoftwarereleaseAddView.as_view()),
+    # 更新数据
+    path('update', views.SoftwarereleaseUpdateView.as_view()),
+    # 删除数据
+    path('delete/<str:softwarerelease_id>', views.SoftwarereleaseDeleteView.as_view()),
 
 ]

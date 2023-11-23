@@ -61,6 +61,7 @@ def BurningList(request):
         for item in role_list:
             data = {
                 'id': item.id,
+                'work_order_id':item.work_order_id,
                 'name': item.name,
                 'code': item.code,
                 'version': item.version,
@@ -89,6 +90,7 @@ def BurningDetail(burning_id):
     # 声明结构体
     data = {
         'id': user.id,
+        'work_order_id': user.work_order_id,
         'name': user.name,
         'code': user.code,
         'version': user.version,
@@ -119,6 +121,8 @@ def BurningAdd(request):
     # 表单验证
     form = forms.BurningForm(dict_data)
     if form.is_valid():
+        # 工单号
+        work_order_id = form.cleaned_data.get('work_order_id')
         # 客户名称
         name = form.cleaned_data.get('name')
         # 规格型号
@@ -141,6 +145,7 @@ def BurningAdd(request):
             return R.failed("交货日期不能小于订单日期")
         # 创建数据
         burning.objects.create(
+            work_order_id=work_order_id,
             name=name,
             code= code,
             version=version,
@@ -181,6 +186,7 @@ def BurningUpdate(request):
     # 表单验证
     form = forms.BurningForm(dict_data)
     if form.is_valid():
+        work_order_id = form.cleaned_data.get('work_order_id')
         # 客户名称
         name = form.cleaned_data.get('name')
         # 规格型号
@@ -212,6 +218,7 @@ def BurningUpdate(request):
         return R.failed("客户不存在")
 
     # 对象赋值
+    user.work_order_id = work_order_id,
     user.name = name
     user.code = code
     user.version = version

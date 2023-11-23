@@ -30,40 +30,38 @@ from config.env import TABLE_PREFIX
 
 
 # 烧录表格
-class Software(BaseModel):
+class Softwarerelease(BaseModel):
     # 程序名称
-    name = models.CharField(null=False, max_length=6, verbose_name="客户名称", help_text="客户名称")
+    name = models.CharField(null=False, max_length=6, verbose_name="程序名称", help_text="程序名称")
     # 使用产品
-    products = models.CharField(null=False, max_length=20, verbose_name="规格型号", help_text="规格型号")
+    products = models.CharField(null=False, max_length=20, verbose_name="使用产品", help_text="使用产品")
     # 历史版本
-    history_version = models.CharField(null=True, max_length=20, verbose_name="版本号", help_text="版本号")
+    history_version = models.CharField(null=True, max_length=20, verbose_name="历史版本", help_text="历史版本")
     # 当前版本
-    version = models.CharField(null=False, max_length=6, verbose_name="程序要求", help_text="程序要求")
+    version = models.CharField(null=False, max_length=6, verbose_name="当前版本", help_text="当前版本")
     # 修改日期
-    order_time = models.DateTimeField(null=False, max_length=18, verbose_name="订单日期", help_text="订单日期")
+    modify_time = models.DateTimeField(null=False, max_length=18, verbose_name="修改日期", help_text="修改日期")
     # 版本说明
-    delivery_time = models.CharField(null=True, max_length=18, verbose_name="交货日期", help_text="交货日期")
+    version_explain = models.CharField(null=True, max_length=18, verbose_name="版本说明", help_text="版本说明")
     # 此次更新
-    quantity = models.CharField(null=True, verbose_name="数量", help_text="数量")
+    updata = models.CharField(null=True, max_length=150,verbose_name="此次更新", help_text="此次更新")
     # 烧录方法
-    burn_method = models.CharField(null=True, verbose_name="数量", help_text="数量")
+    burn_method = models.CharField(null=True,max_length=150, verbose_name="烧录方法", help_text="烧录方法")
     # 升级方法
-    upgade_method = models.CharField(null=True, max_length=150, verbose_name="备注", help_text="备注")
+    upgrade_method = models.CharField(null=True, max_length=150, verbose_name="升级方法", help_text="升级方法")
     # 校准方法
-    calibration_method = models.CharField(null=True, max_length=150, verbose_name="rcerder", help_text="rcerder")
+    calibration_method = models.CharField(null=True, max_length=150, verbose_name="校准方法", help_text="校准方法")
     # 用户手册
-    User_Manual = models.CharField(null=True, max_length=150, verbose_name="rcerder", help_text="rcerder")
+    User_Manual = models.CharField(null=True, max_length=150, verbose_name="用户手册", help_text="用户手册")
     # 升级原因
-    upgrade_cause = models.CharField(null=True, max_length=150, verbose_name="rcerder", help_text="rcerder")
-    # 图片
-    image = models.ImageField(upload_to='images/')
+    upgrade_cause = models.CharField(null=True, max_length=150, verbose_name="升级原因", help_text="升级原因")
     # 程序和文档公盘位置
-    documentation_position = models.FileField(upload_to='files/')
+    documentation_position = models.CharField(null=True, max_length=150, verbose_name="程序和文档公盘位置", help_text="程序和文档公盘位置")
     # 用户使用手册和协议公盘位置
-    User_Manual_position = models.FileField(upload_to='files/')
+    User_Manual_position = models.CharField(null=True, max_length=150, verbose_name="用户使用手册和协议公盘位置", help_text="用户使用手册和协议公盘位置")
     class Meta:
         # 数据表名
-        db_table = TABLE_PREFIX + "software"
+        db_table = TABLE_PREFIX + "softwarerelease"
         verbose_name = ("出厂报告表")
         verbose_name_plural = verbose_name
 

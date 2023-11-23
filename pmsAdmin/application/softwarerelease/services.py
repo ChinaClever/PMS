@@ -25,19 +25,19 @@ import json
 import logging
 from django.core.paginator import Paginator
 from constant.constants import PAGE_LIMIT
-from application.burning import forms
-from application.burning.models import burning
+from application.softwarerelease import forms
+from application.softwarerelease.models import Softwarerelease
 from utils import R, regular
 
 
 # 查询客户数据列表
-def BurningList(request):
+def SoftwarereleaseList(request):
     # 页码
     page = int(request.GET.get('page', 1))
     # 每页数
     limit = int(request.GET.get('limit', PAGE_LIMIT))
     # 分页查询
-    query = burning.objects.filter(is_delete=False)
+    query = Softwarerelease.objects.filter(is_delete=False)
     # 角色名称模糊筛选
     name = request.GET.get('name')
     if name:
@@ -62,14 +62,19 @@ def BurningList(request):
             data = {
                 'id': item.id,
                 'name': item.name,
-                'code': item.code,
-                'version': item.version,
-                'require': item.require ,
-                'order_time': str(item.order_time.strftime('%Y-%m-%d ')) if item.order_time else None,
-                'delivery_time': str(item.delivery_time.strftime('%Y-%m-%d ')) if item.delivery_time else None,
-                'quantity': item.quantity,
-                'remark': item.remark,
-                'rcerder': item.rcerder,
+                'products': item.products,
+                'history_version': item.history_version,
+                'version': item.version ,
+                'modify_time': str(item.modify_time.strftime('%Y-%m-%d ')) if item.modify_time else None,
+                'version_explain': item.version_explain,
+                'updata': item.updata,
+                'burn_method' : item.burn_method,
+                'upgrade_method': item.upgrade_method,
+                'calibration_method': item.calibration_method,
+                'User_Manual': item.User_Manual,
+                'upgrade_cause': item.upgrade_cause,
+                'documentation_position' : item.documentation_position,
+                'User_Manual_position' : item.User_Manual_position,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d ')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d ')) if item.update_time else None,
             }
@@ -80,31 +85,36 @@ def BurningList(request):
 
 
 # 根据ID获取详情
-def BurningDetail(burning_id):
+def SoftwarereleaseDetail(softwarerelease_id):
     # 根据ID查询客户
-    user = burning.objects.filter(is_delete=False, id=burning_id).first()
+    user = Softwarerelease.objects.filter(is_delete=False, id=softwarerelease_id).first()
     # 查询结果判空
     if not user:
         return None
     # 声明结构体
     data = {
         'id': user.id,
-        'name': user.name,
-        'code': user.code,
-        'version': user.version,
-        'require': user.require,
-        'order_time': str(user.order_time.strftime('%Y-%m-%d ')) if user.order_time else None,
-        'delivery_time': str(user.delivery_time.strftime('%Y-%m-%d ')) if user.delivery_time else None,
-        'quantity': user.quantity,
-        'remark': user.remark,
-        'rcerder': user.rcerder,
+                'name': user.name,
+                'products': user.products,
+                'history_version': user.history_version,
+                'version': user.version ,
+                'modify_time': str(user.modify_time.strftime('%Y-%m-%d ')) if user.modify_time else None,
+                'version_explain': user.version_explain,
+                'updata': user.updata,
+                'burn_method' : user.burn_method,
+                'upgrade_method': user.upgrade_method,
+                'calibration_method': user.calibration_method,
+                'User_Manual': user.User_Manual,
+                'upgrade_cause': user.upgrade_cause,
+                'documentation_position' : user.documentation_position,
+                'User_Manual_position' : user.User_Manual_position,
     }
     # 返回结果
     return data
 
 
 # 添加客户
-def BurningAdd(request):
+def SoftwarereleaseAdd(request):
     try:
         # 接收请求参数
         json_data = request.body.decode()
@@ -117,39 +127,52 @@ def BurningAdd(request):
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
     # 表单验证
-    form = forms.BurningForm(dict_data)
+    form = forms.SoftwarereleaseForm(dict_data)
     if form.is_valid():
-        # 客户名称
+        # 程序名称
         name = form.cleaned_data.get('name')
-        # 规格型号
-        code = form.cleaned_data.get('code')
-        # 版本号
+        # 使用产品
+        products = form.cleaned_data.get('products')
+        # 历史版本
+        history_version = form.cleaned_data.get('history_version')
+        # 当前版本
         version = form.cleaned_data.get('version')
-        # 程序要求
-        require = form.cleaned_data.get('require')
-        # 订单日期
-        order_time = form.cleaned_data.get('order_time')
-        # 交货日期
-        delivery_time = form.cleaned_data.get('delivery_time')
-        # 数量
-        quantity = form.cleaned_data.get('quantity')
-        # 备注
-        remark = form.cleaned_data.get('remark')
-        # rxerder
-        rcerder = form.cleaned_data.get('rcerder')
-        if order_time > delivery_time:
-            return R.failed("交货日期不能小于订单日期")
+        # 修改日期
+        modify_time =  form.cleaned_data.get('modify_time')
+        # 版本说明
+        version_explain = form.cleaned_data.get('version_explain')
+        # 此次更新
+        updata = form.cleaned_data.get('updata')
+        # 烧录方法
+        burn_method = form.cleaned_data.get('burn_method')
+        # 升级方法
+        upgrade_method = form.cleaned_data.get('upgrade_method')
+        # 校准方法
+        calibration_method  = form.cleaned_data.get('calibration_method')
+        # 用户手册
+        User_Manual = form.cleaned_data.get('User_Manual')
+        # 升级原因
+        upgrade_cause = form.cleaned_data.get('upgrade_cause')
+        # 程序和文档公盘位置
+        documentation_position = form.cleaned_data.get('documentation_position')
+        # 用户使用手册和协议公盘位置
+        User_Manual_position = form.cleaned_data.get('User_Manual_position')
         # 创建数据
-        burning.objects.create(
+        Softwarerelease.objects.create(
             name=name,
-            code= code,
+            products= products,
+            history_version=history_version,
             version=version,
-            require=require,
-            order_time=order_time,
-            delivery_time=delivery_time,
-            quantity=quantity,
-            remark= remark,
-            rcerder= rcerder,
+            modify_time=modify_time,
+            version_explain=version_explain,
+            updata=updata,
+            burn_method=burn_method,
+            upgrade_method=upgrade_method,
+            calibration_method=calibration_method,
+            User_Manual=User_Manual,
+            upgrade_cause=upgrade_cause,
+            documentation_position=documentation_position,
+            User_Manual_position= User_Manual_position
         )
         # 返回结果
         return R.ok(msg="创建成功")
@@ -161,7 +184,7 @@ def BurningAdd(request):
 
 
 # 更新客户
-def BurningUpdate(request):
+def SoftwarereleaseUpdate(request):
     try:
         # 接收请求参数
         json_data = request.body.decode()
@@ -171,34 +194,44 @@ def BurningUpdate(request):
         # 数据类型转换
         dict_data = json.loads(json_data)
         # 客户ID
-        burning_id = dict_data.get('id')
+        softwarerelease_id = dict_data.get('id')
         # 客户ID判空
-        if not burning_id or int(burning_id) <= 0:
+        if not softwarerelease_id or int(softwarerelease_id) <= 0:
             return R.failed("客户ID不能为空")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
     # 表单验证
-    form = forms.BurningForm(dict_data)
+    form = forms.SoftwarereleaseForm(dict_data)
     if form.is_valid():
-        # 客户名称
+        # 程序名称
         name = form.cleaned_data.get('name')
-        # 规格型号
-        code = form.cleaned_data.get('code')
-        # 版本号
+        # 使用产品
+        products = form.cleaned_data.get('products')
+        # 历史版本
+        history_version = form.cleaned_data.get('history_version')
+        # 当前版本
         version = form.cleaned_data.get('version')
-        # 程序要求
-        require = form.cleaned_data.get('require')
-        # 订单要求
-        order_time = form.cleaned_data.get('order_time')
-        # 交货日期
-        delivery_time = form.cleaned_data.get('zip_code')
-        # 数量
-        quantity = form.cleaned_data.get('quantity')
-        # 备注
-        remark = form.cleaned_data.get('remark')
-       
-        rcerder = form.cleaned_data.get('rcerder')
+        # 修改日期
+        modify_time = form.cleaned_data.get('modify_time')
+        # 版本说明
+        version_explain = form.cleaned_data.get('version_explain')
+        # 此次更新
+        updata = form.cleaned_data.get('updata')
+        # 烧录方法
+        burn_method = form.cleaned_data.get('burn_method')
+        # 升级方法
+        upgrade_method = form.cleaned_data.get('upgrade_method')
+        # 校准方法
+        calibration_method = form.cleaned_data.get('calibration_method')
+        # 用户手册
+        User_Manual = form.cleaned_data.get('User_Manual')
+        # 升级原因
+        upgrade_cause = form.cleaned_data.get('upgrade_cause')
+        # 程序和文档公盘位置
+        documentation_position = form.cleaned_data.get('documentation_position')
+        # 用户使用手册和协议公盘位置
+        User_Manual_position = form.cleaned_data.get('User_Manual_position')
     else:
         # 获取错误信息
         err_msg = regular.get_err(form)
@@ -206,21 +239,28 @@ def BurningUpdate(request):
         return R.failed(err_msg)
 
     # 根据ID查询客户
-    user = burning.objects.only('id').filter(id=burning_id, is_delete=False).first()
+    user = Softwarerelease.objects.only('id').filter(id=softwarerelease_id, is_delete=False).first()
     # 查询结果判断
     if not user:
         return R.failed("客户不存在")
 
     # 对象赋值
     user.name = name
-    user.code = code
+    user.products = products
+    user.history_version = history_version
     user.version = version
-    user.require = require
-    user.order_time = order_time
-    user.delivery_time = delivery_time
-    user. quantity =  quantity
-    user.remark = remark
-    user.rcerder = rcerder
+    user.modify_time = modify_time
+    user.version_explain = version_explain
+    user.updata = updata
+    user.burn_method = burn_method
+    user.upgrade_method = upgrade_method
+    user.calibration_method = calibration_method
+    user.User_Manual = User_Manual
+    user.upgrade_cause = upgrade_cause
+    user.documentation_position = documentation_position
+    user.User_Manual_position = User_Manual_position
+    print(user.documentation_position)
+    print('------------')
 
     # 更新数据
     user.save()
@@ -229,19 +269,19 @@ def BurningUpdate(request):
 
 
 # 删除客户
-def BurningDelete(burning_id):
+def SoftwarereleaseDelete(softwarerelease_id):
     # 记录ID为空判断
-    if not burning_id:
+    if not softwarerelease_id:
         return R.failed("记录ID不存在")
     # 分裂字符串
-    list = burning_id.split(',')
+    list = softwarerelease_id.split(',')
     # 计数器
     count = 0
     # 遍历数据源
     if len(list) > 0:
         for id in list:
             # 根据ID查询记录
-            user = burning.objects.only('id').filter(id=int(id), is_delete=False).first()
+            user = Softwarerelease.objects.only('id').filter(id=int(id), is_delete=False).first()
             # 查询结果判空
             if not user:
                 return R.failed("不存在")
