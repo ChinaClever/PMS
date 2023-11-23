@@ -116,8 +116,12 @@ INSTALLED_APPS = [
     'application.menu',
     'application.config_web',
     'application.upload',
+    'application.supplier',
     'application.suggestion',
     'application.inspectreport'
+    'application.burning',
+    'application.weldingreport',
+
 ]
 
 MIDDLEWARE = [
