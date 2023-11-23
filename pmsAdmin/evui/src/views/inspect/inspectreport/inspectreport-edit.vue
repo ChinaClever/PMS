@@ -307,14 +307,6 @@ export default {
     updateVisible(value) {
       this.$emit('update:visible', value);
     },
-    formatDateTime(date1) {
-      var date = new Date(date1);
-      var month = ("0" + (date.getMonth() + 1)).slice(-2);
-      var day = ("0" + date.getDate()).slice(-2);
-      var hours = ("0" + date.getHours()).slice(-2);
-      var minutes = ("0" + date.getMinutes()).slice(-2);
-      return date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
-    },
     isNubmer(rule, value, callback) {
               const intValue = Number(value);
               if (!Number.isInteger(intValue) || intValue <= 0) {
