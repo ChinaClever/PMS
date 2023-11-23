@@ -24,12 +24,18 @@ def WeldingList(request):
     keyword  = request.GET.get('keyword')
     if keyword :
         query = query.filter(
-            Q(client_name__icontains=keyword) |  # client_name字段包含关键字
-            Q(product_name__icontains=keyword) |  # product_name字段包含关键字
-            Q(shape__icontains=keyword)  # instruction字段包含关键字
+            Q(client_name__icontains=keyword) |
+            Q(product_name__icontains=keyword) |
+            Q(work_order__icontains=keyword) |
+            Q(shape__icontains=keyword)
         )
     # 排序
-    query = query.order_by("-id")
+    sort = request.GET.get('sort')
+    order = request.GET.get('order')
+    if sort and order:
+        query = query.order_by(f'-{sort}' if order == 'desc' else sort)
+    else:
+        query = query.order_by("-id")
     # 分页设置
     paginator = Paginator(query, limit)
     # 记录总数
@@ -52,6 +58,7 @@ def WeldingList(request):
         for item in welding_list:
             data = {
                 'id': item.id,
+                'work_order': item.work_order,
                 'order_time': str(item.order_time.strftime('%Y-%m-%d')),
                 'client_name': item.client_name,
                 'shape': item.shape,
@@ -81,6 +88,7 @@ def WeldingDetail(welding_id):
     # 声明结构体
     data = {
         'id': welding.id,
+        'work_order': welding.work_order,
         'order_time': str(welding.order_time.strftime('%Y-%m-%d')),
         'client_name': welding.client_name,
         'shape': welding.shape,
@@ -114,6 +122,8 @@ def WeldingAdd(request):
     # 表单验证
     form = forms.WeldingForm(dict_data)
     if form.is_valid():
+        # 工单号
+        work_order = form.cleaned_data.get('work_order')
         # 下单日期
         order_time = form.cleaned_data.get('order_time')
         # 客户名称
@@ -138,6 +148,7 @@ def WeldingAdd(request):
         remark = form.cleaned_data.get('remark')
         # 创建数据
         Welding.objects.create(
+            work_order=work_order,
             order_time=order_time,
             client_name=client_name,
             shape=shape,
@@ -180,6 +191,8 @@ def WeldingUpdate(request):
     # 表单验证
     form = forms.WeldingForm(dict_data)
     if form.is_valid():
+        # 工单号
+        work_order = form.cleaned_data.get('work_order')
         # 下单日期
         order_time = form.cleaned_data.get('order_time')
         # 客户名称
@@ -214,6 +227,7 @@ def WeldingUpdate(request):
     if not welding:
         return R.failed("数据不存在")
 # 对象赋值
+    welding.work_order = work_order
     welding.order_time = order_time
     welding.client_name = client_name
     welding.shape = shape
@@ -257,18 +271,3 @@ def WeldingDelete(welding_id):
             count += 1
     # 返回结果
     return R.ok(msg="本次共删除{0}条数据".format(count))
-
-
-# 获取数据列表
-def getWeldingList():
-    # 查询数据列表
-    list = Welding.objects.filter(is_delete=False, status=1).values()
-    # 实例化列表
-    welding_list = []
-    # 遍历数据源
-    if list:
-        for v in list:
-            # 加入数组
-            welding_list.append(v)
-    # 返回结果
-    return welding_list

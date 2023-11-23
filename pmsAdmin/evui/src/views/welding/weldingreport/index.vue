@@ -14,7 +14,7 @@
                 <el-input
                   clearable
                   v-model="where.keyword"
-                  placeholder="客户名称、规格型号或客户名称"/>
+                  placeholder="工单号、客户名称、规格型号或客户名称"/>
               </el-form-item>
             </el-col>
             <el-col :lg="6" :md="12">
@@ -134,12 +134,20 @@
             align: 'center',
             fixed: "left"
           },
+          // {
+          //   prop: 'id',
+          //   label: 'ID',
+          //   width: 60,
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   fixed: "left"
+          // },
           {
-            prop: 'id',
-            label: 'ID',
-            width: 60,
-            align: 'center',
+            prop: 'work_order',
+            label: '工单号',
             showOverflowTooltip: true,
+            minWidth: 120,
+            align: 'center',
             fixed: "left"
           },
           {

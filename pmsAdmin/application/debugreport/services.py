@@ -24,9 +24,10 @@ def DebugList(request):
     keyword  = request.GET.get('keyword')
     if keyword :
         query = query.filter(
-            Q(client_name__icontains=keyword) |  # client_name字段包含关键字
-            Q(product_name__icontains=keyword) |  # product_name字段包含关键字
-            Q(shape__icontains=keyword)  # instruction字段包含关键字
+            Q(client_name__icontains=keyword) |
+            Q(product_name__icontains=keyword) |
+            Q(work_order__icontains=keyword) |
+            Q(shape__icontains=keyword)
         )
     # 排序
     sort = request.GET.get('sort')
@@ -57,6 +58,7 @@ def DebugList(request):
         for item in debug_list:
             data = {
                 'id': item.id,
+                'work_order': item.work_order,
                 'order_time': str(item.order_time.strftime('%Y-%m-%d')),
                 'client_name': item.client_name,
                 'shape': item.shape,
@@ -86,6 +88,7 @@ def DebugDetail(debug_id):
     # 声明结构体
     data = {
         'id': debug.id,
+        'work_order': debug.work_order,
         'order_time': str(debug.order_time.strftime('%Y-%m-%d')),
         'client_name': debug.client_name,
         'shape': debug.shape,
@@ -119,6 +122,8 @@ def DebugAdd(request):
     # 表单验证
     form = forms.DebugForm(dict_data)
     if form.is_valid():
+        # 工单号
+        work_order = form.cleaned_data.get('work_order')
         # 下单日期
         order_time = form.cleaned_data.get('order_time')
         # 客户名称
@@ -143,6 +148,7 @@ def DebugAdd(request):
         remark = form.cleaned_data.get('remark')
         # 创建数据
         Debug.objects.create(
+            work_order=work_order,
             order_time=order_time,
             client_name=client_name,
             shape=shape,
@@ -185,6 +191,8 @@ def DebugUpdate(request):
     # 表单验证
     form = forms.DebugForm(dict_data)
     if form.is_valid():
+        # 工单号
+        work_order = form.cleaned_data.get('work_order')
         # 下单日期
         order_time = form.cleaned_data.get('order_time')
         # 客户名称
@@ -219,6 +227,7 @@ def DebugUpdate(request):
     if not debug:
         return R.failed("数据不存在")
 # 对象赋值
+    debug.work_order = work_order
     debug.order_time = order_time
     debug.client_name = client_name
     debug.shape = shape
@@ -262,18 +271,3 @@ def DebugDelete(debug_id):
             count += 1
     # 返回结果
     return R.ok(msg="本次共删除{0}条数据".format(count))
-
-
-# 获取数据列表
-def getDebugList():
-    # 查询数据列表
-    list = Debug.objects.filter(is_delete=False, status=1).values()
-    # 实例化列表
-    debug_list = []
-    # 遍历数据源
-    if list:
-        for v in list:
-            # 加入数组
-            debug_list.append(v)
-    # 返回结果
-    return debug_list

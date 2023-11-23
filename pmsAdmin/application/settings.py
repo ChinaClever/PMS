@@ -118,10 +118,12 @@ INSTALLED_APPS = [
     'application.upload',
     'application.supplier',
     'application.suggestion',
-    'application.inspectreport'
+    'application.inspectreport',
     'application.burning',
     'application.weldingreport',
 
+    'application.debugdata',
+    'application.debugdata_teststep',
 ]
 
 MIDDLEWARE = [

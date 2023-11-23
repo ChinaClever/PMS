@@ -13,6 +13,16 @@
         :rules="rules"
         label-width="82px">
 
+        <el-form-item
+          label="工单号:"
+          prop="work_order">
+          <el-input
+            :maxlength="20"
+            v-model="form.work_order"
+            placeholder="请输入工单号"
+            clearable/>
+        </el-form-item>
+
         <el-form-item label="下单日期:" prop="order_time">
             <el-date-picker
               type="date"
@@ -144,6 +154,9 @@
         form: Object.assign({status: 1}, this.data),
         // 表单验证规则
         rules: {
+          work_order: [
+          {required: true, message: '请输入工单号', trigger: 'blur'}
+        ],
           order_time: [
           {required: true, message: '请输入下单时间', trigger: 'blur'}
         ],

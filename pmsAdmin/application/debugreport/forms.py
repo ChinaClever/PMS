@@ -6,6 +6,13 @@ from application.debugreport import models
 
 # 表单验证
 class DebugForm(forms.ModelForm):
+    # 工单号
+    work_order = forms.CharField(
+        max_length=255,
+        error_messages={
+            'required': '工单号不能为空',
+        }
+    )
     # 下单日期
     order_time = forms.DateField(
         input_formats=['%Y-%m-%d'],
@@ -96,5 +103,5 @@ class DebugForm(forms.ModelForm):
         model = models.Debug
         # 指定部分字段验证
         fields = ['order_time', 'client_name', 'shape', 'product_name', 'product_count', 'submit_time', 'start_time', 'finish_time', 'work_hours',
-                  'instruction', 'remark']
+                  'instruction', 'remark', 'work_order']
 
