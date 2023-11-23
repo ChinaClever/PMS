@@ -116,7 +116,8 @@ INSTALLED_APPS = [
     'application.menu',
     'application.config_web',
     'application.upload',
-    'application.suggestion'
+    'application.suggestion',
+    'application.inspectreport'
 ]
 
 MIDDLEWARE = [
