@@ -117,7 +117,7 @@ INSTALLED_APPS = [
     'application.config_web',
     'application.upload',
     'application.supplier',
-    'application.suggestion'
+    'application.suggestion',
     'application.inspectreport'
 ]
 
