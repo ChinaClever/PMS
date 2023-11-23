@@ -52,6 +52,8 @@
               placeholder="请输入产品型号"
               clearable/>
           </el-form-item>
+        </el-col>
+        <el-col :sm="12">
           <el-form-item
             label="检验数量:"
             prop="examine_an_amount">
@@ -227,6 +229,23 @@ export default {
           {
             validator: (rule, value, callback) => {
               const intValue = Number(value);
+              if (!Number.isInteger(intValue) || intValue < 0) {
+                callback(new Error('数量必须为大于等于0的整数'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
+        ],
+        target_pass_rate:[
+          {
+            validator: (rule, value, callback) => {
+              const intValue = Number(value);
+              if (!intValue) {
+                callback();
+                return;
+              }
               if (!Number.isInteger(intValue) || intValue < 0) {
                 callback(new Error('数量必须为大于等于0的整数'));
               } else {
