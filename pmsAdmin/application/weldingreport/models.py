@@ -10,6 +10,8 @@ from application.models import BaseModel
 # blank：指定该字段是否可以为空，默认为True，表示允许该字段的值为空。
 # null：指定该字段在数据库中是否允许为空，默认为False，表示不允许该字段的值为空。
 class Welding(BaseModel):
+    # 工单号
+    work_order = models.CharField(max_length=255, verbose_name="工单号", help_text="工单号")
     # 下单日期
     order_time = models.DateTimeField(auto_now_add=False, verbose_name="下单日期", max_length=11)
     # 客户名称
@@ -38,7 +40,4 @@ class Welding(BaseModel):
         db_table = settings.TABLE_PREFIX + "weldingreport"
         verbose_name = "焊接报表"
         verbose_name_plural = verbose_name
-
-    def __str__(self):
-        return '焊接报表{}'.format(self.name)
 

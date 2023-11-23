@@ -104,4 +104,6 @@ urlpatterns = [
     path('burningreport/', include('application.burning.urls')),
     # 软件发布
     path('softwarerelease/', include('application.softwarerelease.urls')),
+    # 调试报表
+    path('debugdata/', include('application.debugdata.urls')),
 ]

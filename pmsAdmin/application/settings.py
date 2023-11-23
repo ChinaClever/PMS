@@ -122,6 +122,8 @@ INSTALLED_APPS = [
     'application.burning',
     'application.weldingreport',
 
+    'application.debugdata',
+    'application.debugdata_teststep',
 ]
 
 MIDDLEWARE = [
