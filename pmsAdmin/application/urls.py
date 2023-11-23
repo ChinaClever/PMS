@@ -96,4 +96,6 @@ urlpatterns = [
     path('weldingreport/', include('application.weldingreport.urls')),
     # 调试报表
     path('debugreport/', include('application.debugreport.urls')),
+    #维修报表
+    path('repairreport/', include('application.repairreport.urls')),
 ]

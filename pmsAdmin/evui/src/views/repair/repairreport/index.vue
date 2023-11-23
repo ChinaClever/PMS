@@ -60,7 +60,7 @@
                   placeholder="请输入优先级(1-10)"/>
               </el-form-item>
             </el-col>-->
-            
+
             <el-col :lg="6" :md="12">
               <div class="ele-form-actions">
                 <el-button
@@ -341,7 +341,7 @@
             formatter: (row, column, cellValue) => {
               return this.$util.toDateString(cellValue);
             }
-            
+
           },
           {
           columnKey: 'action',
