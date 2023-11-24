@@ -145,7 +145,7 @@ export default {
           fixed: "left"
         },
         {
-          prop: 'work_order_id',
+          prop: 'work_order',
           label: '工单号',
           showOverflowTooltip: true,
           minWidth: 200,
