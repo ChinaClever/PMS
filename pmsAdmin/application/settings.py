@@ -124,6 +124,8 @@ INSTALLED_APPS = [
 
     'application.debugdata',
     'application.debugdata_teststep',
+    'application.testdata',
+    'application.testdata_teststep',
 ]
 
 MIDDLEWARE = [
