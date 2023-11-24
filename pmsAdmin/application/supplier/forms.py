@@ -62,9 +62,11 @@ class DictForm(forms.ModelForm):
             'max_length': '字典备注长度不得超过255个字符',
         }
     )'''
-    work_order = forms.IntegerField(
+    work_order = forms.CharField(
+        max_length=150,
         error_messages={
             'required': '工单号不能为空',
+            'max_length': '工单号不得超过150个字符',
         }
     )
     customer = forms.CharField(

@@ -107,7 +107,7 @@
                     <el-input
                       v-model="form.analysis"
                       :rows="4"
-                      maxlength="200"
+                      maxlength="150"
                       show-word-limit
                       type="textarea"/>
         </el-form-item>
@@ -115,7 +115,7 @@
                     <el-input
                       v-model="form.solution"
                       :rows="4"
-                      maxlength="200"
+                      maxlength="150"
                       show-word-limit
                       type="textarea"/>
         </el-form-item>
@@ -124,7 +124,7 @@
                     <el-input
                       v-model="form.notes"
                       :rows="4"
-                      maxlength="200"
+                      maxlength="150"
                       show-word-limit
                       type="textarea"/>
         </el-form-item>

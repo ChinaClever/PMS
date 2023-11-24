@@ -32,7 +32,7 @@ from config.env import TABLE_PREFIX
 # 字典模型
 class Dict(BaseModel):
 
-    work_order = models.IntegerField(null=False,verbose_name="工单号",help_text="工单号")
+    work_order = models.CharField(null=False,max_length=150,verbose_name="工单号",help_text="工单号")
     customer = models.CharField(null=False, max_length=150, verbose_name="客户", help_text="客户")
     product_name = models.CharField(null=False, max_length=150, verbose_name="产品", help_text="产品")
     product_type = models.CharField(null=False, max_length=150, verbose_name="产品类型", help_text="产品类型")
