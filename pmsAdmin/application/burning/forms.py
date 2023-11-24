@@ -28,7 +28,7 @@ from application.softwarerelease import models
 
 class BurningForm(forms.ModelForm):
     # 客户名称
-    work_order_id = forms.CharField(
+    work_order = forms.CharField(
         required=True,
         max_length=150,
         error_messages={
@@ -118,5 +118,5 @@ class BurningForm(forms.ModelForm):
         # 绑定模型
         model = models.Softwarerelease
         # 指定部分字段验证
-        fields = ['work_order_id','name', 'code', 'version', 'require', 'order_time', 'delivery_time', 'quantity', 'remark', 'rcerder',
+        fields = ['work_order','name', 'code', 'version', 'require', 'order_time', 'delivery_time', 'quantity', 'remark', 'rcerder',
                   ]

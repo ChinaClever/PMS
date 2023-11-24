@@ -116,7 +116,7 @@ INSTALLED_APPS = [
     'application.menu',
     'application.config_web',
     'application.upload',
-    'application.supplier',
+    #'application.supplier',
     'application.repairreport',
     'application.suggestion',
     'application.inspectreport',
@@ -127,6 +127,8 @@ INSTALLED_APPS = [
     'application.debugdata_teststep',
     'application.testdata',
     'application.testdata_teststep',
+    'application.softwarerelease',
+
 ]
 
 MIDDLEWARE = [
