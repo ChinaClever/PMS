@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('update_user', models.IntegerField(default=0, verbose_name='更新人')),
                 ('update_time', models.DateTimeField(auto_now=True, max_length=11, null=True, verbose_name='更新时间')),
                 ('is_delete', models.BooleanField(default=0, verbose_name='逻辑删除')),
-                ('work_order_id', models.CharField(help_text='工单号', max_length=255, verbose_name='工单号')),
+                ('work_order', models.CharField(help_text='工单号', max_length=255, verbose_name='工单号')),
                 ('start_time', models.DateTimeField(verbose_name='开始时间')),
                 ('end_time', models.DateTimeField(verbose_name='结束时间')),
                 ('commit_user', models.CharField(help_text='填写者', max_length=40, verbose_name='填写者')),
