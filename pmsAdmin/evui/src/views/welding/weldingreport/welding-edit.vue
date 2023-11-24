@@ -182,9 +182,6 @@
           {required: true, message: '请输入完成时间', trigger: 'blur'},
           { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
         ],
-          work_hours: [
-          {required: true, message: '请输入所用工时', trigger: 'blur'}
-        ],
         },
         // 提交状态
         loading: false,

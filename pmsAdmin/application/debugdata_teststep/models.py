@@ -12,12 +12,12 @@ class DebugDataTestStep(models.Model):
     # 调试数据表ID
     debugdata_id = models.IntegerField(default=0, verbose_name="调试数据表ID", help_text="调试数据表ID")
     # 测试步骤编号
-    no = models.CharField(max_length=30, verbose_name="测试步骤编号", help_text="测试步骤编号")
+    no = models.CharField(null=True, max_length=30, verbose_name="测试步骤编号", help_text="测试步骤编号")
     # 测试步骤名称
-    name = models.CharField(max_length=150, verbose_name="测试步骤名称", help_text="测试步骤名称")
+    name = models.CharField(null=True, max_length=150, verbose_name="测试步骤名称", help_text="测试步骤名称")
     # 测试步骤结果
     RESULT_CHOICES = ((1, "通过"), (2, "失败"),)
-    result = models.IntegerField(choices=RESULT_CHOICES, default=1, verbose_name="结果：1-通过 2-失败",
+    result = models.IntegerField(null=True, choices=RESULT_CHOICES, default=1, verbose_name="结果：1-通过 2-失败",
                                  help_text="结果：1-通过 2-失败")
     class Meta:
         # 数据表名

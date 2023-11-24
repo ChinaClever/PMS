@@ -113,7 +113,7 @@ def DebugDataList(request):
     if sort and order:
         query = query.order_by(f'-{sort}' if order == 'desc' else sort)
     else:
-        query = query.order_by("id")
+        query = query.order_by("-id")
     # 分页设置
     paginator = Paginator(query, limit)
     # 记录总数
@@ -146,8 +146,8 @@ def DebugDataList(request):
                 'clientName': item.clientName,
                 'companyName': item.companyName,
                 'protocolVersion': item.protocolVersion,
-                'testStartTime': str(item.testStartTime.strftime('%Y-%m-%d %H:%M:%S')),
-                'testEndTime': str(item.testEndTime.strftime('%Y-%m-%d %H:%M:%S')),
+                'testStartTime': str(item.testStartTime.strftime('%Y-%m-%d %H:%M:%S')) if item.testStartTime else None,
+                'testEndTime': str(item.testEndTime.strftime('%Y-%m-%d %H:%M:%S')) if item.testEndTime else None,
                 'testTime': item.testTime,
                 'testStep': testStep_list,
             }
@@ -176,8 +176,8 @@ def DebugDataDetail(debugdata_id):
         'clientName': debugdata.clientName,
         'companyName': debugdata.companyName,
         'protocolVersion': debugdata.protocolVersion,
-        'testStartTime': str(debugdata.testStartTime.strftime('%Y-%m-%d %H:%M:%S')),
-        'testEndTime': str(debugdata.testEndTime.strftime('%Y-%m-%d %H:%M:%S')),
+        'testStartTime': str(debugdata.testStartTime.strftime('%Y-%m-%d %H:%M:%S')) if debugdata.testStartTime else None,
+        'testEndTime': str(debugdata.testEndTime.strftime('%Y-%m-%d %H:%M:%S')) if debugdata.testEndTime else None,
         'testTime': debugdata.testTime,
         'testStep': testStep_list,
     }
@@ -186,7 +186,6 @@ def DebugDataDetail(debugdata_id):
 
 @transaction.atomic
 def DebugDataAdd(request):
-
     try:
         # 接收请求参数
         json_data = request.body.decode()
@@ -226,13 +225,14 @@ def DebugDataAdd(request):
             create_user=uid(request)
         )
         # 存id和teststep数据
-        for item in testStep:
-            DebugDataTestStep.objects.create(
-            debugdata_id=Debugdata.id,
-            no=item.get('no'),
-            name = item.get('name'),
-            result = item.get('result'),
-            )
+        if testStep:
+            for item in testStep:
+                DebugDataTestStep.objects.create(
+                debugdata_id=Debugdata.id,
+                no=item.get('no'),
+                name = item.get('name'),
+                result = item.get('result'),
+                )
         # 返回结果
         return R.ok(msg="创建成功")
     except Exception as e:
@@ -241,7 +241,7 @@ def DebugDataAdd(request):
 
 # 更新
 @transaction.atomic
-def DebugUpdate(request):
+def DebugDataUpdate(request):
     try:
         # 接收请求参数
         json_data = request.body.decode()
@@ -294,7 +294,7 @@ def DebugUpdate(request):
         DebugDataTestStep.objects.filter(debugdata_id=debugdata_id).delete()
         for item in testStep:
             DebugDataTestStep.objects.create(
-            debugdata_id=Debugdata.id,
+            debugdata_id=debugdata.id,
             no=item.get('no'),
             name = item.get('name'),
             result = item.get('result'),
@@ -305,43 +305,28 @@ def DebugUpdate(request):
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
 
-# 删除
-def DebugDelete(debug_id):
+# 删除（不删dabugdata_teststep表）
+def DebugDataDelete(debugdata_id):
     # 记录ID为空判断
-    if not debug_id:
+    if not debugdata_id:
         return R.failed("记录ID不存在")
     # 分裂字符串
-    list = debug_id.split(',')
+    list = debugdata_id.split(',')
     # 计数器
     count = 0
     # 遍历数据源
     if len(list) > 0:
         for id in list:
             # 根据ID查询记录
-            debug = Debugdata.objects.only('id').filter(id=int(id), is_delete=False).first()
+            debugdata = Debugdata.objects.only('id').filter(id=int(id), is_delete=False).first()
             # 查询结果判空
-            if not debug:
+            if not debugdata:
                 return R.failed("数据不存在")
             # 设置删除标识
-            debug.is_delete = True
+            debugdata.is_delete = True
             # 更新记录
-            debug.save()
+            debugdata.save()
             # 计数器+1
             count += 1
     # 返回结果
     return R.ok(msg="本次共删除{0}条数据".format(count))
-
-
-# 获取数据列表
-def getDebugList():
-    # 查询数据列表
-    list = Debugdata.objects.filter(is_delete=False, status=1).values()
-    # 实例化列表
-    debug_list = []
-    # 遍历数据源
-    if list:
-        for v in list:
-            # 加入数组
-            debug_list.append(v)
-    # 返回结果
-    return debug_list

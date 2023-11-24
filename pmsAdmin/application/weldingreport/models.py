@@ -29,7 +29,7 @@ class Welding(BaseModel):
     # 完成日期
     finish_time = models.DateTimeField(auto_now_add=False, verbose_name="开始日期", max_length=11)
     # 所用工时
-    work_hours = models.IntegerField(default=0, verbose_name="所用工时", help_text="所用工时")
+    work_hours = models.IntegerField(null=True, default=0, verbose_name="所用工时", help_text="所用工时")
     # 具体说明
     instruction = models.CharField(null=True, max_length=150, verbose_name="具体说明", help_text="具体说明")
     # 备注

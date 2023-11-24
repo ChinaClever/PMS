@@ -17,7 +17,6 @@
           label="工单号:"
           prop="work_order">
           <el-input
-            :maxlength="20"
             v-model="form.work_order"
             placeholder="请输入工单号"
             clearable/>
@@ -181,9 +180,6 @@
           finish_time: [
           {required: true, message: '请输入完成时间', trigger: 'blur'},
           { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
-        ],
-          work_hours: [
-          {required: true, message: '请输入所用工时', trigger: 'blur'}
         ],
         },
         // 提交状态

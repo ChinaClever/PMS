@@ -236,9 +236,9 @@
           },
           {
             prop: 'testTime',
-            label: '测试时间',
+            label: '测试时间/秒',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 120,
             align: 'center',
           },
           {
@@ -261,11 +261,28 @@
         showImport: false
       };
     },
+    created() {
+    this.startTimer(); // 启动定时器
+  },
+    beforeDestroy() {
+      this.stopTimer(); // 在组件销毁前停止定时器，避免内存泄漏
+    },
+
     methods: {
       /* 刷新表格 */
       reload() {
         this.$refs.table.reload({page: 1, where: this.where});
       },
+      startTimer() {
+      // 每隔5秒刷新数据
+      this.timer = setInterval(() => {
+        this.reload();
+      }, 60000);
+    },
+    stopTimer() {
+      // 停止定时器
+      clearInterval(this.timer);
+    },
       /* 重置搜索 */
       reset() {
         this.where = {};
