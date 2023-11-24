@@ -120,8 +120,8 @@ INSTALLED_APPS = [
     'application.suggestion',
     'application.inspectreport',
     'application.burning',
+    'application.debugreport',
     'application.weldingreport',
-
     'application.debugdata',
     'application.debugdata_teststep',
     'application.testdata',
