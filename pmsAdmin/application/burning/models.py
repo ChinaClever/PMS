@@ -32,7 +32,7 @@ from config.env import TABLE_PREFIX
 # 烧录表格
 class burning(BaseModel):
     # 工单号
-    work_order_id = models.CharField(null=False, max_length=150, verbose_name="工单号", help_text="工单号")
+    work_order = models.CharField(null=False, max_length=150, verbose_name="工单号", help_text="工单号")
     # 客户名称
     name = models.CharField(null=False, max_length=6, verbose_name="客户名称", help_text="客户名称")
     # 规格型号

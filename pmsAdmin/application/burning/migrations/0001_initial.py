@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('update_user', models.IntegerField(default=0, verbose_name='更新人')),
                 ('update_time', models.DateTimeField(auto_now=True, max_length=11, null=True, verbose_name='更新时间')),
                 ('is_delete', models.BooleanField(default=0, verbose_name='逻辑删除')),
-                ('work_order_id' ,models.CharField(help_text='工单号', max_length=150, null=True, verbose_name='工单号')),
+                ('work_order' ,models.CharField(help_text='工单号', max_length=150, null=True, verbose_name='工单号')),
                 ('name', models.CharField(help_text='客户名称', max_length=6, verbose_name='客户名称')),
                 ('code', models.CharField(help_text='规格型号', max_length=20, verbose_name='规格型号')),
                 ('version', models.CharField(help_text='版本号', max_length=20, null=True, verbose_name='版本号')),
