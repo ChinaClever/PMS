@@ -1,0 +1,290 @@
+<template>
+  <el-dialog
+    :title="isUpdate?'修改数据':'添加数据'"
+    :visible="visible"
+    width="860px"
+    :destroy-on-close="true"
+    :lock-scroll="false"
+    @update:visible="updateVisible">
+    <el-form
+      ref="form"
+      :model="form"
+      :rules="rules"
+      label-width="132px">
+      <el-form-item
+        label="程序名称:"
+        prop="name">
+        <el-input
+          :maxlength="20"
+          v-model="form.name"
+          placeholder="请输入程序名称"
+          clearable/>
+      </el-form-item>
+      <el-form-item
+        label="使用产品:"
+        prop="products">
+        <el-input
+          :maxlength="20"
+          v-model="form.products"
+          placeholder="请输入使用产品"
+          clearable/>
+      </el-form-item>
+      <el-form-item
+        label="历史版本:"
+        prop="history_version">
+        <el-input
+          :maxlength="20"
+          v-model="form.history_version"
+          placeholder="请输入历史版本"
+          clearable/>
+      </el-form-item>
+      <el-form-item
+        label="当前版本:"
+        prop="version">
+        <el-input
+          :maxlength="20"
+          v-model="form.version"
+          placeholder="请输入程序要求"
+          clearable/>
+      </el-form-item>
+      <el-form-item
+        label="修改日期:"
+        prop="modify_time">
+        <el-date-picker
+              type="date"
+              class="ele-fluid"
+              v-model="form.modify_time"
+              value-format="yyyy-MM-dd"
+              placeholder="请选择修改日期"/>
+      </el-form-item>
+      <el-form-item
+      label="版本说明:"
+        prop="version_explain">
+        <el-select
+          clearable
+          v-model="form.version_explain"
+          placeholder="请选择版本说明"
+          class="ele-fluid">
+          <el-option label="公司标准" value="公司标准"/>
+          <el-option label="特殊说明" value="特殊说明"/>
+          <el-option label="版本升级" value="版本升级"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="此次更新:"
+        prop="updata">
+        <el-select
+          clearable
+          v-model="form.updata"
+          placeholder="请选择此次更新"
+          class="ele-fluid">
+          <el-option label="立刻更新（所有在途订单需升级)" value="立刻更新（所有在途订单需升级)"/>
+          <el-option label="正常更新（新订单需升级)" value="正常更新（新订单需升级)"/>
+          <el-option label="临时更新（针对某一订单升级）" value="临时更新（针对某一订单升级）"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="烧录方法:"
+        prop="burn_method">
+        <el-select
+          clearable
+          v-model="form.burn_method"
+          placeholder="请选择烧录方法"
+          class="ele-fluid">
+          <el-option label="未变更，与前一版本相同" value="未变更，与前一版本相同"/>
+          <el-option label="已变更，见附件" value="已变更，见附件"/>
+        </el-select>
+      </el-form-item>
+      <!-- <el-form-item
+        label="升级方法:"
+        prop="upgrade_method">
+        <el-radio-group v-model="form.upgrade_method">
+          <el-radio label="未变更，与前一版本相同"></el-radio>
+          <el-radio label="已变更，见附件"></el-radio>
+        </el-radio-group> 
+      </el-form-item> -->
+      <el-form-item label="升级方法:">
+        <el-select
+          clearable
+          v-model="form.upgrade_method"
+          placeholder="请选择升级方法"
+          class="ele-fluid">
+          <el-option label="未变更，与前一版本相同" value="未变更，与前一版本相同"/>
+          <el-option label="已变更，见附件" value="已变更，见附件"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="校准方法:">
+        <el-select
+          clearable
+          v-model="form.calibration_method"
+          placeholder="请选择校准方法"
+          class="ele-fluid">
+          <el-option label="未变更，与前一版本相同" value="未变更，与前一版本相同"/>
+          <el-option label="已变更，见附件" value="已变更，见附件"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="用户手册:">
+        <el-select
+          clearable
+          v-model="form.User_Manual"
+          placeholder="请选择用户手册"
+          class="ele-fluid">
+          <el-option label="未变更，与前一版本相同" value="未变更，与前一版本相同"/>
+          <el-option label="已变更，见附件" value="已变更，见附件"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="升级原因:"
+        prop="upgrade_cause">
+        <el-input
+          :maxlength="20"
+          v-model="form.upgrade_cause"
+          placeholder="请输入升级原因"
+          clearable/>
+      </el-form-item>
+      <el-form-item
+        label="程序和文档公盘位置:"
+        prop="documentation_position">
+        <el-input
+          :maxlength="20"
+          v-model="form.documentation_position"
+          placeholder="请输入程序和文档公盘位置"
+          clearable/>
+      </el-form-item>
+      <el-form-item
+        label="用户使用手册和协议公盘位置:"
+        prop="User_Manual_position">
+        <el-input
+          :maxlength="20"
+          v-model="form.User_Manual_position"
+          placeholder="请输入用户使用手册和协议公盘位置"
+          clearable/>
+      </el-form-item>
+    </el-form>
+    <div slot="footer">
+      <el-button @click="updateVisible(false)">取消</el-button>
+      <el-button
+        type="primary"
+        @click="save"
+        :loading="loading">保存
+      </el-button>
+    </div>
+  </el-dialog>
+</template>
+
+<script>
+export default {
+  name: 'softwarereleaseedit',
+  props: {
+    // 弹窗是否打开
+    visible: Boolean,
+    // 修改回显的数据
+    data: Object
+  },
+  data() {
+    return {
+      fileList: [],
+      selectedFilePath: '', // 添加这一行用于存储当前选择的文件路径
+    radio1: '公司标准',
+    // 表单数据
+    form: Object.assign({status: 1, other_explain: ''}, this.data),
+      // 表单验证规则
+      rules: {
+        name: [
+          {required: true, message: '请输入程序名称', trigger: 'blur'}
+        ],
+        products: [
+          {required: true, message: '请输入使用产品', trigger: 'blur'}
+        ],
+        history_version: [
+          {required: true, message: '请输入历史版本', trigger: 'blur'}
+        ],
+        version: [
+          {required: true, message: '请输入当前版本', trigger: 'blur'}
+        ],
+       
+        modify_time: [
+          {required: true, message: '请输入修改日期', trigger: 'blur'}
+        ],
+        version_explain: [
+          {required: true, message: '请输入版本说明', trigger: 'blur'}
+        ],
+        updata: [
+          {required: true, message: '请输入此次更新', trigger: 'blur'}
+        ],
+        burn_method: [
+          {required: true, message: '请输入烧录方法', trigger: 'blur'}
+        ],
+        upgrade_method: [
+          {required: true, message: '请输入升级方法', trigger: 'blur'}
+        ],
+        calibration_method :[
+          {required: true, message: '请输入校准方法', trigger: 'blur'}
+        ],
+        User_Manual:[
+          {required: true, message: '请输入用户手册', trigger: 'blur'}
+        ],
+         upgrade_cause:[
+          {required: true, message: '请输入升级原因', trigger: 'blur'}
+        ],
+        
+      },
+      
+      // 提交状态
+      loading: false,
+      // 是否是修改
+      isUpdate: false
+    };
+  },
+  watch: {
+    data() {
+      if (this.data && this.data.id) {
+        this.form = Object.assign({}, this.data);
+        this.isUpdate = true;
+      } else {
+        this.form = {};
+        this.isUpdate = false;
+      }
+    }
+  },
+  methods: {
+  /* 保存编辑 */
+  save() {
+    this.$refs['form'].validate((valid) => {
+      if (valid) {
+
+        // 发送请求进行保存操作
+        this.loading = true;
+        this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/softwarerelease/update' : '/softwarerelease/add', this.form).then(res => {
+          this.loading = false;
+          if (res.data.code === 0) {
+            this.$message.success(res.data.msg);
+            if (!this.isUpdate) {
+              this.form = {};
+            }
+            this.updateVisible(false);
+            this.$emit('done');
+          } else {
+            this.$message.error(res.data.msg);
+          }
+        }).catch(e => {
+          this.loading = false;
+          this.$message.error(e.message);
+        });
+      } else {
+        return false;
+      }
+    });
+  },
+  /* 更新visible */
+  updateVisible(value) {
+    this.$emit('update:visible', value);
+  }
+}
+}
+</script>
+
+<style scoped>
+</style>

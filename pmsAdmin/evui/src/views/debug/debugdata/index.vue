@@ -14,7 +14,7 @@
                 <el-input
                   clearable
                   v-model="where.keyword"
-                  placeholder="客户名称、规格型号或客户名称"/>
+                  placeholder="软件类型、产品类型或结果"/>
               </el-form-item>
             </el-col>
             <el-col :lg="6" :md="12">
@@ -22,7 +22,7 @@
                 <el-button
                   type="primary"
                   icon="el-icon-search"
-                  class="ele-btn-icon"
+                  class="ele-btn-icon"                
                   @click="reload">查询
                 </el-button>
                 <el-button @click="reset">重置</el-button>
@@ -38,6 +38,26 @@
           :columns="columns"
           :selection.sync="selection"
           height="calc(100vh - 315px)">
+          <!-- 测试步骤列 -->
+        <template slot="testStep" slot-scope="{row}">
+          <el-collapse>
+            <el-collapse-item  title="测试步骤">
+              <div v-for="step in row.testStep" :key="step.no">
+                <div>序号：{{ step.no }}</div>
+                <div>名称：{{ step.name }}</div>
+                <div>结果：<el-tag v-if="step.result === 1" type="success" size="small">通过</el-tag>
+                          <el-tag v-if="step.result === 0" type="danger" size="small">失败</el-tag>
+                </div>
+                <br>
+              </div>  
+            </el-collapse-item>
+          </el-collapse>
+        </template>
+          <!-- 结果列 -->
+        <template slot="result" slot-scope="{row}">
+          <el-tag v-if="row.result === 1" type="success" size="small">通过</el-tag>
+          <el-tag v-if="row.result === 0" type="danger" size="small">失败</el-tag>
+        </template>
           <!-- 表头工具栏 -->
           <template slot="toolbar">
             <el-button
@@ -46,7 +66,7 @@
               icon="el-icon-plus"
               class="ele-btn-icon"
               @click="openEdit(null)"
-              v-if="permission.includes('sys:debugreport:add')">添加
+              v-if="permission.includes('sys:debugdata:add')">添加
             </el-button>
             <el-button
               size="small"
@@ -54,21 +74,7 @@
               icon="el-icon-delete"
               class="ele-btn-icon"
               @click="removeBatch"
-              v-if="permission.includes('sys:debugreport:dall')">删除
-            </el-button>
-            <!-- <el-button
-              @click="showImport=true"
-              icon="el-icon-upload2"
-              class="ele-btn-icon"
-              size="small">导入
-            </el-button> -->
-            <el-button
-              size="small"
-              type="success"
-              icon="el-icon-download"
-              class="ele-btn-icon"
-              @click="exportExcel"
-              v-if="permission.includes('sys:debugreport:export')">导出
+              v-if="permission.includes('sys:debugdata:dall')">删除
             </el-button>
           </template>
           <!-- 操作列 -->
@@ -78,7 +84,7 @@
               :underline="false"
               icon="el-icon-edit"
               @click="openEdit(row)"
-              v-if="permission.includes('sys:debugreport:update')">修改
+              v-if="permission.includes('sys:debugdata:update')">修改
             </el-link>
             <el-popconfirm
               class="ele-action"
@@ -89,7 +95,7 @@
                 slot="reference"
                 :underline="false"
                 icon="el-icon-delete"
-                v-if="permission.includes('sys:debugreport:delete')">删除
+                v-if="permission.includes('sys:debugdata:delete')">删除
               </el-link>
             </el-popconfirm>
           </template>
@@ -104,20 +110,20 @@
         </ele-pro-table>
       </el-card>
       <!-- 编辑弹窗 -->
-    <debug-edit
+    <debug-data-edit
       :data="current"
       :visible.sync="showEdit"
       @done="reload"/>
     </div>
   </template>
-
+  
   <script>
   import { mapGetters } from "vuex";
-  import DebugEdit from './debug-edit';
+  import DebugDataEdit from './debugdata-edit';
 
   export default {
     name: 'SystemDebug',
-    components: {DebugEdit},
+    components: {DebugDataEdit},
     computed: {
       ...mapGetters(["permission"]),
     },
@@ -126,7 +132,7 @@
         // 表格搜索条件
         where: {},
         // 表格数据接口
-        url: '/debug/list',
+        url: '/debugdata/list',
         // 表格列配置
         columns: [
           {
@@ -137,116 +143,102 @@
             fixed: "left"
           },
           {
-            prop: 'id',
-            label: 'ID',
-            width: 60,
-            align: 'center',
+            prop: 'softwareType',
+            label: '软件类型',
             showOverflowTooltip: true,
-            fixed: "left"
+            minWidth: 150,
+            align: 'center',
           },
           {
-            prop: 'order_time',
-            label: '下单日期',
+            prop: 'productType',
+            label: '产品类型',
             showOverflowTooltip: true,
-            minWidth: 120,
+            minWidth: 350,
+            align: 'center',
+          },
+          {
+            prop: 'productSN',
+            label: '产品SN',
+            showOverflowTooltip: true,
+            minWidth: 250,
+            align: 'center',
+          },
+          {
+            prop: 'macAddress',
+            label: 'mac地址',
+            showOverflowTooltip: true,
+            minWidth: 200,
+            align: 'center',
+          },
+          {
+            prop: 'testStep',
+            label: '测试步骤',
+            showOverflowTooltip: true,
+            minWidth: 200,
+            align: 'center',
+            slot: 'testStep'
+          },
+          {
+            prop: 'result',
+            label: '结果',
+            slot: 'result',
+            showOverflowTooltip: true,
+            minWidth: 80,
             align: 'center',
             sortable: 'custom',
-            order: '', // 初始化排序方式为空字符串
+            order: '', 
             sortableMethod: ()=> {
-              // 在这里实现自定义的排序逻辑
             this.where.order = this.order;
             this.reload();
             }
           },
           {
-            prop: 'client_name',
+            prop: 'softwareVersion',
+            label: '软件版本',
+            width: 80,
+            align: 'center',
+            showOverflowTooltip: true,
+          },
+          {
+            prop: 'clientName',
             label: '客户名称',
             showOverflowTooltip: true,
             minWidth: 120,
-            align: 'center',
+            align: 'center',         
           },
           {
-            prop: 'shape',
-            label: '规格型号',
+            prop: 'companyName',
+            label: '公司名称',
             showOverflowTooltip: true,
             minWidth: 120,
-            align: 'center',
+            align: 'center', 
           },
           {
-            prop: 'product_name',
-            label: '产品名称',
+            prop: 'protocolVersion',
+            label: '协议名称',
             showOverflowTooltip: true,
-            minWidth: 120,
+            minWidth: 80,
             align: 'center',
           },
           {
-            prop: 'product_count',
-            label: '产品数量',
-            width: 120,
-            align: 'center',
-            showOverflowTooltip: true,
-          },
-          {
-            prop: 'submit_time',
-            label: '交期',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-            sortable: 'custom',
-            order: '', // 初始化排序方式为空字符串
-            sortableMethod: ()=> {
-              // 在这里实现自定义的排序逻辑
-            this.where.order = this.order;
-            this.reload();
-            }
-          },
-          {
-            prop: 'start_time',
-            label: '开始日期',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-            sortable: 'custom',
-            order: '', // 初始化排序方式为空字符串
-            sortableMethod: ()=> {
-              // 在这里实现自定义的排序逻辑
-            this.where.order = this.order;
-            this.reload();
-            }
-          },
-          {
-            prop: 'finish_time',
-            label: '完成日期',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-            sortable: 'custom',
-            order: '', // 初始化排序方式为空字符串
-            sortableMethod: ()=> {
-              // 在这里实现自定义的排序逻辑
-            this.where.order = this.order;
-            this.reload();
-            }
-          },
-          {
-            prop: 'work_hours',
-            label: '工时',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-          },
-          {
-            prop: 'instruction',
-            label: '具体说明',
+            prop: 'testStartTime',
+            label: '测试开始时间',
             showOverflowTooltip: true,
             minWidth: 200,
             align: 'center',
           },
           {
-            prop: 'remark',
-            label: '备注',
+            prop: 'testEndTime',
+            label: '测试结束时间',
             showOverflowTooltip: true,
             minWidth: 200,
+            align: 'center',
+          },
+          {
+            prop: 'testTime',
+            label: '测试时间',
+            showOverflowTooltip: true,
+            minWidth: 80,
             align: 'center',
           },
           {
@@ -288,7 +280,7 @@
         } else {
           // 编辑
           this.loading = true;
-          this.$http.get('/debug/detail/' + row.id).then((res) => {
+          this.$http.get('/debugdata/detail/' + row.id).then((res) => {
             this.loading = false;
             if (res.data.code === 0) {
               this.current = Object.assign({}, res.data.data);
@@ -305,7 +297,7 @@
       /* 删除 */
       remove(row) {
         const loading = this.$loading({lock: true});
-        this.$http.delete('/debug/delete/' + row.id).then(res => {
+        this.$http.delete('/debugdata/delete/' + row.id).then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -328,7 +320,7 @@
           type: 'warning'
         }).then(() => {
           const loading = this.$loading({lock: true});
-          this.$http.delete('/debug/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
+          this.$http.delete('/debugdata/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
             loading.close();
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
@@ -346,7 +338,8 @@
     }
   }
   </script>
-
+  
   <style scoped>
   </style>
-
+  
+  

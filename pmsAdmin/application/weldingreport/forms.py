@@ -6,6 +6,13 @@ from application.weldingreport import models
 
 # 表单验证
 class WeldingForm(forms.ModelForm):
+    # 工单号
+    work_order = forms.CharField(
+        max_length=255,
+        error_messages={
+            'required': '工单号不能为空',
+        }
+    )
     # 下单日期
     order_time = forms.DateField(
         input_formats=['%Y-%m-%d'],

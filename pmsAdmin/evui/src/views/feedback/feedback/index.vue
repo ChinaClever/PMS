@@ -47,6 +47,7 @@
           <el-col :span="7">
             <el-form-item label="优先级:">
               <el-input
+                type="number"
                 clearable
                 v-model="where.priority"
                 placeholder="请输入优先级(1-10)"/>
@@ -178,14 +179,14 @@ export default {
           align: 'center',
           fixed: "left"
         },
-        {
-          prop: 'id',
-          label: 'ID',
-          width: 60,
-          align: 'center',
-          showOverflowTooltip: true,
-          fixed: "left"
-        },
+        // {
+        //   prop: 'id',
+        //   label: 'ID',
+        //   width: 60,
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   fixed: "left"
+        // },
         {
           prop: 'commit_user',
           label: '提交者',
@@ -239,28 +240,28 @@ export default {
             this.reload();
           }
         },
-        {
-          prop: 'create_time',
-          label: '创建时间',
-          showOverflowTooltip: true,
-          sortable: 'custom',
-          minWidth: 160,
-          align: 'center',
-          formatter: (row, column, cellValue) => {
-            return this.$util.toDateString(cellValue);
-          }
-        },
-        {
-          prop: 'update_time',
-          label: '更新时间',
-          showOverflowTooltip: true,
-          sortable: 'custom',
-          minWidth: 160,
-          align: 'center',
-          formatter: (row, column, cellValue) => {
-            return this.$util.toDateString(cellValue);
-          }
-        },
+        // {
+        //   prop: 'create_time',
+        //   label: '创建时间',
+        //   showOverflowTooltip: true,
+        //   sortable: 'custom',
+        //   minWidth: 160,
+        //   align: 'center',
+        //   formatter: (row, column, cellValue) => {
+        //     return this.$util.toDateString(cellValue);
+        //   }
+        // },
+        // {
+        //   prop: 'update_time',
+        //   label: '更新时间',
+        //   showOverflowTooltip: true,
+        //   sortable: 'custom',
+        //   minWidth: 160,
+        //   align: 'center',
+        //   formatter: (row, column, cellValue) => {
+        //     return this.$util.toDateString(cellValue);
+        //   }
+        // },
         {
           columnKey: 'action',
           label: '操作',

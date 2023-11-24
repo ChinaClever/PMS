@@ -1,7 +1,7 @@
 <!-- 编辑弹窗 -->
 <template>
     <el-dialog
-      :title="isUpdate?'修改调试报表':'添加调试报表'"
+      :title="isUpdate?'修改测试数据':'添加测试数据'"
       :visible="visible"
       width="580px"
       :destroy-on-close="true"
@@ -12,6 +12,16 @@
         :model="form"
         :rules="rules"
         label-width="82px">
+
+        <el-form-item
+          label="工单号:"
+          prop="work_order">
+          <el-input
+            :maxlength="20"
+            v-model="form.work_order"
+            placeholder="请输入工单号"
+            clearable/>
+        </el-form-item>
 
         <el-form-item label="下单日期:" prop="order_time">
             <el-date-picker
@@ -79,7 +89,7 @@
               placeholder="请选择开始日期"/>
           </el-form-item>
 
-          <el-form-item label="完成日期:" prop="finish_time">
+          <el-form-item label="完成日期:" prop="finish_time" >
             <el-date-picker
               type="date"
               class="ele-fluid"
@@ -144,6 +154,9 @@
         form: Object.assign({status: 1}, this.data),
         // 表单验证规则
         rules: {
+          work_order: [
+          {required: true, message: '请输入工单号', trigger: 'blur'}
+        ],
           order_time: [
           {required: true, message: '请输入下单时间', trigger: 'blur'}
         ],
@@ -166,7 +179,8 @@
           {required: true, message: '请输入开始时间', trigger: 'blur'}
         ],
           finish_time: [
-          {required: true, message: '请输入完成时间', trigger: 'blur'}
+          {required: true, message: '请输入完成时间', trigger: 'blur'},
+          { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
         ],
           work_hours: [
           {required: true, message: '请输入所用工时', trigger: 'blur'}
@@ -219,6 +233,20 @@
       /* 更新visible */
       updateVisible(value) {
         this.$emit('update:visible', value);
+      },
+
+      // 自定义校验规则函数
+      checkFinishTime(rule, value, callback) {
+        const startTime = this.form.start_time; // 获取开始日期的值
+        const finishTime = value; // 获取完成日期的值
+
+        if (!startTime || !finishTime) {
+          callback(); // 如果开始日期或完成日期为空，则不进行校验
+        } else if (startTime > finishTime) {
+          callback(new Error('完成日期必须晚于开始日期')); // 如果完成日期早于开始日期，则返回错误信息
+        } else {
+          callback(); // 校验通过
+        }
       }
     }
   }
