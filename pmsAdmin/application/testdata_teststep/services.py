@@ -2,9 +2,9 @@ from application.testdata.models import Testdata
 
 
 # 根据调试数据ID查询测试步骤列表
-def getTestDataTestStepList(debugdataId):
+def getTestDataTestStepList(testdataId):
     sql = 'SELECT * FROM django_debugdata_teststep WHERE debugdata_id=%s'
-    list = Testdata.objects.raw(sql, [debugdataId])
+    list = Testdata.objects.raw(sql, [testdataId])
     # 实例化测试步骤列表
     testStep_list = []
     if list:
