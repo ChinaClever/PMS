@@ -21,7 +21,6 @@ class Migration(migrations.Migration):
                 ('update_user', models.IntegerField(default=0, verbose_name='更新人')),
                 ('update_time', models.DateTimeField(auto_now=True, max_length=11, null=True, verbose_name='更新时间')),
                 ('is_delete', models.BooleanField(default=0, verbose_name='逻辑删除')),
-                ('work_order', models.CharField(help_text='工单号', max_length=255, verbose_name='工单号')),
                 ('order_time', models.DateTimeField(max_length=11, verbose_name='下单日期')),
                 ('client_name', models.CharField(help_text='客户名称', max_length=150, verbose_name='客户名称')),
                 ('shape', models.CharField(help_text='规格型号', max_length=255, verbose_name='规格型号')),
