@@ -29,9 +29,9 @@ class TestDataDetailView(PermissionRequired, View):
     permission_required = ('sys:testdata:detail',)
 
     # GET请求渲染HTML模板
-    def get(self, request, debugdata_id):
+    def get(self, request, testdata_id):
         # 调用查询职级详情服务方法
-        data = services.TestDataDetail(debugdata_id)
+        data = services.TestDataDetail(testdata_id)
         # 返回结果
         return R.ok(data=data)
 

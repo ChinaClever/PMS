@@ -106,4 +106,6 @@ urlpatterns = [
     path('softwarerelease/', include('application.softwarerelease.urls')),
     # 调试报表
     path('debugdata/', include('application.debugdata.urls')),
+    # 测试数据
+    path('testdata/', include('application.testdata.urls')),
 ]
