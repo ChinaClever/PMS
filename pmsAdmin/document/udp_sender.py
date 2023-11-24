@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
     # 设置目标主机和端口
     host = '127.0.0.1'  # 目标主机的 IP 地址
-    port = 1234  # 目标端口号
+    port = 1236  # 目标端口号
 
     # 发送数据
     send_udp_data(data, host, port)
