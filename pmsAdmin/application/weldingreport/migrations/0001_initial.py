@@ -15,6 +15,7 @@ class Migration(migrations.Migration):
             name='Welding',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='主键ID')),
+                ('work_order', models.CharField(max_length=255, verbose_name="工单号", help_text="工单号")),
                 ('create_user', models.IntegerField(default=0, verbose_name='创建人')),
                 ('create_time', models.DateTimeField(auto_now_add=True, max_length=11, null=True, verbose_name='创建时间')),
                 ('update_user', models.IntegerField(default=0, verbose_name='更新人')),
