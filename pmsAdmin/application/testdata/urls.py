@@ -11,7 +11,7 @@ urlpatterns = [
 
     path('add', views.TestDataAddView.as_view()),
 
-    # path('update', views.DebugDataUpdateView.as_view()),
-    #
-    # path('delete/<str:debugdata_id>', views.DebugDataDeleteView.as_view()),
+    path('update', views.TestDataUpdateView.as_view()),
+
+    path('delete/<str:testdata_id>', views.TestDataDeleteView.as_view()),
 ]
