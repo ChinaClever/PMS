@@ -211,7 +211,7 @@ def TestDataAdd(request):
         testTime = dict_data.get('testTime')
         testStep = dict_data.get('testStep')
         # 创建数据
-        Testdata.objects.create(
+        testdata = Testdata.objects.create(
             softwareType=softwareType,
             productType=productType,
             productSN=productSN,
@@ -229,7 +229,7 @@ def TestDataAdd(request):
         # 存id和teststep数据
         for item in testStep:
             TestDataTestStep.objects.create(
-            debugdata_id=Testdata.id,
+            testdata_id=testdata.id,
             no=item.get('no'),
             name = item.get('name'),
             result = item.get('result'),
@@ -242,7 +242,7 @@ def TestDataAdd(request):
 
 
 @transaction.atomic
-def TestUpdate(request):
+def TestDataUpdate(request):
     try:
         # 接收请求参数
         json_data = request.body.decode()
@@ -271,31 +271,31 @@ def TestUpdate(request):
         testTime = dict_data.get('testTime')
         testStep = dict_data.get('testStep')
         # 根据ID查询
-        debugdata = Testdata.objects.only('id').filter(id=testdata_id, is_delete=False).first()
+        testdata = Testdata.objects.only('id').filter(id=testdata_id, is_delete=False).first()
         # 查询结果判断
-        if not debugdata:
+        if not testdata:
             return R.failed("数据不存在")
         # 对象赋值
-        debugdata.softwareType = softwareType
-        debugdata.productType = productType
-        debugdata.productSN = productSN
-        debugdata.macAddress = macAddress
-        debugdata.result = result
-        debugdata.softwareVersion = softwareVersion
-        debugdata.clientName = clientName
-        debugdata.companyName = companyName
-        debugdata.protocolVersion = protocolVersion
-        debugdata.testStartTime = testStartTime
-        debugdata.testEndTime = testEndTime
-        debugdata.testTime = testTime
-        debugdata.update_user = uid(request)
+        testdata.softwareType = softwareType
+        testdata.productType = productType
+        testdata.productSN = productSN
+        testdata.macAddress = macAddress
+        testdata.result = result
+        testdata.softwareVersion = softwareVersion
+        testdata.clientName = clientName
+        testdata.companyName = companyName
+        testdata.protocolVersion = protocolVersion
+        testdata.testStartTime = testStartTime
+        testdata.testEndTime = testEndTime
+        testdata.testTime = testTime
+        testdata.update_user = uid(request)
         # 更新数据
-        debugdata.save()
-        # 更新debugdata_teststep表
+        testdata.save()
+        # 更新testdata_teststep表
         TestDataTestStep.objects.filter(debugdata_id=testdata_id).delete()
         for item in testStep:
             TestDataTestStep.objects.create(
-            debugdata_id=Testdata.id,
+            testdata_id=testdata.id,
             no=item.get('no'),
             name = item.get('name'),
             result = item.get('result'),
@@ -307,29 +307,28 @@ def TestUpdate(request):
         return R.failed("参数错误")
 
 
-# 删除
-# def DebugDelete(debug_id):
-#     # 记录ID为空判断
-#     if not debug_id:
-#         return R.failed("记录ID不存在")
-#     # 分裂字符串
-#     list = debug_id.split(',')
-#     # 计数器
-#     count = 0
-#     # 遍历数据源
-#     if len(list) > 0:
-#         for id in list:
-#             # 根据ID查询记录
-#             debug = Debug.objects.only('id').filter(id=int(id), is_delete=False).first()
-#             # 查询结果判空
-#             if not debug:
-#                 return R.failed("数据不存在")
-#             # 设置删除标识
-#             debug.is_delete = True
-#             # 更新记录
-#             debug.save()
-#             # 计数器+1
-#             count += 1
-#     # 返回结果
-#     return R.ok(msg="本次共删除{0}条数据".format(count))
+def TestDataDelete(testdata_id):
+    # 记录ID为空判断
+    if not testdata_id:
+        return R.failed("记录ID不存在")
+    # 分裂字符串
+    list = testdata_id.split(',')
+    # 计数器
+    count = 0
+    # 遍历数据源
+    if len(list) > 0:
+        for id in list:
+            # 根据ID查询记录
+            tetdata = Testdata.objects.only('id').filter(id=int(id), is_delete=False).first()
+            # 查询结果判空
+            if not tetdata:
+                return R.failed("数据不存在")
+            # 设置删除标识
+            tetdata.is_delete = True
+            # 更新记录
+            tetdata.save()
+            # 计数器+1
+            count += 1
+    # 返回结果
+    return R.ok(msg="本次共删除{0}条数据".format(count))
 
