@@ -209,7 +209,7 @@ def DebugDataAdd(request):
         testTime = dict_data.get('testTime')
         testStep = dict_data.get('testStep')
         # 创建数据
-        Debugdata.objects.create(
+        debugdata = Debugdata.objects.create(
             softwareType=softwareType,
             productType=productType,
             productSN=productSN,
@@ -228,7 +228,7 @@ def DebugDataAdd(request):
         if testStep:
             for item in testStep:
                 DebugDataTestStep.objects.create(
-                debugdata_id=Debugdata.id,
+                debugdata_id=debugdata.id,
                 no=item.get('no'),
                 name = item.get('name'),
                 result = item.get('result'),
