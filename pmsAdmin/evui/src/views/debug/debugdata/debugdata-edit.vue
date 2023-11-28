@@ -142,6 +142,20 @@
             </el-radio-group>
           </el-form-item>
 
+          <div v-for="(input) in form.testStep" :key="input.no">
+          <span>测试步骤 {{ input.no }}</span>
+          <el-input v-model="input.name" placeholder="名称"></el-input>
+          <el-radio-group
+            v-model="input.result">
+            <el-radio :label="1">通过</el-radio>
+            <el-radio :label="0">失败</el-radio>
+          </el-radio-group>
+        </div>
+        <br>
+        <el-button @click="addInput">添加测试步骤</el-button>
+        <el-button v-if="form.testStep.length > 0" @click="removeInput">删除最后一步测试步骤</el-button>
+ 
+
       </el-form>
       <div slot="footer">
         <el-button @click="updateVisible(false)">取消</el-button>
@@ -166,7 +180,7 @@
     data() {
       return {
         // 表单数据
-        form: Object.assign({status: 1}, this.data),
+        form: Object.assign({testStep:[]}, this.data),
         // 表单验证规则
         rules: {
         testEndTime: [
@@ -176,7 +190,9 @@
         // 提交状态
         loading: false,
         // 是否是修改
-        isUpdate: false
+        isUpdate: false,
+        // 输入框id计数器
+        idCounter: 1 
       };
     },
     watch: {
@@ -234,7 +250,23 @@
         } else {
           callback(); // 校验通过
         }
+      },
+      addInput() {
+      this.form.testStep.push({
+        no: this.idCounter,
+        name: '',
+        result: ''
+      });
+      this.idCounter++;
+    },
+    removeInput() {
+      this.form.testStep.pop();
+      if (this.form.testStep.length === 0) {
+        this.idCounter = 1; // 如果没有输入框了，重置计数器为1
+      } else {
+        this.idCounter = this.form.testStep[this.form.testStep.length - 1].id + 1; // 更新计数器为最后一个输入框的id加1
       }
+    }
     }
   }
   </script>

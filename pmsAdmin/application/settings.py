@@ -128,6 +128,7 @@ INSTALLED_APPS = [
     'application.testdata',
     'application.testdata_teststep',
     'application.softwarerelease',
+    'application.shipmentreport',
 
 ]
 
