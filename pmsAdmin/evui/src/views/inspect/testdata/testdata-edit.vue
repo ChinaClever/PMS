@@ -143,7 +143,7 @@
             <el-radio :label="0">失败</el-radio>
           </el-radio-group>
         </el-form-item>
-        <div v-for="(input, index) in form.testStep" :key="input.no">
+        <div v-for="(input) in form.testStep" :key="input.no">
           <span>测试步骤 {{ input.no }}</span>
           <el-input v-model="input.name" placeholder="名称"></el-input>
           <el-radio-group
