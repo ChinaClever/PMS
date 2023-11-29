@@ -133,7 +133,6 @@ def DictAdd(request):
     try:
         # 接收请求参数
         json_data = request.body.decode()
-        print(type(json_data))
         # 参数为空判断
         if not json_data:
             return R.failed("参数不能为空")
@@ -286,3 +285,54 @@ def DictDelete(dict_id):
             count += 1
     # 返回结果
     return R.ok(msg="本次共删除{0}条数据".format(count))
+#获取产品名称
+def Dictnamelist(request):
+    sql1 = "select id,name, count( name) as namenum from django_repairreport where is_delete=False group by name  order by  namenum desc limit 10"
+    namelist = Dict.objects.raw(sql1)
+    name_list=[]
+    if namelist:
+        for item in namelist:
+            data = {
+                'value': item.name,
+            }
+            name_list.append(data)
+    return name_list
+#获取不良现象
+def Dictbad_phenomenonlist(request):
+    name = request.GET.get('name')
+    sql2 = "select id, bad_phenomenon, count( bad_phenomenon) as badnum from django_repairreport where name = %s and is_delete=False group by bad_phenomenon order by  badnum desc limit 10;"
+    bad_phenomenonlist = Dict.objects.raw(sql2,[name])
+    bad_phenomenon_list=[]
+    if bad_phenomenonlist:
+        for item in bad_phenomenonlist:
+            data = {
+                'value': item.bad_phenomenon,
+            }
+            bad_phenomenon_list.append(data)
+    return bad_phenomenon_list
+#获取原因分析
+def Dictanalysislist(request):
+    name = request.GET.get('name')
+    sql3 = "select id,analysis, count( analysis) as analysisnum from django_repairreport where name = %s and is_delete=False group by analysis order by analysisnum desc limit 10;"
+    analysislist = Dict.objects.raw(sql3,[name])
+    analysis_list=[]
+    if analysislist:
+        for item in analysislist:
+            data = {
+                'value': item.analysis,
+            }
+            analysis_list.append(data)
+    return analysis_list
+#获取解决方法
+def Dictsolutionlist(request):
+    name = request.GET.get('name')
+    sql4 = "select id,solution, count( solution) as solutionnum from django_repairreport where name = %s and is_delete=False group by solution order by solutionnum desc limit 10;"
+    solutionlist = Dict.objects.raw(sql4,[name])
+    solution_list=[]
+    if solutionlist:
+        for item in solutionlist:
+            data = {
+                'value': item.solution,
+            }
+            solution_list.append(data)
+    return solution_list
