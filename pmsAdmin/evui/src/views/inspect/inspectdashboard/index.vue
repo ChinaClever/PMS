@@ -99,7 +99,7 @@
             {
               name: '产品型号',
               type: 'category',
-              data: this.saleroomData.map(d => d.name),
+              data: this.saleroomData.map(d => d.item_number),
   
             }
           ],
@@ -115,7 +115,7 @@
             {
               name: '合格率',
               type: 'bar',
-              data: this.saleroomData.map(d => d.num),
+              data: this.saleroomData.map(d => d.target_actual_pass_rate),
               showBackground: true, //背景颜色
               barWidth:50,  //柱状图宽度
               backgroundStyle: {
@@ -184,10 +184,11 @@
     created() {
         this.calculateTimeRange();
         this.loading = true;
-        this.$http.get('/produce/histogram').then((res) => {
+        this.$http.get('/inspectreport/listOfTotal').then((res) => {
         this.loading = false;
         if (res.data.code === 0) {
             this.saleroomData = res.data.data
+            
         } else {
             this.$message.error(res.data.msg);
         }
@@ -215,10 +216,11 @@
         //   month,
         //   value:Math.floor(Math.random()*100)
         // }))
-  
+        console.log(this.saleroomData)
         this.saleroomData = [
-             {month: this.saleroomData.map(d => d.name), value: this.saleroomData.map(d => d.num)},
+             {month: this.saleroomData.map(d => d.item_number), value: this.saleroomData.map(d => d.num)},
            ];
+        console.log(this.saleroomData)
       },
       reload() {
         if(this.where.customStartTime && this.where.customEndTime){
