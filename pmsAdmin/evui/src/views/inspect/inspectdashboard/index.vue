@@ -100,7 +100,6 @@
               name: '产品型号',
               type: 'category',
               data: this.saleroomData.map(d => d.item_number),
-  
             }
           ],
           yAxis: [
@@ -121,7 +120,21 @@
               backgroundStyle: {
                 color:'rgba(180,180,180,0.2)'
               },
+              itemStyle: {
+                color: function(params) {
+                  // 根据横坐标值动态设置颜色
+                  console.log(params)
+                  if (params.data >= 95) {
+                    return 'green';  // 偶数项为蓝色
+                  } else {
+                    return 'red';   // 奇数项为红色
+                  }
+                }
+              }
             }
+          ],
+          color:[
+            this.saleroomData.map(d => d.color)
           ]
         };
       },
@@ -171,8 +184,8 @@
             showOverflowTooltip: true,
             minWidth: 100,
             formatter: (row, column, cellValue) => {
-            return cellValue + '%';
-          }
+              return cellValue + '%';
+            }
           },
         ],
         saleroomData: [],
@@ -216,11 +229,10 @@
         //   month,
         //   value:Math.floor(Math.random()*100)
         // }))
-        console.log(this.saleroomData)
+
         this.saleroomData = [
-             {month: this.saleroomData.map(d => d.item_number), value: this.saleroomData.map(d => d.num)},
+             {month: this.saleroomData.map(d => d.item_number), value: this.saleroomData.map(d => d.num),color:this.saleroomData.map(d => d.color)},
            ];
-        console.log(this.saleroomData)
       },
       reload() {
         if(this.where.customStartTime && this.where.customEndTime){
