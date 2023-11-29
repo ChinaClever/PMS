@@ -417,6 +417,7 @@ export default {
        // 创建 Excel 文件
       const workbook = XLSX.utils.book_new();
       //去除不需要的字段，这里我不希望显示id，所以id不返回
+      temp = this.selection;
       this.selection = this.selection.map(({ id, ...rest }) => rest);
       //可以将对应字段的数字经过判断转为对应的中文
       this.selection = this.selection.map(obj => {
@@ -469,6 +470,7 @@ export default {
       const newFileName = `${fileName.split('.')[0]}_${formattedDate}.${fileName.split('.')[1]}`;
 
       saveAs(blob, newFileName);
+      this.selection = temp;
     }
     
   }
