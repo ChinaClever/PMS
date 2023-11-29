@@ -70,8 +70,6 @@ def InspectreportList(request):
                 'signal': item.signal,
                 'problems': item.problem,
                 'actions': item.action,
-                'create_time': str(item.create_time.strftime('%Y-%m-%d %H:%M:%S')) if item.create_time else None,
-                'update_time': str(item.update_time.strftime('%Y-%m-%d %H:%M:%S')) if item.update_time else None,
             }
             result.append(data)
     # 返回结果
