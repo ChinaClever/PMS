@@ -128,6 +128,7 @@ INSTALLED_APPS = [
     'application.testdata',
     'application.testdata_teststep',
     'application.softwarerelease',
+    'application.mac',
 
 ]
 
@@ -254,3 +255,4 @@ CAPTCHA_NOISE_FUNCTIONS = (
 # 随机字符验证码
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge'  # 字母验证码
 # CAPTCHA_CHALLENGE_FUNCT = "captcha.helpers.math_challenge"  # 加减乘除验证码
+

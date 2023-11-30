@@ -21,21 +21,33 @@
 # | 法律所允许的合法合规的软件产品研发，详细声明内容请阅读《框架免责声明》附件；
 # +----------------------------------------------------------------------
 
-from django.urls import path
+from django.db import models
 
-from application.burning import views
+# Create your models here.
+from application.models import BaseModel
 
-# 部门模块路由
-urlpatterns = [
-    # 查询分页数据
-    path('list', views.BurningListView.as_view()),
-    # 查询数据
-    path('detail/<int:burning_id>', views.BurningDetailView.as_view()),
-    # 添加数据
-    path('add', views.BurningAddView.as_view()),
-    # 更新数据
-    path('update', views.BurningUpdateView.as_view()),
-    # 删除数据
-    path('delete/<str:burning_id>', views.BurningDeleteView.as_view()),
+from config.env import TABLE_PREFIX
 
-]
+
+# 烧录表格
+class mac(BaseModel):
+    # 工单号
+    work_order = models.CharField(null=False, max_length=150, verbose_name="工单号", help_text="工单号")
+    # 客户名称
+    name = models.CharField(null=False, max_length=6, verbose_name="客户名称", help_text="客户名称")
+    # 产品类型
+    code = models.CharField(null=False, max_length=50, verbose_name="产品型号", help_text="产品型号")
+    # 序列号
+    serial_id= models.CharField(null=True, max_length=50, verbose_name="序列号", help_text="序列号")
+    # mac地址
+    mac_address = models.CharField(null=True, max_length=50,unique=True, verbose_name="mac地址", help_text="mac地址")
+
+
+    class Meta:
+        # 数据表名
+        db_table = TABLE_PREFIX + "mac"
+        verbose_name = ("mac管理表")
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return 'mac{}'.format(self.id)

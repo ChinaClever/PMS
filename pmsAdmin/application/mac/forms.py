@@ -21,21 +21,57 @@
 # | 法律所允许的合法合规的软件产品研发，详细声明内容请阅读《框架免责声明》附件；
 # +----------------------------------------------------------------------
 
-from django.urls import path
+from django import forms
+# 客户表单验证
+from application.mac import models
 
-from application.burning import views
 
-# 部门模块路由
-urlpatterns = [
-    # 查询分页数据
-    path('list', views.BurningListView.as_view()),
-    # 查询数据
-    path('detail/<int:burning_id>', views.BurningDetailView.as_view()),
-    # 添加数据
-    path('add', views.BurningAddView.as_view()),
-    # 更新数据
-    path('update', views.BurningUpdateView.as_view()),
-    # 删除数据
-    path('delete/<str:burning_id>', views.BurningDeleteView.as_view()),
+class MacForm(forms.ModelForm):
+    # 工单号
+    work_order = forms.CharField(
+        required=False,
+        max_length=50,
+        error_messages={
+            'max_length': '工单号不得超过50个字符'
+        }
+    )
+    # 客户名称
+    name = forms.CharField(
+        required=False,
+        max_length=6,
+        error_messages={
+            'max_length': '客户名称长度不得超过6个字符'
+        }
+    )
+    # 产品类型
+    code = forms.CharField(
+        required=False,
+        max_length=50,
+        error_messages={
+            'max_length': '产品类型长度不得超过50个字符'
+        }
+    )
+    # 序列号
+    serial_id = forms.CharField(
+        required=False,
+        max_length=150,
+        error_messages={
+            'max_length': '序列号长度不得超过50个字符'
+        }
+    )
+    # mac地址
+    mac_address = forms.CharField(
+        required=False,
+        max_length=50,
+        error_messages={
+            'max_length': 'mac地址不得超过50个字符'
+        }
+    )
 
-]
+
+    class Meta:
+        # 绑定模型
+        model = models.mac
+        # 指定部分字段验证
+        fields = ['work_order','name','code','serial_id','mac_address'
+                  ]

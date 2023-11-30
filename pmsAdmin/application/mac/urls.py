@@ -23,19 +23,20 @@
 
 from django.urls import path
 
-from application.burning import views
+from application.mac import views
 
-# 部门模块路由
+# 模块路由
 urlpatterns = [
     # 查询分页数据
-    path('list', views.BurningListView.as_view()),
+    path('list', views.MacListView.as_view()),
     # 查询数据
-    path('detail/<int:burning_id>', views.BurningDetailView.as_view()),
+    path('detail/<int:mac_id>', views.MacDetailView.as_view()),
     # 添加数据
-    path('add', views.BurningAddView.as_view()),
+    path('add', views.MacAddView.as_view()),
     # 更新数据
-    path('update', views.BurningUpdateView.as_view()),
+    path('update', views.MacUpdateView.as_view()),
     # 删除数据
-    path('delete/<str:burning_id>', views.BurningDeleteView.as_view()),
-
+    path('delete/<str:mac_id>', views.MacDeleteView.as_view()),
+    # 测试请求
+    path('test',views.test)
 ]
