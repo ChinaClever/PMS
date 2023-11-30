@@ -1,5 +1,7 @@
 from django.db import models
 from application import settings
+from config.env import TABLE_PREFIX
+
 
 class DebugDataTestStep(models.Model):
     # 主键ID
@@ -21,10 +23,8 @@ class DebugDataTestStep(models.Model):
                                  help_text="结果：1-通过 2-失败")
     class Meta:
         # 数据表名
-        db_table = settings.TABLE_PREFIX + "debugdata_teststep"
+        db_table = TABLE_PREFIX + "debugdata_teststep"
         verbose_name = "调试数据_测试步骤"
         verbose_name_plural = verbose_name
 
-    def __str__(self):
-        return '调试数据_测试步骤{}'.format(self.name)
 

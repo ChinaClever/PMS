@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 from application import settings
 from application.models import BaseModel
+from config.env import TABLE_PREFIX
 
 
 # 模型
@@ -37,7 +38,7 @@ class Welding(BaseModel):
 
     class Meta:
         # 数据表名
-        db_table = settings.TABLE_PREFIX + "weldingreport"
+        db_table = TABLE_PREFIX + "weldingreport"
         verbose_name = "焊接报表"
         verbose_name_plural = verbose_name
 

@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 from application import settings
 from application.models import BaseModel
+from config.env import TABLE_PREFIX
 
 
 # 模型
@@ -42,9 +43,8 @@ class Debug(BaseModel):
     product_module = models.IntegerField(choices=product_module_CHOICES,
                                          verbose_name="成品_模块：1-成品 2-模块", help_text="成品_模块：1-成品 2-模块")
 
-class Meta:
-        # 数据表名
-        db_table = settings.TABLE_PREFIX + "debugreport"
-        verbose_name = "调试报表"
-        verbose_name_plural = verbose_name
-
+    class Meta:
+            # 数据表名
+            db_table = TABLE_PREFIX + "debugreport"
+            verbose_name = "调试报表"
+            verbose_name_plural = verbose_name

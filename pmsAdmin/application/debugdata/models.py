@@ -2,6 +2,8 @@ from django.db import models
 
 from application import settings
 from application.models import BaseModel
+from config.env import TABLE_PREFIX
+
 
 class Debugdata(BaseModel):
     # 软件类型
@@ -33,7 +35,7 @@ class Debugdata(BaseModel):
 
     class Meta:
         # 数据表名
-        db_table = settings.TABLE_PREFIX + "debugdata"
+        db_table = TABLE_PREFIX + "debugdata"
         verbose_name = "调试数据"
         verbose_name_plural = verbose_name
 
