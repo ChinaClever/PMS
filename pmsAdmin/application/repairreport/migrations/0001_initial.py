@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('is_delete', models.BooleanField(default=0, verbose_name='逻辑删除')),
                 ('repair_user', models.CharField(help_text='维修员', max_length=150, verbose_name='维修员')),
                 ('name', models.CharField(help_text='产品名称', max_length=150, verbose_name='产品名称')),
-                ('work_order', models.IntegerField(help_text='工单号', verbose_name='工单号')),
+                ('work_order', models.CharField(help_text='工单号', max_length=150, verbose_name='工单号')),
                 ('bad_number', models.IntegerField(help_text='不良数量', verbose_name='不良数量')),
                 ('bad_phenomenon', models.CharField(help_text='不良现象', max_length=150, verbose_name='不良现象')),
                 ('analysis', models.CharField(help_text='原因分析', max_length=150, verbose_name='原因分析')),

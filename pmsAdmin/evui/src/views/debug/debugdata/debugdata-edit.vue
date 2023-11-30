@@ -1,9 +1,9 @@
 <!-- 编辑弹窗 -->
 <template>
     <el-dialog
-      :title="isUpdate?'修改调试报表':'添加调试报表'"
+      :title="isUpdate?'修改调试数据':'添加调试数据'"
       :visible="visible"
-      width="580px"
+      width="650px"
       :destroy-on-close="true"
       :lock-scroll="false"
       @update:visible="updateVisible">
@@ -11,120 +11,135 @@
         ref="form"
         :model="form"
         :rules="rules"
-        label-width="82px">
+        label-width="120px">
 
         <el-form-item
-          label="工单号:"
-          prop="work_order">
+          label="软件类型:"
+          prop="softwareType">
           <el-input
-            :maxlength="20"
-            v-model="form.work_order"
-            placeholder="请输入工单号"
+            v-model="form.softwareType"
+            placeholder="请输入软件类型"
             clearable/>
         </el-form-item>
 
-        <el-form-item label="下单日期:" prop="order_time">
-            <el-date-picker
-              type="date"
-              class="ele-fluid"
-              v-model="form.order_time"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择下单日期"/>
-          </el-form-item>
+        <el-form-item
+          label="产品类型:"
+          prop="productType">
+          <el-input
+            v-model="form.productType"
+            placeholder="请输入产品类型"
+            clearable/>
+        </el-form-item>
 
         <el-form-item
-          label="客户名称:"
-          prop="client_name">
+          label="产品SN:"
+          prop="productSN">
           <el-input
-            :maxlength="20"
-            v-model="form.client_name"
+            v-model="form.productSN"
+            placeholder="请输入产品SN"
+            clearable/>
+        </el-form-item>
+
+        <el-form-item
+          label="mac地址:"
+          prop="macAddress">
+          <el-input
+            v-model="form.macAddress"
+            placeholder="请输入mac地址"
+            clearable/>
+        </el-form-item>
+
+        <!-- <el-form-item
+          label="测试步骤:"
+          prop="testStep">
+        <el-collapse>
+            <el-collapse-item >
+              <div v-for="step in form.testStep" :key="step.no">
+                <br>     
+              <el-divider content-position="center">测试步骤序号  {{ step.no }}</el-divider> 
+              <br>     
+              <el-form-item label="测试步骤名称:">
+                <el-input
+                    :maxlength="20"
+                    v-model="step.name"
+                    placeholder="请输入测试步骤名称"
+                    clearable/> 
+              </el-form-item>   
+              <el-form-item label="结果:">         
+                  <el-radio-group
+                    v-model="step.result">
+                    <el-radio :label="1">通过</el-radio>
+                    <el-radio :label="0">失败</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+                  <br>
+              </div>  
+            </el-collapse-item>
+          </el-collapse>
+        </el-form-item> -->
+
+        <el-row :gutter="15">
+        <el-col :sm="12">
+        <el-form-item label="软件版本:" prop="softwareVersion">
+          <el-input
+            v-model="form.softwareVersion"
+            placeholder="请输入软件版本"
+            clearable/>
+        </el-form-item>
+
+        <el-form-item label="客户名称:" prop="clientName">
+          <el-input
+            v-model="form.clientName"
             placeholder="请输入客户名称"
             clearable/>
         </el-form-item>
-
-        <el-form-item
-          label="规格型号:"
-          prop="shape">
+      </el-col>
+        <el-col :sm="12">
+        <el-form-item label="公司名称:" prop="companyName">
           <el-input
-            :maxlength="20"
-            v-model="form.shape"
-            placeholder="请输入规格型号"
+            v-model="form.companyName"
+            placeholder="请输入公司名称"
             clearable/>
         </el-form-item>
 
-        <el-form-item
-          label="产品名称:"
-          prop="product_name">
+        <el-form-item label="协议名称:" prop="protocolVersion">
           <el-input
-            :maxlength="20"
-            v-model="form.product_name"
-            placeholder="请输入产品名称"
+            v-model="form.protocolVersion"
+            placeholder="请输入协议名称"
             clearable/>
         </el-form-item>
-
-        <el-form-item label="数量:" prop="product_count">
-          <el-input-number
-            :min="0"
-            v-model="form.product_count"
-            placeholder="请输入产品数量"
-            controls-position="right"
-            class="ele-fluid ele-text-left"/>
-        </el-form-item>
-
-        <el-form-item label="交期:" prop="submit_time">
+      </el-col>
+    </el-row>
+        <el-form-item label="测试开始时间:" prop="testStartTime">
             <el-date-picker
-              type="date"
               class="ele-fluid"
-              v-model="form.submit_time"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择交期"/>
+              type="datetime"
+              v-model="form.testStartTime"
+              placeholder="请选择测试开始时间"/>
           </el-form-item>
 
-          <el-form-item label="开始日期:" prop="start_time">
+          <el-form-item label="测试结束时间:" prop="testEndTime">
             <el-date-picker
-              type="date"
               class="ele-fluid"
-              v-model="form.start_time"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择开始日期"/>
+              type="datetime"
+              v-model="form.testEndTime"
+              placeholder="请选择测试结束时间"/>
           </el-form-item>
+        
+     
+          <el-form-item label="测试时间:" prop="testTime">
+          <el-input
+            v-model="form.testTime"
+            placeholder="请输入测试时间"
+            clearable/>
+         </el-form-item>
 
-          <el-form-item label="完成日期:" prop="finish_time" >
-            <el-date-picker
-              type="date"
-              class="ele-fluid"
-              v-model="form.finish_time"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择完成日期"/>
-          </el-form-item>
-
-          <el-form-item label="所用工时:" prop="work_hours">
-          <el-input-number
-            :min="0"
-            v-model="form.work_hours"
-            placeholder="请输入所用工时"
-            controls-position="right"
-            class="ele-fluid ele-text-left"/>
-        </el-form-item>
-
-        <el-form-item label="具体说明:" prop="instruction">
-            <el-input
-              :rows="3"
-              clearable
-              type="textarea"
-              :maxlength="200"
-              v-model="form.instruction"
-              placeholder="请输入具体说明"/>
-          </el-form-item>
-
-          <el-form-item label="备注:" prop="remark">
-            <el-input
-              clearable
-              :rows="3"
-              type="textarea"
-              :maxlength="200"
-              v-model="form.remark"
-              placeholder="请输入备注"/>
+          <el-form-item label="结果:" prop="result">
+            <el-radio-group
+              v-model="form.result">
+              <el-radio :label="1">通过</el-radio>
+              <el-radio :label="0">失败</el-radio>
+            </el-radio-group>
           </el-form-item>
 
       </el-form>
@@ -141,7 +156,7 @@
 
   <script>
   export default {
-    name: 'DebugEdit',
+    name: 'DebugDataEdit',
     props: {
       // 弹窗是否打开
       visible: Boolean,
@@ -154,36 +169,8 @@
         form: Object.assign({status: 1}, this.data),
         // 表单验证规则
         rules: {
-          work_order: [
-          {required: true, message: '请输入工单号', trigger: 'blur'}
-        ],
-          order_time: [
-          {required: true, message: '请输入下单时间', trigger: 'blur'}
-        ],
-          client_name: [
-          {required: true, message: '请输入客户名称', trigger: 'blur'}
-        ],
-          shape: [
-          {required: true, message: '请输入规格型号', trigger: 'blur'}
-        ],
-          product_name: [
-          {required: true, message: '请输入产品名称', trigger: 'blur'}
-        ],
-          product_count: [
-          {required: true, message: '请输入产品数量', trigger: 'blur'}
-        ],
-          submit_time: [
-          {required: true, message: '请输入交期', trigger: 'blur'}
-        ],
-          start_time: [
-          {required: true, message: '请输入开始时间', trigger: 'blur'}
-        ],
-          finish_time: [
-          {required: true, message: '请输入完成时间', trigger: 'blur'},
+        testEndTime: [
           { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
-        ],
-          work_hours: [
-          {required: true, message: '请输入所用工时', trigger: 'blur'}
         ],
         },
         // 提交状态
@@ -209,7 +196,7 @@
         this.$refs['form'].validate((valid) => {
           if (valid) {
             this.loading = true;
-            this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/debugreport/update' : '/debugreport/add', this.form).then(res => {
+            this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/debugdata/update' : '/debugdata/add', this.form).then(res => {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -237,13 +224,13 @@
 
       // 自定义校验规则函数
       checkFinishTime(rule, value, callback) {
-        const startTime = this.form.start_time; // 获取开始日期的值
-        const finishTime = value; // 获取完成日期的值
+        const startTime = this.form.testStartTime; // 获取测试开始时间的值
+        const finishTime = value; // 获取测试结束时间的值
 
         if (!startTime || !finishTime) {
-          callback(); // 如果开始日期或完成日期为空，则不进行校验
+          callback(); 
         } else if (startTime > finishTime) {
-          callback(new Error('完成日期必须晚于开始日期')); // 如果完成日期早于开始日期，则返回错误信息
+          callback(new Error('测试结束时间必须晚于测试开始时间')); // 如果完成日期早于开始日期，则返回错误信息
         } else {
           callback(); // 校验通过
         }

@@ -73,14 +73,6 @@ class DebugForm(forms.ModelForm):
             'required': '完成日期不能为空',
         }
     )
-    # 所用工时
-    work_hours = forms.IntegerField(
-        min_value=0,
-        error_messages={
-            'required': '所用工时为空',
-            'min_value': '所用工时不得小于0',
-        }
-    )
     # 具体说明
     instruction = forms.CharField(
         required=False,

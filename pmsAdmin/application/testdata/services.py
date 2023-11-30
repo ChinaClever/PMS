@@ -185,6 +185,7 @@ def TestDataDetail(testdata_id):
     return data
 
 
+@transaction.atomic
 def TestDataAdd(request):
 
     try:
@@ -195,161 +196,139 @@ def TestDataAdd(request):
             return R.failed("参数不能为空")
         # 数据类型转换
         dict_data = json.loads(json_data)
+
+        softwareType = dict_data.get('softwareType')
+        productType = dict_data.get('productType')
+        productSN = dict_data.get('productSN')
+        macAddress = dict_data.get('macAddress')
+        result = dict_data.get('result')
+        softwareVersion = dict_data.get('softwareVersion')
+        clientName = dict_data.get('clientName')
+        companyName = dict_data.get('companyName')
+        protocolVersion = dict_data.get('protocolVersion')
+        testStartTime = dict_data.get('testStartTime')
+        testEndTime = dict_data.get('testEndTime')
+        testTime = dict_data.get('testTime')
+        testStep = dict_data.get('testStep')
+        # 创建数据
+        testdata = Testdata.objects.create(
+            softwareType=softwareType,
+            productType=productType,
+            productSN=productSN,
+            macAddress=macAddress,
+            result=result,
+            softwareVersion=softwareVersion,
+            clientName=clientName,
+            companyName=companyName,
+            protocolVersion=protocolVersion,
+            testStartTime=testStartTime,
+            testEndTime=testEndTime,
+            testTime=testTime,
+            create_user=uid(request)
+        )
+        # 存id和teststep数据
+        for item in testStep:
+            TestDataTestStep.objects.create(
+            testdata_id=testdata.id,
+            no=item.get('no'),
+            name = item.get('name'),
+            result = item.get('result'),
+            )
+        # 返回结果
+        return R.ok(msg="创建成功")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
 
-    softwareType = dict_data.get('softwareType')
-    productType = dict_data.get('productType')
-    productSN = dict_data.get('productSN')
-    macAddress = dict_data.get('macAddress')
-    result = dict_data.get('result')
-    softwareVersion = dict_data.get('softwareVersion')
-    clientName = dict_data.get('clientName')
-    companyName = dict_data.get('companyName')
-    protocolVersion = dict_data.get('protocolVersion')
-    testStartTime = dict_data.get('testStartTime')
-    testEndTime = dict_data.get('testEndTime')
-    testTime = dict_data.get('testTime')
-    testStep = dict_data.get('testStep')
-    # 创建数据
-    Testdata.objects.create(
-        softwareType=softwareType,
-        productType=productType,
-        productSN=productSN,
-        macAddress=macAddress,
-        result=result,
-        softwareVersion=softwareVersion,
-        clientName=clientName,
-        companyName=companyName,
-        protocolVersion=protocolVersion,
-        testStartTime=testStartTime,
-        testEndTime=testEndTime,
-        testTime=testTime,
-        create_user=uid(request)
-    )
-    # 存id和teststep数据
-    for item in testStep:
-        TestDataTestStep.objects.create(
-        testdata_id=Testdata.id,
-        no=item.get('no'),
-        name = item.get('name'),
-        result = item.get('name'),
-        )
+
+@transaction.atomic
+def TestDataUpdate(request):
+    try:
+        # 接收请求参数
+        json_data = request.body.decode()
+        # 参数为空判断
+        if not json_data:
+            return R.failed("参数不能为空")
+        # 数据类型转换
+        dict_data = json.loads(json_data)
+        # ID
+        testdata_id = dict_data.get('id')
+        # ID判空
+        if not testdata_id or int(testdata_id) <= 0:
+            return R.failed("ID不能为空")
+
+        softwareType = dict_data.get('softwareType')
+        productType = dict_data.get('productType')
+        productSN = dict_data.get('productSN')
+        macAddress = dict_data.get('macAddress')
+        result = dict_data.get('result')
+        softwareVersion = dict_data.get('softwareVersion')
+        clientName = dict_data.get('clientName')
+        companyName = dict_data.get('companyName')
+        protocolVersion = dict_data.get('protocolVersion')
+        testStartTime = dict_data.get('testStartTime')
+        testEndTime = dict_data.get('testEndTime')
+        testTime = dict_data.get('testTime')
+        testStep = dict_data.get('testStep')
+        # 根据ID查询
+        testdata = Testdata.objects.only('id').filter(id=testdata_id, is_delete=False).first()
+        # 查询结果判断
+        if not testdata:
+            return R.failed("数据不存在")
+        # 对象赋值
+        testdata.softwareType = softwareType
+        testdata.productType = productType
+        testdata.productSN = productSN
+        testdata.macAddress = macAddress
+        testdata.result = result
+        testdata.softwareVersion = softwareVersion
+        testdata.clientName = clientName
+        testdata.companyName = companyName
+        testdata.protocolVersion = protocolVersion
+        testdata.testStartTime = testStartTime
+        testdata.testEndTime = testEndTime
+        testdata.testTime = testTime
+        testdata.update_user = uid(request)
+        # 更新数据
+        testdata.save()
+        # 更新testdata_teststep表
+        TestDataTestStep.objects.filter(debugdata_id=testdata_id).delete()
+        for item in testStep:
+            TestDataTestStep.objects.create(
+            testdata_id=testdata.id,
+            no=item.get('no'),
+            name = item.get('name'),
+            result = item.get('result'),
+            )
+        # 返回结果
+        return R.ok(msg="更新成功")
+    except Exception as e:
+        logging.info("错误信息：\n{}", format(e))
+        return R.failed("参数错误")
+
+
+def TestDataDelete(testdata_id):
+    # 记录ID为空判断
+    if not testdata_id:
+        return R.failed("记录ID不存在")
+    # 分裂字符串
+    list = testdata_id.split(',')
+    # 计数器
+    count = 0
+    # 遍历数据源
+    if len(list) > 0:
+        for id in list:
+            # 根据ID查询记录
+            tetdata = Testdata.objects.only('id').filter(id=int(id), is_delete=False).first()
+            # 查询结果判空
+            if not tetdata:
+                return R.failed("数据不存在")
+            # 设置删除标识
+            tetdata.is_delete = True
+            # 更新记录
+            tetdata.save()
+            # 计数器+1
+            count += 1
     # 返回结果
-    return R.ok(msg="创建成功")
+    return R.ok(msg="本次共删除{0}条数据".format(count))
 
-
-# 更新
-# def DebugUpdate(request):
-#     try:
-#         # 接收请求参数
-#         json_data = request.body.decode()
-#         # 参数为空判断
-#         if not json_data:
-#             return R.failed("参数不能为空")
-#         # 数据类型转换
-#         dict_data = json.loads(json_data)
-#         # ID
-#         debug_id = dict_data.get('id')
-#         # ID判空
-#         if not debug_id or int(debug_id) <= 0:
-#             return R.failed("ID不能为空")
-#     except Exception as e:
-#         logging.info("错误信息：\n{}", format(e))
-#         return R.failed("参数错误")
-#     # 表单验证
-#     form = forms.DebugForm(dict_data)
-#     if form.is_valid():
-#         # 下单日期
-#         order_time = form.cleaned_data.get('order_time')
-#         # 客户名称
-#         client_name = form.cleaned_data.get('client_name')
-#         # 规格型号
-#         shape = form.cleaned_data.get('shape')
-#         # 产品名称
-#         product_name = form.cleaned_data.get('product_name')
-#         # 数量
-#         product_count = form.cleaned_data.get('product_count')
-#         # 交期
-#         submit_time = form.cleaned_data.get('submit_time')
-#         # 开始日期
-#         start_time = form.cleaned_data.get('start_time')
-#         # 完成日期
-#         finish_time = form.cleaned_data.get('finish_time')
-#         # 所用工时
-#         work_hours = form.cleaned_data.get('work_hours')
-#         # 具体说明
-#         instruction = form.cleaned_data.get('instruction')
-#         # 备注
-#         remark = form.cleaned_data.get('remark')
-#     else:
-#         # 获取错误信息
-#         err_msg = regular.get_err(form)
-#         # 返回错误信息
-#         return R.failed(err_msg)
-#
-#  # 根据ID查询
-#     debug = Debug.objects.only('id').filter(id=debug_id, is_delete=False).first()
-#     # 查询结果判断
-#     if not debug:
-#         return R.failed("数据不存在")
-# # 对象赋值
-#     debug.order_time = order_time
-#     debug.client_name = client_name
-#     debug.shape = shape
-#     debug.product_name = product_name
-#     debug.product_count = product_count
-#     debug.submit_time = submit_time
-#     debug.start_time = start_time
-#     debug.finish_time = finish_time
-#     debug.work_hours = work_hours
-#     debug.instruction = instruction
-#     debug.remark = remark
-#     debug.update_user = uid(request)
-#     # 更新数据
-#     debug.save()
-#     # 返回结果
-#     return R.ok(msg="更新成功")
-
-
-# 删除
-# def DebugDelete(debug_id):
-#     # 记录ID为空判断
-#     if not debug_id:
-#         return R.failed("记录ID不存在")
-#     # 分裂字符串
-#     list = debug_id.split(',')
-#     # 计数器
-#     count = 0
-#     # 遍历数据源
-#     if len(list) > 0:
-#         for id in list:
-#             # 根据ID查询记录
-#             debug = Debug.objects.only('id').filter(id=int(id), is_delete=False).first()
-#             # 查询结果判空
-#             if not debug:
-#                 return R.failed("数据不存在")
-#             # 设置删除标识
-#             debug.is_delete = True
-#             # 更新记录
-#             debug.save()
-#             # 计数器+1
-#             count += 1
-#     # 返回结果
-#     return R.ok(msg="本次共删除{0}条数据".format(count))
-
-
-# 获取数据列表
-# def getDebugList():
-#     # 查询数据列表
-#     list = Debug.objects.filter(is_delete=False, status=1).values()
-#     # 实例化列表
-#     debug_list = []
-#     # 遍历数据源
-#     if list:
-#         for v in list:
-#             # 加入数组
-#             debug_list.append(v)
-#     # 返回结果
-#     return debug_list
