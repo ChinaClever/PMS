@@ -32,6 +32,7 @@ class Migration(migrations.Migration):
                 ('work_hours', models.IntegerField(default=0, help_text='所用工时', null=True, verbose_name='所用工时')),
                 ('instruction', models.CharField(help_text='具体说明', max_length=150, null=True, verbose_name='具体说明')),
                 ('remark', models.CharField(help_text='备注', max_length=150, null=True, verbose_name='备注')),
+                ('product_module',models.IntegerField(choices=[(1, '成品'), (2, '模块')], help_text='成品_模块：1-成品 2-模块',verbose_name='成品_模块：1-成品 2-模块')),
             ],
             options={
                 'verbose_name': '调试报表',

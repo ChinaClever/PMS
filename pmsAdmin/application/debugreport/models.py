@@ -34,8 +34,15 @@ class Debug(BaseModel):
     instruction = models.CharField(null=True, max_length=150, verbose_name="具体说明", help_text="具体说明")
     # 备注
     remark = models.CharField(null=True, max_length=150, verbose_name="备注", help_text="备注")
+    # 成品or模块
+    product_module_CHOICES = (
+        (1, '成品'),
+        (2, '模块')
+    )
+    product_module = models.IntegerField(choices=product_module_CHOICES,
+                                         verbose_name="成品_模块：1-成品 2-模块", help_text="成品_模块：1-成品 2-模块")
 
-    class Meta:
+class Meta:
         # 数据表名
         db_table = settings.TABLE_PREFIX + "debugreport"
         verbose_name = "调试报表"

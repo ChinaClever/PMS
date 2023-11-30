@@ -70,6 +70,7 @@ def DebugList(request):
                 'work_hours': item.work_hours,
                 'instruction': item.instruction,
                 'remark': item.remark,
+                'product_module': item.product_module,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d')) if item.create_time else None,
             }
@@ -100,6 +101,7 @@ def DebugDetail(debug_id):
         'work_hours': debug.work_hours,
         'instruction': debug.instruction,
         'remark': debug.remark,
+        'product_module': debug.product_module,
         'create_time': str(debug.create_time.strftime('%Y-%m-%d')),
         'update_time': str(debug.update_time.strftime('%Y-%m-%d')),
     }
@@ -146,6 +148,7 @@ def DebugAdd(request):
         instruction = form.cleaned_data.get('instruction')
         # 备注
         remark = form.cleaned_data.get('remark')
+        product_module = dict_data.get('product_module')
         # 创建数据
         Debug.objects.create(
             work_order=work_order,
@@ -160,6 +163,7 @@ def DebugAdd(request):
             work_hours=work_hours,
             instruction=instruction if instruction else None,
             remark=remark if remark else None,
+            product_module=product_module,
             create_user=uid(request)
         )
         # 返回结果
