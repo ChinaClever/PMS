@@ -80,3 +80,17 @@ class InspectreportDeleteView(PermissionRequired, View):
         result = services.InspectreportDelete(Inspectreport_id)
         # 返回结果
         return result
+
+@method_decorator(check_login, name="get")
+class InspectreportListOfTotalView(PermissionRequired, View):
+    # 方法权限标识
+    permission_required = ("sys:inspectreport:list",)
+
+    # 接收GET请求
+    def get(self, request):
+
+        # 调用查询质检报表分页数据方法
+        result = services.InspectreportListOfTotal(request)
+
+        # 返回结果
+        return result

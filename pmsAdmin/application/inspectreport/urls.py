@@ -37,4 +37,6 @@ urlpatterns = [
     path('update', views.InspectreportUpdateView.as_view()),
     # 删除质检报表
     path('delete/<str:Inspectreport_id>', views.InspectreportDeleteView.as_view()),
+    # 查询统计质检报表
+    path('listOfTotal', views.InspectreportListOfTotalView.as_view()),
 ]

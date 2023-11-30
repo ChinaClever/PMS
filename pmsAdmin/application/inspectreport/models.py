@@ -46,6 +46,13 @@ class Inspectreport(BaseModel):
     signal = models.IntegerField(choices=SIGNAL_CHOICES, default=1, verbose_name="信号：1-红色 2-绿色",
                                  help_text="信号：1-红色 2-绿色")
 
+    PRODUCT_MODULE_CHOICES = (
+        (1,"成品"),
+        (2,"模块")
+    )
+
+    product_module = models.IntegerField(choices=PRODUCT_MODULE_CHOICES, default=1, verbose_name="成品/模块：1-成品 2-模块",
+                                 help_text="成品/模块：1-成品 2-模块")
     problem = models.TextField(null=True, verbose_name="问题", help_text="问题")
 
     action = models.TextField(null=True, verbose_name="行动", help_text="行动")
