@@ -104,6 +104,10 @@
           <el-tag v-if="row.signal === 1"  effect="dark" type="danger" size="medium"></el-tag>
           <el-tag v-if="row.signal === 2"  effect="dark" type="success" size="medium"></el-tag>
         </template>
+        <template slot="product_module" slot-scope="{row}">
+          <el-tag v-if="row.product_module === 1" type="success" size="medium">成品</el-tag>
+          <el-tag v-if="row.product_module === 2" type="success" size="medium">模块</el-tag>
+        </template>
         <template slot="expand_1" slot-scope="{row}" v-if="row.problems">
           <el-popover
             placement="top-start"
@@ -165,6 +169,14 @@ export default {
           width: 80,
           align: 'center',
           showOverflowTooltip: true,
+        },
+        {
+          prop: 'product_module',
+          label: '成品/模块',
+          minWidth: 100,
+          align: 'center',
+          resizable: false,
+          slot: 'product_module',
         },
         {
           prop: 'start_time',
@@ -418,6 +430,7 @@ export default {
       const workbook = XLSX.utils.book_new();
       //去除不需要的字段，这里我不希望显示id，所以id不返回
       let temp = this.selection;
+      // eslint-disable-next-line
       this.selection = this.selection.map(({ id, ...rest }) => rest);
       //可以将对应字段的数字经过判断转为对应的中文
       this.selection = this.selection.map(obj => {

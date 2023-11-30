@@ -57,6 +57,7 @@ def InspectreportList(request):
             data = {
                 'id': item.id,
                 'work_order': item.work_order,
+                'product_module' : item.product_module,
                 'start_time': str(item.start_time.strftime('%Y-%m-%d %H:%M')) if item.create_time else None,
                 'end_time': str(item.end_time.strftime('%Y-%m-%d %H:%M')) if item.create_time else None,
                 'commit_user': item.commit_user,
@@ -93,6 +94,8 @@ def InspectreportAdd(request):
     if form.is_valid():
         # 工单号
         work_order = form.cleaned_data.get('work_order')
+        # 成品/模块
+        product_module = form.cleaned_data.get('product_module')
         # 开始时间
         start_time = form.cleaned_data.get('start_time')
         # 结束时间
@@ -125,6 +128,7 @@ def InspectreportAdd(request):
         Inspectreport.objects.create(
             commit_user=UserDetail(uid(request)).get("realname"),
             work_order=work_order,
+            product_module=product_module,
             start_time=start_time,
             end_time=end_time,
             item_number=item_number,
@@ -158,6 +162,7 @@ def InspectreportDetail(Inspectreport_id):
     data = {
         'id': item.id,
         'work_order': item.work_order,
+        'product_module': item.product_module,
         'start_time': str(item.start_time.strftime('%Y-%m-%d %H:%M')) if item.create_time else None,
         'end_time': str(item.end_time.strftime('%Y-%m-%d %H:%M')) if item.create_time else None,
         'commit_user': item.commit_user,
@@ -198,6 +203,8 @@ def InspectreportUpdate(request):
     if form.is_valid():
         # 工单号
         work_order = form.cleaned_data.get('work_order')
+        # 成品/模块
+        product_module = form.cleaned_data.get('product_module')
         # 开始时间
         start_time = form.cleaned_data.get('start_time')
         # 结束时间
@@ -240,6 +247,7 @@ def InspectreportUpdate(request):
 
     # 对象赋值
     inspectreport.work_order = work_order
+    inspectreport.product_module = product_module
     inspectreport.start_time = start_time
     inspectreport.end_time = end_time
     inspectreport.item_number = item_number
