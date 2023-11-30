@@ -3,6 +3,7 @@ from django.views import View
 
 from middleware.login_middleware import check_login
 from middleware.permission_middleware import PermissionRequired
+from utils import R
 from . import services
 
 
@@ -16,3 +17,25 @@ class ShipmentReportListView(PermissionRequired, View):
         # 返回结果
         return result
 
+# 查询详情
+@method_decorator(check_login, name='dispatch')
+class ShipmentReportDetailView(PermissionRequired, View):
+    # 方法权限标识
+    permission_required = ('sys:shipmentreport:detail',)
+
+    # GET请求渲染HTML模板
+    def get(self, request, shipment_id):
+        # 调用查询职级详情服务方法
+        data = services.ShipmentReportDetail(shipment_id)
+        # 返回结果
+        return R.ok(data=data)
+
+@method_decorator(check_login, name='dispatch')
+class ShipmentReportAddView(PermissionRequired, View):
+
+    permission_required = ('sys:shipmentreport:add',)
+    def post(self, request):
+
+        result = services.ShipmentReportAdd(request)
+
+        return result

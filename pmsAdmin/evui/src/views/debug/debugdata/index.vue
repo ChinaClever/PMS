@@ -279,7 +279,7 @@
       // 每隔60秒刷新数据
       this.timer = setInterval(() => {
         this.reload();
-      }, 60000);
+      }, 600000);
     },
     stopTimer() {
       // 停止定时器

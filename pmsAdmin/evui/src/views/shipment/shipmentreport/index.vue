@@ -33,6 +33,15 @@
         <!-- 数据表格 -->
         <el-row :gutter="10">
           <el-col :span="2">
+            <el-date-picker
+              v-model="this.currentDate"
+              style="width: 118px;"
+              type="year"
+              format="yyyy 年"
+              placeholder="选择年"
+              @change="yearHandleSelect"
+              >
+            </el-date-picker>
             <el-menu
         default-active="1-1"
         :unique-opened="true"
@@ -188,14 +197,6 @@
             align: 'center',
             fixed: "left"
           },
-          // {
-          //   prop: 'id',
-          //   label: 'ID',
-          //   width: 60,
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   fixed: "left"
-          // },
           {
             prop: 'work_order',
             label: '工单号',
@@ -316,7 +317,9 @@
           }
         ],
         // 表格搜索条件
-        where: {},
+        where: {
+        },
+        currentDate:'',
         // 表格选中数据
         selection: [],
         // 当前编辑数据
@@ -327,15 +330,27 @@
         showImport: false
       };
     },
+    mounted () {
+      this.getDefaultYear();
+    },
     methods: {
+      // 初始获取当前年份
+      getDefaultYear() {
+        this.currentDate = new Date();
+      },
+      // 选择年
+      yearHandleSelect() {
+        this.$refs.table.reload({page: 1, where: this.where});
+      },
       // 点击左侧月份
       handleSelect(keyPath) {
-        this.where.product_module = keyPath[0]
-        this.where.month = keyPath
+        this.where.product_module = keyPath[0];
+        this.where.month = keyPath.split("-")[1];
         this.$refs.table.reload({page: 1, where: this.where});
       },
       /* 刷新表格 */
       reload() {
+        this.where.year = this.currentDate.getFullYear();
         this.$refs.table.reload({page: 1, where: this.where});
       },
       /* 重置搜索 */

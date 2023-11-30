@@ -100,8 +100,6 @@ def WeldingDetail(welding_id):
         'work_hours': welding.work_hours,
         'instruction': welding.instruction,
         'remark': welding.remark,
-        'create_time': str(welding.create_time.strftime('%Y-%m-%d')),
-        'update_time': str(welding.update_time.strftime('%Y-%m-%d')),
     }
     # 返回结果
     return data

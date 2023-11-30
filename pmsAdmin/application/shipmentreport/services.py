@@ -1,3 +1,6 @@
+import logging
+import json
+from datetime import datetime
 
 from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage, EmptyPage
 from django.db.models import Q
@@ -31,10 +34,16 @@ def ShipmentReportList(request):
             Q(work_order__icontains=keyword) |
             Q(SO_RQ_id__icontains=keyword)
         )
+    # 筛选年份(前端默认展示当前年)
+    year = request.GET.get('year')
+    if year:
+        query = query.filter(delivery_date__year=int(year))
+    else:
+        current_year = datetime.now().year
+        query = query.filter(delivery_date__year=current_year)
     # 筛选月份(前端默认展示成品的一月份)
     month = request.GET.get('month')
     if month:
-        month=month[-1]
         query = query.filter(delivery_date__month=int(month))
     else:
         query = query.filter(delivery_date__month=1)
@@ -90,3 +99,75 @@ def ShipmentReportList(request):
     # 返回结果
     return R.ok(data=result, count=count)
 
+
+def ShipmentReportDetail(shipment_id):
+    # 根据ID查询
+    shipment = Shipment.objects.filter(is_delete=False, id=shipment_id).first()
+    # 查询结果判空
+    if not shipment:
+        return None
+    # 声明结构体
+    data = {
+        'id': shipment.id,
+        'work_order': shipment.work_order,
+        'client_name': shipment.client_name,
+        'product_code': shipment.product_code,
+        'product_name': shipment.product_name,
+        'shape': shipment.shape,
+        'order_date': str(shipment.order_date.strftime('%Y-%m-%d')),
+        'delivery_date': str(shipment.delivery_date.strftime('%Y-%m-%d')),
+        'update_delivery_date': str(shipment.update_delivery_date.strftime('%Y-%m-%d')) if shipment.update_delivery_date else None,
+        'finish_date': str(shipment.finish_date.strftime('%Y-%m-%d')) if shipment.finish_date else None,
+        'product_count': shipment.product_count,
+        'SO_RQ_id': shipment.SO_RQ_id,
+        'remark': shipment.remark if shipment.remark else None,
+        'product_module': shipment.product_module,
+        'attachment': shipment.attachment if shipment.attachment else None,
+
+    }
+    # 返回结果
+    return data
+
+def ShipmentReportAdd(request):
+    try:
+        # 接收请求参数
+        json_data = request.body.decode()
+        # 参数为空判断
+        if not json_data:
+            return R.failed("参数不能为空")
+        # 数据类型转换
+        dict_data = json.loads(json_data)
+    except Exception as e:
+        logging.info("错误信息：\n{}", format(e))
+        return R.failed("参数错误")
+
+    work_order = dict_data.get('work_order')
+    client_name = dict_data.get('client_name')
+    product_code = dict_data.get('product_code')
+    product_name = dict_data.get('product_name')
+    shape = dict_data.get('shape')
+    order_date = dict_data.get('order_date')
+    delivery_date = dict_data.get('delivery_date')
+    finish_date = dict_data.get('finish_date')
+    product_count = dict_data.get('product_count')
+    SO_RQ_id = dict_data.get('SO_RQ_id')
+    remark = dict_data.get('remark')
+    product_module = dict_data.get('product_module')
+    # 创建数据
+    Shipment.objects.create(
+        work_order=work_order,
+        client_name=client_name,
+        product_code=product_code,
+        product_name=product_name,
+        shape=shape,
+        order_date=order_date,
+        delivery_date=delivery_date,
+        finish_date=finish_date if remark else None,
+        product_count=product_count,
+        SO_RQ_id=SO_RQ_id,
+        product_module=product_module,
+        remark=remark if remark else None,
+        create_user=uid(request)
+        )
+    # 返回结果
+    return R.ok(msg="创建成功")
