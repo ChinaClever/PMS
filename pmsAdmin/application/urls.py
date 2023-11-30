@@ -112,4 +112,6 @@ urlpatterns = [
     path('testdata/', include('application.testdata.urls')),
     # 排期表单
     path('shipmentreport/', include('application.shipmentreport.urls')),
+    # mac地址
+    path('mac/', include('application.mac.urls')),
 ]

@@ -27,19 +27,19 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 from constant.constants import PAGE_LIMIT
-from application.burning import forms
-from application.burning.models import burning
+from application.mac import forms
+from application.mac.models import mac
 from utils import R, regular
 
 
-# 查询客户数据列表
-def BurningList(request):
+# 查询数据列表
+def MacList(request):
     # 页码
     page = int(request.GET.get('page', 1))
     # 每页数
     limit = int(request.GET.get('limit', PAGE_LIMIT))
     # 分页查询
-    query = burning.objects.filter(is_delete=False)
+    query = mac.objects.filter(is_delete=False)
     # 角色名称模糊筛选
     keyword = request.GET.get('keyword')
     if keyword:
@@ -66,13 +66,8 @@ def BurningList(request):
                 'work_order':item.work_order,
                 'name': item.name,
                 'code': item.code,
-                'version': item.version,
-                'require': item.require ,
-                'order_time': str(item.order_time.strftime('%Y-%m-%d ')) if item.order_time else None,
-                'delivery_time': str(item.delivery_time.strftime('%Y-%m-%d ')) if item.delivery_time else None,
-                'quantity': item.quantity,
-                'remark': item.remark,
-                'rcerder': item.rcerder,
+                'serial_id':item.serial_id,
+                'mac_address': item.mac_address,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d ')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d ')) if item.update_time else None,
             }
@@ -83,9 +78,9 @@ def BurningList(request):
 
 
 # 根据ID获取详情
-def BurningDetail(burning_id):
+def MacDetail(mac_id):
     # 根据ID查询客户
-    user = burning.objects.filter(is_delete=False, id=burning_id).first()
+    user = mac.objects.filter(is_delete=False, id=mac_id).first()
     # 查询结果判空
     if not user:
         return None
@@ -95,20 +90,16 @@ def BurningDetail(burning_id):
         'work_order': user.work_order,
         'name': user.name,
         'code': user.code,
-        'version': user.version,
-        'require': user.require,
-        'order_time': str(user.order_time.strftime('%Y-%m-%d ')) if user.order_time else None,
-        'delivery_time': str(user.delivery_time.strftime('%Y-%m-%d ')) if user.delivery_time else None,
-        'quantity': user.quantity,
-        'remark': user.remark,
-        'rcerder': user.rcerder,
+        'serial_id': user.serial_id,
+        'mac_address': user.mac_address,
+
     }
     # 返回结果
     return data
 
 
 # 添加客户
-def BurningAdd(request):
+def MacAdd(request):
     try:
         # 接收请求参数
         json_data = request.body.decode()
@@ -121,45 +112,33 @@ def BurningAdd(request):
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
     # 表单验证
-    form = forms.BurningForm(dict_data)
+    form = forms.MacForm(dict_data)
     if form.is_valid():
         # 工单号
         work_order = form.cleaned_data.get('work_order')
         # 客户名称
         name = form.cleaned_data.get('name')
-        # 规格型号
+        # 产品类型
         code = form.cleaned_data.get('code')
-        # 版本号
-        version = form.cleaned_data.get('version')
-        # 程序要求
-        require = form.cleaned_data.get('require')
-        # 订单日期
-        order_time = form.cleaned_data.get('order_time')
-        # 交货日期
-        delivery_time = form.cleaned_data.get('delivery_time')
-        # 数量
-        quantity = form.cleaned_data.get('quantity')
-        # 备注
-        remark = form.cleaned_data.get('remark')
-        # rxerder
-        rcerder = form.cleaned_data.get('rcerder')
-        if order_time > delivery_time:
-            return R.failed("交货日期不能小于订单日期")
+        # 序列号
+        serial_id = form.cleaned_data.get('serial_id')
+        # mac地址
+        mac_address = form.cleaned_data.get('mac_address')
+        obj = mac.objects.filter(mac_address=mac_address)
+        if obj:
+            return R.failed('mac地址不能重复')
         # 创建数据
-        burning.objects.create(
-            work_order=work_order,
-            name=name,
-            code= code,
-            version=version,
-            require=require,
-            order_time=order_time,
-            delivery_time=delivery_time,
-            quantity=quantity,
-            remark= remark,
-            rcerder= rcerder,
-        )
-        # 返回结果
-        return R.ok(msg="创建成功")
+        else:
+            mac.objects.create(
+                work_order=work_order,
+                name=name,
+                code= code,
+                serial_id=serial_id,
+                mac_address=mac_address,
+
+            )
+            # 返回结果
+            return R.ok(msg="创建成功")
     else:
         # 获取错误信息
         err_msg = regular.get_err(form)
@@ -168,7 +147,7 @@ def BurningAdd(request):
 
 
 # 更新客户
-def BurningUpdate(request):
+def MacUpdate(request):
     try:
         # 接收请求参数
         json_data = request.body.decode()
@@ -178,35 +157,25 @@ def BurningUpdate(request):
         # 数据类型转换
         dict_data = json.loads(json_data)
         # 客户ID
-        burning_id = dict_data.get('id')
+        mac_id = dict_data.get('id')
         # 客户ID判空
-        if not burning_id or int(burning_id) <= 0:
+        if not mac_id or int(mac_id) <= 0:
             return R.failed("客户ID不能为空")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
     # 表单验证
-    form = forms.BurningForm(dict_data)
+    form = forms.MacForm(dict_data)
     if form.is_valid():
         work_order = form.cleaned_data.get('work_order')
         # 客户名称
         name = form.cleaned_data.get('name')
-        # 规格型号
+        # 产品类型
         code = form.cleaned_data.get('code')
-        # 版本号
-        version = form.cleaned_data.get('version')
-        # 程序要求
-        require = form.cleaned_data.get('require')
-        # 订单要求
-        order_time = form.cleaned_data.get('order_time')
-        # 交货日期
-        delivery_time = form.cleaned_data.get('zip_code')
-        # 数量
-        quantity = form.cleaned_data.get('quantity')
-        # 备注
-        remark = form.cleaned_data.get('remark')
-       
-        rcerder = form.cleaned_data.get('rcerder')
+        # 序列号
+        serial_id = form.cleaned_data.get('serial_id')
+        # mac地址
+        mac_address = form.cleaned_data.get('mac_address')
     else:
         # 获取错误信息
         err_msg = regular.get_err(form)
@@ -214,7 +183,7 @@ def BurningUpdate(request):
         return R.failed(err_msg)
 
     # 根据ID查询客户
-    user = burning.objects.only('id').filter(id=burning_id, is_delete=False).first()
+    user = mac.objects.only('id').filter(id=mac_id, is_delete=False).first()
     # 查询结果判断
     if not user:
         return R.failed("客户不存在")
@@ -223,13 +192,8 @@ def BurningUpdate(request):
     user.work_order = work_order
     user.name = name
     user.code = code
-    user.version = version
-    user.require = require
-    user.order_time = order_time
-    user.delivery_time = delivery_time
-    user. quantity =  quantity
-    user.remark = remark
-    user.rcerder = rcerder
+    user.serial_id = serial_id
+    user.mac_address= mac_address
 
     # 更新数据
     user.save()
@@ -238,19 +202,19 @@ def BurningUpdate(request):
 
 
 # 删除客户
-def BurningDelete(burning_id):
+def MacDelete(mac_id):
     # 记录ID为空判断
-    if not burning_id:
+    if not mac_id:
         return R.failed("记录ID不存在")
     # 分裂字符串
-    list = burning_id.split(',')
+    list = mac_id.split(',')
     # 计数器
     count = 0
     # 遍历数据源
     if len(list) > 0:
         for id in list:
             # 根据ID查询记录
-            user = burning.objects.only('id').filter(id=int(id), is_delete=False).first()
+            user = mac.objects.only('id').filter(id=int(id), is_delete=False).first()
             # 查询结果判空
             if not user:
                 return R.failed("不存在")

@@ -23,7 +23,7 @@
 
 from django import forms
 # 客户表单验证
-from application.softwarerelease import models
+from application.burning import models
 
 
 class BurningForm(forms.ModelForm):
@@ -116,7 +116,7 @@ class BurningForm(forms.ModelForm):
 
     class Meta:
         # 绑定模型
-        model = models.Softwarerelease
+        model = models.burning
         # 指定部分字段验证
         fields = ['work_order','name', 'code', 'version', 'require', 'order_time', 'delivery_time', 'quantity', 'remark', 'rcerder',
                   ]
