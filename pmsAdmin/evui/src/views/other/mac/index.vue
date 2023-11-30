@@ -46,7 +46,7 @@
             icon="el-icon-plus"
             class="ele-btn-icon"
             @click="openEdit(null)"
-            v-if="permission.includes('sys:burningreport:add')">添加
+            v-if="permission.includes('sys:mac:add')">添加
           </el-button>
           <el-button
             size="small"
@@ -54,7 +54,7 @@
             icon="el-icon-delete"
             class="ele-btn-icon"
             @click="removeBatch"
-            v-if="permission.includes('sys:burningreport:dall')">删除
+            v-if="permission.includes('sys:mac:dall')">删除
           </el-button>
           <!-- <el-button
             @click="showImport=true"
@@ -68,7 +68,7 @@
             icon="el-icon-download"
             class="ele-btn-icon"
             @click="exportExcel"
-            v-if="permission.includes('sys:burning:export')">导出
+            v-if="permission.includes('sys:mac:export')">导出
           </el-button> -->
         </template>
         <!-- 操作列 -->
@@ -78,7 +78,7 @@
             :underline="false"
             icon="el-icon-edit"
             @click="openEdit(row)"
-            v-if="permission.includes('sys:burningreport:update')">修改
+            v-if="permission.includes('sys:mac:update')">修改
           </el-link>
           <el-popconfirm
             class="ele-action"
@@ -89,7 +89,7 @@
               slot="reference"
               :underline="false"
               icon="el-icon-delete"
-              v-if="permission.includes('sys:burningreport:delete')">删除
+              v-if="permission.includes('sys:mac:delete')">删除
             </el-link>
           </el-popconfirm>
         </template>
@@ -104,7 +104,7 @@
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
-    <burning-edit
+    <mac-edit
       :data="current"
       :visible.sync="showEdit"
       @done="reload"/>
@@ -114,19 +114,19 @@
 
 <script>
 import { mapGetters } from "vuex";
-import BurningEdit from './burning-edit';
+import MacEdit from './mac-edit';
 
 
 export default {
-  name: 'SystemBurning',
-  components: {BurningEdit},
+  name: 'SystemMac',
+  components: {MacEdit},
   computed: {
     ...mapGetters(["permission"]),
   },
   data() {
     return {
       // 表格数据接口
-      url: '/burningreport/list',
+      url: '/mac/list',
       // 表格列配置
       columns: [
         {
@@ -160,63 +160,21 @@ export default {
         },
         {
           prop: 'code',
-          label: '规格型号',
+          label: '产品类型',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
         },
         {
-          prop: 'version',
-          label: '版本号',
+          prop: 'serial_id',
+          label: '系列号',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
         },
         {
-          prop: 'require',
-          label: '程序需求',
-          showOverflowTooltip: true,
-          minWidth: 200,
-          align: 'center',
-        },
-        {
-          prop: 'order_time',
-          label: '订单日期',
-          sortable:'custom',
-          order:'',
-          sortableMethod:()=>{
-            //排序逻辑
-            this.where.order = this.order
-            this.reload();
-          },
-          showOverflowTooltip: true,
-          minWidth: 200,
-          align: 'center',
-        },
-        {
-          prop: 'delivery_time',
-          label: '交货日期',
-          sortable:'custom',
-          order:'',
-          sortableMethod:()=>{
-            //排序逻辑
-            this.where.order = this.order
-            this.reload();
-          },
-          showOverflowTooltip: true,
-          minWidth: 200,
-          align: 'center',
-        },
-        {
-          prop: 'remark',
-          label: '备注',
-          showOverflowTooltip: true,
-          minWidth: 200,
-          align: 'center',
-        },
-        {
-          prop: 'rcerder',
-          label: 'rcerder',
+          prop: 'mac_address',
+          label: 'mac地址',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
@@ -284,7 +242,7 @@ export default {
       } else {
         // 编辑
         this.loading = true;
-        this.$http.get('/burningreport/detail/' + row.id).then((res) => {
+        this.$http.get('/mac/detail/' + row.id).then((res) => {
           this.loading = false;
           if (res.data.code === 0) {
             this.current = Object.assign({}, res.data.data);
@@ -301,7 +259,7 @@ export default {
     /* 删除 */
     remove(row) {
       const loading = this.$loading({lock: true});
-      this.$http.delete('/burningreport/delete/' + row.id).then(res => {
+      this.$http.delete('/mac/delete/' + row.id).then(res => {
         loading.close();
         if (res.data.code === 0) {
           this.$message.success(res.data.msg);
@@ -324,7 +282,7 @@ export default {
         type: 'warning'
       }).then(() => {
         const loading = this.$loading({lock: true});
-        this.$http.delete('/burningreport/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
+        this.$http.delete('/mac/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -342,7 +300,7 @@ export default {
     /* 更改状态 */
     editStatus(row) {
       const loading = this.$loading({lock: true});
-      this.$http.put('/burningreport/status', {id: row.id, status: row.status}).then(res => {
+      this.$http.put('/mac/status', {id: row.id, status: row.status}).then(res => {
         loading.close();
         if (res.data.code === 0) {
           this.$message.success(res.data.msg);
@@ -359,7 +317,7 @@ export default {
     exportExcel() {
       let info = JSON.parse(JSON.stringify(this.where));
       this.$http
-        .get("/burningreport/exportExcel", info)
+        .get("/mac/exportExcel", info)
         .then((res) => {
           let data = res.data;
           if (data.code == 0) {

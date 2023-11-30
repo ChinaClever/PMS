@@ -141,6 +141,7 @@
             width: 45,
             align: 'center',
             fixed: "left"
+            
           },
           {
             prop: 'softwareType',
@@ -271,13 +272,14 @@
     methods: {
       /* 刷新表格 */
       reload() {
+        // this.tableKey++;
         this.$refs.table.reload({page: 1, where: this.where});
       },
       startTimer() {
-      // 每隔5秒刷新数据
+      // 每隔60秒刷新数据
       this.timer = setInterval(() => {
         this.reload();
-      }, 60000);
+      }, 600000);
     },
     stopTimer() {
       // 停止定时器
@@ -357,6 +359,30 @@
   </script>
   
   <style scoped>
+  /* .ele-body {
+  position: relative;
+}
+
+.ele-body:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.5);  
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s ease;  
+  pointer-events: none;
+  display: none;
+}
+
+.ele-body.loading:before {
+  display: block;
+  opacity: 1;
+} */
   </style>
   
   
