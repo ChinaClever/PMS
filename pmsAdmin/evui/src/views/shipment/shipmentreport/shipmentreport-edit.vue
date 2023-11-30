@@ -301,6 +301,7 @@
         ],
         delivery_date: [
           {required: true, message: '请选择交货日期', trigger: 'blur'},
+          { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
         ],
         update_delivery_date: [
           { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
@@ -370,11 +371,11 @@
        // 自定义校验规则函数
       checkFinishTime(rule, value, callback) {
         const orderDate = this.form.order_date; 
-        const finishTime = value; 
-        if (!orderDate || !finishTime) {
+        const thisDate = value; 
+        if (!orderDate || !thisDate) {
           callback(); 
-        } else if (orderDate > finishTime) {
-          callback(new Error('日期必须晚于订单日期')); 
+        } else if (orderDate > thisDate) {
+          callback(new Error('此日期必须晚于订单日期')); 
         } else {
           callback(); 
         }

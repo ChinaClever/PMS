@@ -34,7 +34,7 @@
         <el-row :gutter="10">
           <el-col :span="2">
             <el-date-picker
-              v-model="this.currentDate"
+              v-model="currentDate"
               style="width: 118px;"
               type="year"
               format="yyyy 年"
@@ -319,7 +319,7 @@
         // 表格搜索条件
         where: {
         },
-        currentDate:'',
+        currentDate: '',
         // 表格选中数据
         selection: [],
         // 当前编辑数据
@@ -330,7 +330,7 @@
         showImport: false
       };
     },
-    mounted () {
+    created () {
       this.getDefaultYear();
     },
     methods: {
@@ -340,6 +340,7 @@
       },
       // 选择年
       yearHandleSelect() {
+        this.where.year = this.currentDate.getFullYear();
         this.$refs.table.reload({page: 1, where: this.where});
       },
       // 点击左侧月份
