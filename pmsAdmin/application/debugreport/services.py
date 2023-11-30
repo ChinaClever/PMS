@@ -148,7 +148,7 @@ def DebugAdd(request):
         instruction = form.cleaned_data.get('instruction')
         # 备注
         remark = form.cleaned_data.get('remark')
-        product_module = dict_data.get('product_module')
+        product_module = form.cleaned_data.get('product_module')
         # 创建数据
         Debug.objects.create(
             work_order=work_order,
@@ -219,6 +219,8 @@ def DebugUpdate(request):
         instruction = form.cleaned_data.get('instruction')
         # 备注
         remark = form.cleaned_data.get('remark')
+        # 成品/模块
+        product_module = form.cleaned_data.get('product_module')
     else:
         # 获取错误信息
         err_msg = regular.get_err(form)
@@ -243,6 +245,7 @@ def DebugUpdate(request):
     debug.work_hours = work_hours
     debug.instruction = instruction
     debug.remark = remark
+    debug.product_module = product_module
     debug.update_user = uid(request)
     # 更新数据
     debug.save()

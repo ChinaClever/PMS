@@ -90,6 +90,13 @@ class DebugForm(forms.ModelForm):
         }
     )
 
+    product_module = forms.IntegerField(
+        required=True,
+        error_messages={
+            'required': '成品/模块不能为空',
+        }
+    )
+
     class Meta:
         # 绑定模型
         model = models.Debug

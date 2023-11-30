@@ -126,6 +126,14 @@
               placeholder="请输入备注"/>
           </el-form-item>
 
+          <el-form-item label="成品/模块:" prop="product_module">
+            <el-radio-group
+              v-model="form.product_module" >
+              <el-radio :label="1">成品</el-radio>
+              <el-radio :label="2">模块</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
       </el-form>
       <div slot="footer">
         <el-button @click="updateVisible(false)">取消</el-button>
@@ -180,6 +188,9 @@
           finish_time: [
           {required: true, message: '请输入完成时间', trigger: 'blur'},
           { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
+        ],
+        product_module: [
+          {required: true, message: '请选择成品/模块', trigger: 'blur'},
         ],
         },
         // 提交状态
