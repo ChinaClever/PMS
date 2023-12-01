@@ -200,7 +200,7 @@ def BurningUpdate(request):
         # 订单要求
         order_time = form.cleaned_data.get('order_time')
         # 交货日期
-        delivery_time = form.cleaned_data.get('zip_code')
+        delivery_time = form.cleaned_data.get('delivery_time')
         # 数量
         quantity = form.cleaned_data.get('quantity')
         # 备注

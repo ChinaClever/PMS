@@ -135,16 +135,15 @@ def MacAdd(request):
                 code= code,
                 serial_id=serial_id,
                 mac_address=mac_address,
-
             )
             # 返回结果
             return R.ok(msg="创建成功")
     else:
         # 获取错误信息
         err_msg = regular.get_err(form)
+        print(err_msg)
         # 返回错误信息
         return R.failed(err_msg)
-
 
 # 更新客户
 def MacUpdate(request):
@@ -199,7 +198,6 @@ def MacUpdate(request):
     user.save()
     # 返回结果
     return R.ok(msg="更新成功")
-
 
 # 删除客户
 def MacDelete(mac_id):
