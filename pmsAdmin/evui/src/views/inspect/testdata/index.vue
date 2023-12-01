@@ -79,6 +79,7 @@
               @click="removeBatch"
               v-if="permission.includes('sys:testdata:dall')">删除
             </el-button>
+            <pre>                    </pre>
             <el-switch
               v-model="realTime"
               active-text="实时模式"
@@ -278,9 +279,7 @@
       // eslint-disable-next-line
       realTime(newValue, oldValue){
         if(newValue){
-          if(this.$refs.table.data.length >= this.realTimeCount){
-            this.$refs.table.data = this.$refs.table.data.slice(0,10);
-          }
+          this.$refs.table.reload({page: 1, limit:this.realTimeCount ,where: this.where});
           this.startTimer();
           this.pageVis = false;
         } else {
