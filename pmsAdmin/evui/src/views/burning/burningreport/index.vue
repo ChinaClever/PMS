@@ -9,12 +9,12 @@
         @keyup.enter.native="reload"
         @submit.native.prevent>
         <el-row :gutter="15">
-          <el-col :lg="6" :md="12">
-            <el-form-item label="客户名称:">
+          <el-col :lg="6" :md="19">
+            <el-form-item label="客户名称或工单号:">
               <el-input
                 clearable
-                v-model="where.name"
-                placeholder="请输入客户名称"/>
+                v-model="where.keyword"
+                placeholder="请输入客户名称或工单号"/>
             </el-form-item>
           </el-col>
           <el-col :lg="6" :md="12">
@@ -145,7 +145,7 @@ export default {
           fixed: "left"
         },
         {
-          prop: 'work_order_id',
+          prop: 'work_order',
           label: '工单号',
           showOverflowTooltip: true,
           minWidth: 200,

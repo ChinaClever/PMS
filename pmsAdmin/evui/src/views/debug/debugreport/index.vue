@@ -101,6 +101,11 @@
               :active-value="1"
               :inactive-value="2"/>
           </template>
+          <!-- 成品模块列 -->
+          <template slot="product_module" slot-scope="{row}">
+            <el-tag v-if="row.product_module === 1" type="success" size="medium">成品</el-tag>
+            <el-tag v-if="row.product_module === 2" type="success" size="medium">模块</el-tag>
+          </template>
         </ele-pro-table>
       </el-card>
       <!-- 编辑弹窗 -->
@@ -257,6 +262,14 @@
             minWidth: 200,
             align: 'center',
           },
+          {
+          prop: 'product_module',
+          label: '成品/模块',
+          minWidth: 100,
+          align: 'center',
+          resizable: false,
+          slot: 'product_module',
+        },
           {
             columnKey: 'action',
             label: '操作',

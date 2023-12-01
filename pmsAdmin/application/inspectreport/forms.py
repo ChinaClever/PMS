@@ -11,6 +11,13 @@ class InspectreportForm(forms.ModelForm):
         }
     )
 
+    product_module = forms.IntegerField(
+        required=True,
+        error_messages={
+            'required': '成品/模块不能为空',
+        }
+    )
+
     # 开始时间
     start_time = forms.DateTimeField(
         required=True,

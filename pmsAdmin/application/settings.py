@@ -116,7 +116,7 @@ INSTALLED_APPS = [
     'application.menu',
     'application.config_web',
     'application.upload',
-    'application.supplier',
+    #'application.supplier',
     'application.repairreport',
     'application.suggestion',
     'application.inspectreport',
@@ -127,6 +127,10 @@ INSTALLED_APPS = [
     'application.debugdata_teststep',
     'application.testdata',
     'application.testdata_teststep',
+    'application.softwarerelease',
+    'application.shipmentreport',
+    'application.mac',
+
 ]
 
 MIDDLEWARE = [
@@ -252,3 +256,4 @@ CAPTCHA_NOISE_FUNCTIONS = (
 # 随机字符验证码
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge'  # 字母验证码
 # CAPTCHA_CHALLENGE_FUNCT = "captcha.helpers.math_challenge"  # 加减乘除验证码
+

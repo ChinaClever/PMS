@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 from application import settings
 from application.models import BaseModel
+from config.env import TABLE_PREFIX
 
 
 # 模型
@@ -29,15 +30,21 @@ class Debug(BaseModel):
     # 完成日期
     finish_time = models.DateTimeField(auto_now_add=False, verbose_name="开始日期", max_length=11)
     # 所用工时
-    work_hours = models.IntegerField(default=0, verbose_name="所用工时", help_text="所用工时")
+    work_hours = models.IntegerField(null=True, default=0, verbose_name="所用工时", help_text="所用工时")
     # 具体说明
     instruction = models.CharField(null=True, max_length=150, verbose_name="具体说明", help_text="具体说明")
     # 备注
     remark = models.CharField(null=True, max_length=150, verbose_name="备注", help_text="备注")
+    # 成品or模块
+    product_module_CHOICES = (
+        (1, '成品'),
+        (2, '模块')
+    )
+    product_module = models.IntegerField(choices=product_module_CHOICES,
+                                         verbose_name="成品_模块：1-成品 2-模块", help_text="成品_模块：1-成品 2-模块")
 
     class Meta:
-        # 数据表名
-        db_table = settings.TABLE_PREFIX + "debugreport"
-        verbose_name = "调试报表"
-        verbose_name_plural = verbose_name
-
+            # 数据表名
+            db_table = TABLE_PREFIX + "debugreport"
+            verbose_name = "调试报表"
+            verbose_name_plural = verbose_name

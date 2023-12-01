@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 from application import settings
 from application.models import BaseModel
+from config.env import TABLE_PREFIX
 
 
 # 模型
@@ -29,7 +30,7 @@ class Welding(BaseModel):
     # 完成日期
     finish_time = models.DateTimeField(auto_now_add=False, verbose_name="开始日期", max_length=11)
     # 所用工时
-    work_hours = models.IntegerField(default=0, verbose_name="所用工时", help_text="所用工时")
+    work_hours = models.IntegerField(null=True, default=0, verbose_name="所用工时", help_text="所用工时")
     # 具体说明
     instruction = models.CharField(null=True, max_length=150, verbose_name="具体说明", help_text="具体说明")
     # 备注
@@ -37,7 +38,7 @@ class Welding(BaseModel):
 
     class Meta:
         # 数据表名
-        db_table = settings.TABLE_PREFIX + "weldingreport"
+        db_table = TABLE_PREFIX + "weldingreport"
         verbose_name = "焊接报表"
         verbose_name_plural = verbose_name
 

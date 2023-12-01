@@ -24,6 +24,8 @@
 import json
 import logging
 from django.core.paginator import Paginator
+from django.db.models import Q
+
 from constant.constants import PAGE_LIMIT
 from application.burning import forms
 from application.burning.models import burning
@@ -39,9 +41,9 @@ def BurningList(request):
     # 分页查询
     query = burning.objects.filter(is_delete=False)
     # 角色名称模糊筛选
-    name = request.GET.get('name')
-    if name:
-        query = query.filter(name__contains=name)
+    keyword = request.GET.get('keyword')
+    if keyword:
+        query = query.filter(Q(name__contains=keyword) | Q(work_order=keyword))
     sort = request.GET.get('sort')
     order = request.GET.get('order')
     if sort and order:
@@ -61,7 +63,7 @@ def BurningList(request):
         for item in role_list:
             data = {
                 'id': item.id,
-                'work_order_id':item.work_order_id,
+                'work_order':item.work_order,
                 'name': item.name,
                 'code': item.code,
                 'version': item.version,
@@ -90,7 +92,7 @@ def BurningDetail(burning_id):
     # 声明结构体
     data = {
         'id': user.id,
-        'work_order_id': user.work_order_id,
+        'work_order': user.work_order,
         'name': user.name,
         'code': user.code,
         'version': user.version,
@@ -122,7 +124,7 @@ def BurningAdd(request):
     form = forms.BurningForm(dict_data)
     if form.is_valid():
         # 工单号
-        work_order_id = form.cleaned_data.get('work_order_id')
+        work_order = form.cleaned_data.get('work_order')
         # 客户名称
         name = form.cleaned_data.get('name')
         # 规格型号
@@ -145,7 +147,7 @@ def BurningAdd(request):
             return R.failed("交货日期不能小于订单日期")
         # 创建数据
         burning.objects.create(
-            work_order_id=work_order_id,
+            work_order=work_order,
             name=name,
             code= code,
             version=version,
@@ -186,7 +188,7 @@ def BurningUpdate(request):
     # 表单验证
     form = forms.BurningForm(dict_data)
     if form.is_valid():
-        work_order_id = form.cleaned_data.get('work_order_id')
+        work_order = form.cleaned_data.get('work_order')
         # 客户名称
         name = form.cleaned_data.get('name')
         # 规格型号
@@ -198,7 +200,7 @@ def BurningUpdate(request):
         # 订单要求
         order_time = form.cleaned_data.get('order_time')
         # 交货日期
-        delivery_time = form.cleaned_data.get('zip_code')
+        delivery_time = form.cleaned_data.get('delivery_time')
         # 数量
         quantity = form.cleaned_data.get('quantity')
         # 备注
@@ -218,7 +220,7 @@ def BurningUpdate(request):
         return R.failed("客户不存在")
 
     # 对象赋值
-    user.work_order_id = work_order_id,
+    user.work_order = work_order
     user.name = name
     user.code = code
     user.version = version

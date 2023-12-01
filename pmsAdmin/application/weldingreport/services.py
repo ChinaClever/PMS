@@ -46,12 +46,12 @@ def WeldingList(request):
     except PageNotAnInteger:
         # 如果请求的页数不是整数, 返回第一页。
         welding_list = paginator.page(1)
-    except InvalidPage:
-        # 如果请求的页数不存在, 重定向页面
-        return R.failed('找不到页面的内容')
     except EmptyPage:
         # 如果请求的页数不在合法的页数范围内，返回结果的最后一页。
         welding_list = paginator.page(paginator.num_pages)
+    except InvalidPage:
+        # 如果请求的页数不存在, 重定向页面
+        return R.failed('找不到页面的内容')
     # 遍历数据源
     result = []
     if len(welding_list) > 0:
@@ -100,8 +100,6 @@ def WeldingDetail(welding_id):
         'work_hours': welding.work_hours,
         'instruction': welding.instruction,
         'remark': welding.remark,
-        'create_time': str(welding.create_time.strftime('%Y-%m-%d')),
-        'update_time': str(welding.update_time.strftime('%Y-%m-%d')),
     }
     # 返回结果
     return data

@@ -23,6 +23,13 @@
               placeholder="请输入工单号"
               clearable/>
           </el-form-item>
+          <el-form-item label="成品/模块:" prop="product_module">
+            <el-radio-group
+              v-model="form.product_module" >
+              <el-radio :label="1">成品</el-radio>
+              <el-radio :label="2">模块</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item
             label="开始时间:"
             prop="start_time">
@@ -152,7 +159,14 @@ export default {
         start_time:[
           {
             required: true,
-            trigger: 'blur'}
+            trigger: 'blur'
+          }
+        ],
+        product_module:[
+          {
+            required: true,
+            trigger: 'blur'
+          }
         ],
         end_time:[
           {
