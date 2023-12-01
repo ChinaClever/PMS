@@ -145,7 +145,6 @@ def MacAdd(request):
         # 返回错误信息
         return R.failed(err_msg)
 
-
 # 更新客户
 def MacUpdate(request):
     try:
