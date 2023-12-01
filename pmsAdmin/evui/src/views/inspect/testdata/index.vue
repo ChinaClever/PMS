@@ -304,7 +304,7 @@
           // eslint-disable-next-line
           const element = elements[0];
           //现在最新一条数据的id this.$refs.table.data[0].id
-          this.$http.get('/testdata/newest?id=' + 0).then((res) => {
+          this.$http.get('/testdata/newest?id=' + this.$refs.table.data[0].id).then((res) => {
             if(res.data.data.length > 0){
               res.data.data = res.data.data.slice(-3).reverse();
               res.data.data.forEach((arr,index) => {
