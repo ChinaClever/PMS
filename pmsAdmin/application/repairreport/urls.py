@@ -31,6 +31,11 @@ urlpatterns = [
     path('list', views.DictListView.as_view()),
     # 查询字典详情
     path('detail/<int:dict_id>', views.DictDetailView.as_view()),
+    # 查询原因分析字典
+    path('namelist', views.DictnamelistView.as_view()),
+    path('bad_phenomenonlist', views.Dictbad_phenomenonlistView.as_view()),
+    path('analysislist', views.DictanalysislistView.as_view()),
+    path('solutionlist', views.DictsolutionlistView.as_view()),
     # 添加字典
     path('add', views.DictAddView.as_view()),
     # 更新字典
