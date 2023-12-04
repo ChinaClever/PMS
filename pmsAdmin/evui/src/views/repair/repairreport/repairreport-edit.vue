@@ -339,6 +339,7 @@ export default {
     },
     
     handleSelect(item) {
+      this.$refs.form.validateField('name'); // 手动触发验证
       console.log(item);
       this.bad_phenomenonlist = this.loadbad_phenomenonlist(item.value);
       this.analysislist = this.loadanalysislist(item.value);
