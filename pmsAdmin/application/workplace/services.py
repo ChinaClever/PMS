@@ -1,8 +1,8 @@
 from application.shipmentreport.models import Shipment #出货统计--工单号查询
-from application.inspectreport.models import Inspect #质检报表
+from application.inspectreport.models import Inspectreport #质检报表
 from application.debugreport.models import Debug    #调试报表
-from application.debugdata.models import DebugData  #调试数据
-from application.testdata.models import TestData    #质检数据
+from application.debugdata.models import Debugdata  #调试数据
+from application.testdata.models import Testdata    #质检数据
 from django.db.models import Sum
 from datetime import timedelta, datetime
 
@@ -54,13 +54,11 @@ def ShipmentAll():
 def AllPass():
 #1.模块的成品合格率计算   使用质检表格内的数据
     #质检模块数量总计
-    ModelAllInspectQuantity = Inspect.objects.filter(is_delete=False,
-                                                product_module='2'
-                                                ).aggregate(ModelAllInspectQuantity=Sum('examine_an_amount'))['ModelAllInspectQuantity']
+    ModelAllInspectQuantity = Inspectreport.objects.filter(is_delete=False, product_module='2').aggregate(ModelAllInspectQuantity=Sum('examine_an_amount'))['ModelAllInspectQuantity']
     if not ModelAllInspectQuantity:
         return None
     #获取质检模块所有数据
-    ModelInspectData = Inspect.objects.filter(is_delete=False, product_module='2')
+    ModelInspectData = Inspectreport.objects.filter(is_delete=False, product_module='2')
     #质检所有时间
     ModelAllInspectTime = 0
     for inspect in ModelInspectData:
@@ -89,13 +87,13 @@ def AllPass():
 
 #3.成品的成品合格率计算  使用质检表格内的数据
     #质检成品数量总计
-    FinishedAllInspectQuantity = Inspect.objects.filter(is_delete=False,
+    FinishedAllInspectQuantity = Inspectreport.objects.filter(is_delete=False,
                                                 product_module='1'
                                                 ).aggregate(FinishedAllInspectQuantity=Sum('examine_an_amount'))['FinishedAllInspectQuantity']
     if not FinishedAllInspectQuantity:
         return None
     #获取质检成品所有数据
-    FinishedInspectData = Inspect.objects.filter(is_delete=False, product_module='1')
+    FinishedInspectData = Inspectreport.objects.filter(is_delete=False, product_module='1')
     #质检所有时间
     FinishedAllInspectTime = 0
     for inspect in FinishedInspectData:
@@ -132,13 +130,13 @@ def AllPass():
 #总工具使用时常  质检测试表格  调试测试表格
 def AllUseToolTime():
     #质检测试工具所用时长
-    UseInspectToolTime = TestData.objects.filter(is_delete=False).aggregate(UseInspectToolTime=Sum('testTime'))['UseInspectToolTime']
+    UseInspectToolTime = Testdata.objects.filter(is_delete=False).aggregate(UseInspectToolTime=Sum('testTime'))['UseInspectToolTime']
     if not UseInspectToolTime:
         return None
     UseInspectToolTimeHours = UseInspectToolTime / 3600 #转成小时
 
     #调试工具所用时长
-    UseDebugToolTime = DebugData.objects.filter(is_delete=False).aggregate(UseDebugToolTime=Sum('testTime'))['UseDebugToolTime']
+    UseDebugToolTime = Debugdata.objects.filter(is_delete=False).aggregate(UseDebugToolTime=Sum('testTime'))['UseDebugToolTime']
     if not UseDebugToolTime:
         return None
     UseDebugToolTimeHours = UseDebugToolTime / 3600 #转成小时
@@ -218,7 +216,7 @@ def AllModelsData(request):
             return None
 
         # 获取质检表单内按照产品名字筛选获取到的数量   成品
-        GetInspectQuantity = (Inspect.objects.filter(is_delete=False,
+        GetInspectQuantity = (Inspectreport.objects.filter(is_delete=False,
                                                      product_module='2',
                                                      product_name__in=productName,
                                                      end_time__range=(start_date, end_date))
@@ -312,7 +310,7 @@ def AllFinishedData(request):
             return None
 
         # 获取质检表单内按照产品名字筛选获取到的数量   成品
-        GetInspectQuantity = (Inspect.objects.filter(is_delete=False,
+        GetInspectQuantity = (Inspectreport.objects.filter(is_delete=False,
                                                      product_module='1',
                                                      product_name__in=productName,
                                                      end_time__range=(start_date, end_date))
@@ -372,7 +370,7 @@ def GetToolUseTime(request):
         end_date = vueEndTime
 
     # 获取工具使用时长
-    GetUseToolTimeDebugQuantity = (DebugData.objects.filter(is_delete=False,
+    GetUseToolTimeDebugQuantity = (Debugdata.objects.filter(is_delete=False,
                                                             testEndTime__range=(start_date, end_date))
                                    .aggregate(total_quantity_time=Sum('testTime')))['total_quantity_time']
     if not GetUseToolTimeDebugQuantity:
@@ -381,7 +379,7 @@ def GetToolUseTime(request):
     # 转成小时
     GetUseToolTimeDebugQuantity = GetUseToolTimeDebugQuantity / 3600
 
-    GetUseToolTimeTestQuantity = (TestData.objects.filter(is_delete=False,
+    GetUseToolTimeTestQuantity = (Testdata.objects.filter(is_delete=False,
                                                             testEndTime__range=(start_date, end_date))
                                    .aggregate(total_quantity_time=Sum('testTime')))['total_quantity_time']
     if not GetUseToolTimeTestQuantity:

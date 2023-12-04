@@ -352,6 +352,98 @@ export default {
             ]
           };
     },
+    // 模块合格率折线图配置
+    ModelPassChartOption() {
+      return {
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data: ['半成品', '成品'],
+          right: 20
+        },
+        xAxis: [
+          {
+            type: 'category',
+            boundaryGap: false,
+            data: this.AllModelsData.map(d => d.product_name)
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: '半成品',
+            type: 'line',
+            smooth: true,
+            symbol: 'none',
+            areaStyle: {
+              opacity: 0.5
+            },
+            data: this.AllModelsData.map(d => d.Model_HalfPass)
+          },
+          {
+            name: '成品',
+            type: 'line',
+            smooth: true,
+            symbol: 'none',
+            areaStyle: {
+              opacity: 0.5
+            },
+            data: this.AllModelsData.map(d => d.Model_AllPass)
+          }
+        ]
+      }
+    },
+    // 成品合格率折线图配置
+    FinishedPassChartOption() {
+      return {
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data: ['半成品', '成品'],
+          right: 20
+        },
+        xAxis: [
+          {
+            type: 'category',
+            boundaryGap: false,
+            data: this.AllFinishedData.map(d => d.product_name)
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: '半成品',
+            type: 'line',
+            smooth: true,
+            symbol: 'none',
+            areaStyle: {
+              opacity: 0.5
+            },
+            data: this.AllFinishedData.map(d => d.Finished_HalfPass)
+          },
+          {
+            name: '成品',
+            type: 'line',
+            smooth: true,
+            symbol: 'none',
+            areaStyle: {
+              opacity: 0.5
+            },
+            data: this.AllFinishedData.map(d => d.Finished_AllPass)
+          }
+        ]
+      }
+    },
     //成品生产数量&生产效率柱状图
     AllFinishedDataChartOption(){
       return {
@@ -491,98 +583,7 @@ export default {
         ]
       };
     },
-    // 模块合格率折线图配置
-    ModelPassChartOption() {
-      return {
-        tooltip: {
-          trigger: 'axis'
-        },
-        legend: {
-          data: ['半成品', '成品'],
-          right: 20
-        },
-        xAxis: [
-          {
-            type: 'category',
-            boundaryGap: false,
-            data: this.AllModelsData.map(d => d.product_name)
-          }
-        ],
-        yAxis: [
-          {
-            type: 'value'
-          }
-        ],
-        series: [
-          {
-            name: '半成品',
-            type: 'line',
-            smooth: true,
-            symbol: 'none',
-            areaStyle: {
-              opacity: 0.5
-            },
-            data: this.AllModelsData.map(d => d.Model_HalfPass)
-          },
-          {
-            name: '成品',
-            type: 'line',
-            smooth: true,
-            symbol: 'none',
-            areaStyle: {
-              opacity: 0.5
-            },
-            data: this.AllModelsData.map(d => d.Model_AllPass)
-          }
-        ]
-      }
-    },
-    // 成品合格率折线图配置
-    FinishedPassChartOption() {
-      return {
-        tooltip: {
-          trigger: 'axis'
-        },
-        legend: {
-          data: ['半成品', '成品'],
-          right: 20
-        },
-        xAxis: [
-          {
-            type: 'category',
-            boundaryGap: false,
-            data: this.AllFinishedData.map(d => d.product_name)
-          }
-        ],
-        yAxis: [
-          {
-            type: 'value'
-          }
-        ],
-        series: [
-          {
-            name: '半成品',
-            type: 'line',
-            smooth: true,
-            symbol: 'none',
-            areaStyle: {
-              opacity: 0.5
-            },
-            data: this.AllFinishedData.map(d => d.Finished_HalfPass)
-          },
-          {
-            name: '成品',
-            type: 'line',
-            smooth: true,
-            symbol: 'none',
-            areaStyle: {
-              opacity: 0.5
-            },
-            data: this.AllFinishedData.map(d => d.Finished_AllPass)
-          }
-        ]
-      }
-    }
+
   },
   mounted() {
     this.getStartEndData();

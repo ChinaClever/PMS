@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="86c6fa76-31a4-40ef-a0b6-d9dff1735994" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/pmsAdmin/application/workplace/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/pmsAdmin/application/workplace/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pmsAdmin/application/workplace/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/pmsAdmin/application/workplace/services.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pmsAdmin/application/workplace/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/pmsAdmin/application/workplace/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pmsAdmin/evui/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/pmsAdmin/evui/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pmsAdmin/evui/src/views/dashboard/workplace.vue" beforeDir="false" afterPath="$PROJECT_DIR$/pmsAdmin/evui/src/views/dashboard/workplace.vue" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Vue Composition API Component" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2YTiZGLfkXE4IuAL9Gar4Mzz8f2" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Ljy&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/work/PMS/pmsAdmin/document/django_menu.csv&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/opt/pycharm-2023.2.1/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
+    ],
+    &quot;vue.recent.templates&quot;: [
+      &quot;Vue Composition API Component&quot;
+    ]
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="86c6fa76-31a4-40ef-a0b6-d9dff1735994" name="更改" comment="" />
+      <created>1700556025171</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1700556025171</updated>
+      <workItem from="1700556026495" duration="3232000" />
+      <workItem from="1700614196054" duration="1241000" />
+      <workItem from="1700619879737" duration="593000" />
+      <workItem from="1700723070723" duration="1388000" />
+      <workItem from="1700724912142" duration="599000" />
+      <workItem from="1700788102356" duration="32000" />
+      <workItem from="1700788150868" duration="307000" />
+      <workItem from="1700788497256" duration="6379000" />
+      <workItem from="1700802052981" duration="1257000" />
+      <workItem from="1701046572439" duration="1300000" />
+      <workItem from="1701068015799" duration="598000" />
+      <workItem from="1701135282118" duration="598000" />
+      <workItem from="1701147960169" duration="599000" />
+      <workItem from="1701219948933" duration="106000" />
+      <workItem from="1701220068628" duration="1252000" />
+      <workItem from="1701308038909" duration="1599000" />
+      <workItem from="1701392272831" duration="1359000" />
+      <workItem from="1701407357799" duration="1013000" />
+      <workItem from="1701410318463" duration="598000" />
+      <workItem from="1701412697558" duration="598000" />
+      <workItem from="1701416257224" duration="2662000" />
+      <workItem from="1701650387744" duration="1356000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="Ljy" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="Lzy" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="HEAD" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/main" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="main" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="Ljy" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/pmsAdmin/application/burning/forms.py</url>
+          <line>23</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
