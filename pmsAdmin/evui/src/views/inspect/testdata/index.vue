@@ -289,6 +289,21 @@
         }
       }
     },
+    created() {
+      // 监听 store 的属性变化
+      this.$store.watch(
+        () => this.$store.state.routerchange.isLeaveTestdata, // 要监听的 store 属性的 getter 函数
+        // eslint-disable-next-line
+        (newValue, oldValue) => {
+          // 当属性发生变化时触发的回调函数
+          // newValue 为新值，oldValue 为旧值
+          // 在这里可以执行你想要的逻辑
+          if (newValue) {
+            this.realTime = false;
+          }
+        }
+      );
+    },
     beforeDestroy(){
       this.stopTimer();
     },

@@ -38,6 +38,12 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   NProgress.start();
   updateTitle(to);
+  if(from.path === '/inspect/testdata'){
+    store.state.routerchange.isLeaveTestdata = true;
+  }
+  if(to.path === '/inspect/testdata'){
+    store.state.routerchange.isLeaveTestdata = false;
+  }
   // 判断是否登录
   if (setting.takeToken()) {
     // 判断是否已经注册动态路由

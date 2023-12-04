@@ -123,7 +123,6 @@
               itemStyle: {
                 color: function(params) {
                   // 根据横坐标值动态设置颜色
-                  console.log(params)
                   if (params.data >= 95) {
                     return 'green';  // 偶数项为蓝色
                   } else {
