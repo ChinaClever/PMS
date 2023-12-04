@@ -65,7 +65,7 @@ class DictForm(forms.ModelForm):
     name = forms.CharField(
         max_length=150,
         error_messages={
-            'required': '产品名字不能为空',
+
             'max_length': '产品名字不得超过150个字符',
         }
     )
@@ -82,35 +82,36 @@ class DictForm(forms.ModelForm):
         }
     )
     bad_phenomenon = forms.CharField(
+        required=False,
         max_length=150,
         error_messages={
-            'required': '不良现象不能为空',
             'max_length': '不良现象长度不得超过150个字符',
         }
     )
     analysis = forms.CharField(
+        required=False,
         max_length=150,
         error_messages={
-            'required': '原因分析不能为空',
             'max_length': '原因分析长度不得超过150个字符',
         }
     )
     solution = forms.CharField(
+        required=False,
         max_length=150,
         error_messages={
-            'required': '解决方法不能为空',
             'max_length': '解决方法长度不得超过150个字符',
         }
     )
     notes = forms.CharField(
+        required=False,
         max_length=150,
         error_messages={
             'max_length': '备注长度不得超过150个字符',
         }
     )
     repair_time = forms.DateTimeField(
+        required=False,
         error_messages={
-            'required': '维修时间不能为空',
         }
     )
 

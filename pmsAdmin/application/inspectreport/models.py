@@ -22,6 +22,9 @@ class Inspectreport(BaseModel):
         verbose_name="结束时间",
     )
 
+    # 产品名称
+    product_name = models.CharField(max_length=150, verbose_name="产品名称", help_text="产品名称")
+
     commit_user = models.CharField(null=False, max_length=40, verbose_name="填写者", help_text="填写者")
 
     item_number = models.CharField(null=False, max_length=40, verbose_name="产品型号", help_text="产品型号")

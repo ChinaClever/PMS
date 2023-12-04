@@ -126,12 +126,14 @@ def test(request):
     if objs:
         last_row = mac.objects.filter(is_delete=0).latest('id')
         original_mac = last_row.mac_address
-        # 将原始 MAC 地址拆分成每个部分
-        mac_parts = original_mac.split(':')
-        # 将每个部分转换为十六进制整数，并增加1
-        new_mac_parts = [hex(int(part, 16) + 1)[2:].zfill(2) for part in mac_parts]
+        # 将原始 MAC 地址转换为十进制整数，并增加1
+        new_mac_int = (int(original_mac.replace(':', ''), 16) + 1) % (256 ** 6)
+        # 将新的值转换为十六进制字符串，并保持12位长度
+        new_mac_str = hex(new_mac_int)[2:].zfill(12)
+        # 在每两位字符之间加上冒号并生成新的 MAC 地址
+        new_mac = ':'.join([new_mac_str[i:i + 2] for i in range(0, len(new_mac_str), 2)])
         # 连接每个部分并生成新的 MAC 地址
-        mac_id = ':'.join(new_mac_parts)
+        mac_id = new_mac
     else:
         # 将 MAC 地址后缀转换为十六进制字符串
         mac_hex = hex(mac_suffix)[2:].zfill(12)
@@ -153,4 +155,4 @@ def test(request):
     # 增加 MAC 地址后缀
     mac_suffix += 1
     return HttpResponse(json.dumps(response_data))
-#http://localhost:8000/mac/test?code='1234'&work_order='12345'&serial_id='12345'&name='hk'
+#http://localhost:8000/mac/test?code=1234&work_order=12345&serial_id=12345&name=hk

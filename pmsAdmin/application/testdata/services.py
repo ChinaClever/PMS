@@ -113,7 +113,7 @@ def TestDataList(request):
     if sort and order:
         query = query.order_by(f'-{sort}' if order == 'desc' else sort)
     else:
-        query = query.order_by("id")
+        query = query.order_by("-id")
     # 分页设置
     paginator = Paginator(query, limit)
     # 记录总数
@@ -332,3 +332,39 @@ def TestDataDelete(testdata_id):
     # 返回结果
     return R.ok(msg="本次共删除{0}条数据".format(count))
 
+def TestDataNewestList(request):
+    # 前端最新数据的id
+    id = int(request.GET.get('id'))
+
+    # 查询数据
+    query = Testdata.objects.filter(is_delete=False)
+    # 查询大于当其id的数据
+    query = query.filter(id__gt=id)
+
+    query = query.order_by("-id")
+
+    newDateList = query.all()
+    # 遍历数据源
+    result = []
+    if len(newDateList) > 0:
+        for item in newDateList:
+            testStep_list = services.getTestDataTestStepList(item.id)
+            data = {
+                'id': item.id,
+                'softwareType': item.softwareType,
+                'productType': item.productType,
+                'productSN': item.productSN,
+                'macAddress': item.macAddress,
+                'result': item.result,
+                'softwareVersion': item.softwareVersion,
+                'clientName': item.clientName,
+                'companyName': item.companyName,
+                'protocolVersion': item.protocolVersion,
+                'testStartTime': str(item.testStartTime.strftime('%Y-%m-%d %H:%M:%S')),
+                'testEndTime': str(item.testEndTime.strftime('%Y-%m-%d %H:%M:%S')),
+                'testTime': item.testTime,
+                'testStep': testStep_list,
+            }
+            result.append(data)
+    # 返回结果
+    return R.ok(data=result)
