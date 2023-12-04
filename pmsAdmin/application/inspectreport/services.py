@@ -57,6 +57,8 @@ def InspectreportList(request):
             data = {
                 'id': item.id,
                 'work_order': item.work_order,
+                'product_name' : item.product_name,
+                'product_module' : item.product_module,
                 'start_time': str(item.start_time.strftime('%Y-%m-%d %H:%M')) if item.create_time else None,
                 'end_time': str(item.end_time.strftime('%Y-%m-%d %H:%M')) if item.create_time else None,
                 'commit_user': item.commit_user,
@@ -70,8 +72,6 @@ def InspectreportList(request):
                 'signal': item.signal,
                 'problems': item.problem,
                 'actions': item.action,
-                'create_time': str(item.create_time.strftime('%Y-%m-%d %H:%M:%S')) if item.create_time else None,
-                'update_time': str(item.update_time.strftime('%Y-%m-%d %H:%M:%S')) if item.update_time else None,
             }
             result.append(data)
     # 返回结果
@@ -95,6 +95,10 @@ def InspectreportAdd(request):
     if form.is_valid():
         # 工单号
         work_order = form.cleaned_data.get('work_order')
+        # 成品/模块
+        product_module = form.cleaned_data.get('product_module')
+        # 产品名称
+        product_name = form.cleaned_data.get('product_name')
         # 开始时间
         start_time = form.cleaned_data.get('start_time')
         # 结束时间
@@ -126,7 +130,9 @@ def InspectreportAdd(request):
         # 创建数据
         Inspectreport.objects.create(
             commit_user=UserDetail(uid(request)).get("realname"),
+            product_name=product_name,
             work_order=work_order,
+            product_module=product_module,
             start_time=start_time,
             end_time=end_time,
             item_number=item_number,
@@ -160,6 +166,8 @@ def InspectreportDetail(Inspectreport_id):
     data = {
         'id': item.id,
         'work_order': item.work_order,
+        'product_module': item.product_module,
+        'product_name':item.product_name,
         'start_time': str(item.start_time.strftime('%Y-%m-%d %H:%M')) if item.create_time else None,
         'end_time': str(item.end_time.strftime('%Y-%m-%d %H:%M')) if item.create_time else None,
         'commit_user': item.commit_user,
@@ -200,6 +208,10 @@ def InspectreportUpdate(request):
     if form.is_valid():
         # 工单号
         work_order = form.cleaned_data.get('work_order')
+        # 成品/模块
+        product_module = form.cleaned_data.get('product_module')
+        # 产品名称
+        product_name = form.cleaned_data.get('product_name')
         # 开始时间
         start_time = form.cleaned_data.get('start_time')
         # 结束时间
@@ -242,6 +254,8 @@ def InspectreportUpdate(request):
 
     # 对象赋值
     inspectreport.work_order = work_order
+    inspectreport.product_module = product_module
+    inspectreport.product_name = product_name
     inspectreport.start_time = start_time
     inspectreport.end_time = end_time
     inspectreport.item_number = item_number
@@ -285,3 +299,46 @@ def InspectreportDelete(Inspectreport_id):
             count += 1
     # 返回结果
     return R.ok(msg="本次共删除{0}条数据".format(count))
+
+def InspectreportListOfTotal(request):
+    # 页码
+    page = int(request.GET.get("page", 1))
+    # 每页数
+    limit = int(request.GET.get("limit", PAGE_LIMIT))
+    # 实例化查询对象
+    query = Inspectreport.objects.filter(is_delete=False)
+    startTime = request.GET.get('startTime')
+    endTime = request.GET.get('endTime')
+    if startTime and endTime:
+        startTime = startTime.replace("+", " ")
+        endTime = endTime.replace("+", " ")
+        #sql = 'SELECT item_number,sum(examine_an_amount) AS total,sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 AND start_time >= ' + str(startTime) + ' AND end_time <= ' + str(endTime)+ " GROUP BY item_number" + " limit " + str(limit)
+        sql = "SELECT id,item_number, sum(examine_an_amount) AS total, sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 AND start_time >= %s AND end_time <= %s GROUP BY item_number LIMIT %s"
+        query = Inspectreport.objects.raw(sql,[startTime, endTime, limit])
+        # 设置分页
+        paginator = Paginator(query, limit)
+    else:
+        sql = "SELECT id,item_number, sum(examine_an_amount) AS total, sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 GROUP BY item_number LIMIT %s"
+        query = Inspectreport.objects.raw(sql,[ limit])
+        paginator = Paginator(query, limit)
+
+    # 记录总数
+    count = paginator.count
+    # 分页查询
+    producerecord_list = paginator.page(page)
+    # 实例化结果
+    result = []
+    # 遍历数据源
+    if len(producerecord_list) > 0:
+        for item in producerecord_list:
+            item.target_actual_pass_rate = int(((item.total - item.badtotal) / item.total) * 100)
+            data = {
+                'id': item.id,
+                'item_number': item.item_number,
+                'examine_amount_total_amount': item.total,
+                'examine_bad_total_amount': item.badtotal,
+                'target_actual_pass_rate': item.target_actual_pass_rate,
+            }
+            result.append(data)
+    # 返回结果
+    return R.ok(data=result, count=count)

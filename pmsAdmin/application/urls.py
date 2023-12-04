@@ -110,4 +110,8 @@ urlpatterns = [
     path('debugdata/', include('application.debugdata.urls')),
     # 测试数据
     path('testdata/', include('application.testdata.urls')),
+    # 排期表单
+    path('shipmentreport/', include('application.shipmentreport.urls')),
+    # mac地址
+    path('mac/', include('application.mac.urls')),
 ]

@@ -147,11 +147,11 @@
       <el-form-item
         label="程序和文档公盘位置:"
         prop="documentation_position">
-        <el-input
+         <el-input
           :maxlength="20"
           v-model="form.documentation_position"
           placeholder="请输入程序和文档公盘位置"
-          clearable/>
+          clearable/> 
       </el-form-item>
       <el-form-item
         label="用户使用手册和协议公盘位置:"

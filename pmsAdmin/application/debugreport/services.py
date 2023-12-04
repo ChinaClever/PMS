@@ -46,12 +46,12 @@ def DebugList(request):
     except PageNotAnInteger:
         # 如果请求的页数不是整数, 返回第一页。
         debug_list = paginator.page(1)
-    except InvalidPage:
-        # 如果请求的页数不存在, 重定向页面
-        return R.failed('找不到页面的内容')
     except EmptyPage:
         # 如果请求的页数不在合法的页数范围内，返回结果的最后一页。
         debug_list = paginator.page(paginator.num_pages)
+    except InvalidPage:
+        # 如果请求的页数不存在, 重定向页面
+        return R.failed('找不到页面的内容')
     # 遍历数据源
     result = []
     if len(debug_list) > 0:
@@ -70,6 +70,7 @@ def DebugList(request):
                 'work_hours': item.work_hours,
                 'instruction': item.instruction,
                 'remark': item.remark,
+                'product_module': item.product_module,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d')) if item.create_time else None,
             }
@@ -100,6 +101,7 @@ def DebugDetail(debug_id):
         'work_hours': debug.work_hours,
         'instruction': debug.instruction,
         'remark': debug.remark,
+        'product_module': debug.product_module,
         'create_time': str(debug.create_time.strftime('%Y-%m-%d')),
         'update_time': str(debug.update_time.strftime('%Y-%m-%d')),
     }
@@ -146,6 +148,7 @@ def DebugAdd(request):
         instruction = form.cleaned_data.get('instruction')
         # 备注
         remark = form.cleaned_data.get('remark')
+        product_module = form.cleaned_data.get('product_module')
         # 创建数据
         Debug.objects.create(
             work_order=work_order,
@@ -160,6 +163,7 @@ def DebugAdd(request):
             work_hours=work_hours,
             instruction=instruction if instruction else None,
             remark=remark if remark else None,
+            product_module=product_module,
             create_user=uid(request)
         )
         # 返回结果
@@ -215,6 +219,8 @@ def DebugUpdate(request):
         instruction = form.cleaned_data.get('instruction')
         # 备注
         remark = form.cleaned_data.get('remark')
+        # 成品/模块
+        product_module = form.cleaned_data.get('product_module')
     else:
         # 获取错误信息
         err_msg = regular.get_err(form)
@@ -239,6 +245,7 @@ def DebugUpdate(request):
     debug.work_hours = work_hours
     debug.instruction = instruction
     debug.remark = remark
+    debug.product_module = product_module
     debug.update_user = uid(request)
     # 更新数据
     debug.save()

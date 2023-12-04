@@ -23,6 +23,13 @@
               placeholder="请输入工单号"
               clearable/>
           </el-form-item>
+          <el-form-item label="成品/模块:" prop="product_module">
+            <el-radio-group
+              v-model="form.product_module" >
+              <el-radio :label="1">成品</el-radio>
+              <el-radio :label="2">模块</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item
             label="开始时间:"
             prop="start_time">
@@ -52,6 +59,15 @@
               placeholder="请输入产品型号"
               clearable/>
           </el-form-item>
+          <el-form-item
+          label="产品名称:"
+          prop="product_name">
+          <el-input
+            :maxlength="20"
+            v-model="form.product_name"
+            placeholder="请输入产品名称"
+            clearable/>
+        </el-form-item>
         </el-col>
         <el-col :sm="12">
           <el-form-item
@@ -152,7 +168,17 @@ export default {
         start_time:[
           {
             required: true,
-            trigger: 'blur'}
+            trigger: 'blur'
+          }
+        ],
+        product_module:[
+          {
+            required: true,
+            trigger: 'blur'
+          }
+        ],
+        product_name: [
+          {required: true, message: '请输入产品名称', trigger: 'blur'}
         ],
         end_time:[
           {

@@ -29,13 +29,13 @@ from application.burning import views
 urlpatterns = [
     # 查询分页数据
     path('list', views.BurningListView.as_view()),
-    # 查询详情
+    # 查询数据
     path('detail/<int:burning_id>', views.BurningDetailView.as_view()),
-    # 添加部门
+    # 添加数据
     path('add', views.BurningAddView.as_view()),
-    # 更新部门
+    # 更新数据
     path('update', views.BurningUpdateView.as_view()),
-    # 删除部门
+    # 删除数据
     path('delete/<str:burning_id>', views.BurningDeleteView.as_view()),
 
 ]
