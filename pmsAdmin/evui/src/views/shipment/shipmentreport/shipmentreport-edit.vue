@@ -11,7 +11,8 @@
         ref="form"
         :model="form"
         :rules="rules"
-        label-width="100px">
+        label-width="100px"
+        :validate-on-rule-change="false">
         <el-row :gutter="6">
         <el-col :span="12">
         <el-form-item
@@ -42,18 +43,24 @@
           <el-input
             v-model="form.product_code"
             placeholder="请输入成品编码"
-            clearable/>
+            clearable
+            />
         </el-form-item>
       </el-col>
         <el-col :span="12">
         <el-form-item label="产品名称:" prop="product_name">
-         <el-cascader
+         <!-- <el-cascader
           v-model="form.product_name"
           :options="options"
           :props="{ expandTrigger: 'hover' }"
           :show-all-levels="false"
           leafOnly>
-        </el-cascader>
+        </el-cascader> -->
+        <el-autocomplete
+          v-model="form.product_name"
+          :fetch-suggestions="querySearchAsync"
+          @select="handleSelect"
+        ></el-autocomplete>
         </el-form-item>
         </el-col>
         </el-row>
@@ -160,7 +167,7 @@
 
   <script>
   export default {
-    name: 'WeldingEdit',
+    name: 'ShipmentReportEdit',
     props: {
       // 弹窗是否打开
       visible: Boolean,
@@ -169,8 +176,11 @@
     },
     data() {
       return {
+        product_names: [],
+        state: '',
+        timeout:  null,
         // 表单数据
-        form: Object.assign({status: 1}, this.data),
+        form: Object.assign({product_code: '', product_name:'', shape:''}, this.data),
         // 产品名称选项
         options: [{
           value: '1',
@@ -279,7 +289,8 @@
         // 表单验证规则
         rules: {
           work_order: [
-          {required: true, message: '请输入工单号', trigger: 'blur'}
+          {required: true, message: '请输入工单号', trigger: 'blur'},
+          { validator: (rule, value, callback) => this.checkWorkOrderId(rule, value, callback), trigger: 'blur' }
         ],
         client_name: [
           {required: true, message: '请选择客户名称', trigger: 'blur'}
@@ -342,6 +353,7 @@
             // 获取产品名称最后节点的名字
             let lastNode = this.form.product_name[this.form.product_name.length - 1];
             this.form.product_name = lastNode
+
             this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/shipmentreport/update' : '/shipmentreport/add', this.form).then(res => {
               this.loading = false;
               if (res.data.code === 0) {
@@ -367,8 +379,37 @@
       updateVisible(value) {
         this.$emit('update:visible', value);
       },
+       // 订单号自动填入数据
+      checkWorkOrderId(rule, value, callback){
+        const regex = /^[a-zA-Z0-9]+[+][a-zA-Z0-9]+$/;
+        const regex1 = /^[a-zA-Z0-9]+$/;
+        if (value.includes("+")) {
+          if (regex.test(value)) {
+            const parts = value.split("+");
+            this.form.work_order = parts[0];
+            this.form.product_code = parts[1];
+            //根据产品编码查产品名称 规格
+            this.$http.get('/shipmentreport/product/detail/' + this.form.product_code).then((res) => {
+            this.loading = false;
+            if (res.data.code === 0) {
+             this.form.product_name = res.data.data.product_name
+             this.form.shape  = res.data.data.shape
+            } 
+            })
+            callback();
+          } else {
+             callback(new Error('存在除一个+号外的非法字符')); 
+        }
+        }else {
+          if (!regex1.test(value)) {
+            callback(new Error('存在非法字符')); 
+          }
 
-       // 自定义校验规则函数
+          callback();
+        }
+      },
+
+       // 检测填入日期是否晚于订单日期
       checkFinishTime(rule, value, callback) {
         const orderDate = this.form.order_date; 
         const thisDate = value; 
@@ -379,7 +420,59 @@
         } else {
           callback(); 
         }
-      }
+      },
+
+      loadAll() {
+        // this.$http.get('/shipmentreport/product/list').then((res) => {
+        //     this.loading = false;
+        //     if (res.data.code === 0) {
+        //       const json = res.data.data
+        //       const array = JSON.parse(json).map(item => {
+        //       return {
+        //         id: item.id,
+        //         product_code: item.product_code,
+        //         product_name: item.product_name,
+        //         shape: item.shape,
+        //         product_module: item.product_module
+        //       };
+        //     });
+        //     console.log(array);
+        //     } 
+        //   })
+
+        return [
+          { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
+          { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" },
+          { "value": "新旺角茶餐厅", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },
+          { "value": "泷千家(天山西路店)", "address": "天山西路438号" },
+          { "value": "胖仙女纸杯蛋糕（上海凌空店）", "address": "上海市长宁区金钟路968号1幢18号楼一层商铺18-101" },   
+        ];
+      },
+
+      querySearchAsync(queryString, cb) {
+        var product_names = this.product_names;
+        var results = queryString ? product_names.filter(this.createStateFilter(queryString)) : product_names;
+
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(results);
+        }, 300 * Math.random());
+      },
+
+      createStateFilter(queryString) {
+        return (state) => {
+          return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+
+      handleSelect(item) {
+        this.form.product_name = item.value
+        this.$refs.form.validateField('product_name', () => {});
+      },
+
+    },
+    mounted() {
+      this.product_names = this.loadAll();
     }
   }
   </script>

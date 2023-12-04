@@ -36,8 +36,27 @@ class Shipment(BaseModel):
     # 附件
     attachment = models.CharField(null=True, max_length=255, verbose_name="附件", help_text="附件")
 
-
     class Meta:
         db_table = TABLE_PREFIX + 'shipmentreport'
         verbose_name = '排期表单表'
+        verbose_name_plural = verbose_name
+
+# 产品关联表
+class Product(BaseModel):
+    # 成品编码
+    product_code = models.CharField(null=False, max_length=255, verbose_name="成品编码", help_text="成品编码")
+    # 产品名称（下拉框 数据大写）
+    product_name = models.CharField(null=False, max_length=255, verbose_name="产品名称", help_text="产品名称")
+    # 规格型号
+    shape = models.CharField(max_length=255, verbose_name="规格型号", help_text="规格型号")
+    # 成品or模块
+    product_module_CHOICES = (
+        (1, '成品'),
+        (2, '模块')
+    )
+    product_module = models.IntegerField(null=False, choices=product_module_CHOICES,
+                                         verbose_name="成品_模块：1-成品 2-模块", help_text="成品_模块：1-成品 2-模块")
+    class Meta:
+        db_table = TABLE_PREFIX + 'product'
+        verbose_name = '产品关联表'
         verbose_name_plural = verbose_name
