@@ -11,7 +11,7 @@
         ref="form"
         :model="form"
         :rules="rules"
-        label-width="82px">
+        label-width="100px">
 
         <el-form-item
           label="工单号:"
@@ -60,6 +60,14 @@
             placeholder="请输入产品名称"
             clearable/>
         </el-form-item>
+
+        <el-form-item label="成品/模块:" prop="product_module">
+            <el-radio-group
+              v-model="form.product_module" >
+              <el-radio :label="1">成品</el-radio>
+              <el-radio :label="2">模块</el-radio>
+            </el-radio-group>
+          </el-form-item>
 
         <el-form-item label="数量:" prop="product_count">
           <el-input-number
@@ -125,15 +133,6 @@
               v-model="form.remark"
               placeholder="请输入备注"/>
           </el-form-item>
-
-          <el-form-item label="成品/模块:" prop="product_module">
-            <el-radio-group
-              v-model="form.product_module" >
-              <el-radio :label="1">成品</el-radio>
-              <el-radio :label="2">模块</el-radio>
-            </el-radio-group>
-          </el-form-item>
-
       </el-form>
       <div slot="footer">
         <el-button @click="updateVisible(false)">取消</el-button>
@@ -158,7 +157,7 @@
     data() {
       return {
         // 表单数据
-        form: Object.assign({status: 1}, this.data),
+        form: Object.assign({}, this.data),
         // 表单验证规则
         rules: {
           work_order: [
@@ -189,7 +188,10 @@
           {required: true, message: '请输入完成时间', trigger: 'blur'},
           { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
         ],
-        product_module: [
+          work_hours: [
+          {required: true, message: '请选择工时', trigger: 'blur'},
+        ],
+          product_module: [
           {required: true, message: '请选择成品/模块', trigger: 'blur'},
         ],
         },

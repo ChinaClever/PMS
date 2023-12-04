@@ -5,6 +5,7 @@ from datetime import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage, EmptyPage
 from django.db.models import Q
 from application.shipmentreport.models import Shipment
+from application.shipmentreport.models import Product
 from constant.constants import PAGE_LIMIT
 from utils import R, regular
 
@@ -171,3 +172,37 @@ def ShipmentReportAdd(request):
         )
     # 返回结果
     return R.ok(msg="创建成功")
+
+
+# 根据产品编码查产品名称 规格
+def ProdcutDetail(product_code):
+    product = Product.objects.filter(is_delete=False, product_code=product_code).first()
+    if not product:
+        return None
+
+    data = {
+        'id': product.id,
+        'product_code': product.product_code,
+        'product_name': product.product_name,
+        'shape': product.shape,
+        'product_module': product.product_module,
+    }
+    return data
+
+
+def ProductList(request):
+    productList = Product.objects.filter(is_delete=False)
+    # 遍历数据源
+    result = []
+    if len(productList) > 0:
+        for item in productList:
+            data = {
+                'id': item.id,
+                'product_code': item.product_code,
+                'product_name': item.product_name,
+                'shape': item.shape,
+                'product_module': item.product_module,
+            }
+            result.append(data)
+    # 返回结果
+    return R.ok(data=result)
