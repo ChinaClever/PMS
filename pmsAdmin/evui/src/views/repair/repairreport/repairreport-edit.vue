@@ -162,10 +162,10 @@ export default {
       // 表单验证规则
       rules: {
         name:[
-        {required: true, message: '请输入产品名称', trigger: 'blur'}
+          {required: true, message: '请输入产品名称', trigger: 'blur'}
         ],
-        status:[
-          {required: true, trigger: 'blur'}
+        work_order:[
+          {required: true, message: '请输入工单号', trigger: 'blur'}
         ],
         bad_number:[
           {
