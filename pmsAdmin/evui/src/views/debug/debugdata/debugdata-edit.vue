@@ -114,6 +114,7 @@
             <el-date-picker
               class="ele-fluid"
               type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
               v-model="form.testStartTime"
               placeholder="请选择测试开始时间"/>
           </el-form-item>
@@ -122,6 +123,7 @@
             <el-date-picker
               class="ele-fluid"
               type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
               v-model="form.testEndTime"
               placeholder="请选择测试结束时间"/>
           </el-form-item>
