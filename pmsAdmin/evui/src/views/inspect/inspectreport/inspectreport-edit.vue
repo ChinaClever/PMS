@@ -59,6 +59,15 @@
               placeholder="请输入产品型号"
               clearable/>
           </el-form-item>
+          <el-form-item
+          label="产品名称:"
+          prop="product_name">
+          <el-input
+            :maxlength="20"
+            v-model="form.product_name"
+            placeholder="请输入产品名称"
+            clearable/>
+        </el-form-item>
         </el-col>
         <el-col :sm="12">
           <el-form-item
@@ -167,6 +176,9 @@ export default {
             required: true,
             trigger: 'blur'
           }
+        ],
+        product_name: [
+          {required: true, message: '请输入产品名称', trigger: 'blur'}
         ],
         end_time:[
           {

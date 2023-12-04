@@ -14,4 +14,6 @@ urlpatterns = [
     path('update', views.TestDataUpdateView.as_view()),
 
     path('delete/<str:testdata_id>', views.TestDataDeleteView.as_view()),
+
+    path('newest', views.TestDataNewestListView.as_view()),
 ]

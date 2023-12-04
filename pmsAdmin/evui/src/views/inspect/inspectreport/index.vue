@@ -216,6 +216,13 @@ export default {
           showOverflowTooltip: true,
         },
         {
+          prop: 'product_name',
+          label: '产品名称',
+          showOverflowTooltip: true,
+          minWidth: 120,
+          align: 'center',
+        },
+        {
           prop: 'examine_an_amount',
           label: '检验数量',
           width: 70,
