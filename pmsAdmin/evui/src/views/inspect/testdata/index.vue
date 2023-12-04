@@ -289,6 +289,9 @@
         }
       }
     },
+    beforeDestroy(){
+      this.stopTimer();
+    },
     methods: {
       /* 刷新表格 */
       reload() {

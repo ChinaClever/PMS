@@ -151,7 +151,6 @@
             width: 60,
             align: 'center',
             showOverflowTooltip: true,
-            fixed: "left"
           },
           {
             prop: 'item_number',
