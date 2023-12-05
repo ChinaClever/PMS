@@ -31,10 +31,13 @@ urlpatterns = [
     path('list', views.DictListView.as_view()),
     # 查询字典详情
     path('detail/<int:dict_id>', views.DictDetailView.as_view()),
-    # 查询原因分析字典
+    # 查询产品名称
     path('namelist', views.DictnamelistView.as_view()),
+    # 查询不良现象
     path('bad_phenomenonlist', views.Dictbad_phenomenonlistView.as_view()),
+    # 查询原因分析
     path('analysislist', views.DictanalysislistView.as_view()),
+    # 查询解决方法
     path('solutionlist', views.DictsolutionlistView.as_view()),
     # 添加字典
     path('add', views.DictAddView.as_view()),
@@ -42,4 +45,8 @@ urlpatterns = [
     path('update', views.DictUpdateView.as_view()),
     # 删除字典
     path('delete/<str:dict_id>', views.DictDeleteView.as_view()),
+    # 查询统计维修报表
+    path('listOfTotal', views.RepairreportListOfTotalView.as_view()),
+    # 查询统计维修报表柱状图
+    path('listOf', views.RepairreportListOfTotalView1.as_view()),
 ]

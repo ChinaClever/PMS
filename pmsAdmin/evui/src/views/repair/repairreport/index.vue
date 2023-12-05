@@ -244,6 +244,13 @@
             showOverflowTooltip: true,
           },
           {
+            prop: 'repair_number',
+            label: '维修数量',
+            width: 70,
+            align: 'center',
+            showOverflowTooltip: true,
+          },
+          {
             prop: 'bad_phenomenon',
             label: '不良现象',
             width: 150,
