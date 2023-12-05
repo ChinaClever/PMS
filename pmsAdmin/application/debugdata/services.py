@@ -237,6 +237,7 @@ def DebugDataAdd(request):
         return R.ok(msg="创建成功")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
+        print(format(e))
         return R.failed("参数错误")
 
 # 更新
@@ -303,6 +304,7 @@ def DebugDataUpdate(request):
         return R.ok(msg="更新成功")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
+        print(e)
         return R.failed("参数错误")
 
 # 删除（不删dabugdata_teststep表）

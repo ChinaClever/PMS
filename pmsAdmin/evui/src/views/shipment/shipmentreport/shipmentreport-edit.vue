@@ -11,7 +11,8 @@
         ref="form"
         :model="form"
         :rules="rules"
-        label-width="100px">
+        label-width="100px"
+        :validate-on-rule-change="false">
         <el-row :gutter="6">
         <el-col :span="12">
         <el-form-item
@@ -42,18 +43,18 @@
           <el-input
             v-model="form.product_code"
             placeholder="请输入成品编码"
-            clearable/>
+            clearable
+            />
         </el-form-item>
       </el-col>
         <el-col :span="12">
         <el-form-item label="产品名称:" prop="product_name">
-         <el-cascader
+    
+        <el-autocomplete
           v-model="form.product_name"
-          :options="options"
-          :props="{ expandTrigger: 'hover' }"
-          :show-all-levels="false"
-          leafOnly>
-        </el-cascader>
+          :fetch-suggestions="querySearchAsync"
+          @select="handleSelect"
+        ></el-autocomplete>
         </el-form-item>
         </el-col>
         </el-row>
@@ -66,7 +67,16 @@
         </el-form-item>
         <el-row :gutter="6">
         <el-col :span="12">
-        <el-form-item label="数量:" prop="product_count">
+          <el-form-item label="成品/模块:" prop="product_module">
+            <el-radio-group
+              v-model="form.product_module">
+              <el-radio :label="1">成品</el-radio>
+              <el-radio :label="2">模块</el-radio>
+            </el-radio-group>
+          </el-form-item>
+       </el-col>
+        <el-col :span="12">
+          <el-form-item label="数量:" prop="product_count">
           <el-input-number
             :min="0"
             v-model="form.product_count"
@@ -74,14 +84,7 @@
             controls-position="right"
             class="ele-fluid ele-text-left"/>
         </el-form-item>
-       </el-col>
-        <el-col :span="12">
-        <el-form-item label="SO/RQ号:" prop="SO_RQ_id">
-          <el-input
-            v-model="form.SO_RQ_id"
-            placeholder="请输入SO/RQ号"
-            clearable/>
-        </el-form-item>
+       
       </el-col>
         </el-row>
         <el-row :gutter="6">
@@ -102,6 +105,7 @@
               class="ele-fluid"
               v-model="form.delivery_date"
               value-format="yyyy-MM-dd"
+              :disabled="isUpdate"
               placeholder="请选择交货日期"/>
         </el-form-item>
       </el-col>
@@ -126,16 +130,18 @@
               value-format="yyyy-MM-dd"
               placeholder="请选择完成日期"/>
         </el-form-item>
+       
+      </el-col>
+      <el-col :span="12">
+       <el-form-item label="SO/RQ号:" prop="SO_RQ_id">
+          <el-input
+            v-model="form.SO_RQ_id"
+            placeholder="请输入SO/RQ号"
+            clearable/>
+        </el-form-item>
       </el-col>
         </el-row>
-        <el-form-item label="成品/模块:" prop="product_module">
-            <el-radio-group
-              v-model="form.product_module">
-              <el-radio :label="1">成品</el-radio>
-              <el-radio :label="2">模块</el-radio>
-            </el-radio-group>
-          </el-form-item>
-
+       
           <el-form-item label="备注:" prop="remark">
             <el-input
               clearable
@@ -147,7 +153,18 @@
           </el-form-item>
 
       </el-form>
+    
       <div slot="footer">
+        <el-tooltip class="item" effect="dark" placement="left-end" style="float: left;">
+        <i class="el-icon-question"></i>
+        <div slot="content">
+          智能填入步骤：<br>
+          1. 光标放在工单号输入框内<br>
+          2. 输入法切换至英文大写<br>
+          3. 使用扫码枪扫码<br>
+          4. 点击表单内任意空白处
+        </div>
+      </el-tooltip>
         <el-button @click="updateVisible(false)">取消</el-button>
         <el-button
           type="primary"
@@ -160,7 +177,7 @@
 
   <script>
   export default {
-    name: 'WeldingEdit',
+    name: 'ShipmentReportEdit',
     props: {
       // 弹窗是否打开
       visible: Boolean,
@@ -169,117 +186,16 @@
     },
     data() {
       return {
+        product_names: [],
+        state: '',
+        timeout:  null,
         // 表单数据
-        form: Object.assign({status: 1}, this.data),
-        // 产品名称选项
-        options: [{
-          value: '1',
-          label: '成品',
-          children: [{
-            value: 'MPDU ',
-            label: 'MPDU '
-          }, {
-            value: 'ATS',
-            label: 'ATS'
-          }, {
-            value: 'Switched',
-            label: 'Switched'
-          }, {
-            value: 'Sensor Box-I',
-            label: 'Sensor Box-I'
-          }, {
-            value: 'RPDU',
-            label: 'RPDU'
-          }, {
-            value: 'NODE',
-            label: 'NODE'
-          }, {
-            value: 'ZPDU',
-            label: 'ZPDU'
-          }, {
-            value: 'PDU',
-            label: 'ATS'
-          }, {
-            value: '其他',
-            label: '其他'
-          }
-        ]
-        }, {
-          value: '2',
-          label: '模块',
-          children: [{
-            value: 'BM-PDU2020',
-            label: 'BM-PDU2020'
-          },{
-            value: 'BM-PDU2017',
-            label: 'BM-PDU2017'
-          }, {
-            value: 'BM-PDU ',
-            label: 'BM-PDU '
-          }, {
-            value: 'IP-PDU2020',
-            label: 'IP-PDU2020'
-          },{
-            value: 'IP-PDU2017',
-            label: 'IP-PDU2017'
-          }, {
-            value: 'IP-PDU6',
-            label: 'IP-PDU6'
-          }, {
-            value: 'IP-PDU',
-            label: 'IP-PDU'
-          },{
-            value: 'SI-PDU2022',
-            label: 'SI-PDU2022'
-          },{
-            value: 'SI-PDU2020',
-            label: 'SI-PDU2020'
-          },{
-            value: 'SI-PDU2017',
-            label: 'SI-PDU2017'
-          }, {
-            value: 'SI-PDU',
-            label: 'SI-PDU'
-          }, {
-            value: '配件',
-            label: '配件'
-          }, {
-            value: '插接箱',
-            label: '插接箱'
-          },  {
-            value: '始端箱',
-            label: '始端箱'
-          }, {
-            value: '工业屏',
-            label: '工业屏'
-          },{
-            value: '主控屏',
-            label: '主控屏'
-          }, {
-            value: '传感器',
-            label: '传感器'
-          },{
-            value: 'BASE功能模块',
-            label: 'BASE功能模块'
-          },{
-            value: 'NODE功能模块',
-            label: 'NODE功能模块'
-          },{
-            value: 'IMM接线模块',
-            label: 'IMM接线模块'
-          },{
-            value: 'Switch功能插座模块',
-            label: 'Switch功能插座模块'
-          },{
-            value: '插拔箱',
-            label: '插拔箱'
-          },
-        ]
-        }],
+        form: Object.assign({product_code: '', product_name:'', shape:'', product_module:''}, this.data),
         // 表单验证规则
         rules: {
           work_order: [
-          {required: true, message: '请输入工单号', trigger: 'blur'}
+          {required: true, message: '请输入工单号', trigger: 'blur'},
+          { validator: (rule, value, callback) => this.checkWorkOrderId(rule, value, callback), trigger: 'blur' }
         ],
         client_name: [
           {required: true, message: '请选择客户名称', trigger: 'blur'}
@@ -328,7 +244,7 @@
           this.form = Object.assign({}, this.data);
           this.isUpdate = true;
         } else {
-          this.form = {};
+          this.form = {product_code: '', product_name:'', shape:'', product_module:''};
           this.isUpdate = false;
         }
       }
@@ -339,9 +255,6 @@
         this.$refs['form'].validate((valid) => {
           if (valid) {
             this.loading = true;
-            // 获取产品名称最后节点的名字
-            let lastNode = this.form.product_name[this.form.product_name.length - 1];
-            this.form.product_name = lastNode
             this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/shipmentreport/update' : '/shipmentreport/add', this.form).then(res => {
               this.loading = false;
               if (res.data.code === 0) {
@@ -367,8 +280,38 @@
       updateVisible(value) {
         this.$emit('update:visible', value);
       },
+       // 订单号自动填入数据
+      checkWorkOrderId(rule, value, callback){
+        const regex = /^[a-zA-Z0-9]+[+][a-zA-Z0-9]+$/;
+        const regex1 = /^[a-zA-Z0-9]+$/;
+        if (value.includes("+")) {
+          if (regex.test(value)) {
+            const parts = value.split("+");
+            this.form.work_order = parts[0];
+            this.form.product_code = parts[1];
+            //根据产品编码查产品名称 规格
+            this.$http.get('/shipmentreport/product/detail/' + this.form.product_code).then((res) => {
+            this.loading = false;
+            if (res.data.code === 0 && res.data.data != null) {
+             this.form.product_name = res.data.data.product_name
+             this.form.shape  = res.data.data.shape
+             this.form.product_module = res.data.data.product_module
+            } 
+            })
+            callback();
+          } else {
+             callback(new Error('存在除一个+号外的非法字符')); 
+        }
+        }else {
+          if (!regex1.test(value)) {
+            callback(new Error('存在非法字符')); 
+          }
 
-       // 自定义校验规则函数
+          callback();
+        }
+      },
+
+       // 检测填入日期是否晚于订单日期
       checkFinishTime(rule, value, callback) {
         const orderDate = this.form.order_date;
         const thisDate = value;
@@ -379,7 +322,41 @@
         } else {
           callback();
         }
-      }
+      },
+
+      loadAll() {
+        this.$http.get('/shipmentreport/product/list').then((res) => {
+            this.loading = false;
+            if (res.data.code === 0) {
+              this.product_names = res.data.data
+            } 
+          })
+      },
+
+      querySearchAsync(queryString, cb) {
+        var product_names = this.product_names;
+        var results = queryString ? product_names.filter(this.createStateFilter(queryString)) : product_names;
+
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(results);
+        }, 300 * Math.random());
+      },
+
+      createStateFilter(queryString) {
+        return (state) => {
+          return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+
+      handleSelect(item) {
+        this.form.product_name = item.value
+        this.$refs.form.validateField('product_name', () => {});
+      },
+
+    },
+    mounted() {
+      this.loadAll();
     }
   }
   </script>

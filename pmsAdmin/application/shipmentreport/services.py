@@ -3,8 +3,10 @@ import json
 from datetime import datetime
 
 from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage, EmptyPage
+from django.db import transaction
 from django.db.models import Q
 from application.shipmentreport.models import Shipment
+from application.shipmentreport.models import Product
 from constant.constants import PAGE_LIMIT
 from utils import R, regular
 
@@ -127,7 +129,7 @@ def ShipmentReportDetail(shipment_id):
     }
     # 返回结果
     return data
-
+@transaction.atomic
 def ShipmentReportAdd(request):
     try:
         # 接收请求参数
@@ -153,7 +155,7 @@ def ShipmentReportAdd(request):
     SO_RQ_id = dict_data.get('SO_RQ_id')
     remark = dict_data.get('remark')
     product_module = dict_data.get('product_module')
-    # 创建数据
+
     Shipment.objects.create(
         work_order=work_order,
         client_name=client_name,
@@ -169,5 +171,144 @@ def ShipmentReportAdd(request):
         remark=remark if remark else None,
         create_user=uid(request)
         )
-    # 返回结果
+    # 将新的product_name存储到Product表中
+    product_name_list= ProductNameList(request)
+    if not product_name_list:
+        return R.failed('无法获取产品名字列表')
+
+    if product_name not in [item['value'] for item in product_name_list]:
+        Product.objects.create(
+            product_code=product_code,
+            product_name=product_name,
+            shape=shape,
+            product_module=product_module,
+        )
+
     return R.ok(msg="创建成功")
+
+
+@transaction.atomic
+def ShipmentReportUpdate(request):
+    try:
+        # 接收请求参数
+        json_data = request.body.decode()
+        # 参数为空判断
+        if not json_data:
+            return R.failed("参数不能为空")
+        # 数据类型转换
+        dict_data = json.loads(json_data)
+        # ID
+        shipment_id = dict_data.get('id')
+        # ID判空
+        if not shipment_id or int(shipment_id) <= 0:
+            return R.failed("ID不能为空")
+
+        work_order = dict_data.get('work_order')
+        client_name = dict_data.get('client_name')
+        product_code = dict_data.get('product_code')
+        product_name = dict_data.get('product_name')
+        shape = dict_data.get('shape')
+        order_date = dict_data.get('order_date')
+        delivery_date = dict_data.get('delivery_date')
+        finish_date = dict_data.get('finish_date')
+        product_count = dict_data.get('product_count')
+        SO_RQ_id = dict_data.get('SO_RQ_id')
+        remark = dict_data.get('remark')
+        product_module = dict_data.get('product_module')
+
+        # 根据ID查询
+        shipment = Shipment.objects.only('id').filter(id=shipment_id, is_delete=False).first()
+        # 查询结果判断
+        if not shipment:
+            return R.failed("数据不存在")
+        # 保存原先的product_code 方便更新product表
+        origin_product_code = shipment.product_code
+        # 对象赋值
+        shipment.work_order = work_order
+        shipment.client_name = client_name
+        shipment.product_code = product_code
+        shipment.product_name = product_name
+        shipment.shape = shape
+        shipment.order_date = order_date
+        shipment.delivery_date = delivery_date
+        shipment.finish_date = finish_date
+        shipment.product_count = product_count
+        shipment.SO_RQ_id = SO_RQ_id
+        shipment.remark = remark
+        shipment.product_module = product_module
+        shipment.update_user = uid(request)
+        shipment.save()
+        # 更新product表 用原先的product_code查
+        product = Product.objects.filter(is_delete=False, product_code=origin_product_code).first()
+        # 查询结果判断
+        if not product:
+            return R.failed("product数据不存在")
+        product.product_code = product_code
+        product.product_name = product_name
+        product.shape = shape
+        product.product_module = product_module
+        product.update_user = uid(request)
+        product.save()
+        # 返回结果
+        return R.ok(msg="更新成功")
+    except Exception as e:
+        logging.info("错误信息：\n{}", format(e))
+        print(e)
+        return R.failed("参数错误")
+
+def ShipmentReportDelete(shipment_id):
+    if not shipment_id:
+        return R.failed("记录ID不存在")
+    # 分裂字符串
+    list = shipment_id.split(',')
+    # 计数器
+    count = 0
+    # 遍历数据源
+    if len(list) > 0:
+        for id in list:
+            shipment = Shipment.objects.only('id').filter(id=int(id), is_delete=False).first()
+            if not shipment:
+                return R.failed("数据不存在")
+            # 设置删除标识
+            shipment.is_delete = True
+            # 更新记录
+            shipment.save()
+            # 计数器+1
+            count += 1
+    # 返回结果
+    return R.ok(msg="本次共删除{0}条数据".format(count))
+
+
+# 根据产品编码查产品名称 规格
+def SelectProdcutDetailByProductCode(product_code):
+    product = Product.objects.filter(is_delete=False, product_code=product_code).first()
+    if not product:
+        return None
+
+    data = {
+        'id': product.id,
+        'product_code': product.product_code,
+        'product_name': product.product_name,
+        'shape': product.shape,
+        'product_module': product.product_module,
+    }
+    return data
+
+# 获取所有产品名称
+def ProductNameList(request):
+    productNameList = Product.objects.filter(is_delete=False)
+    result = []
+    existing_names = set()  # 存储已存在的product_name值
+    if len(productNameList) > 0:
+        for item in productNameList:
+            product_name = item.product_name
+            if product_name not in existing_names:
+                data = {
+                    'value': product_name,
+                }
+                result.append(data)
+                existing_names.add(product_name)
+    # 返回结果
+    return result
+
+

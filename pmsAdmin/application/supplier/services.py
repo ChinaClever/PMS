@@ -130,7 +130,6 @@ def DictAdd(request):
     try:
         # 接收请求参数
         json_data = request.body.decode()
-        print(type(json_data))
         # 参数为空判断
         if not json_data:
             return R.failed("参数不能为空")

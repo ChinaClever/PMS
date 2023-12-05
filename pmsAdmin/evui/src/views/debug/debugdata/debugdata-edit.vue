@@ -49,35 +49,6 @@
             clearable/>
         </el-form-item>
 
-        <!-- <el-form-item
-          label="测试步骤:"
-          prop="testStep">
-        <el-collapse>
-            <el-collapse-item >
-              <div v-for="step in form.testStep" :key="step.no">
-                <br>     
-              <el-divider content-position="center">测试步骤序号  {{ step.no }}</el-divider> 
-              <br>     
-              <el-form-item label="测试步骤名称:">
-                <el-input
-                    :maxlength="20"
-                    v-model="step.name"
-                    placeholder="请输入测试步骤名称"
-                    clearable/> 
-              </el-form-item>   
-              <el-form-item label="结果:">         
-                  <el-radio-group
-                    v-model="step.result">
-                    <el-radio :label="1">通过</el-radio>
-                    <el-radio :label="0">失败</el-radio>
-                  </el-radio-group>
-                </el-form-item>
-                  <br>
-              </div>  
-            </el-collapse-item>
-          </el-collapse>
-        </el-form-item> -->
-
         <el-row :gutter="15">
         <el-col :sm="12">
         <el-form-item label="软件版本:" prop="softwareVersion">
@@ -115,6 +86,7 @@
               class="ele-fluid"
               type="datetime"
               v-model="form.testStartTime"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="请选择测试开始时间"/>
           </el-form-item>
 
@@ -123,6 +95,7 @@
               class="ele-fluid"
               type="datetime"
               v-model="form.testEndTime"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="请选择测试结束时间"/>
           </el-form-item>
         
@@ -217,7 +190,7 @@
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
                 if (!this.isUpdate) {
-                  this.form = {};
+                  this.form = {testStep:[]};
                 }
                 this.updateVisible(false);
                 this.$emit('done');
