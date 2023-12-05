@@ -21,11 +21,12 @@ def ShipmentReportList(request):
     limit = int(request.GET.get('limit', PAGE_LIMIT))
     # 筛选成品 模块
     product_module = request.GET.get('product_module')
+    query = Shipment.objects.filter(is_delete=False)
     # 查询数据(前端默认展示1成品)
     if product_module:
         query = Shipment.objects.filter(is_delete=False, product_module = product_module)
-    else:
-        query = Shipment.objects.filter(is_delete=False, product_module=1)
+    # else:
+    #     query = Shipment.objects.filter(is_delete=False, product_module=1)
     # 模糊筛选
     keyword  = request.GET.get('keyword')
     if keyword :
@@ -33,22 +34,25 @@ def ShipmentReportList(request):
             Q(client_name__icontains=keyword) |
             Q(product_name__icontains=keyword) |
             Q(product_code__icontains=keyword) |
-            Q(work_order__icontains=keyword) |
-            Q(SO_RQ_id__icontains=keyword)
+            Q(work_order__icontains=keyword)
         )
     # 筛选年份(前端默认展示当前年)
     year = request.GET.get('year')
     if year:
         query = query.filter(delivery_date__year=int(year))
-    else:
-        current_year = datetime.now().year
-        query = query.filter(delivery_date__year=current_year)
-    # 筛选月份(前端默认展示成品的一月份)
+
+    # 筛选月份(前端默认展示当前月)
     month = request.GET.get('month')
     if month:
         query = query.filter(delivery_date__month=int(month))
-    else:
-        query = query.filter(delivery_date__month=1)
+
+    # 筛选年月范围
+    selectStartDate = request.GET.get('selectStartDate')
+    selectEndDate = request.GET.get('selectEndDate')
+    if selectStartDate and selectEndDate:
+        start_date = datetime.strptime(selectStartDate, "%Y-%m-%d")
+        end_date = datetime.strptime(selectEndDate, "%Y-%m-%d")
+        query = query.filter(order_date__gte=start_date, order_date__lte=end_date)
 
     # 排序
     sort = request.GET.get('sort')
