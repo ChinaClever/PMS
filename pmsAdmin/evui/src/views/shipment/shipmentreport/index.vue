@@ -33,15 +33,7 @@
         <!-- 数据表格 -->
         <el-row :gutter="10">
           <el-col :span="2">
-            <el-date-picker
-              v-model="currentDate"
-              style="width: 118px;"
-              type="year"
-              format="yyyy 年"
-              placeholder="选择年"
-              @change="yearHandleSelect"
-              >
-            </el-date-picker>
+           
             <el-menu
         default-active="1-1"
         :unique-opened="true"
@@ -101,6 +93,7 @@
               height="calc(100vh - 315px)">
               <!-- 表头工具栏 -->
               <template slot="toolbar">
+                 
                 <el-button
                   size="small"
                   type="primary"
@@ -117,6 +110,17 @@
                   @click="removeBatch"
                   v-if="permission.includes('sys:shipmentreport:dall')">删除
                 </el-button>
+
+                 <el-date-picker
+                v-model="currentDate"
+                style="width: 160px; margin-left: 200px;"
+                type="month"
+                format="yyyy 年 MM 月"
+                placeholder="选择年月"
+                @change="yearAndMonthHandleSelect"
+                >
+              </el-date-picker>
+
                 <!-- <el-button
                   @click="showImport=true"
                   icon="el-icon-upload2"
@@ -338,9 +342,12 @@
       getDefaultYear() {
         this.currentDate = new Date();
       },
-      // 选择年
-      yearHandleSelect() {
+      // 选择年月
+      yearAndMonthHandleSelect() {
         this.where.year = this.currentDate.getFullYear();
+        // getMonth 方法返回的月份是从 0 开始计数的，即 0 表示一月
+        this.where.month = this.currentDate.getMonth() + 1;
+        console.log(this.where)
         this.$refs.table.reload({page: 1, where: this.where});
       },
       // 点击左侧月份
