@@ -87,7 +87,6 @@
               type="datetime"
               value-format="yyyy-MM-dd HH:mm:ss"
               v-model="form.testStartTime"
-              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="请选择测试开始时间"/>
           </el-form-item>
 
@@ -97,7 +96,6 @@
               type="datetime"
               value-format="yyyy-MM-dd HH:mm:ss"
               v-model="form.testEndTime"
-              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="请选择测试结束时间"/>
           </el-form-item>
         
