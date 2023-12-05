@@ -57,7 +57,7 @@
         </el-form-item>
         </el-col>
         </el-row>
-      
+
         <el-form-item label="规格型号:" prop="shape">
           <el-input
             v-model="form.shape"
@@ -370,14 +370,14 @@
 
        // 自定义校验规则函数
       checkFinishTime(rule, value, callback) {
-        const orderDate = this.form.order_date; 
-        const thisDate = value; 
+        const orderDate = this.form.order_date;
+        const thisDate = value;
         if (!orderDate || !thisDate) {
-          callback(); 
+          callback();
         } else if (orderDate > thisDate) {
-          callback(new Error('此日期必须晚于订单日期')); 
+          callback(new Error('此日期必须晚于订单日期'));
         } else {
-          callback(); 
+          callback();
         }
       }
     }
