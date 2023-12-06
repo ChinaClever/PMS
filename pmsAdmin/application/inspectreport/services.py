@@ -128,6 +128,29 @@ def InspectreportAdd(request):
         # 信号
         signal = 2 if target_actual_pass_rate >= target_pass_rate else 1
         # 创建数据
+        selectedDate = dict_data.get("selectedDate");
+        if selectedDate:
+            # 提取 selectedDate 的年月日部分
+            selectedDate_date = datetime.strptime(selectedDate, '%Y-%m-%d %H:%M')
+            year = selectedDate_date.year
+            month = selectedDate_date.month
+            day = selectedDate_date.day
+
+            # 提取 start_time 的时分秒部分
+            hours = start_time.hour
+            minutes = start_time.minute
+            seconds = start_time.second
+
+            # 拼接年月日和时分秒
+            start_time = datetime(year, month, day, hours, minutes, seconds)
+
+            # 提取 end_time 的时分秒部分
+            hours = end_time.hour
+            minutes = end_time.minute
+            seconds = end_time.second
+
+            # 拼接年月日和时分秒
+            end_time = datetime(year, month, day, hours, minutes, seconds)
         Inspectreport.objects.create(
             commit_user=UserDetail(uid(request)).get("realname"),
             product_name=product_name,

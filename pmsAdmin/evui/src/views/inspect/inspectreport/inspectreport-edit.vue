@@ -31,6 +31,16 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item
+            label="日期:"
+            prop="date">
+            <el-date-picker
+            v-model="form.selectedDate"
+            value-format="yyyy-MM-dd HH:mm"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+          </el-form-item>
+          <el-form-item
             label="开始时间:"
             prop="start_time">
             <el-time-picker
@@ -159,7 +169,7 @@ export default {
   data() {
     return {
       // 表单数据
-      form: Object.assign({}, this.data),
+      form: Object.assign({ }, this.data),
       // 表单验证规则
       rules: {
         work_order:[
