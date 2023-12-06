@@ -4,7 +4,7 @@
         <!-- 搜索表单 -->
         <el-form
           :model="where"
-          label-width="77px"
+          label-width="100px"
           class="ele-form-search"
           @keyup.enter.native="reload"
           @submit.native.prevent>
@@ -14,9 +14,26 @@
                 <el-input
                   clearable
                   v-model="where.keyword"
-                  placeholder="工单号、成品编码、客户名称、产品名称或SO/RQ号"/>
+                  placeholder="工单号、成品编码、客户名称、产品名称"/>
               </el-form-item>
             </el-col>
+
+            <el-col :lg="6" :md="12">
+              <el-date-picker
+                v-model="selectDateRange"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="订单日期开始日期"
+                end-placeholder="订单日期结束日期"
+                format="yyyy 年 MM 月 dd 日"
+                value-format="yyyy-MM-dd"
+                :picker-options="pickerOptions"
+                @change="dateRangeHandleSelect">
+              </el-date-picker>
+            </el-col>
+          
             <el-col :lg="6" :md="12">
               <div class="ele-form-actions">
                 <el-button
@@ -31,65 +48,13 @@
           </el-row>
         </el-form>
         <!-- 数据表格 -->
-        <el-row :gutter="10">
-          <el-col :span="2">
-           
-            <el-menu
-        default-active="1-1"
-        :unique-opened="true"
-        class="el-menu-vertical-demo"
-        @select="handleSelect"
-        >
-        <el-submenu index="1">
-          <template slot="title">
-            <i class="el-icon-box"></i>
-            <span>成品</span>
-          </template>
-          <el-menu-item-group>
-            <el-menu-item index="1-1">一月份</el-menu-item>
-            <el-menu-item index="1-2">二月份</el-menu-item>
-            <el-menu-item index="1-3">三月份</el-menu-item>
-            <el-menu-item index="1-4">四月份</el-menu-item>
-            <el-menu-item index="1-5">五月份</el-menu-item>
-            <el-menu-item index="1-6">六月份</el-menu-item>
-            <el-menu-item index="1-7">七月份</el-menu-item>
-            <el-menu-item index="1-8">八月份</el-menu-item>
-            <el-menu-item index="1-9">九月份</el-menu-item>
-            <el-menu-item index="1-10">十月份</el-menu-item>
-            <el-menu-item index="1-11">十一月份</el-menu-item>
-            <el-menu-item index="1-12">十二月份</el-menu-item>
-          </el-menu-item-group>
-        </el-submenu>
-        <el-submenu index="2">
-          <template slot="title">
-            <i class="el-icon-suitcase-1"></i>
-            <span>模块</span>
-          </template>
-          <el-menu-item-group>
-            <el-menu-item index="2-1">一月份</el-menu-item>
-            <el-menu-item index="2-2">二月份</el-menu-item>
-            <el-menu-item index="2-3">三月份</el-menu-item>
-            <el-menu-item index="2-4">四月份</el-menu-item>
-            <el-menu-item index="2-5">五月份</el-menu-item>
-            <el-menu-item index="2-6">六月份</el-menu-item>
-            <el-menu-item index="2-7">七月份</el-menu-item>
-            <el-menu-item index="2-8">八月份</el-menu-item>
-            <el-menu-item index="2-9">九月份</el-menu-item>
-            <el-menu-item index="2-10">十月份</el-menu-item>
-            <el-menu-item index="2-11">十一月份</el-menu-item>
-            <el-menu-item index="2-12">十二月份</el-menu-item>
-          </el-menu-item-group>
-        </el-submenu>
-            </el-menu>
-
-          </el-col>
-          <el-col :span="22">
             <ele-pro-table
               ref="table"
               :where="where"
               :datasource="url"
               :columns="columns"
               :selection.sync="selection"
+              :parseData="parseData"
               height="calc(100vh - 315px)">
               <!-- 表头工具栏 -->
               <template slot="toolbar">
@@ -112,8 +77,8 @@
                 </el-button>
 
                  <el-date-picker
-                v-model="currentDate"
-                style="width: 160px; margin-left: 200px;"
+                v-model="selectDate"
+                style="width: 160px; margin-left: 400px;"
                 type="month"
                 format="yyyy 年 MM 月"
                 placeholder="选择年月"
@@ -121,6 +86,26 @@
                 >
               </el-date-picker>
 
+              <el-select 
+              v-model="where.product_module" 
+              style="width: 120px; margin-left: 20px"
+              clearable 
+              placeholder="成品或模块"
+              @change="productOrModuleHandleSelect">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                  </el-option>
+                </el-select>
+
+                <el-statistic
+                group-separator=","
+                :value="items_total"
+                title="总数量"
+                style="padding-left: 200px; font-weight: bold;"
+              ></el-statistic>
                 <!-- <el-button
                   @click="showImport=true"
                   icon="el-icon-upload2"
@@ -167,8 +152,7 @@
                   :inactive-value="2"/>
               </template>
             </ele-pro-table>
-          </el-col>        
-        </el-row>
+       
       </el-card>
       <!-- 编辑弹窗 -->
     <Shipmentreport-edit
@@ -322,8 +306,11 @@
         ],
         // 表格搜索条件
         where: {
+          product_module: '1',
+          year: new Date().getFullYear(),
+          month: new Date().getMonth() + 1,
         },
-        currentDate: '',
+        selectDate: new Date(),
         // 表格选中数据
         selection: [],
         // 当前编辑数据
@@ -331,38 +318,111 @@
         // 是否显示编辑弹窗
         showEdit: false,
         // 是否显示导入弹窗
-        showImport: false
+        showImport: false,
+        // 下拉框筛选成品或模块
+        options: [{
+          value: '1',
+          label: '成品'
+        }, {
+          value: '2',
+          label: '模块'
+        }],
+        // 查询日期范围的左边栏快捷选项
+        pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30 * 3);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近半年',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30 * 6);
+              picker.$emit('pick', [start, end]);
+            }
+          }
+          , {
+            text: '最近一年',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30 * 12);
+              picker.$emit('pick', [start, end]);
+            }
+          }
+        ]
+        },
+        // 选择的日期范围
+        selectDateRange: '',
+        // 查询出来的总数量
+        items_total:''
+
       };
     },
-    created () {
-      this.getDefaultYear();
-    },
+    
     methods: {
-      // 初始获取当前年份
-      getDefaultYear() {
-        this.currentDate = new Date();
+      parseData(val) {
+      // console.log(val,'返回val=====');
+      this.items_total = val.items_total
+      return val
+    },
+
+      // 选择日期范围查询
+      dateRangeHandleSelect(){
+        this.where.year = null
+        this.where.month = null
+        this.selectDate = null
+        this.where.selectStartDate = this.selectDateRange[0]
+        this.where.selectEndDate = this.selectDateRange[1]
       },
       // 选择年月
       yearAndMonthHandleSelect() {
-        this.where.year = this.currentDate.getFullYear();
-        // getMonth 方法返回的月份是从 0 开始计数的，即 0 表示一月
-        this.where.month = this.currentDate.getMonth() + 1;
-        console.log(this.where)
+        this.selectDateRange = null
+        this.where.selectStartDate = null
+        this.where.selectEndDate = null
+        this.where.year = null
+        this.where.month = null
+        if (this.selectDate != null){
+          this.where.year = this.selectDate.getFullYear();
+          // getMonth 方法返回的月份是从 0 开始计数的，即 0 表示一月
+          this.where.month = this.selectDate.getMonth() + 1;
+        }
         this.$refs.table.reload({page: 1, where: this.where});
       },
-      // 点击左侧月份
-      handleSelect(keyPath) {
-        this.where.product_module = keyPath[0];
-        this.where.month = keyPath.split("-")[1];
+      // 下拉选择成品或模块
+      productOrModuleHandleSelect() {
+        console.log(this.where)
         this.$refs.table.reload({page: 1, where: this.where});
       },
       /* 刷新表格 */
       reload() {
-        this.where.year = this.currentDate.getFullYear();
         this.$refs.table.reload({page: 1, where: this.where});
       },
       /* 重置搜索 */
       reset() {
+        this.selectDateRange = null
+        this.selectDate = null
         this.where = {};
         this.reload();
       },
