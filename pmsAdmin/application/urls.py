@@ -114,4 +114,6 @@ urlpatterns = [
     path('shipmentreport/', include('application.shipmentreport.urls')),
     # mac地址
     path('mac/', include('application.mac.urls')),
+    #工作台
+    path('workplace/', include('application.workplace.urls')),
 ]
