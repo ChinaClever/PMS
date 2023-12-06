@@ -79,6 +79,8 @@ def ShipmentReportList(request):
         return R.failed('找不到页面的内容')
     # 遍历数据源
     result = []
+    # 总数量
+    items_total = 0
     if len(shipmentreport_list) > 0:
         for item in shipmentreport_list:
             data = {
@@ -99,11 +101,11 @@ def ShipmentReportList(request):
                 'attachment': item.attachment if item.attachment else None,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d')) if item.create_time else None,
-
             }
+            items_total += item.product_count
             result.append(data)
     # 返回结果
-    return R.ok(data=result, count=count)
+    return R.ok(data=result, count=count, items_total=items_total)
 
 
 def ShipmentReportDetail(shipment_id):
@@ -133,6 +135,7 @@ def ShipmentReportDetail(shipment_id):
     }
     # 返回结果
     return data
+
 @transaction.atomic
 def ShipmentReportAdd(request):
     try:
@@ -315,4 +318,43 @@ def ProductNameList(request):
     # 返回结果
     return result
 
+# 获取所有工单号 倒序返回
+def WorkOrderList(request):
+    workOrderList = Shipment.objects.filter(is_delete=False).order_by('-id').values_list('work_order', flat=True)
+    result = []
+    if len(workOrderList) > 0:
+        for item in workOrderList:
+            data = {
+                'value': item
+            }
+            result.append(data)
+
+    return result
+
+# 根据工单号查详情
+def SelectShipmentDetailByWorkOrder(work_order):
+    shipment = Shipment.objects.filter(is_delete=False, work_order=work_order).first()
+    # 查询结果判空
+    if not shipment:
+        return None
+    # 声明结构体
+    data = {
+        'id': shipment.id,
+        'work_order': shipment.work_order,
+        'client_name': shipment.client_name,
+        'product_code': shipment.product_code,
+        'product_name': shipment.product_name,
+        'shape': shipment.shape,
+        'order_date': str(shipment.order_date.strftime('%Y-%m-%d')),
+        'delivery_date': str(shipment.delivery_date.strftime('%Y-%m-%d')),
+        'update_delivery_date': str(shipment.update_delivery_date.strftime('%Y-%m-%d')) if shipment.update_delivery_date else None,
+        'finish_date': str(shipment.finish_date.strftime('%Y-%m-%d')) if shipment.finish_date else None,
+        'product_count': shipment.product_count,
+        'SO_RQ_id': shipment.SO_RQ_id,
+        'remark': shipment.remark if shipment.remark else None,
+        'product_module': shipment.product_module,
+        'attachment': shipment.attachment if shipment.attachment else None,
+    }
+    # 返回结果
+    return data
 

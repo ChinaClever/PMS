@@ -145,9 +145,8 @@
             prop: 'work_order',
             label: '工单号',
             showOverflowTooltip: true,
-            minWidth: 120,
+            minWidth: 160,
             align: 'center',
-            fixed: "left"
           },
           {
             prop: 'order_time',
@@ -170,19 +169,19 @@
             align: 'center',
           },
           {
-            prop: 'shape',
-            label: '规格型号',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-          },
-          {
             prop: 'product_name',
             label: '产品名称',
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
           },
+          {
+            prop: 'shape',
+            label: '规格型号',
+            showOverflowTooltip: true,
+            minWidth: 200,
+            align: 'center',
+          },       
           {
             prop: 'product_count',
             label: '产品数量',

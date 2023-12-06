@@ -54,6 +54,7 @@
               :datasource="url"
               :columns="columns"
               :selection.sync="selection"
+              :parseData="parseData"
               height="calc(100vh - 315px)">
               <!-- 表头工具栏 -->
               <template slot="toolbar">
@@ -89,15 +90,22 @@
               v-model="where.product_module" 
               style="width: 120px; margin-left: 20px"
               clearable 
-              placeholder="请选择成品或模块"
+              placeholder="成品或模块"
               @change="productOrModuleHandleSelect">
               <el-option
                 v-for="item in options"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
-              </el-option>
-            </el-select>
+                  </el-option>
+                </el-select>
+
+                <el-statistic
+                group-separator=","
+                :value="items_total"
+                title="总数量"
+                style="padding-left: 200px; font-weight: bold;"
+              ></el-statistic>
                 <!-- <el-button
                   @click="showImport=true"
                   icon="el-icon-upload2"
@@ -366,11 +374,20 @@
         ]
         },
         // 选择的日期范围
-        selectDateRange: ''
+        selectDateRange: '',
+        // 查询出来的总数量
+        items_total:''
+
       };
     },
     
     methods: {
+      parseData(val) {
+      // console.log(val,'返回val=====');
+      this.items_total = val.items_total
+      return val
+    },
+
       // 选择日期范围查询
       dateRangeHandleSelect(){
         this.where.year = null

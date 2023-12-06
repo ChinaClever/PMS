@@ -21,7 +21,18 @@
           <el-input
             v-model="form.work_order"
             placeholder="请输入工单号"
-            clearable/>
+            clearable>
+            <el-tooltip slot="prefix" effect="dark" placement="top">
+              <i class="el-icon-question"></i>
+              <div slot="content">
+                智能填入步骤：<br>
+                1. 光标放在工单号输入框内<br>
+                2. 输入法切换至英文大写<br>
+                3. 使用扫码枪扫码<br>
+                4. 点击表单内任意空白处
+              </div>
+            </el-tooltip>
+          </el-input>
         </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -49,11 +60,13 @@
       </el-col>
         <el-col :span="12">
         <el-form-item label="产品名称:" prop="product_name">
-    
         <el-autocomplete
           v-model="form.product_name"
           :fetch-suggestions="querySearchAsync"
+          placeholder="请输入产品名称"
+          clearable
           @select="handleSelect"
+          style="width: 277px;"
         ></el-autocomplete>
         </el-form-item>
         </el-col>
@@ -155,16 +168,6 @@
       </el-form>
     
       <div slot="footer">
-        <el-tooltip class="item" effect="dark" placement="left-end" style="float: left;">
-        <i class="el-icon-question"></i>
-        <div slot="content">
-          智能填入步骤：<br>
-          1. 光标放在工单号输入框内<br>
-          2. 输入法切换至英文大写<br>
-          3. 使用扫码枪扫码<br>
-          4. 点击表单内任意空白处
-        </div>
-      </el-tooltip>
         <el-button @click="updateVisible(false)">取消</el-button>
         <el-button
           type="primary"
@@ -332,7 +335,7 @@
             } 
           })
       },
-
+      // 异步查询产品名称
       querySearchAsync(queryString, cb) {
         var product_names = this.product_names;
         var results = queryString ? product_names.filter(this.createStateFilter(queryString)) : product_names;
