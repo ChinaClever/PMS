@@ -80,3 +80,16 @@ class DebugDataDeleteView(PermissionRequired, View):
         result = services.DebugDataDelete(debugdata_id)
         # 返回结果
         return result
+
+
+@method_decorator(check_login, name='dispatch')
+class DebugDataNewestListView(PermissionRequired, View):
+    # 方法权限标识
+    permission_required = ('sys:debugdata:list',)
+
+    # POST查询分页数据
+    def get(self, request):
+        # 调用查询职级分页数据服务方法
+        result = services.DebugDataNewestList(request)
+        # 返回结果
+        return result

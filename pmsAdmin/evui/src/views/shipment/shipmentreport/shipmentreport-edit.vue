@@ -11,7 +11,7 @@
         ref="form"
         :model="form"
         :rules="rules"
-        label-width="100px"
+        label-width="86px"
         :validate-on-rule-change="false">
         <el-row :gutter="6">
         <el-col :span="12">
