@@ -177,3 +177,16 @@ class RepairreportListOfTotalView1(PermissionRequired, View):
 
         # 返回结果
         return result
+
+@method_decorator(check_login, name="get")
+class QuestionListView(PermissionRequired, View):
+    # 方法权限标识
+    permission_required = ("sys:repairreport:list",)
+
+    # 接收GET请求
+    def get(self, request):
+        # 调用查询质检报表分页数据方法
+        result = services.QuestionList(request)
+
+        # 返回结果
+        return result

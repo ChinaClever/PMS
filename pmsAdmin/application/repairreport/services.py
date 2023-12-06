@@ -434,3 +434,46 @@ def RepairreportListOfTotal1(request):
             result.append(data)
     # 返回结果
     return R.ok(data=result, count=count)
+
+#问题清单数据传输
+def QuestionList(request):
+    # 页码
+    page = int(request.GET.get("page", 1))
+    # 每页数
+    limit = int(request.GET.get("limit", PAGE_LIMIT))
+    # 实例化查询对象
+    query = Dict.objects.filter(is_delete=False)
+    name = request.GET.get('name')
+    work_order = request.GET.get('work_order')
+    if name :
+        # sql = 'SELECT item_number,sum(examine_an_amount) AS total,sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 AND start_time >= ' + str(startTime) + ' AND end_time <= ' + str(endTime)+ " GROUP BY item_number" + " limit " + str(limit)
+        sql = "SELECT id,name, work_order, bad_phenomenon, count( bad_phenomenon) as num  FROM django_repairreport WHERE is_delete = 0 GROUP BY %s ,bad_phenomenon ORDER BY %s,num Desc"
+        query = Dict.objects.raw(sql, [name])
+        # 设置分页
+        paginator = Paginator(query, limit)
+    elif work_order:
+        sql = "SELECT id,name, work_order, bad_phenomenon, count( bad_phenomenon) as num  FROM django_repairreport WHERE is_delete = 0 GROUP BY %s ,bad_phenomenon ORDER BY %s,num Desc"
+        query = Dict.objects.raw(sql,[work_order])
+        paginator = Paginator(query, limit)
+
+    # 记录总数
+    count = paginator.count
+    # 分页查询
+    producerecord_list = paginator.page(page)
+    # 实例化结果
+    result = []
+    # 遍历数据源
+    if len(producerecord_list) > 0:
+        for item in producerecord_list:
+            data = {
+                'id': item.id,
+                'name': item.name,
+                'work_order': item.work_order,
+                'bad_phenomenon':item.bad_phenomenon,
+                'num':item.num,
+            }
+            result.append(data)
+    # 返回结果
+    return R.ok(data=result, count=count)
+
+

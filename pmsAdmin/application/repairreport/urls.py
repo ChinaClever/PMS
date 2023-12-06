@@ -49,4 +49,6 @@ urlpatterns = [
     path('listOfTotal', views.RepairreportListOfTotalView.as_view()),
     # 查询统计维修报表柱状图
     path('listOf', views.RepairreportListOfTotalView1.as_view()),
+    # 查询问题清单
+    path('questionlist', views.QuestionListView.as_view()),
 ]
