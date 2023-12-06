@@ -101,6 +101,11 @@
               :active-value="1"
               :inactive-value="2"/>
           </template>
+          <!-- 成品模块列 -->
+          <template slot="product_module" slot-scope="{row}">
+            <el-tag v-if="row.product_module === 1" type="success" size="medium">成品</el-tag>
+            <el-tag v-if="row.product_module === 2" type="success" size="medium">模块</el-tag>
+          </template>
         </ele-pro-table>
       </el-card>
       <!-- 编辑弹窗 -->
@@ -136,21 +141,12 @@
             align: 'center',
             fixed: "left"
           },
-          // {
-          //   prop: 'id',
-          //   label: 'ID',
-          //   width: 60,
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   fixed: "left"
-          // },
           {
             prop: 'work_order',
             label: '工单号',
             showOverflowTooltip: true,
-            minWidth: 120,
+            minWidth: 160,
             align: 'center',
-            fixed: "left"
           },
           {
             prop: 'order_time',
@@ -159,9 +155,8 @@
             minWidth: 120,
             align: 'center',
             sortable: 'custom',
-            order: '', // 初始化排序方式为空字符串
+            order: '', 
             sortableMethod: ()=> {
-              // 在这里实现自定义的排序逻辑
             this.where.order = this.order;
             this.reload();
             }
@@ -174,19 +169,19 @@
             align: 'center',
           },
           {
-            prop: 'shape',
-            label: '规格型号',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-          },
-          {
             prop: 'product_name',
             label: '产品名称',
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
           },
+          {
+            prop: 'shape',
+            label: '规格型号',
+            showOverflowTooltip: true,
+            minWidth: 200,
+            align: 'center',
+          },       
           {
             prop: 'product_count',
             label: '产品数量',
@@ -201,9 +196,8 @@
             minWidth: 120,
             align: 'center',
             sortable: 'custom',
-            order: '', // 初始化排序方式为空字符串
+            order: '', 
             sortableMethod: ()=> {
-              // 在这里实现自定义的排序逻辑
             this.where.order = this.order;
             this.reload();
             }
@@ -215,9 +209,8 @@
             minWidth: 120,
             align: 'center', 
             sortable: 'custom',
-            order: '', // 初始化排序方式为空字符串
+            order: '', 
             sortableMethod: ()=> {
-              // 在这里实现自定义的排序逻辑
             this.where.order = this.order;
             this.reload();
             } 
@@ -229,9 +222,8 @@
             minWidth: 120,
             align: 'center',
             sortable: 'custom',
-            order: '', // 初始化排序方式为空字符串
+            order: '', 
             sortableMethod: ()=> {
-              // 在这里实现自定义的排序逻辑
             this.where.order = this.order;
             this.reload();
             }
@@ -257,6 +249,14 @@
             minWidth: 200,
             align: 'center',
           },
+          {
+          prop: 'product_module',
+          label: '成品/模块',
+          minWidth: 100,
+          align: 'center',
+          resizable: false,
+          slot: 'product_module',
+        },
           {
             columnKey: 'action',
             label: '操作',

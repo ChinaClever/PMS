@@ -49,35 +49,6 @@
             clearable/>
         </el-form-item>
 
-        <!-- <el-form-item
-          label="测试步骤:"
-          prop="testStep">
-        <el-collapse>
-            <el-collapse-item >
-              <div v-for="step in form.testStep" :key="step.no">
-                <br>     
-              <el-divider content-position="center">测试步骤序号  {{ step.no }}</el-divider> 
-              <br>     
-              <el-form-item label="测试步骤名称:">
-                <el-input
-                    :maxlength="20"
-                    v-model="step.name"
-                    placeholder="请输入测试步骤名称"
-                    clearable/> 
-              </el-form-item>   
-              <el-form-item label="结果:">         
-                  <el-radio-group
-                    v-model="step.result">
-                    <el-radio :label="1">通过</el-radio>
-                    <el-radio :label="0">失败</el-radio>
-                  </el-radio-group>
-                </el-form-item>
-                  <br>
-              </div>  
-            </el-collapse-item>
-          </el-collapse>
-        </el-form-item> -->
-
         <el-row :gutter="15">
         <el-col :sm="12">
         <el-form-item label="软件版本:" prop="softwareVersion">
@@ -115,6 +86,7 @@
               class="ele-fluid"
               type="datetime"
               v-model="form.testStartTime"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="请选择测试开始时间"/>
           </el-form-item>
 
@@ -123,6 +95,7 @@
               class="ele-fluid"
               type="datetime"
               v-model="form.testEndTime"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="请选择测试结束时间"/>
           </el-form-item>
         
@@ -141,6 +114,20 @@
               <el-radio :label="0">失败</el-radio>
             </el-radio-group>
           </el-form-item>
+
+          <div v-for="(input) in form.testStep" :key="input.no">
+          <span>测试步骤 {{ input.no }}</span>
+          <el-input v-model="input.name" placeholder="名称"></el-input>
+          <el-radio-group
+            v-model="input.result">
+            <el-radio :label="1">通过</el-radio>
+            <el-radio :label="0">失败</el-radio>
+          </el-radio-group>
+        </div>
+        <br>
+        <el-button @click="addInput">添加测试步骤</el-button>
+        <el-button v-if="form.testStep.length > 0" @click="removeInput">删除最后一步测试步骤</el-button>
+ 
 
       </el-form>
       <div slot="footer">
@@ -166,7 +153,7 @@
     data() {
       return {
         // 表单数据
-        form: Object.assign({status: 1}, this.data),
+        form: Object.assign({testStep:[]}, this.data),
         // 表单验证规则
         rules: {
         testEndTime: [
@@ -176,7 +163,9 @@
         // 提交状态
         loading: false,
         // 是否是修改
-        isUpdate: false
+        isUpdate: false,
+        // 输入框id计数器
+        idCounter: 1 
       };
     },
     watch: {
@@ -201,7 +190,7 @@
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
                 if (!this.isUpdate) {
-                  this.form = {};
+                  this.form = {testStep:[]};
                 }
                 this.updateVisible(false);
                 this.$emit('done');
@@ -234,7 +223,23 @@
         } else {
           callback(); // 校验通过
         }
+      },
+      addInput() {
+      this.form.testStep.push({
+        no: this.idCounter,
+        name: '',
+        result: ''
+      });
+      this.idCounter++;
+    },
+    removeInput() {
+      this.form.testStep.pop();
+      if (this.form.testStep.length === 0) {
+        this.idCounter = 1; // 如果没有输入框了，重置计数器为1
+      } else {
+        this.idCounter = this.form.testStep[this.form.testStep.length - 1].id + 1; // 更新计数器为最后一个输入框的id加1
       }
+    }
     }
   }
   </script>

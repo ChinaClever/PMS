@@ -11,6 +11,22 @@ class InspectreportForm(forms.ModelForm):
         }
     )
 
+    # 产品名称
+    product_name = forms.CharField(
+        max_length=150,
+        error_messages={
+            'required': '产品名称不能为空',
+            'max_length': '产品名称长度不得超过150个字符',
+        }
+    )
+
+    product_module = forms.IntegerField(
+        required=True,
+        error_messages={
+            'required': '成品/模块不能为空',
+        }
+    )
+
     # 开始时间
     start_time = forms.DateTimeField(
         required=True,
@@ -108,4 +124,5 @@ class InspectreportForm(forms.ModelForm):
                   'examine_bad_total_amount',
                   'target_pass_rate',
                   'problems',
-                  'actions']
+                  'actions',
+                  'product_name']

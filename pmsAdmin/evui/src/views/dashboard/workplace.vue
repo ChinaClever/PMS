@@ -1,201 +1,217 @@
 <template>
   <div class="ele-body ele-body-card">
-    <!-- 顶部统计卡片 -->
-    <el-row :gutter="15">
-      <el-col :lg="6" :md="12">
-        <el-card class="analysis-chart-card" shadow="never">
-          <div slot="header" class="ele-cell">
-            <div class="ele-cell-content">生产总数量</div>
-            <el-tag size="mini">年</el-tag>
-          </div>
-          <div class="analysis-chart-card-num">98724,254</div>
-          <div class="analysis-chart-card-content" style="padding-top: 18px;">
-            <span class="ele-action">
-              <span>周同比12%</span>
-              <i class="el-icon-caret-top ele-text-danger"></i>
-            </span>
-            <span class="ele-action">
-              <span>日同比11%</span>
-              <i class="el-icon-caret-bottom ele-text-success"></i>
-            </span>
-          </div>
-          <el-divider/>
-          <div class="analysis-chart-card-text">本日生产数量 86,585</div>
-        </el-card>
-      </el-col>
-      <el-col :lg="6" :md="12">
-        <el-card class="analysis-chart-card" shadow="never">
-          <div slot="header" class="ele-cell">
-            <div class="ele-cell-content">生产总效率</div>
-            <el-tag size="mini">年</el-tag>
-          </div>
-          <div class="analysis-chart-card-num">98%</div>
-          <div class="analysis-chart-card-content">
-            <ele-chart
-              ref="visitChart"
-              style="height: 40px;"
-              :option="visitChartOption"/>
-          </div>
-          <el-divider/>
-          <div class="analysis-chart-card-text">
-            <span class="ele-action">
-              <span>周同比45%</span>
-              <i class="el-icon-caret-top ele-text-danger"/>
-            </span>
-            <span class="ele-action">
-              <span>日同比57%</span>
-              <i class="el-icon-caret-bottom ele-text-success"/>
-            </span>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :lg="6" :md="12">
-        <el-card class="analysis-chart-card" shadow="never">
-          <div slot="header" class="ele-cell">
-            <div class="ele-cell-content">总合格率</div>
-            <el-tag size="mini">年</el-tag>
-          </div>
-          <div class="analysis-chart-card-num">99%</div>
-          <div class="analysis-chart-card-content">
-            <ele-chart
-              ref="AllProcedureNumChart"
-              style="height: 40px;"
-              :option="AllProcedureNumChartOption"/>
-          </div>
-          <el-divider/>
-          <div class="analysis-chart-card-text">
-            <span class="ele-action">
-              <span>周同比45%</span>
-              <i class="el-icon-caret-top ele-text-danger"/>
-            </span>
-            <span class="ele-action">
-              <span>日同比57%</span>
-              <i class="el-icon-caret-bottom ele-text-success"/>
-            </span>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :lg="6" :md="12">
-        <el-card class="analysis-chart-card" shadow="never">
-          <div slot="header" class="ele-cell">
-            <div class="ele-cell-content">开机率</div>
-          </div>
-          <div class="analysis-chart-card-num">97%</div>
-          <div class="analysis-chart-card-content" style="padding-top: 25px;">
-            <el-progress
-              :percentage="97"
-              :show-text="false"
-              :stroke-width="10"
-              color="#13c2c2"/>
-          </div>
-          <el-divider/>
-          <div class="analysis-chart-card-text">
-            <span class="ele-action">
-              <span>周同比45%</span>
-              <i class="el-icon-caret-top ele-text-danger"/>
-            </span>
-            <span class="ele-action">
-              <span>日同比57%</span>
-              <i class="el-icon-caret-bottom ele-text-success"/>
-            </span>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-    <!-- 销售额、访问量 -->
-    <el-card shadow="never" body-style="padding: 0;">
-      <div class="ele-cell demo-monitor-tool">
-        <div class="ele-cell-content">
-          <el-tabs
-            v-model="saleSearch.type"
-            class="demo-monitor-tabs"
-            @tab-click="onSaleTypeChange">
-            <el-tab-pane label="生产数量" name="procedureNumber"/>
-            <el-tab-pane label="效率" name="efficiency"/>
-            <el-tab-pane label="合格率" name="pass"/>
-          </el-tabs>
+<!--      模块数据-->
+    <el-card>
+      <!-- 顶部统计卡片 -->
+      <el-row :gutter="15">
+        <div class="ele-text-left">
+          <el-tag type="info" size="medium">模块数据</el-tag>
         </div>
-        <div class="ele-inline-block ele-text-right">
-          <el-radio-group v-model="saleSearch.dateType" size="small" @change="onRadioChange">
-            <el-radio-button
-              v-for="button in buttons"
-              :key="button.value"
-              :label="button.value"
-              border>{{button.label}}
-            </el-radio-button>
-          </el-radio-group>
-        </div>
-        <div class="ele-inline-block ele-text-right" style="width: 260px;">
-          <el-date-picker
-            unlink-panels
-            type="daterange"
-            class="ele-fluid"
-            end-placeholder="结束日期"
-            start-placeholder="开始日期"
-            v-model="saleSearch.datetime"
-            range-separator="至" size="small"
-            @change="onChangeDate"/>
-        </div>
-      </div>
-      <el-divider/>
-      <el-row>
-        <el-col :lg="48" :md="58">
-          <!--本年的数据-->
-          <div v-if="saleSearch.type === 'procedureNumber'">
-               <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="ProcedureNumberChartOption" />
-          </div>
-          <div v-else-if="saleSearch.type === 'efficiency' ">
-              <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="EfficiencyChartOption"/>
-          </div>
-          <div v-else-if="saleSearch.type === 'pass'">
-              <ele-chart
-                ref="saleChart"
-                style="height: 285px;"
-                :option="PassChartOption"/>
-          </div>
-<!--          时间选择显示柱状图-->
-          <div v-if="saleSearch.datetime && saleSearch.type === 'procedureNumber'">
-            <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="chooseTimeShow" />
-          </div>
-          <div v-else-if="saleSearch.datetime && saleSearch.type === 'efficiency'">
-            <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="chooseTimeShow" />
-          </div>
-          <div v-else-if="saleSearch.datetime && saleSearch.type === 'pass'">
-            <ele-chart
-              ref="saleChart"
-              style="height: 285px;"
-              :option="chooseTimeShow" />
-          </div>
-
+        <el-col :lg="6" :md="12">
+          <el-card class="analysis-chart-card" shadow="never">
+            <div slot="header" class="ele-cell">
+              <div class="ele-cell-content">模块生产总数量</div>
+              <el-tag size="mini">个</el-tag>
+            </div>
+            <div class="analysis-chart-card-num">{{ ShipmentAllData.AllShipmentModelQuantity }}</div>
+            <el-divider/>
+          </el-card>
+        </el-col>
+        <el-col :lg="6" :md="12">
+          <el-card class="analysis-chart-card" shadow="never">
+            <div slot="header" class="ele-cell">
+              <div class="ele-cell-content">模块生产效率</div>
+              <el-tag size="mini">个/天</el-tag>
+            </div>
+            <div class="analysis-chart-card-num">{{ ShipmentAllData.ModelTotalEfficiency }}</div>
+            <el-divider/>
+          </el-card>
+        </el-col>
+        <el-col :lg="6" :md="12">
+          <el-card class="analysis-chart-card" shadow="never">
+            <div slot="header" class="ele-cell">
+              <div class="ele-cell-content ele-text-left">模块成品合格率</div>
+              <el-tag  size="mini">总</el-tag>
+              <div class="ele-cell-content ele-text-right">模块半成品合格率</div>
+            </div>
+            <div class="container">
+              <div class="analysis-chart-card-num ele-text-left">{{ AllPassData.ModelTotalAllPass }}%</div>
+              <div class="analysis-chart-card-num ele-text-right">{{ AllPassData.ModelTotalHalfPass }}%</div>
+            </div>
+            <el-divider/>
+          </el-card>
+        </el-col>
+        <el-col :lg="6" :md="12">
+          <el-card class="analysis-chart-card" shadow="never">
+            <div slot="header" class="ele-cell">
+              <div class="ele-cell-content">工具使用时长</div>
+              <el-tag size="mini">总</el-tag>
+            </div>
+            <div class="container">
+              <div class="analysis-chart-card-num ele-text-left">{{ AllUseToolTime }}</div>
+              <div class="analysis-chart-card-num ele-text-right">H</div>
+            </div>
+            <el-divider/>
+          </el-card>
         </el-col>
       </el-row>
+<!--        柱状图-->
+      <el-card shadow="never" body-style="padding: 0;">
+        <div class="ele-cell demo-monitor-tool">
+          <div class="ele-cell-content">
+            <el-tabs
+              v-model="ModelsaleSearch.type"
+              class="demo-monitor-tabs"
+              @tab-click="onModelsSaleTypeChange">
+              <el-tab-pane label="模块生产数量&生产效率" name="procedureNumber"/>
+              <el-tab-pane label="模块合格率" name="pass"/>
+              <el-tab-pane label="工具使用时长" name="tooltime"/>
+            </el-tabs>
+          </div>
+          <div class="ele-inline-block ele-text-right">
+            <el-radio-group v-model="ModelsaleSearch.dateType" size="small" @change = "onModelsSaleTypeChange">
+              <el-radio-button
+                v-for="button in buttons"
+                :key="button.value"
+                :label="button.value"
+                border>{{button.label}}
+              </el-radio-button>
+            </el-radio-group>
+          </div>
+          <div class="ele-inline-block ele-text-right"  style="width: 260px;">
+            <el-date-picker
+              unlink-panels
+              type="daterange"
+              class="ele-fluid"
+              end-placeholder="结束日期"
+              start-placeholder="开始日期"
+              v-model="ModelsaleSearch.datetime"
+              range-separator="至" size="small"
+              @change = "onModelsSaleTypeChange"/>
+          </div>
+        </div>
+        <el-divider/>
+        <el-row>
+          <el-col :lg="48" :md="58">
+            <div v-if="ModelsaleSearch.type === 'procedureNumber'">
+                 <ele-chart
+                ref="saleChart"
+                style="height: 285px;"
+                :option="AllModelsDataChartOption" />
+            </div>
+            <div v-else-if="ModelsaleSearch.type === 'pass'">
+                <ele-chart
+                  ref="saleChart"
+                  style="height: 285px;"
+                  :option="ModelPassChartOption"/>
+            </div>
+            <div v-else-if="ModelsaleSearch.type === 'tooltime'">
+                <ele-chart
+                  ref="saleChart"
+                  style="height: 285px;"
+                  :option="tooltimeChartOption"/>
+            </div>
+
+          </el-col>
+        </el-row>
+      </el-card>
     </el-card>
-    <!-- 最近1小时访问情况 -->
-    <el-row :gutter="30">
-      <el-col :lg="36" :md="32">
-        <el-card
-          shadow="never"
-          header="最近24小时生产情况"
-          body-style="padding: 20px 10px 0 0;">
-          <ele-chart
-            ref="visitHourChart"
-            style="height: 323px;"
-            :option="visitHourChartOption"/>
-        </el-card>
-      </el-col>
-    </el-row>
+<!--      成品数据-->
+    <el-card>
+      <!-- 顶部统计卡片 -->
+      <el-row :gutter="15">
+        <div class="ele-text-left">
+          <el-tag type="info" size="medium">成品数据</el-tag>
+        </div>
+        <el-col :lg="8" :md="12">
+          <el-card class="analysis-chart-card" shadow="never">
+            <div slot="header" class="ele-cell">
+              <div class="ele-cell-content">成品生产总数量</div>
+              <el-tag size="mini">个</el-tag>
+            </div>
+            <div class="analysis-chart-card-num">{{ ShipmentAllData.AllShipmentFinishedQuantity }}</div>
+            <el-divider/>
+          </el-card>
+        </el-col>
+        <el-col :lg="8" :md="12">
+          <el-card class="analysis-chart-card" shadow="never">
+            <div slot="header" class="ele-cell">
+              <div class="ele-cell-content">成品生产效率</div>
+              <el-tag size="mini">个/天</el-tag>
+            </div>
+            <div class="analysis-chart-card-num">{{ ShipmentAllData.FinishedTotalEfficiency }}</div>
+            <el-divider/>
+          </el-card>
+        </el-col>
+        <el-col :lg="8" :md="12">
+          <el-card class="analysis-chart-card" shadow="never">
+            <div slot="header" class="ele-cell">
+              <div class="ele-cell-content ele-text-left">成品合格率</div>
+              <el-tag  size="mini">总</el-tag>
+              <div class="ele-cell-content ele-text-right">半成品合格率</div>
+            </div>
+            <div class="container">
+              <div class="analysis-chart-card-num ele-text-left">{{ AllPassData.FinishedTotalAllPass }}%</div>
+              <div class="analysis-chart-card-num ele-text-right">{{ AllPassData.FinishedTotalHalfPass }}%</div>
+            </div>
+            <el-divider/>
+          </el-card>
+        </el-col>
+      </el-row>
+<!--        柱状图-->
+      <el-card shadow="never" body-style="padding: 0;">
+        <div class="ele-cell demo-monitor-tool">
+          <div class="ele-cell-content">
+            <el-tabs
+              v-model="saleSearch.type"
+              class="demo-monitor-tabs"
+              @tab-click="onFinishedSaleTypeChange">
+              <el-tab-pane label="成品生产数量&生产效率" name="procedureNumber"/>
+              <el-tab-pane label="成品合格率" name="pass"/>
+            </el-tabs>
+          </div>
+          <div class="ele-inline-block ele-text-right">
+            <el-radio-group v-model="saleSearch.dateType" size="small" @change="onFinishedSaleTypeChange">
+              <el-radio-button
+                v-for="button in buttons"
+                :key="button.value"
+                :label="button.value"
+                border>{{button.label}}
+              </el-radio-button>
+            </el-radio-group>
+          </div>
+          <div class="ele-inline-block ele-text-right" style="width: 260px;">
+            <el-date-picker
+              unlink-panels
+              type="daterange"
+              class="ele-fluid"
+              end-placeholder="结束日期"
+              start-placeholder="开始日期"
+              v-model="saleSearch.datetime"
+              range-separator="至" size="small"
+              @change="onFinishedSaleTypeChange"/>
+          </div>
+        </div>
+        <el-divider/>
+        <el-row>
+          <el-col :lg="48" :md="58">
+            <div v-if="saleSearch.type === 'procedureNumber'">
+                 <ele-chart
+                ref="saleChart"
+                style="height: 285px;"
+                :option="AllFinishedDataChartOption" />
+            </div>
+            <div v-else-if="saleSearch.type === 'pass'">
+                <ele-chart
+                  ref="saleChart"
+                  style="height: 285px;"
+                  :option="FinishedPassChartOption"/>
+            </div>
+
+          </el-col>
+        </el-row>
+      </el-card>
+    </el-card>
   </div>
 </template>
 
@@ -209,239 +225,114 @@ export default {
   data() {
     return {
       // 搜索参数
+      ModelsaleSearch: {
+        type: 'procedureNumber',
+        dateType: 'year',
+        datetime: ''
+      },
       saleSearch: {
         type: 'procedureNumber',
         dateType: 'year',
         datetime: ''
       },
+
       buttons:[
         {label:'本年',value:'year'},
         {label:'本月',value:'month'},
         {label:'本周',value:'week'},
         {label:'今天',value:'today'},
       ],
-      //开始和结束日期柱状图数据
-      startandendprocedureData:[],
 
-      //生产数量数据
-      ProcedureNumData:[],
 
-      // 效率数据
-      EfficiencyData:[],
+      ShipmentAllData:{} ,
 
-      //通过率数据
-      PassData:[],
+      AllPassData:{},
 
-      // 最近1小时访问情况数据
-      visitHourData: [],
+      //总的工具使用时长
+      AllUseToolTime: {},
 
-      //开始到结束日期数据
-      StartEndValueData:null,
+      //所有模块的生产数据
+      AllModelsData:[],
+      //所有成品的生产数据
+      AllFinishedData:[],
+      //获取工具的使用时长
+      GetToolTime: [],
 
     };
   },
   computed: {
-    // 生产总效率折线图配置
-    visitChartOption() {
+    //模块生产数量&生产效率柱状图
+    AllModelsDataChartOption(){
       return {
-        color: '#975fe5',
-        tooltip: {
-          trigger: 'axis',
-          formatter: '<i class="ele-chart-dot" style="background: #975fe5;"></i>{b0}: {c0}'
-        },
-        grid: {
-          top: 10,
-          bottom: 0,
-          left: 0,
-          right: 0
-        },
-        xAxis: [
-          {
-            show: false,
-            type: 'category',
-            boundaryGap: false,
-            data: this.ProcedureNumData.map(d => d.data)
-          }
-        ],
-        yAxis: [
-          {
-            show: false,
-            type: 'value',
-            splitLine: {
-              show: false
-            }
-          }
-        ],
-        series: [
-          {
-            type: 'line',
-            smooth: true,
-            symbol: 'none',
-            areaStyle: {
-              opacity: 0.5
+            title:{
+              text:"生产数量&生产效率",
+              left:'left',
+              textStyle:{
+                fontSize:10
+              }
             },
-            data: this.ProcedureNumData.map(d => d.value)
-          }
-        ]
-      };
-    },
-    // 总合格率柱状图配置
-    AllProcedureNumChartOption() {
-      return {
-        tooltip: {
-          trigger: 'axis',
-          formatter: '<i class="ele-chart-dot" style="background: #3aa1ff;"></i>{b0}: {c0}'
-        },
-        grid: {
-          top: 10,
-          bottom: 0,
-          left: 0,
-          right: 0
-        },
-        xAxis: [
-          {
-            show: false,
-            type: 'category',
-            data: this.PassData.map(d => d.data)
-          }
-        ],
-        yAxis: [
-          {
-            show: false,
-            type: 'value',
-            splitLine: {
-              show: false
-            }
-          }
-        ],
-        series: [
-          {
-            type: 'bar',
-            data: this.PassData.map(d => d.value)
-          }
-        ]
-      }
-    },
-
-    //生产数量柱状图
-    ProcedureNumberChartOption(){
-      return {
             tooltip: {
               trigger: 'axis'
             },
             xAxis: [
               {
                 type: 'category',
-                data: this.ProcedureNumData.map(d => d.data)
+                data: this.AllModelsData.map(d => d.product_name)
               }
             ],
             yAxis: [
               {
-                type: 'value'
-              }
-            ],
-            series: [
-              {
-                type: 'bar',
-                data: this.ProcedureNumData.map(d => d.value)
-              }
-            ]
-          };
-    },
-    //生产效率柱状图
-    EfficiencyChartOption(){
-      return {
-            tooltip: {
-              trigger: 'axis'
-            },
-            xAxis: [
-              {
-                type: 'category',
-                data: this.EfficiencyData.map(d => d.data)
-              }
-            ],
-            yAxis: [
-              {
-                type: 'value'
-              }
-            ],
-            series: [
-              {
-                type: 'bar',
-                data: this.EfficiencyData.map(d => d.value)
-              }
-            ]
-          };
-    },
-    //生产效率柱状图
-    PassChartOption(){
-        return {
-        tooltip: {
-          trigger: 'axis'
-        },
-        xAxis: [
-          {
-            type: 'category',
-            data: this.PassData.map(d => d.data)
-          }
-        ],
-        yAxis: [
-          {
-            type: 'value'
-          }
-        ],
-        series: [
-          {
-            type: 'bar',
-            data: this.PassData.map(d => d.value)
-          }
-        ]
-      };
-    },
-    //选择时间显示柱状图（）
-    chooseTimeShow(){
-      return {
-              tooltip: {
-                trigger: 'axis'
+                type: 'value',
+                position:'left',
+                axisLine:{
+                  show:true
+                },
+                axisLabel:{
+                  formatter:this.AllModelsData.map(d => d.ModelData)
+                }
               },
-              xAxis: [
-                {
-                  type: 'category',
-                  data: this.startandendprocedureData.map(d => d.day)
+              {
+                type: 'value',
+                position:'left',
+                axisLine:{
+                  show:true
+                },
+                axisLabel:{
+                  formatter:this.AllModelsData.map(d => d.efficiency)
                 }
-              ],
-              yAxis: [
-                {
-                  type: 'value'
-                }
-              ],
-              series: [
-                {
-                  type: 'bar',
-                  data: this.startandendprocedureData.map(d => d.value)
-                }
-              ]
-            };
+              }
+            ],
+            series: [
+              {
+                name:'生产数量',
+                type: 'bar',
+                yAxisIndex:0,
+                data: this.AllModelsData.map(d => d.ModelData)
+              },
+              {
+                name:'生产效率 个/H',
+                type: 'line',
+                yAxisIndex:0,
+                data: this.AllModelsData.map(d => d.efficiency)
+              },
+            ]
+          };
     },
-
-    // 最近1小时访问情况折线图配置
-    visitHourChartOption() {
-      /*if (!this.visitHourData.length) {
-        return {};
-      }*/
+    // 模块合格率折线图配置
+    ModelPassChartOption() {
       return {
         tooltip: {
           trigger: 'axis'
         },
         legend: {
-          data: ['生产数量', '合格率'],
+          data: ['半成品', '成品'],
           right: 20
         },
         xAxis: [
           {
             type: 'category',
             boundaryGap: false,
-            data: this.visitHourData.map(d => d.time)
+            data: this.AllModelsData.map(d => d.product_name)
           }
         ],
         yAxis: [
@@ -451,280 +342,359 @@ export default {
         ],
         series: [
           {
-            name: '生产数量',
+            name: '半成品',
             type: 'line',
             smooth: true,
             symbol: 'none',
             areaStyle: {
               opacity: 0.5
             },
-            data: this.visitHourData.map(d => d.number)
+            data: this.AllModelsData.map(d => d.Model_HalfPass)
           },
           {
-            name: '合格率',
+            name: '成品',
             type: 'line',
             smooth: true,
             symbol: 'none',
             areaStyle: {
               opacity: 0.5
             },
-            data: this.visitHourData.map(d => d.pass)
+            data: this.AllModelsData.map(d => d.Model_AllPass)
           }
         ]
       }
     },
+    //成品生产数量&生产效率柱状图
+    AllFinishedDataChartOption(){
+      return {
+            title:{
+              text:"生产数量&生产效率",
+              left:'left',
+              textStyle:{
+                fontSize:10
+              }
+            },
+            tooltip: {
+              trigger: 'axis'
+            },
+            xAxis: [
+              {
+                type: 'category',
+                data: this.AllFinishedData.map(d => d.product_name)
+              }
+            ],
+            yAxis: [
+              {
+                type: 'value',
+                position:'left',
+                axisLine:{
+                  show:true
+                },
+                axisLabel:{
+                  formatter:this.AllFinishedData.map(d => d.FinishedData)
+                }
+              },
+              {
+                type: 'value',
+                position:'left',
+                axisLine:{
+                  show:true
+                },
+                axisLabel:{
+                  formatter:this.AllFinishedData.map(d => d.efficiency)
+                }
+              }
+            ],
+            series: [
+              {
+                name:'生产数量',
+                type: 'bar',
+                yAxisIndex:0,
+                data: this.AllFinishedData.map(d => d.FinishedData)
+              },
+              {
+                name:'生产效率 个/H',
+                type: 'line',
+                yAxisIndex:0,
+                data: this.AllFinishedData.map(d => d.efficiency)
+              }
+            ]
+          };
+    },
+        // 成品合格率折线图配置
+    FinishedPassChartOption() {
+      return {
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data: ['半成品', '成品'],
+          right: 20
+        },
+        xAxis: [
+          {
+            type: 'category',
+            boundaryGap: false,
+            data: this.AllFinishedData.map(d => d.product_name)
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: '半成品',
+            type: 'line',
+            smooth: true,
+            symbol: 'none',
+            areaStyle: {
+              opacity: 0.5
+            },
+            data: this.AllFinishedData.map(d => d.Finished_HalfPass)
+          },
+          {
+            name: '成品',
+            type: 'line',
+            smooth: true,
+            symbol: 'none',
+            areaStyle: {
+              opacity: 0.5
+            },
+            data: this.AllFinishedData.map(d => d.Finished_AllPass)
+          }
+        ]
+      }
+    },
+    //工具使用时常柱状图   可能还需调整
+    tooltimeChartOption(){
+       return {
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: ['调试  /  质检']
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            type: 'bar',
+            data: this.GetToolTime.map(d => d.value1)
+          },
+          {
+            type: 'bar',
+            data: this.GetToolTime.map(d => d.value2)
+          },
+
+        ]
+      };
+    },
 
   },
   mounted() {
-    this.getVisitHourData();
-    this.getProNumData();
-    this.getPassData();
-    this.getEfficiencyData();
-    this.getStartEndData();
+    this.changeTime();
+    this.getAllNumAndEff();
+    this.getModelAndFinishedPass();
+    this.getAllUseToolTime();
+    // this.getModelsStartEndData();
+    this.getAllModelsData();
+    this.getAllFinishedData();
+    this.getToolUseTime();
   },
   methods: {
     //转换为中文的时间
-    convertoChineseDate(date)
-    {
-      return date.toLocaleString('zh-CN',{
-        year:'numeric',
-        month:'long',
-        day:'numeric'
+    convertoChineseDate(date) {
+      if (date != null) {
+        return date.toLocaleString('zh-CN', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      }
+    },
+      //转换时间成数据库内的格式
+    formatDate(date) {
+      if (date != null){
+        return date.toLocaleString('zh-CN',{
+          year:'numeric',
+          month:'2-digit',
+          day:'2-digit',
+          hour12:false
+      }).replace(/\//g, '-');
+      }
+
+    },
+    changeTime() {
+      if(this.ModelsaleSearch.datetime == null)
+      {
+        this.ModelsaleSearch.datetime='';
+        this.ModelsaleSearch.datetime[0]='';
+        this.ModelsaleSearch.datetime[1]=''
+      }
+    },
+    //获取生产总数和生产效率（模块和成品）
+    getAllNumAndEff(){
+      this.$http.get('/workplace/ShipmentAllQuantity').then(res =>{
+          if(res.data.code === 0) {
+          this.ShipmentAllData = res.data.data;
+          }
+      }).catch(e => {
+          this.$message.error(e.message);
       });
     },
-    // 生产数量获取数据
-    getProNumData(){
-      const currentDate = new Date();//当前日期
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = currentDate.getMonth();
-      const currentDay = currentDate.getDay();
-      const totalDays = new Date(currentYear, currentMonth+1, 0).getDate();//获取当月总天数
-
-      //清空之前的数据
-      this.ProcedureNumData=[];
-      if(this.saleSearch.dateType === 'year')
-      {
-
-        for(let i =0; i<12; i++)
-        {
-          const getMonthData = {
-            data:this.convertoChineseDate(new Date(currentYear, i)),
-            value:Math.floor(Math.random() * 100)
-          }
-          this.ProcedureNumData.push(getMonthData)
+    //获取模块和成品的合格率
+    getModelAndFinishedPass() {
+      this.$http.get('/workplace/AllPass').then(res =>{
+        if(res.data.code === 0) {
+          this.AllPassData = res.data.data;
         }
-      }
-      else if(this.saleSearch.dateType === 'month'){
-        for(let i =1; i<=totalDays; i++){
-          const getDayData = {
-            data: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
-            value: Math.floor(Math.random() * 100)
-          };
-        this.ProcedureNumData.push(getDayData)
-        }
-      }
-      else if(this.saleSearch.dateType === 'week'){
-        for(let i=1; i<=7; i++) {
-          const dayOffset = i-currentDay;
-          const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
-          const getWeekData = {
-            data: this.convertoChineseDate(dayDate),
-            value: Math.floor(Math.random() * 100)
-          };
-          this.ProcedureNumData.push(getWeekData)
-        }
-      }
-      else{
-        for(let i=8; i<21; i++) {
-          const gethourData = {
-            data: i,
-            value: Math.floor(Math.random() * 100)
-          };
-          this.ProcedureNumData.push(gethourData)
-        }
-      }
+      }).catch(e => {
+          this.$message.error(e.message);
+      });
     },
-    // 生产效率获取数据
-    getEfficiencyData(){
-      const currentDate = new Date();//当前日期
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = currentDate.getMonth();
-      const currentDay = currentDate.getDay();
-      const totalDays = new Date(currentYear, currentMonth+1, 0).getDate();//获取当月总天数
-      this.EfficiencyData=[];
-      if(this.saleSearch.dateType === 'year')
+    //获取工具使用的总时长
+    getAllUseToolTime(){
+      this.$http.get('/workplace/AllUseToolTime').then(res =>{
+        if(res.data.code === 0) {
+          this.AllUseToolTime = res.data.data.AllUseToolTimeHours;
+        }
+      }).catch(e => {
+          this.$message.error(e.message);
+      });
+    },
+    //获取模块所有数据（生产数量，生产合格率，使用时长）
+    getAllModelsData() {
+      if(this.ModelsaleSearch.datetime && this.ModelsaleSearch.datetime[0] && this.ModelsaleSearch.datetime[1])
       {
-        for(let i =0; i<12; i++)
-        {
-          const getMonthData = {
-            data:this.convertoChineseDate(new Date(currentYear, i)),
-            value:Math.floor(Math.random() * 100)
+          this.$http.get('/workplace/AllModelsData', {
+          params:{
+                    tag:this.ModelsaleSearch.dateType,
+                    start_date:this.formatDate(this.ModelsaleSearch.datetime[0]),
+                    end_date:this.formatDate(this.ModelsaleSearch.datetime[1])
           }
-          this.EfficiencyData.push(getMonthData)
-        }
-      }
-      else if(this.saleSearch.dateType === 'month')
-      {
-        for(let i =1; i<=totalDays; i++){
-          const getDayData = {
-            data: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
-            value: Math.floor(Math.random() * 100)
-          };
-        this.EfficiencyData.push(getDayData)
-        }
-      }
-      else if(this.saleSearch.dateType === 'week')
-      {
-        for(let i=1; i<=7; i++) {
-          const dayOffset = i-currentDay;
-          const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
-          const getWeekData = {
-            data: this.convertoChineseDate(dayDate),
-            value: Math.floor(Math.random() * 100)
-          };
-          this.EfficiencyData.push(getWeekData)
-        }
+            }).then(res =>{
+          if(res.data.code === 0) {
+            this.AllModelsData = res.data.data;
+            // console.log(res.data.data)
+          }
+        }).catch(e => {
+            this.$message.error(e.message);
+        });
       }
       else {
-        for(let i=8; i<21; i++) {
-          const gethourData = {
-            data: i,
-            value: Math.floor(Math.random() * 100)
-          };
-          this.EfficiencyData.push(gethourData)
-        }
+        this.$http.get('/workplace/AllModelsData', {
+          params:{
+                    tag:this.ModelsaleSearch.dateType,
+          }
+            }).then(res =>{
+          if(res.data.code === 0) {
+            this.AllModelsData = res.data.data;
+            // console.log(res.data.data)
+          }
+        }).catch(e => {
+            this.$message.error(e.message);
+        });
       }
     },
-    //生产合格率获取数据
-    getPassData(){
-      const currentDate = new Date();//当前日期
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = currentDate.getMonth();
-      const currentDay = currentDate.getDay();
-      const totalDays = new Date(currentYear, currentMonth+1, 0).getDate();//获取当月总天数
-
-      this.PassData=[];
-      if(this.saleSearch.dateType === 'year')
+    // //获取成品所有数据（生产数量，生产合格率）
+    getAllFinishedData() {
+      if(this.saleSearch.datetime && this.saleSearch.datetime[0] && this.saleSearch.datetime[1])
       {
-        for(let i =0; i<12; i++)
-        {
-          const getMonthData = {
-            data:this.convertoChineseDate(new Date(currentYear, i)),
-            value:Math.floor(Math.random() * 100)
+          this.$http.get('/workplace/AllFinishedData', {
+          params:{
+                    tag:this.saleSearch.dateType,
+                    start_date:this.formatDate(this.saleSearch.datetime[0]),
+                    end_date:this.formatDate(this.saleSearch.datetime[1])
           }
-          this.PassData.push(getMonthData)
-        }
-      }
-      else if(this.saleSearch.dateType === 'month')
-      {
-        for(let i =1; i<= totalDays; i++){
-          const getDayData = {
-            data: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
-            value: Math.floor(Math.random() * 100)
-          };
-        this.PassData.push(getDayData)
-        }
-      }
-      else if(this.saleSearch.dateType === 'week')
-      {
-        for(let i=1; i<=7; i++) {
-          const dayOffset = i-currentDay;
-          const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
-          const getWeekData = {
-            data:this.convertoChineseDate(dayDate),
-            value: Math.floor(Math.random() * 100)
-          };
-          this.PassData.push(getWeekData)
-        }
-      }
-      else
-      {
-        for(let i=8; i<21; i++) {
-          const gethourData = {
-            data: i,
-            value: Math.floor(Math.random() * 100)
-          };
-          this.PassData.push(gethourData)
-        }
-      }
-    },
-
-    //选择时间获取到的数据
-    getStartEndData(){
-      if(this.saleSearch.datetime && this.saleSearch.datetime[0] && this.saleSearch.datetime[1]) {
-        const startDate = this.saleSearch.datetime[0];
-        const endDate = this.saleSearch.datetime[1];
-
-        const startTimestamp = startDate.getTime();
-        const endTimestamp = endDate.getTime();
-
-        const days = Math.ceil((endTimestamp - startTimestamp) / (24 * 60 * 60 * 1000));
-        this.startandendprocedureData = [];
-        for (let i = 0; i <= days; i++) {
-          const currentDate = new Date(startTimestamp + i * 24 * 60 * 60 * 1000);
-          if(this.saleSearch.type === 'procedureNumber')
-          {
-            this.StartEndValueData = Math.floor(Math.random() * 100);
+            }).then(res =>{
+          if(res.data.code === 0) {
+            this.AllFinishedData = res.data.data;
+            // console.log(res.data.data)
           }
-          else if(this.saleSearch.type === 'efficiency')
-          {
-            this.StartEndValueData = Math.floor(Math.random() * 1000);
-          }
-          else
-          {
-            this.StartEndValueData = Math.floor(Math.random() * 10);
-          }
-          const getStartEnd = {
-            day: this.convertoChineseDate(currentDate),
-            value: this.StartEndValueData,//Math.floor(Math.random() * 100),
-          }
-          this.startandendprocedureData.push(getStartEnd)
-        }
+        }).catch(e => {
+            this.$message.error(e.message);
+        });
       }
       else {
-        this.startandendprocedureData = [];
+        this.$http.get('/workplace/AllFinishedData', {
+          params:{
+                    tag:this.saleSearch.dateType,
+          }
+            }).then(res =>{
+          if(res.data.code === 0) {
+            this.AllFinishedData = res.data.data;
+            // console.log(res.data.data)
+          }
+        }).catch(e => {
+            this.$message.error(e.message);
+        });
+      }
+    },
+    //获取工具的使用时间
+    getToolUseTime(){
+      this.GetToolTime = [];
+      if(this.ModelsaleSearch.datetime && this.ModelsaleSearch.datetime[0] && this.ModelsaleSearch.datetime[1])
+      {
+          this.$http.get('/workplace/GetToolUseTime', {
+          params:{
+                    tag:this.ModelsaleSearch.dateType,
+                    start_date:this.formatDate(this.ModelsaleSearch.datetime[0]),
+                    end_date:this.formatDate(this.ModelsaleSearch.datetime[1])
+          }
+            }).then(res =>{
+          if(res.data.code === 0) {
+            const getdata = {
+              value1 : res.data.data.GetUseToolTimeDebugQuantity,
+              value2 : res.data.data.GetUseToolTimeTestQuantity
+            }
+            this.GetToolTime.push(getdata)
+            // console.log(this.GetToolTime)
+          }
+        }).catch(e => {
+            this.$message.error(e.message);
+        });
+      }
+      else {
+        this.$http.get('/workplace/GetToolUseTime', {
+          params:{
+                    tag:this.ModelsaleSearch.dateType,
+          }
+            }).then(res =>{
+          if(res.data.code === 0) {
+            const getdata = {
+              value1 : res.data.data.GetUseToolTimeDebugQuantity,
+              value2 : res.data.data.GetUseToolTimeTestQuantity
+            }
+            this.GetToolTime.push(getdata)
+            // console.log(this.GetToolTime)
+          }
+        }).catch(e => {
+            this.$message.error(e.message);
+        });
       }
     },
 
-    /* 获取最近24小时访问情况数据 */
-    getVisitHourData() {
-      this.visitHourData = [
-        {time: '8:00', number: 15, pass: 45},
-        {time: '9:00', number: 39, pass: 169},
-        {time: '10:00', number: 152, pass: 400},
-        {time: '11:00', number: 94, pass: 285},
-        {time: '12:00', number: 102, pass: 316},
-        {time: '13:00', number: 86, pass: 148},
-        {time: '14:00', number: 39, pass: 150},
-        {time: '15:00', number: 38, pass: 234},
-        {time: '16:00', number: 95, pass: 158},
-        {time: '17:00', number: 30, pass: 100},
-        {time: '18:00', number: 86, pass: 266}
-      ];
+    /* 模块表头tab选择改变事件 */
+    onModelsSaleTypeChange() {
+      // this.getAllUseToolTime();
+      this.getAllModelsData();
+      this.getToolUseTime();
     },
-
-    /* 表头tab选择改变事件 */
-    onSaleTypeChange() {
-      this.getProNumData();
-      this.getPassData();
-      this.getEfficiencyData();
-      this.getStartEndData();
+    /* 成品表头tab选择改变事件 */
+    onFinishedSaleTypeChange() {
+      this.getAllFinishedData();
     },
-    //表头日期选择改变事件
-    onRadioChange(){
-      this.getProNumData();
-      this.getPassData();
-      this.getEfficiencyData();
-      this.getStartEndData();
-    },
-    //时间周期改变事件
-    onChangeDate()
-    {
-      this.getStartEndData();
-    }
   },
   activated() {
-    ['visitChart', 'AllProcedureNumChart', 'saleChart', 'visitHourChart'].forEach((name) => {
+    ['saleChart'].forEach((name) => {
       this.$refs[name].resize();
     });
   }
@@ -734,9 +704,16 @@ export default {
 <style scoped>
 /* 统计卡片 */
 .analysis-chart-card-num {
-  font-size: 30px;
+  font-size: 60px;
 }
-
+.title-font-size{
+  font-size: 60px;
+  color: #1c6ca1;
+}
+.container{
+  display: flex;
+  justify-content: space-between;
+}
 .analysis-chart-card-content {
   height: 40px;
   box-sizing: border-box;
@@ -796,23 +773,5 @@ export default {
 .el-dropdown + .el-dropdown {
   margin-left: 15px;
 }
-.el-icon-arrow-down {
-  font-size: 12px;
-}
 
-.label{
-  margin-right: 400px;
-}
-.selector{
-  margin-top: 10px;
-  margin-left: 40px;
-}
-.left-side{
-  flex-grow: 1;
-  margin-right: 10px;
-}
-.right-side{
-  flex-grow: 1;
-  margin-left: 10px;
-}
 </style>

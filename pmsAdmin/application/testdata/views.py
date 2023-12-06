@@ -80,3 +80,15 @@ class TestDataDeleteView(PermissionRequired, View):
         result = services.TestDataDelete(testdata_id)
         # 返回结果
         return result
+
+@method_decorator(check_login, name='dispatch')
+class TestDataNewestListView(PermissionRequired, View):
+    # 方法权限标识
+    permission_required = ('sys:testdata:list',)
+
+    # POST查询分页数据
+    def get(self, request):
+        # 调用查询职级分页数据服务方法
+        result = services.TestDataNewestList(request)
+        # 返回结果
+        return result

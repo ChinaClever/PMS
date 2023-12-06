@@ -68,6 +68,15 @@
             @click="removeBatch"
             v-if="permission.includes('sys:inspectreport:dall')">删除
           </el-button>
+           <!-- 导出按钮 -->
+          <el-button
+            size="small"
+            type="success"
+            icon="el-icon-download"
+            class="ele-btn-icon"
+            @click="exportToExcel"
+            v-if="selection.length > 0">导出
+          </el-button>
         </template>
         <!-- 操作列 -->
         <template slot="action" slot-scope="{row}">
@@ -94,6 +103,10 @@
         <template slot="singal" slot-scope="{row}">
           <el-tag v-if="row.signal === 1"  effect="dark" type="danger" size="medium"></el-tag>
           <el-tag v-if="row.signal === 2"  effect="dark" type="success" size="medium"></el-tag>
+        </template>
+        <template slot="product_module" slot-scope="{row}">
+          <el-tag v-if="row.product_module === 1" type="success" size="medium">成品</el-tag>
+          <el-tag v-if="row.product_module === 2" type="success" size="medium">模块</el-tag>
         </template>
         <template slot="expand_1" slot-scope="{row}" v-if="row.problems">
           <el-popover
@@ -128,6 +141,8 @@
 <script>
 import { mapGetters } from "vuex";
 import InspectreportEdit from './inspectreport-edit';
+import XLSX from 'xlsx'
+import { saveAs } from 'file-saver';
 
 export default {
   name: 'inspectreport',
@@ -154,6 +169,14 @@ export default {
           width: 80,
           align: 'center',
           showOverflowTooltip: true,
+        },
+        {
+          prop: 'product_module',
+          label: '成品/模块',
+          minWidth: 100,
+          align: 'center',
+          resizable: false,
+          slot: 'product_module',
         },
         {
           prop: 'start_time',
@@ -191,6 +214,13 @@ export default {
           width: 70,
           align: 'center',
           showOverflowTooltip: true,
+        },
+        {
+          prop: 'product_name',
+          label: '产品名称',
+          showOverflowTooltip: true,
+          minWidth: 120,
+          align: 'center',
         },
         {
           prop: 'examine_an_amount',
@@ -402,6 +432,66 @@ export default {
         this.$message.error(e.message);
       });
     },
+    exportToExcel() {
+       // 创建 Excel 文件
+      const workbook = XLSX.utils.book_new();
+      //去除不需要的字段，这里我不希望显示id，所以id不返回
+      let temp = this.selection;
+      // eslint-disable-next-line
+      this.selection = this.selection.map(({ id, ...rest }) => rest);
+      //可以将对应字段的数字经过判断转为对应的中文
+      this.selection = this.selection.map(obj => {
+        if (obj.signal === 2) {
+          return { ...obj, signal: '合格' };
+        } else if (obj.signal === 1) {
+          return { ...obj, signal: '不合格' };
+        }
+        return obj;
+      });
+      console.log(this.selection)
+      const worksheet = XLSX.utils.json_to_sheet(this.selection);
+
+      // 获取字段名称（中文）
+      const header = this.columns
+        .slice(1, -1) // 排除排除第一列和最后一列,这里我排除的是我的id列和操作列
+        .map(column => column.label);
+
+      // 获取要导出的数据（排除第一列和最后一列）
+      const data = this.selection.map(row =>
+        this.columns
+          .slice(1, -1) // 排除第一列和最后一列
+          .map(column => row[column.prop])
+      );
+
+      // 将字段名称添加到 Excel 文件中
+      XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: 'A1' });
+
+      // 将数据添加到 Excel 文件中
+      XLSX.utils.sheet_add_aoa(worksheet, data, { origin: 'A2' });
+
+      // 将工作表添加到工作簿中
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+      // 保存 Excel 文件
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+      // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
+      const fileName = '质检报表.xlsx';
+      
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+      const date = String(currentDate.getDate()).padStart(2, '0');
+      const hours = String(currentDate.getHours()).padStart(2, '0');
+      const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+      const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+      const formattedDate = `${year}年${month}月${date}日${hours}时${minutes}分${seconds}秒`;
+      const newFileName = `${fileName.split('.')[0]}_${formattedDate}.${fileName.split('.')[1]}`;
+
+      saveAs(blob, newFileName);
+      this.selection = temp;
+    }
     
   }
 }

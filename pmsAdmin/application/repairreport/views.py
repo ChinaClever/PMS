@@ -64,7 +64,7 @@ class DictDetailView(PermissionRequired, View):
         data = services.DictDetail(dict_id)
         # 返回结果
         return R.ok(data=data)
-
+#
 
 # 添加字典
 @method_decorator(check_login, name="post")
@@ -112,3 +112,40 @@ class DictDeleteView(PermissionRequired, View):
         result = services.DictDelete(dict_id)
         # 返回结果
         return result
+#产品名称
+@method_decorator(check_login, name="get")
+class DictnamelistView(View):
+    # GET请求渲染HTML模板
+    def get(self, request):
+        # 调用查询字典详情服务方法
+        data = services.Dictnamelist(request)
+        # 返回结果
+        return R.ok(data=data)
+#不良现象
+@method_decorator(check_login, name="get")
+class Dictbad_phenomenonlistView(View):
+    # GET请求渲染HTML模板
+    def get(self, request):
+        # 调用查询字典详情服务方法
+        data = services.Dictbad_phenomenonlist(request)
+        # 返回结果
+        return R.ok(data=data)
+#
+#原因分析
+@method_decorator(check_login, name="get")
+class DictanalysislistView(View):
+    # GET请求渲染HTML模板
+    def get(self, request):
+        # 调用查询字典详情服务方法
+        data = services.Dictanalysislist(request)
+        # 返回结果
+        return R.ok(data=data)
+#解决方法
+@method_decorator(check_login, name="get")
+class DictsolutionlistView(View):
+    # GET请求渲染HTML模板
+    def get(self, request):
+        # 调用查询字典详情服务方法
+        data = services.Dictsolutionlist(request)
+        # 返回结果
+        return R.ok(data=data)

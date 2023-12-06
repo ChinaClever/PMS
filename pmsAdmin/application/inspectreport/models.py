@@ -22,6 +22,9 @@ class Inspectreport(BaseModel):
         verbose_name="结束时间",
     )
 
+    # 产品名称
+    product_name = models.CharField(max_length=150, verbose_name="产品名称", help_text="产品名称")
+
     commit_user = models.CharField(null=False, max_length=40, verbose_name="填写者", help_text="填写者")
 
     item_number = models.CharField(null=False, max_length=40, verbose_name="产品型号", help_text="产品型号")
@@ -46,6 +49,13 @@ class Inspectreport(BaseModel):
     signal = models.IntegerField(choices=SIGNAL_CHOICES, default=1, verbose_name="信号：1-红色 2-绿色",
                                  help_text="信号：1-红色 2-绿色")
 
+    PRODUCT_MODULE_CHOICES = (
+        (1,"成品"),
+        (2,"模块")
+    )
+
+    product_module = models.IntegerField(choices=PRODUCT_MODULE_CHOICES, default=1, verbose_name="成品/模块：1-成品 2-模块",
+                                 help_text="成品/模块：1-成品 2-模块")
     problem = models.TextField(null=True, verbose_name="问题", help_text="问题")
 
     action = models.TextField(null=True, verbose_name="行动", help_text="行动")

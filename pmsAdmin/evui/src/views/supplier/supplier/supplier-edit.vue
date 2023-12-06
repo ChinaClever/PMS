@@ -14,7 +14,7 @@
       label-width="82px">
       <el-form-item
         label="工单号"
-        prop="order_id">
+        prop="work_order">
         <el-input
           :maxlength="20"
           v-model="form.work_order"
@@ -105,7 +105,7 @@ export default {
         sort: [
           {required: true, message: '请输入排序号', trigger: 'blur'}
         ],*/
-        order_id: [
+        work_order: [
           {required: true, message: '请输入工单号', trigger: 'blur'}
         ],
         customer: [

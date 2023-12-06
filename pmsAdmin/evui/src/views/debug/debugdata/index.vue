@@ -32,11 +32,13 @@
         </el-form>
         <!-- 数据表格 -->
         <ele-pro-table
+          :needPage="pageVis"
           ref="table"
           :where="where"
           :datasource="url"
           :columns="columns"
           :selection.sync="selection"
+          :row-class-name="tableRowClassName"
           height="calc(100vh - 315px)">
           <!-- 测试步骤列 -->
         <template slot="testStep" slot-scope="{row}">
@@ -76,6 +78,12 @@
               @click="removeBatch"
               v-if="permission.includes('sys:debugdata:dall')">删除
             </el-button>
+            <pre>                    </pre>
+            <el-switch
+              v-model="realTime"
+              active-text="实时模式"
+              inactive-text="正常模式">
+            </el-switch>
           </template>
           <!-- 操作列 -->
           <template slot="action" slot-scope="{row}">
@@ -122,7 +130,7 @@
   import DebugDataEdit from './debugdata-edit';
 
   export default {
-    name: 'SystemDebug',
+    name: 'SystemDebugData',
     components: {DebugDataEdit},
     computed: {
       ...mapGetters(["permission"]),
@@ -141,6 +149,7 @@
             width: 45,
             align: 'center',
             fixed: "left"
+            
           },
           {
             prop: 'softwareType',
@@ -258,31 +267,71 @@
         // 是否显示编辑弹窗
         showEdit: false,
         // 是否显示导入弹窗
-        showImport: false
+        showImport: false,
+         // 是否是实时模式
+        realTime : false,
+        pageVis: true,
+        // 实时模式显示几条
+        realTimeCount:5,
       };
     },
-    created() {
-    this.startTimer(); // 启动定时器
-  },
-    beforeDestroy() {
-      this.stopTimer(); // 在组件销毁前停止定时器，避免内存泄漏
+    watch : {
+      // eslint-disable-next-line
+      realTime(newValue, oldValue){
+        if(newValue){
+          this.$refs.table.reload({page: 1, limit:this.realTimeCount ,where: this.where});
+          this.startTimer();
+          this.pageVis = false;
+        } else {
+          this.stopTimer();
+          this.pageVis = true;
+          this.reload();
+        }
+      }
     },
-
     methods: {
       /* 刷新表格 */
       reload() {
         this.$refs.table.reload({page: 1, where: this.where});
       },
       startTimer() {
-      // 每隔5秒刷新数据
-      this.timer = setInterval(() => {
-        this.reload();
-      }, 60000);
-    },
-    stopTimer() {
-      // 停止定时器
-      clearInterval(this.timer);
-    },
+        console.log("开启定时任务")
+        this.timer = setInterval(() => {
+          console.log(this.$refs.table.data[this.$refs.table.data.length - 1].id)
+          const elements = document.querySelectorAll('tr.animation');
+          // eslint-disable-next-line
+          const element = elements[0];
+          //现在最新一条数据的id this.$refs.table.data[0].id
+          this.$http.get('/debugdata/newest?id=' + this.$refs.table.data[0].id).then((res) => {
+            if(res.data.data.length > 0){
+              res.data.data = res.data.data.slice(-3).reverse();
+              res.data.data.forEach((arr,index) => {
+                console.log(arr);
+                // eslint-disable-next-line
+                setTimeout((arr,index) => {
+                  if(this.realTime){
+                    if(this.$refs.table.data.length >= this.realTimeCount){
+                      this.$refs.table.data.pop();
+                    }
+                    this.$refs.table.data.unshift(arr);
+                    element.classList.remove('animation');
+                    void element.offsetWidth;
+                    element.classList.add("animation");
+                  }
+                }, 1000 * index,arr,index);
+              })
+            }
+          }).catch((e) => {
+            this.loading = false;
+            this.$message.error(e.message);
+          });
+        }, 5000);
+      },
+      stopTimer() {
+        console.log("关闭定时任务")
+        // 停止定时器
+        clearInterval(this.timer);
+      },
       /* 重置搜索 */
       reset() {
         this.where = {};
@@ -352,11 +401,31 @@
         }).catch(() => {
         });
       },
+      // eslint-disable-next-line
+      tableRowClassName({row, rowIndex}) {
+        // if(rowIndex === 0){
+          return 'animation';
+        // }
+      },
     }
   }
   </script>
   
-  <style scoped>
+  <style>
+  .animation{
+  opacity: 0;
+  animation: slide-in-left-animation 300ms 0ms forwards ease-out;
+}
+@keyframes slide-in-left-animation {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
   </style>
   
   

@@ -209,7 +209,7 @@ def DebugDataAdd(request):
         testTime = dict_data.get('testTime')
         testStep = dict_data.get('testStep')
         # 创建数据
-        Debugdata.objects.create(
+        debugdata = Debugdata.objects.create(
             softwareType=softwareType,
             productType=productType,
             productSN=productSN,
@@ -228,7 +228,7 @@ def DebugDataAdd(request):
         if testStep:
             for item in testStep:
                 DebugDataTestStep.objects.create(
-                debugdata_id=Debugdata.id,
+                debugdata_id=debugdata.id,
                 no=item.get('no'),
                 name = item.get('name'),
                 result = item.get('result'),
@@ -237,6 +237,7 @@ def DebugDataAdd(request):
         return R.ok(msg="创建成功")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
+        print(format(e))
         return R.failed("参数错误")
 
 # 更新
@@ -303,6 +304,7 @@ def DebugDataUpdate(request):
         return R.ok(msg="更新成功")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
+        print(e)
         return R.failed("参数错误")
 
 # 删除（不删dabugdata_teststep表）
@@ -330,3 +332,41 @@ def DebugDataDelete(debugdata_id):
             count += 1
     # 返回结果
     return R.ok(msg="本次共删除{0}条数据".format(count))
+
+
+def DebugDataNewestList(request):
+    # 前端最新数据的id
+    id = int(request.GET.get('id'))
+
+    # 查询数据
+    query = Debugdata.objects.filter(is_delete=False)
+    # 查询大于当其id的数据
+    query = query.filter(id__gt=id)
+
+    query = query.order_by("-id")
+
+    newDateList = query.all()
+    # 遍历数据源
+    result = []
+    if len(newDateList) > 0:
+        for item in newDateList:
+            testStep_list = services.getDebugDataTestStepList(item.id)
+            data = {
+                'id': item.id,
+                'softwareType': item.softwareType,
+                'productType': item.productType,
+                'productSN': item.productSN,
+                'macAddress': item.macAddress,
+                'result': item.result,
+                'softwareVersion': item.softwareVersion,
+                'clientName': item.clientName,
+                'companyName': item.companyName,
+                'protocolVersion': item.protocolVersion,
+                'testStartTime': str(item.testStartTime.strftime('%Y-%m-%d %H:%M:%S')),
+                'testEndTime': str(item.testEndTime.strftime('%Y-%m-%d %H:%M:%S')),
+                'testTime': item.testTime,
+                'testStep': testStep_list,
+            }
+            result.append(data)
+    # 返回结果
+    return R.ok(data=result)
