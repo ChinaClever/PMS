@@ -57,10 +57,13 @@ def AllPass():
 #1.模块的成品合格率计算   使用质检表格内的数据
     #质检模块数量总计
     ModelAllInspectQuantity = Inspectreport.objects.filter(is_delete=False, product_module='2').aggregate(ModelAllInspectQuantity=Sum('examine_an_amount'))['ModelAllInspectQuantity']
-    if not ModelAllInspectQuantity:
-        return None
+    if ModelAllInspectQuantity == None:
+        ModelAllInspectQuantity = 0
     #获取质检模块所有数据
     ModelInspectData = Inspectreport.objects.filter(is_delete=False, product_module='2')
+    if not ModelInspectData:
+        return None
+
     #质检所有时间
     ModelAllInspectTime = 0
     for inspect in ModelInspectData:
@@ -74,8 +77,8 @@ def AllPass():
     # 调试模块数量总计
     ModelAllDebugQuantity = Debug.objects.filter(is_delete=False,
                                                  product_module='2').aggregate(ModelAllDebugQuantity=Sum('product_count'))['ModelAllDebugQuantity']
-    if not ModelAllDebugQuantity:
-        return None
+    if ModelAllDebugQuantity == None:
+        ModelAllDebugQuantity = 0
 
     # 调试模块所有时间
     ModelAllDebugTime = Debug.objects.filter(is_delete=False,
@@ -93,17 +96,19 @@ def AllPass():
     FinishedAllInspectQuantity = Inspectreport.objects.filter(is_delete=False,
                                                 product_module='1'
                                                 ).aggregate(FinishedAllInspectQuantity=Sum('examine_an_amount'))['FinishedAllInspectQuantity']
-    print(f"质检成品数量总计{FinishedAllInspectQuantity}")
-    if not FinishedAllInspectQuantity:
-        return None
+    # print(f"质检成品数量总计{FinishedAllInspectQuantity}")
+    if FinishedAllInspectQuantity == None:
+        FinishedAllInspectQuantity = 0
     #获取质检成品所有数据
     FinishedInspectData = Inspectreport.objects.filter(is_delete=False, product_module='1')
+    if not FinishedInspectData:
+        return None
+
     #质检所有时间
     FinishedAllInspectTime = 0
     for inspect in FinishedInspectData:
         InspectDuration = inspect.end_time - inspect.start_time
         FinishedAllInspectTime += InspectDuration.days
-
 
     #计算成品的成品合格率
     FinishedTotalAllPass = FinishedAllInspectQuantity / FinishedAllInspectTime if FinishedAllInspectTime > 0 else 0
@@ -112,14 +117,14 @@ def AllPass():
     # 调试成品数量总计
     FinishedAllDebugQuantity = Debug.objects.filter(is_delete=False,
                                                  product_module='1').aggregate(FinishedAllDebugQuantity=Sum('product_count'))['FinishedAllDebugQuantity']
-    if not FinishedAllDebugQuantity:
-        return None
+    if FinishedAllDebugQuantity == None:
+        FinishedAllDebugQuantity = 0
 
     # 调试成品所有时间
     FinishedAllDebugTime = Debug.objects.filter(is_delete=False,
                                              product_module='1').aggregate(FinishedAllDebugTime=Sum('work_hours'))['FinishedAllDebugTime']
-    if not FinishedAllDebugTime:
-        return None
+    if FinishedAllDebugTime == None:
+        FinishedAllDebugTime = 0
 
     # 计算成品总半成品合格率
     FinishedTotalHalfPass = FinishedAllDebugQuantity / FinishedAllDebugTime if FinishedAllDebugTime > 0 else 0
@@ -137,23 +142,23 @@ def AllPass():
 def AllUseToolTime():
     #质检测试工具所用时长
     UseInspectToolTime = Testdata.objects.filter(is_delete=False).aggregate(UseInspectToolTime=Sum('testTime'))['UseInspectToolTime']
-    if not UseInspectToolTime:
-        return None
+    if UseInspectToolTime == None:
+        UseInspectToolTime = 0
     UseInspectToolTimeHours = UseInspectToolTime / 3600 if UseInspectToolTime > 0 else 0#转成小时
 
     #调试工具所用时长
     UseDebugToolTime = Debugdata.objects.filter(is_delete=False).aggregate(UseDebugToolTime=Sum('testTime'))['UseDebugToolTime']
-    if not UseDebugToolTime:
-        return None
-    print(f"UseDebugToolTime {UseDebugToolTime}")
+    if UseDebugToolTime == None:
+        UseDebugToolTime = 0
+
     UseDebugToolTimeHours = UseDebugToolTime / 3600 if UseDebugToolTime > 0 else 0 #转成小时
-    print(f"UseDebugToolTimeHours {UseDebugToolTimeHours}")
+
 
     #总的工具使用时常
     AllUseToolTimeHours = UseInspectToolTimeHours + UseDebugToolTimeHours
-    print(f"AllUseToolTimeHours {AllUseToolTimeHours}")
+    AllUseToolTimeHours = round(AllUseToolTimeHours, 3)
     data = {
-        'AllUseToolTimeHours':UseInspectToolTimeHours
+        'AllUseToolTimeHours':AllUseToolTimeHours
     }
 
     return data
@@ -239,7 +244,8 @@ def AllModelsData(request):
             total_quantity_Inspect = 0
 
         # 计算每个产品的生产效率
-        efficiency = shipmentModelQuantity / getDifferenceDay
+
+        efficiency = shipmentModelQuantity / getDifferenceDay if getDifferenceDay > 0 else 0
         efficiency = round(efficiency, 2)
         # 计算模块的半成品合格率
         Model_HalfPass = total_quantity_Debug / shipmentModelQuantity if shipmentModelQuantity > 0 else 0
@@ -335,7 +341,7 @@ def AllFinishedData(request):
             GetInspectQuantity = 0
 
         #计算每个产品的生产效率
-        efficiency = FinishedData / getDifferenceDay
+        efficiency = FinishedData / getDifferenceDay if getDifferenceDay > 0 else 0
         efficiency = round(efficiency, 2)
         #计算成品的半成品合格率
         Finished_HalfPass = GetDebugQuantity / FinishedData if FinishedData > 0 else 0
@@ -370,33 +376,29 @@ def GetToolUseTime(request):
         start_date = datetime.strftime(now_year, "%Y-%m-%d")
         end_date = now_strDay
         getDifferenceDays = now - now_year
-        getDifferenceDay = getDifferenceDays.days
 
     elif tag == 'month' and vueStartTime == None and vueEndTime == None:
         now_month = datetime(now.year, now.month, 1)
         start_date = datetime.strftime(now_month, "%Y-%m-%d")
         end_date = now_strDay
         getDifferenceDays = now - now_month
-        getDifferenceDay = getDifferenceDays.days
 
     elif tag == 'week' and vueStartTime == None and vueEndTime == None:
         now_week = now - timedelta(days=now.weekday())
         start_date = datetime.strftime(now_week, "%Y-%m-%d")
         end_date = now_strDay
         getDifferenceDays = now - now_week
-        getDifferenceDay = getDifferenceDays.days
 
     elif tag == 'today' and vueStartTime == None and vueEndTime == None:
         now_day = datetime(now.year, now.month, now.day)
         start_date = datetime.strftime(now_day, "%Y-%m-%d %H:%M:%S")
         end_date = now_strTime
         getDifferenceDays = ((now - now_day).days + (now - now_day).seconds) / 86400
-        getDifferenceDay = round(getDifferenceDays)
 
     else:
         start_date = datetime.fromisoformat(vueStartTime)
         end_date = datetime.fromisoformat(vueEndTime)
-        getDifferenceDay = (end_date - start_date).total_seconds() / 86400
+
 
     # 获取工具使用时长
     GetUseToolTimeDebugQuantityTime = (Debugdata.objects.filter(is_delete=False,
@@ -407,6 +409,7 @@ def GetToolUseTime(request):
 
     # 转成小时
     GetUseToolTimeDebugQuantity = GetUseToolTimeDebugQuantityTime / 3600
+    GetUseToolTimeDebugQuantity = round(GetUseToolTimeDebugQuantity, 2)
 
     GetUseToolTimeTestQuantityTime = (Testdata.objects.filter(is_delete=False,
                                                             testEndTime__range=(start_date, end_date))
@@ -415,25 +418,33 @@ def GetToolUseTime(request):
         GetUseToolTimeTestQuantityTime = 0
 
     GetUseToolTimeTestQuantity = GetUseToolTimeTestQuantityTime / 3600
+    GetUseToolTimeTestQuantity = round(GetUseToolTimeTestQuantity, 2)
 
     GetUseToolTimeQuantity = GetUseToolTimeDebugQuantity + GetUseToolTimeTestQuantity
     GetUseToolTimeQuantity = round(GetUseToolTimeQuantity, 2)
 
     data = {
-        "timeLabel":[],
-        "DebugValues":[],
-        "TestValues": [],
-        'AllGetUseToolTimeDebugQuantity': GetUseToolTimeQuantity,
+        'GetUseToolTimeDebugQuantity':GetUseToolTimeDebugQuantity,
+        'GetUseToolTimeTestQuantity':GetUseToolTimeTestQuantity,
+        'GetUseToolTimeQuantity':GetUseToolTimeQuantity
     }
-    GetUseToolTimeDebug = Debugdata.objects.filter(is_delete=False,
-                                                   testEndTime__range=(start_date, end_date))
-    GetUseToolTimeTest = Testdata.objects.filter(is_delete=False,
-                                                            testEndTime__range=(start_date, end_date))
-    for item in GetUseToolTimeDebug:
-        data['timeLabel'].append(item.testEndTime.strftime('%Y-%m-%d'))
-        data['DebugValues'].append(item.testTime)
-    for item in GetUseToolTimeTest:
-        data['TestValues'].append(item.testTime)
-
-    print(f"工具使用时间{GetUseToolTimeQuantity}")
+    # data = {
+    #     "timeLabelDebug":[],
+    #     "DebugValues":[],
+    #     # "timeLabelTest":[],
+    #     "TestValues": [],
+    #     'AllGetUseToolTimeDebugQuantity': GetUseToolTimeQuantity,
+    # }
+    # GetUseToolTimeDebug = Debugdata.objects.filter(is_delete=False,
+    #                                                testEndTime__range=(start_date, end_date))
+    # GetUseToolTimeTest = Testdata.objects.filter(is_delete=False,
+    #                                                         testEndTime__range=(start_date, end_date))
+    # for item in GetUseToolTimeDebug:
+    #     data['timeLabelDebug'].append(item.testEndTime.strftime('%Y-%m-%d'))
+    #     data['DebugValues'].append(item.testTime)
+    # for item in GetUseToolTimeTest:
+    #     # data['timeLabelTest'].append(item.testEndTime.strftime('%Y-%m-%d'))
+    #     data['TestValues'].append(item.testTime)
+    #
+    # print(f"工具使用时间{data}")
     return data

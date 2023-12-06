@@ -33,9 +33,7 @@ class AllUseToolTimeView(View):
 #获取所有生产模块的数据
 @method_decorator(check_login, name='get')
 class AllModelsDataView(View):
-    print("AllModelsDataView")
     def get(self, request):
-        print("AllModelsDataView")
         data = services.AllModelsData(request)
         return  R.ok(data=data)
 

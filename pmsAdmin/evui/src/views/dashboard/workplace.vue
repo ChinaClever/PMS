@@ -31,6 +31,7 @@
           <el-card class="analysis-chart-card" shadow="never">
             <div slot="header" class="ele-cell">
               <div class="ele-cell-content ele-text-left">模块成品合格率</div>
+              <el-tag  size="mini">总</el-tag>
               <div class="ele-cell-content ele-text-right">模块半成品合格率</div>
             </div>
             <div class="container">
@@ -64,7 +65,7 @@
               @tab-click="onModelsSaleTypeChange">
               <el-tab-pane label="模块生产数量&生产效率" name="procedureNumber"/>
               <el-tab-pane label="模块合格率" name="pass"/>
-              <el-tab-pane label="工具使用时长" name="tool_time"/>
+              <el-tab-pane label="工具使用时长" name="tooltime"/>
             </el-tabs>
           </div>
           <div class="ele-inline-block ele-text-right">
@@ -104,7 +105,7 @@
                   style="height: 285px;"
                   :option="ModelPassChartOption"/>
             </div>
-            <div v-else-if="ModelsaleSearch.type === 'tool_time'">
+            <div v-else-if="ModelsaleSearch.type === 'tooltime'">
                 <ele-chart
                   ref="saleChart"
                   style="height: 285px;"
@@ -146,6 +147,7 @@
           <el-card class="analysis-chart-card" shadow="never">
             <div slot="header" class="ele-cell">
               <div class="ele-cell-content ele-text-left">成品合格率</div>
+              <el-tag  size="mini">总</el-tag>
               <div class="ele-cell-content ele-text-right">半成品合格率</div>
             </div>
             <div class="container">
@@ -241,8 +243,6 @@ export default {
         {label:'今天',value:'today'},
       ],
 
-      //开始到结束日期数据
-      StartEndValueData:[],
 
       ShipmentAllData:{} ,
 
@@ -256,7 +256,7 @@ export default {
       //所有成品的生产数据
       AllFinishedData:[],
       //获取工具的使用时长
-      GetToolTime:[],
+      GetToolTime: [],
 
     };
   },
@@ -476,7 +476,7 @@ export default {
         xAxis: [
           {
             type: 'category',
-            data: this.GetToolTime.map(d => d.timeLabel)
+            data: ['调试  /  质检']
           }
         ],
         yAxis: [
@@ -487,12 +487,13 @@ export default {
         series: [
           {
             type: 'bar',
-            data: this.GetToolTime.map(d => d.DebugValues)
+            data: this.GetToolTime.map(d => d.value1)
           },
           {
             type: 'bar',
-            data: this.GetToolTime.map(d => d.TestValues)
-          }
+            data: this.GetToolTime.map(d => d.value2)
+          },
+
         ]
       };
     },
@@ -569,7 +570,6 @@ export default {
           this.$message.error(e.message);
       });
     },
-
     //获取模块所有数据（生产数量，生产合格率，使用时长）
     getAllModelsData() {
       if(this.ModelsaleSearch.datetime && this.ModelsaleSearch.datetime[0] && this.ModelsaleSearch.datetime[1])
@@ -583,7 +583,7 @@ export default {
             }).then(res =>{
           if(res.data.code === 0) {
             this.AllModelsData = res.data.data;
-            console.log(res.data.data)
+            // console.log(res.data.data)
           }
         }).catch(e => {
             this.$message.error(e.message);
@@ -597,7 +597,7 @@ export default {
             }).then(res =>{
           if(res.data.code === 0) {
             this.AllModelsData = res.data.data;
-            console.log(res.data.data)
+            // console.log(res.data.data)
           }
         }).catch(e => {
             this.$message.error(e.message);
@@ -617,7 +617,7 @@ export default {
             }).then(res =>{
           if(res.data.code === 0) {
             this.AllFinishedData = res.data.data;
-            console.log(res.data.data)
+            // console.log(res.data.data)
           }
         }).catch(e => {
             this.$message.error(e.message);
@@ -631,7 +631,7 @@ export default {
             }).then(res =>{
           if(res.data.code === 0) {
             this.AllFinishedData = res.data.data;
-            console.log(res.data.data)
+            // console.log(res.data.data)
           }
         }).catch(e => {
             this.$message.error(e.message);
@@ -640,122 +640,44 @@ export default {
     },
     //获取工具的使用时间
     getToolUseTime(){
-      // const currentDate = new Date();//当前日期
-      // const currentYear = currentDate.getFullYear();
-      // const currentMonth = currentDate.getMonth();
-      // const currentDay = currentDate.getDay();
-      // const totalDays = new Date(currentYear, currentMonth+1, 0).getDate();//获取当月总天数
-      //
-      // this.$http.get('/workplace/GetToolUseTime',{
-      //   params:{
-      //     tag:this.ModelsaleSearch.dateType,
-      //     start_date:this.formatDate(this.ModelsaleSearch.datetime[0]),
-      //     end_date:this.formatDate(this.ModelsaleSearch.datetime[1])
-      //   }
-      // }).then(res =>{
-      //   if(res.data.code === 0) {
-      //     console.log(res.data.data)
-      //     this.GetToolTime=[];
-      //     if(this.ModelsaleSearch.datetime && this.ModelsaleSearch.datetime[0] && this.ModelsaleSearch.datetime[1] )
-      //     {
-      //       //等待修改
-      //       this.GetToolTime=[];
-      //     }
-      //     else if(this.ModelsaleSearch.dateType === 'year')
-      //     {
-      //       for(let i =0; i<12; i++)
-      //       {
-      //         const getMonthData = {
-      //           data:this.convertoChineseDate(new Date(currentYear, i)),
-      //           value:res.data.data.GetUseToolTimeDebugQuantity
-      //         }
-      //         this.GetToolTime.push(getMonthData)
-      //       }
-      //     }
-      //     else if(this.ModelsaleSearch.dateType === 'month')
-      //     {
-      //       for(let i =1; i<= totalDays; i++){
-      //         const getDayData = {
-      //           data: this.convertoChineseDate(new Date(currentYear, currentMonth, i)),
-      //           value: res.data.data.GetUseToolTimeDebugQuantity
-      //         };
-      //       this.GetToolTime.push(getDayData)
-      //       }
-      //     }
-      //     else if(this.ModelsaleSearch.dateType === 'week')
-      //     {
-      //       for(let i=1; i<=7; i++) {
-      //         const dayOffset = i-currentDay;
-      //         const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()+dayOffset);
-      //         const getWeekData = {
-      //           data:this.convertoChineseDate(dayDate),
-      //           value: res.data.data.GetUseToolTimeDebugQuantity
-      //         };
-      //         this.GetToolTime.push(getWeekData)
-      //       }
-      //     }
-      //     else
-      //     {
-      //       for(let i=8; i<21; i++) {
-      //         const gethoursData = {
-      //           data: i,
-      //           value: res.data.data.GetUseToolTimeDebugQuantity
-      //         };
-      //         this.GetToolTime.push(gethoursData)
-      //       }
-      //     }
-      //   }
-      // }).catch(e => {
-      //     this.$message.error(e.message);
-      // });
-      // const today = new Date();
-      // let StartDate, endDate;
-      // switch (this.ModelsaleSearch.dateType){
-      //   case "year":
-      //     StartDate = new Date(today.getFullYear(), 0, 1);
-      //     endDate = today;
-      //     break;
-      //   case "month":
-      //     StartDate = new Date(today.getFullYear(), today.getMonth(), 1);
-      //     endDate = today
-      //     break;
-      //   case "week":
-      //     StartDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
-      //     endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - today.getDay()));
-      //     break;
-      //   default:
-      //     StartDate = new Date(today.getFullYear(), 0, 1);
-      //     endDate = today;
-      //     break
-      // }
-      if(this.saleSearch.datetime && this.saleSearch.datetime[0] && this.saleSearch.datetime[1]) {
-        this.$http.get('/workplace/GetToolUseTime', {
-          params: {
-            tag: this.saleSearch.dateType,
-            start_date: this.formatDate(this.saleSearch.datetime[0]),
-            end_date: this.formatDate(this.saleSearch.datetime[1])
+      this.GetToolTime = [];
+      if(this.ModelsaleSearch.datetime && this.ModelsaleSearch.datetime[0] && this.ModelsaleSearch.datetime[1])
+      {
+          this.$http.get('/workplace/GetToolUseTime', {
+          params:{
+                    tag:this.ModelsaleSearch.dateType,
+                    start_date:this.formatDate(this.ModelsaleSearch.datetime[0]),
+                    end_date:this.formatDate(this.ModelsaleSearch.datetime[1])
           }
-        }).then(res => {
-          if (res.data.code === 0) {
-            this.GetToolTime = res.data.data;
-            console.log(res.data.data)
+            }).then(res =>{
+          if(res.data.code === 0) {
+            const getdata = {
+              value1 : res.data.data.GetUseToolTimeDebugQuantity,
+              value2 : res.data.data.GetUseToolTimeTestQuantity
+            }
+            this.GetToolTime.push(getdata)
+            // console.log(this.GetToolTime)
           }
         }).catch(e => {
-          this.$message.error(e.message);
+            this.$message.error(e.message);
         });
       }
-      else{
+      else {
         this.$http.get('/workplace/GetToolUseTime', {
-          params: {
-            tag: this.saleSearch.dateType,
+          params:{
+                    tag:this.ModelsaleSearch.dateType,
           }
-        }).then(res => {
-          if (res.data.code === 0) {
-            this.GetToolTime = res.data.data;
-            console.log(res.data.data)
+            }).then(res =>{
+          if(res.data.code === 0) {
+            const getdata = {
+              value1 : res.data.data.GetUseToolTimeDebugQuantity,
+              value2 : res.data.data.GetUseToolTimeTestQuantity
+            }
+            this.GetToolTime.push(getdata)
+            // console.log(this.GetToolTime)
           }
         }).catch(e => {
-          this.$message.error(e.message);
+            this.$message.error(e.message);
         });
       }
     },
@@ -851,23 +773,5 @@ export default {
 .el-dropdown + .el-dropdown {
   margin-left: 15px;
 }
-.el-icon-arrow-down {
-  font-size: 12px;
-}
 
-.label{
-  margin-right: 400px;
-}
-.selector{
-  margin-top: 10px;
-  margin-left: 40px;
-}
-.left-side{
-  flex-grow: 1;
-  margin-right: 10px;
-}
-.right-side{
-  flex-grow: 1;
-  margin-left: 10px;
-}
 </style>
