@@ -48,7 +48,7 @@
               <el-tag size="mini">总</el-tag>
             </div>
             <div class="container">
-              <div class="analysis-chart-card-num ele-text-left">{{ AllUseToolTime }}</div>
+              <div class="analysis-chart-card-num ele-text-left">{{ AllUseToolTime.AllUseToolTimeHours }}</div>
               <div class="analysis-chart-card-num ele-text-right">H</div>
             </div>
             <el-divider/>
@@ -564,7 +564,7 @@ export default {
     getAllUseToolTime(){
       this.$http.get('/workplace/AllUseToolTime').then(res =>{
         if(res.data.code === 0) {
-          this.AllUseToolTime = res.data.data.AllUseToolTimeHours;
+          this.AllUseToolTime = res.data.data;
         }
       }).catch(e => {
           this.$message.error(e.message);
