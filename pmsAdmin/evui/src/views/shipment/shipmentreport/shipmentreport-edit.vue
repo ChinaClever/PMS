@@ -11,7 +11,7 @@
         ref="form"
         :model="form"
         :rules="rules"
-        label-width="100px"
+        label-width="86px"
         :validate-on-rule-change="false">
         <el-row :gutter="6">
         <el-col :span="12">
@@ -21,7 +21,18 @@
           <el-input
             v-model="form.work_order"
             placeholder="请输入工单号"
-            clearable/>
+            clearable>
+            <el-tooltip slot="prefix" effect="dark" placement="top">
+              <i class="el-icon-question"></i>
+              <div slot="content">
+                智能填入步骤：<br>
+                1. 光标放在工单号输入框内<br>
+                2. 输入法切换至英文大写<br>
+                3. 使用扫码枪扫码<br>
+                4. 点击表单内任意空白处
+              </div>
+            </el-tooltip>
+          </el-input>
         </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -49,22 +60,18 @@
       </el-col>
         <el-col :span="12">
         <el-form-item label="产品名称:" prop="product_name">
-         <!-- <el-cascader
-          v-model="form.product_name"
-          :options="options"
-          :props="{ expandTrigger: 'hover' }"
-          :show-all-levels="false"
-          leafOnly>
-        </el-cascader> -->
         <el-autocomplete
           v-model="form.product_name"
           :fetch-suggestions="querySearchAsync"
+          placeholder="请输入产品名称"
+          clearable
           @select="handleSelect"
+          style="width: 277px;"
         ></el-autocomplete>
         </el-form-item>
         </el-col>
         </el-row>
-      
+
         <el-form-item label="规格型号:" prop="shape">
           <el-input
             v-model="form.shape"
@@ -73,7 +80,16 @@
         </el-form-item>
         <el-row :gutter="6">
         <el-col :span="12">
-        <el-form-item label="数量:" prop="product_count">
+          <el-form-item label="成品/模块:" prop="product_module">
+            <el-radio-group
+              v-model="form.product_module">
+              <el-radio :label="1">成品</el-radio>
+              <el-radio :label="2">模块</el-radio>
+            </el-radio-group>
+          </el-form-item>
+       </el-col>
+        <el-col :span="12">
+          <el-form-item label="数量:" prop="product_count">
           <el-input-number
             :min="0"
             v-model="form.product_count"
@@ -81,14 +97,7 @@
             controls-position="right"
             class="ele-fluid ele-text-left"/>
         </el-form-item>
-       </el-col>
-        <el-col :span="12">
-        <el-form-item label="SO/RQ号:" prop="SO_RQ_id">
-          <el-input
-            v-model="form.SO_RQ_id"
-            placeholder="请输入SO/RQ号"
-            clearable/>
-        </el-form-item>
+       
       </el-col>
         </el-row>
         <el-row :gutter="6">
@@ -109,6 +118,7 @@
               class="ele-fluid"
               v-model="form.delivery_date"
               value-format="yyyy-MM-dd"
+              :disabled="isUpdate"
               placeholder="请选择交货日期"/>
         </el-form-item>
       </el-col>
@@ -133,16 +143,18 @@
               value-format="yyyy-MM-dd"
               placeholder="请选择完成日期"/>
         </el-form-item>
+       
+      </el-col>
+      <el-col :span="12">
+       <el-form-item label="SO/RQ号:" prop="SO_RQ_id">
+          <el-input
+            v-model="form.SO_RQ_id"
+            placeholder="请输入SO/RQ号"
+            clearable/>
+        </el-form-item>
       </el-col>
         </el-row>
-        <el-form-item label="成品/模块:" prop="product_module">
-            <el-radio-group
-              v-model="form.product_module">
-              <el-radio :label="1">成品</el-radio>
-              <el-radio :label="2">模块</el-radio>
-            </el-radio-group>
-          </el-form-item>
-
+       
           <el-form-item label="备注:" prop="remark">
             <el-input
               clearable
@@ -154,6 +166,7 @@
           </el-form-item>
 
       </el-form>
+    
       <div slot="footer">
         <el-button @click="updateVisible(false)">取消</el-button>
         <el-button
@@ -180,112 +193,7 @@
         state: '',
         timeout:  null,
         // 表单数据
-        form: Object.assign({product_code: '', product_name:'', shape:''}, this.data),
-        // 产品名称选项
-        options: [{
-          value: '1',
-          label: '成品',
-          children: [{
-            value: 'MPDU ',
-            label: 'MPDU '
-          }, {
-            value: 'ATS',
-            label: 'ATS'
-          }, {
-            value: 'Switched',
-            label: 'Switched'
-          }, {
-            value: 'Sensor Box-I',
-            label: 'Sensor Box-I'
-          }, {
-            value: 'RPDU',
-            label: 'RPDU'
-          }, {
-            value: 'NODE',
-            label: 'NODE'
-          }, {
-            value: 'ZPDU',
-            label: 'ZPDU'
-          }, {
-            value: 'PDU',
-            label: 'ATS'
-          }, {
-            value: '其他',
-            label: '其他'
-          }
-        ]
-        }, {
-          value: '2',
-          label: '模块',
-          children: [{
-            value: 'BM-PDU2020',
-            label: 'BM-PDU2020'
-          },{
-            value: 'BM-PDU2017',
-            label: 'BM-PDU2017'
-          }, {
-            value: 'BM-PDU ',
-            label: 'BM-PDU '
-          }, {
-            value: 'IP-PDU2020',
-            label: 'IP-PDU2020'
-          },{
-            value: 'IP-PDU2017',
-            label: 'IP-PDU2017'
-          }, {
-            value: 'IP-PDU6',
-            label: 'IP-PDU6'
-          }, {
-            value: 'IP-PDU',
-            label: 'IP-PDU'
-          },{
-            value: 'SI-PDU2022',
-            label: 'SI-PDU2022'
-          },{
-            value: 'SI-PDU2020',
-            label: 'SI-PDU2020'
-          },{
-            value: 'SI-PDU2017',
-            label: 'SI-PDU2017'
-          }, {
-            value: 'SI-PDU',
-            label: 'SI-PDU'
-          }, {
-            value: '配件',
-            label: '配件'
-          }, {
-            value: '插接箱',
-            label: '插接箱'
-          },  {
-            value: '始端箱',
-            label: '始端箱'
-          }, {
-            value: '工业屏',
-            label: '工业屏'
-          },{
-            value: '主控屏',
-            label: '主控屏'
-          }, {
-            value: '传感器',
-            label: '传感器'
-          },{
-            value: 'BASE功能模块',
-            label: 'BASE功能模块'
-          },{
-            value: 'NODE功能模块',
-            label: 'NODE功能模块'
-          },{
-            value: 'IMM接线模块',
-            label: 'IMM接线模块'
-          },{
-            value: 'Switch功能插座模块',
-            label: 'Switch功能插座模块'
-          },{
-            value: '插拔箱',
-            label: '插拔箱'
-          },
-        ]
-        }],
+        form: Object.assign({product_code: '', product_name:'', shape:'', product_module:''}, this.data),
         // 表单验证规则
         rules: {
           work_order: [
@@ -339,7 +247,7 @@
           this.form = Object.assign({}, this.data);
           this.isUpdate = true;
         } else {
-          this.form = {};
+          this.form = {product_code: '', product_name:'', shape:'', product_module:''};
           this.isUpdate = false;
         }
       }
@@ -350,10 +258,6 @@
         this.$refs['form'].validate((valid) => {
           if (valid) {
             this.loading = true;
-            // 获取产品名称最后节点的名字
-            let lastNode = this.form.product_name[this.form.product_name.length - 1];
-            this.form.product_name = lastNode
-
             this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/shipmentreport/update' : '/shipmentreport/add', this.form).then(res => {
               this.loading = false;
               if (res.data.code === 0) {
@@ -391,9 +295,10 @@
             //根据产品编码查产品名称 规格
             this.$http.get('/shipmentreport/product/detail/' + this.form.product_code).then((res) => {
             this.loading = false;
-            if (res.data.code === 0) {
+            if (res.data.code === 0 && res.data.data != null) {
              this.form.product_name = res.data.data.product_name
              this.form.shape  = res.data.data.shape
+             this.form.product_module = res.data.data.product_module
             } 
             })
             callback();
@@ -411,44 +316,26 @@
 
        // 检测填入日期是否晚于订单日期
       checkFinishTime(rule, value, callback) {
-        const orderDate = this.form.order_date; 
-        const thisDate = value; 
+        const orderDate = this.form.order_date;
+        const thisDate = value;
         if (!orderDate || !thisDate) {
-          callback(); 
+          callback();
         } else if (orderDate > thisDate) {
-          callback(new Error('此日期必须晚于订单日期')); 
+          callback(new Error('此日期必须晚于订单日期'));
         } else {
-          callback(); 
+          callback();
         }
       },
 
       loadAll() {
-        // this.$http.get('/shipmentreport/product/list').then((res) => {
-        //     this.loading = false;
-        //     if (res.data.code === 0) {
-        //       const json = res.data.data
-        //       const array = JSON.parse(json).map(item => {
-        //       return {
-        //         id: item.id,
-        //         product_code: item.product_code,
-        //         product_name: item.product_name,
-        //         shape: item.shape,
-        //         product_module: item.product_module
-        //       };
-        //     });
-        //     console.log(array);
-        //     } 
-        //   })
-
-        return [
-          { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
-          { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" },
-          { "value": "新旺角茶餐厅", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },
-          { "value": "泷千家(天山西路店)", "address": "天山西路438号" },
-          { "value": "胖仙女纸杯蛋糕（上海凌空店）", "address": "上海市长宁区金钟路968号1幢18号楼一层商铺18-101" },   
-        ];
+        this.$http.get('/shipmentreport/product/list').then((res) => {
+            this.loading = false;
+            if (res.data.code === 0) {
+              this.product_names = res.data.data
+            } 
+          })
       },
-
+      // 异步查询产品名称
       querySearchAsync(queryString, cb) {
         var product_names = this.product_names;
         var results = queryString ? product_names.filter(this.createStateFilter(queryString)) : product_names;
@@ -472,7 +359,7 @@
 
     },
     mounted() {
-      this.product_names = this.loadAll();
+      this.loadAll();
     }
   }
   </script>
