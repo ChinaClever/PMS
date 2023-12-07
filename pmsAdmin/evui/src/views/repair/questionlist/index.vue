@@ -9,19 +9,27 @@
           @keyup.enter.native="reload"
           @submit.native.prevent>
           <el-row :gutter="10">
-            <el-col span="5">
+            <el-col :span="5">
               <el-form-item label="产品名称:">
                 <el-input
                   clearable
                   v-model="where.name"
                   placeholder="请输入产品名称"/>
               </el-form-item>
+              <el-form-item label="工单号:">
+                <el-input
+                  clearable
+                  v-model="where.work_order"
+                  placeholder="请输入工单号"/>
+              </el-form-item>
             </el-col>
-            <el-col :span="6">
-            <el-select v-model="selectedOption" placeholder="请选择排序方式" @change="calculateTimeRange">
+            <el-col :span="6" >
+            <el-form-item label="排序方式:">
+            <el-select v-model="selectedOption" placeholder="请选择排序方式" @change="selectway">
                 <el-option label="产品名称" value="name"></el-option>
                 <el-option label="工单号" value="work_order"></el-option>
             </el-select>
+            </el-form-item>
             </el-col>
 
             <el-col :lg="6" :md="12">
@@ -60,10 +68,7 @@
         </ele-pro-table>
       </el-card>
       <!-- 编辑弹窗 -->
-      <repairreport-edit
-        :data="current"
-        :visible.sync="showEdit"
-        @done="reload"/>
+     
     </div>
   </template>
 
@@ -77,6 +82,7 @@
     },
     data() {
       return {
+        current:'',
         // 表格数据接口
         url: '/repairreport/questionlist',
         // 表格列配置
@@ -92,28 +98,28 @@
           {
             prop: 'work_order',
             label: '工单号',
-            width: 70,
+            width: 300,
             align: 'center',
             showOverflowTooltip: true,
           },
           {
             prop: 'name',
             label: '产品名称',
-            width: 70,
+            width: 300,
             align: 'center',
             showOverflowTooltip: true,
           },
           {
             prop: 'bad_phenomenon',
             label: '不良现象',
-            width: 150,
+            width: 300,
             align: 'center',
             slot: 'expand_1',
           },
           {
             prop: 'num',
             label: '出现次数',
-            width: 70,
+            width: 300,
             align: 'center',
             showOverflowTooltip: true,
           },
@@ -128,11 +134,10 @@
       };
     },
     created() {
-        this.calculateTimeRange();
+        this.selectway();
         this.loading = true;
         this.$http.get('/repairreport/questionlist').then((res) => {
         this.loading = false;
-
         }).catch((e) => {
         this.loading = false;
         this.$message.error(e.message);
@@ -150,11 +155,13 @@
         this.selectedOption = '';
         this.reload();
       },
-      calculateTimeRange() {
-
+      selectway() {
         this.where = {};
-        this.where.name = this.name;
-        this.where.work_order = this.work_order
+        if (this.selectedOption=="name"){
+          this.where.name1 = this.selectedOption;
+        }else if (this.selectedOption=="work_order"){
+          this.where.work_order1 = this.selectedOption;
+        }
       },
 
 

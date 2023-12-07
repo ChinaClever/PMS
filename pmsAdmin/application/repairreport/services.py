@@ -443,19 +443,57 @@ def QuestionList(request):
     limit = int(request.GET.get("limit", PAGE_LIMIT))
     # 实例化查询对象
     query = Dict.objects.filter(is_delete=False)
+    name1 = request.GET.get('name1')
+    work_order1 = request.GET.get('work_order1')
     name = request.GET.get('name')
     work_order = request.GET.get('work_order')
-    if name :
+    if name1 :
         # sql = 'SELECT item_number,sum(examine_an_amount) AS total,sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 AND start_time >= ' + str(startTime) + ' AND end_time <= ' + str(endTime)+ " GROUP BY item_number" + " limit " + str(limit)
-        sql = "SELECT id,name, work_order, bad_phenomenon, count( bad_phenomenon) as num  FROM django_repairreport WHERE is_delete = 0 GROUP BY %s ,bad_phenomenon ORDER BY %s,num Desc"
-        query = Dict.objects.raw(sql, [name])
-        # 设置分页
+        sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0"
+        params = []
+        conditions = []
+        if work_order:
+            conditions.append("work_order LIKE %s")
+            params.append(f"%{work_order}%")
+        if name:
+            conditions.append("name LIKE %s")
+            params.append(f"%{name}%")
+        if conditions:
+            sql += " AND " + " AND ".join(conditions)
+        sql += " GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
+        query = Dict.objects.raw(sql, params)
         paginator = Paginator(query, limit)
-    elif work_order:
-        sql = "SELECT id,name, work_order, bad_phenomenon, count( bad_phenomenon) as num  FROM django_repairreport WHERE is_delete = 0 GROUP BY %s ,bad_phenomenon ORDER BY %s,num Desc"
-        query = Dict.objects.raw(sql,[work_order])
+        # sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0"
+        # if name and work_order:
+        #     sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0 AND work_order='work_order' AND name='name' GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
+        #
+        # elif name:
+        #     sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0 AND name='name' GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
+        # elif work_order:
+        #     sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0 AND work_order='work_order' GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
+        #
+        # else:
+        #     sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0  GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
+        # query = Dict.objects.raw(sql)
+    elif work_order1:
+        sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0"
+        params = []
+        conditions = []
+        if work_order:
+            conditions.append("work_order LIKE %s")
+            params.append(f"%{work_order}%")
+        if name:
+            conditions.append("name LIKE %s")
+            params.append(f"%{name}%")
+        if conditions:
+            sql += " AND " + " AND ".join(conditions)
+        sql += " GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
+        query = Dict.objects.raw(sql, params)
         paginator = Paginator(query, limit)
-
+    else :
+        sql = "SELECT id,name, work_order, bad_phenomenon, count( bad_phenomenon) as num  FROM django_repairreport WHERE is_delete = 0 GROUP BY name ,bad_phenomenon ORDER BY name,num Desc"
+        query = Dict.objects.raw(sql)
+        paginator = Paginator(query, limit)
     # 记录总数
     count = paginator.count
     # 分页查询
@@ -475,5 +513,3 @@ def QuestionList(request):
             result.append(data)
     # 返回结果
     return R.ok(data=result, count=count)
-
-
