@@ -6,6 +6,7 @@ import Vuex from 'vuex';
 import getters from './getters';
 import user from './modules/user';
 import theme from './modules/theme';
+import routerchange from './modules/routerchange'
 
 Vue.use(Vuex);
 
@@ -15,7 +16,8 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     user,
-    theme
+    theme,
+    routerchange,
   },
   getters
 });

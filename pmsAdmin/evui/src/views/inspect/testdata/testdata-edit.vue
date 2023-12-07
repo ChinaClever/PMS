@@ -214,7 +214,7 @@ export default {
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
               if (!this.isUpdate) {
-                this.form = {};
+                this.form = {testStep:[]};
               }
               this.updateVisible(false);
               this.$emit('done');
