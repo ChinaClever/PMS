@@ -160,4 +160,3 @@ cython_debug/
 #.idea/
 *.xz
 pmsAdmin/uwsgi.pid
-pmsAdmin/evui/.env.development
