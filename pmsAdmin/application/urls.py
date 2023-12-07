@@ -116,4 +116,6 @@ urlpatterns = [
     path('mac/', include('application.mac.urls')),
     #工作台
     path('workplace/', include('application.workplace.urls')),
+    #综合看版
+    path('comprehensive/', include('application.comprehensive.urls')),
 ]
