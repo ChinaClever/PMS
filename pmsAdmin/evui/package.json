@@ -8,7 +8,7 @@
     "build:dev": "vue-cli-service build --mode development",
     "build:test": "vue-cli-service build --mode test",
     "build:demo": "vue-cli-service build --mode preview",
-    "build:preview": "vue-cli-service serve",
+    "build:preview": "vue-cli-service build --mode preview",
     "build:report": "vue-cli-service build --report",
     "lint": "vue-cli-service lint"
   },
