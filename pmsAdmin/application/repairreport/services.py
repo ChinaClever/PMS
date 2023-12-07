@@ -86,6 +86,7 @@ def DictList(request):#查询设置，从前端返回order_id字段，再到数�
                 'name': item.name,
                 'work_order': item.work_order,
                 'bad_number': item.bad_number,
+                'repair_number': item.repair_number,
                 'bad_phenomenon': item.bad_phenomenon,
                 'analysis': item.analysis,
                 'solution': item.solution,
@@ -117,6 +118,7 @@ def DictDetail(dict_id):
         'name': dict.name,
         'work_order': dict.work_order,
         'bad_number': dict.bad_number,
+        'repair_number': dict.repair_number,
         'bad_phenomenon': dict.bad_phenomenon,
         'analysis': dict.analysis,
         'solution': dict.solution,
@@ -159,6 +161,7 @@ def DictAdd(request):
         name = form.cleaned_data.get('name')
         work_order = form.cleaned_data.get('work_order')
         bad_number = form.cleaned_data.get('bad_number')
+        repair_number = form.cleaned_data.get('repair_number')
         bad_phenomenon = form.cleaned_data.get('bad_phenomenon')
         analysis = form.cleaned_data.get('analysis')
         solution = form.cleaned_data.get('solution')
@@ -174,6 +177,7 @@ def DictAdd(request):
             name=name,
             work_order=work_order,
             bad_number=bad_number,
+            repair_number=repair_number,
             bad_phenomenon=bad_phenomenon,
             analysis=analysis,
             solution=solution,
@@ -222,6 +226,7 @@ def DictUpdate(request):
         name = form.cleaned_data.get('name')
         work_order = form.cleaned_data.get('work_order')
         bad_number = form.cleaned_data.get('bad_number')
+        repair_number = form.cleaned_data.get('repair_number')
         bad_phenomenon = form.cleaned_data.get('bad_phenomenon')
         analysis = form.cleaned_data.get('analysis')
         solution = form.cleaned_data.get('solution')
@@ -247,6 +252,7 @@ def DictUpdate(request):
     dict.name = name
     dict.work_order=work_order
     dict.bad_number = bad_number
+    dict.repair_number = repair_number
     dict.bad_phenomenon = bad_phenomenon
     dict.analysis = analysis
     dict.solution = solution
@@ -336,3 +342,174 @@ def Dictsolutionlist(request):
             }
             solution_list.append(data)
     return solution_list
+
+
+
+#图表数据传输
+def RepairreportListOfTotal(request):
+    # 页码
+    page = int(request.GET.get("page", 1))
+    # 每页数
+    limit = int(request.GET.get("limit", PAGE_LIMIT))
+    # 实例化查询对象
+    query = Dict.objects.filter(is_delete=False)
+    startTime = request.GET.get('startTime')
+    endTime = request.GET.get('endTime')
+    if startTime and endTime:
+        startTime = startTime.replace("+", " ")
+        endTime = endTime.replace("+", " ")
+        #sql = 'SELECT item_number,sum(examine_an_amount) AS total,sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 AND start_time >= ' + str(startTime) + ' AND end_time <= ' + str(endTime)+ " GROUP BY item_number" + " limit " + str(limit)
+        sql = "SELECT id,name, bad_number, repair_number, analysis,sum(bad_number) AS bad_total, sum(repair_number) AS repair_total FROM django_repairreport WHERE is_delete = 0  AND create_time >= %s AND create_time <= %s GROUP BY id"
+        query = Dict.objects.raw(sql,[startTime, endTime])
+        # 设置分页
+        paginator = Paginator(query, limit)
+    else:
+        sql = "SELECT id,name, bad_number, repair_number, analysis, sum(bad_number) AS bad_total, sum(repair_number) AS repair_total FROM django_repairreport WHERE is_delete = 0 GROUP BY  id"
+        query = Dict.objects.raw(sql)
+        paginator = Paginator(query, limit)
+
+    # 记录总数
+    count = paginator.count
+    # 分页查询
+    producerecord_list = paginator.page(page)
+    # 实例化结果
+    result = []
+    # 遍历数据源
+    if len(producerecord_list) > 0:
+        for item in producerecord_list:
+            item.rate=str(item.repair_total)+str("/")+str(item.bad_total)
+            data = {
+                'id': item.id,
+                'name': item.name,
+                'bad_phenomenon': item.bad_phenomenon,
+                'analysis':item.analysis,
+                'repair_total':item.repair_total,
+                'bad_total':item.bad_total,
+                'rate':item.rate,
+            }
+            result.append(data)
+    # 返回结果
+    return R.ok(data=result, count=count)
+
+#柱状图数据传输
+def RepairreportListOfTotal1(request):
+    # 页码
+    page = int(request.GET.get("page", 1))
+    # 每页数
+    limit = int(request.GET.get("limit", PAGE_LIMIT))
+    # 实例化查询对象
+    query = Dict.objects.filter(is_delete=False)
+    startTime = request.GET.get('startTime')
+    endTime = request.GET.get('endTime')
+    if startTime and endTime:
+        startTime = startTime.replace("+", " ")
+        endTime = endTime.replace("+", " ")
+        #sql = 'SELECT item_number,sum(examine_an_amount) AS total,sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 AND start_time >= ' + str(startTime) + ' AND end_time <= ' + str(endTime)+ " GROUP BY item_number" + " limit " + str(limit)
+        sql = "SELECT id,name, sum(bad_number) AS bad_total, sum(repair_number) AS repair_total FROM django_repairreport WHERE is_delete = 0  AND create_time >= %s AND create_time <= %s GROUP BY name "
+        query = Dict.objects.raw(sql,[startTime, endTime])
+        # 设置分页
+        paginator = Paginator(query, limit)
+    else:
+        sql = "SELECT id,name, sum(bad_number) AS bad_total, sum(repair_number) AS repair_total FROM django_repairreport WHERE is_delete = 0 GROUP BY name"
+        query = Dict.objects.raw(sql)
+        paginator = Paginator(query, limit)
+
+    # 记录总数
+    count = paginator.count
+    # 分页查询
+    producerecord_list = paginator.page(page)
+    # 实例化结果
+    result = []
+    # 遍历数据源
+    if len(producerecord_list) > 0:
+        for item in producerecord_list:
+            item.rate=str(item.repair_total)+str("/")+str(item.bad_total)
+            data = {
+                'id': item.id,
+                'name': item.name,
+                'repair_total':item.repair_total,
+                'bad_total':item.bad_total,
+                'rate':item.rate,
+            }
+            result.append(data)
+    # 返回结果
+    return R.ok(data=result, count=count)
+
+#问题清单数据传输
+def QuestionList(request):
+    # 页码
+    page = int(request.GET.get("page", 1))
+    # 每页数
+    limit = int(request.GET.get("limit", PAGE_LIMIT))
+    # 实例化查询对象
+    query = Dict.objects.filter(is_delete=False)
+    name1 = request.GET.get('name1')
+    work_order1 = request.GET.get('work_order1')
+    name = request.GET.get('name')
+    work_order = request.GET.get('work_order')
+    if name1 :
+        # sql = 'SELECT item_number,sum(examine_an_amount) AS total,sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 AND start_time >= ' + str(startTime) + ' AND end_time <= ' + str(endTime)+ " GROUP BY item_number" + " limit " + str(limit)
+        sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0"
+        params = []
+        conditions = []
+        if work_order:
+            conditions.append("work_order LIKE %s")
+            params.append(f"%{work_order}%")
+        if name:
+            conditions.append("name LIKE %s")
+            params.append(f"%{name}%")
+        if conditions:
+            sql += " AND " + " AND ".join(conditions)
+        sql += " GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
+        query = Dict.objects.raw(sql, params)
+        paginator = Paginator(query, limit)
+        # sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0"
+        # if name and work_order:
+        #     sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0 AND work_order='work_order' AND name='name' GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
+        #
+        # elif name:
+        #     sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0 AND name='name' GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
+        # elif work_order:
+        #     sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0 AND work_order='work_order' GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
+        #
+        # else:
+        #     sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0  GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
+        # query = Dict.objects.raw(sql)
+    elif work_order1:
+        sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0"
+        params = []
+        conditions = []
+        if work_order:
+            conditions.append("work_order LIKE %s")
+            params.append(f"%{work_order}%")
+        if name:
+            conditions.append("name LIKE %s")
+            params.append(f"%{name}%")
+        if conditions:
+            sql += " AND " + " AND ".join(conditions)
+        sql += " GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
+        query = Dict.objects.raw(sql, params)
+        paginator = Paginator(query, limit)
+    else :
+        sql = "SELECT id,name, work_order, bad_phenomenon, count( bad_phenomenon) as num  FROM django_repairreport WHERE is_delete = 0 GROUP BY name ,bad_phenomenon ORDER BY name,num Desc"
+        query = Dict.objects.raw(sql)
+        paginator = Paginator(query, limit)
+    # 记录总数
+    count = paginator.count
+    # 分页查询
+    producerecord_list = paginator.page(page)
+    # 实例化结果
+    result = []
+    # 遍历数据源
+    if len(producerecord_list) > 0:
+        for item in producerecord_list:
+            data = {
+                'id': item.id,
+                'name': item.name,
+                'work_order': item.work_order,
+                'bad_phenomenon':item.bad_phenomenon,
+                'num':item.num,
+            }
+            result.append(data)
+    # 返回结果
+    return R.ok(data=result, count=count)

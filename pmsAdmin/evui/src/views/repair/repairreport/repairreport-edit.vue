@@ -90,6 +90,15 @@
               placeholder="请输入不良数量"
               clearable/>
           </el-form-item>
+          <el-form-item
+            label="维修数量:"
+            prop="repair_number">
+            <el-input
+              :maxlength="20"
+              v-model="form.repair_number"
+              placeholder="请输入维修数量"
+              clearable/>
+          </el-form-item>
         </el-col>
       </el-row>
       <el-form-item label="不良现象" prop="bad_phenomenon">
@@ -177,6 +186,21 @@ export default {
                 callback();
               }
             },
+            required: true,
+            trigger: 'blur'
+          }
+        ],
+        repair_number:[
+          {
+            validator: (bad_number, value, callback) => {
+              const intValue = Number(value);
+              if (!Number.isInteger(intValue) || intValue < 0) {
+                callback(new Error('数量必须为大于0的整数'));
+              } else {
+                callback();
+              }
+            },
+            required: true,
             trigger: 'blur'
           }
         ]
@@ -212,7 +236,6 @@ export default {
       repair_time: null,
       //不良现象返回值
       bad_phenomenonlist: [],
-      bad_phenomenon: '',
       analysislist:[],
       solutionlist:[],
       namelist:[],
