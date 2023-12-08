@@ -99,8 +99,8 @@ def SuggestionAdd(request):
         feedback = form.cleaned_data.get('feedback')
 
         # 处理富文本内容
-        content = saveEditContent(content, commit_user, "feedback")
-        feedback = saveEditContent(feedback, commit_user, "feedback")
+        content = saveEditContent(content, commit_user, "suggestion")
+        feedback = saveEditContent(feedback, commit_user, "suggestion")
 
         # 创建数据
         Suggestion.objects.create(
@@ -187,8 +187,8 @@ def SuggestionUpdate(request):
         status = 1;
 
     # 处理富文本内容
-    content = saveEditContent(content, commit_user, "feedback")
-    feedback = saveEditContent(feedback, commit_user, "feedback")
+    content = saveEditContent(content, commit_user, "suggestion")
+    feedback = saveEditContent(feedback, commit_user, "suggestion")
 
     # 对象赋值
     suggestion.commit_user = commit_user
