@@ -32,6 +32,6 @@ TABLE_PREFIX = "django_"
 # 图片地址
 IMAGE_URL = "http://0.0.0.0:8000"
 # 附件存储目录
-ATTACHMENT_PATH = "/home/work/PMS/pmsAdmin/public/uploads"
+ATTACHMENT_PATH = "/home/zhan/work/PMS/pmsAdmin/public/uploads"
 IMAGE_PATH = '{}/images'.format(ATTACHMENT_PATH)
 TEMP_PATH = '{}/temp'.format(ATTACHMENT_PATH)
