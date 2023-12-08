@@ -98,7 +98,7 @@ def saveEditContent(content, title, dirname):
         # 保存图片至本地
         image = saveImage(url, dirname)
         if image:
-            content = content.replace(url, "[IMG_URL]" + image)
+            content = content.replace(url, IMAGE_URL + image)
 
     # 设置alt标题
     if content.find("alt=\"\"") and title != "":

@@ -102,6 +102,7 @@ urlpatterns = ([
     path('repairreport/', include('application.repairreport.urls')),
     # 意见反馈总路由
     path('suggestion/', include('application.suggestion.urls')),
+    path('feedback/', include('application.suggestion.urls')),
     # 质检报表总路由
     path('inspectreport/', include('application.inspectreport.urls')),
     # 烧录报表
@@ -120,5 +121,5 @@ urlpatterns = ([
     path('workplace/', include('application.workplace.urls')),
     #综合看版
     path('comprehensive/', include('application.comprehensive.urls')),
-] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0]) #地址映射静态资源
-+ static(settings.UPLOADS_URL, document_root=settings.STATICFILES_DIRS[1]))
+] + static(settings.TEMP_URL, document_root=settings.STATICFILES_DIRS[2])
++ static(settings.IMAGES_URL, document_root=settings.STATICFILES_DIRS[3]))

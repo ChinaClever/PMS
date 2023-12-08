@@ -229,8 +229,12 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "public/static"),
     os.path.join(BASE_DIR, "public/uploads"),
+    os.path.join(BASE_DIR, "public/uploads/temp"),
+    os.path.join(BASE_DIR, "public/uploads/images"),
 ]
 UPLOADS_URL = '/uploads/'
+TEMP_URL = '/temp/'
+IMAGES_URL = '/images/'
 
 
 
