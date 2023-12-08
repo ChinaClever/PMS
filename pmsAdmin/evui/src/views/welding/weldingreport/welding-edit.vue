@@ -193,6 +193,9 @@
           product_name: [
           {required: true, message: '请输入产品名称', trigger: 'blur'}
         ],
+          work_hours: [
+          {required: true, message: '请输入工时', trigger: 'blur'}
+        ],
           product_count: [
           {required: true, message: '请输入产品数量', trigger: 'blur'}
         ],

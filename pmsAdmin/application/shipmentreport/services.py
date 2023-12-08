@@ -2,6 +2,7 @@ import logging
 import json
 from datetime import datetime
 
+from django.core.files.uploadedfile import UploadedFile
 from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage, EmptyPage
 from django.db import transaction
 from django.db.models import Q
@@ -33,7 +34,6 @@ def ShipmentReportList(request):
         query = query.filter(
             Q(client_name__icontains=keyword) |
             Q(product_name__icontains=keyword) |
-            Q(product_code__icontains=keyword) |
             Q(work_order__icontains=keyword)
         )
     # 筛选年份(前端默认展示当前年)
@@ -138,6 +138,7 @@ def ShipmentReportDetail(shipment_id):
 
 @transaction.atomic
 def ShipmentReportAdd(request):
+    print(request.body.decode())
     try:
         # 接收请求参数
         json_data = request.body.decode()
@@ -146,9 +147,18 @@ def ShipmentReportAdd(request):
             return R.failed("参数不能为空")
         # 数据类型转换
         dict_data = json.loads(json_data)
+
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
+    # files = request.FILES.getlist('files')
+    # filecount = 0
+    # for file in files:
+    #     if isinstance(file, UploadedFile):
+    #         # 在这里处理上传的文件，例如保存到服务器或进行进一步的处理
+    #         # 例如：file.save('uploaded_files/' + file.name)
+    #         filecount += 1
+    #         pass
 
     work_order = dict_data.get('work_order')
     client_name = dict_data.get('client_name')
@@ -171,19 +181,17 @@ def ShipmentReportAdd(request):
         shape=shape,
         order_date=order_date,
         delivery_date=delivery_date,
-        finish_date=finish_date if remark else None,
+        finish_date=finish_date if finish_date else None,
         product_count=product_count,
         SO_RQ_id=SO_RQ_id,
         product_module=product_module,
         remark=remark if remark else None,
         create_user=uid(request)
         )
-    # 将新的product_name存储到Product表中
-    product_name_list= ProductNameList(request)
-    if not product_name_list:
-        return R.failed('无法获取产品名字列表')
 
-    if product_name not in [item['value'] for item in product_name_list]:
+    product = Product.objects.filter(product_code=product_code, is_delete=False).first()
+    # 查询结果判断
+    if not product:
         Product.objects.create(
             product_code=product_code,
             product_name=product_name,
@@ -217,6 +225,7 @@ def ShipmentReportUpdate(request):
         shape = dict_data.get('shape')
         order_date = dict_data.get('order_date')
         delivery_date = dict_data.get('delivery_date')
+        update_delivery_date = dict_data.get('update_delivery_date')
         finish_date = dict_data.get('finish_date')
         product_count = dict_data.get('product_count')
         SO_RQ_id = dict_data.get('SO_RQ_id')
@@ -239,6 +248,7 @@ def ShipmentReportUpdate(request):
         shipment.order_date = order_date
         shipment.delivery_date = delivery_date
         shipment.finish_date = finish_date
+        shipment.update_delivery_date = update_delivery_date
         shipment.product_count = product_count
         shipment.SO_RQ_id = SO_RQ_id
         shipment.remark = remark
@@ -249,7 +259,7 @@ def ShipmentReportUpdate(request):
         product = Product.objects.filter(is_delete=False, product_code=origin_product_code).first()
         # 查询结果判断
         if not product:
-            return R.failed("product数据不存在")
+            return R.failed("产品数据不存在")
         product.product_code = product_code
         product.product_name = product_name
         product.shape = shape
@@ -260,7 +270,6 @@ def ShipmentReportUpdate(request):
         return R.ok(msg="更新成功")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
-        print(e)
         return R.failed("参数错误")
 
 def ShipmentReportDelete(shipment_id):
@@ -301,7 +310,7 @@ def SelectProdcutDetailByProductCode(product_code):
     }
     return data
 
-# 获取所有产品名称
+# 获取所有产品名称（不重复）
 def ProductNameList(request):
     productNameList = Product.objects.filter(is_delete=False)
     result = []
@@ -357,4 +366,17 @@ def SelectShipmentDetailByWorkOrder(work_order):
     }
     # 返回结果
     return data
+
+# def uploadFile(request):
+#     if request.method == 'POST':
+#         files = request.FILES.getlist('files')
+#
+#         for file in files:
+#             if isinstance(file, UploadedFile):
+#                 # 在这里处理上传的文件，例如保存到服务器或进行进一步的处理
+#                 # 例如：file.save('uploaded_files/' + file.name)
+#                 pass
+#         return R.ok(msg="文件上传成功")
+#     else:
+#         return R.failed('文件上传失败')
 

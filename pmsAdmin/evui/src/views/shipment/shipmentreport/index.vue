@@ -14,7 +14,7 @@
                 <el-input
                   clearable
                   v-model="where.keyword"
-                  placeholder="工单号、成品编码、客户名称、产品名称"/>
+                  placeholder="工单号、客户名称、产品名称"/>
               </el-form-item>
             </el-col>
 
