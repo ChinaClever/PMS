@@ -3,7 +3,7 @@
   <el-dialog
     :title="isUpdate?'修改意见':'添加意见'"
     :visible="visible"
-    width="1100px"
+    width="1400px"
     :destroy-on-close="true"
     :lock-scroll="false"
     @update:visible="updateVisible">
@@ -54,20 +54,10 @@
         </el-col>
       </el-row>
       <el-form-item label="需求或建议:" prop="content">
-                  <el-input
-                    v-model="form.content"
-                    :rows="4"
-                    maxlength="200"
-                    show-word-limit
-                    type="textarea"/>
-        </el-form-item>
+        <tinymce-editor v-model="form.content" :init="initEditor"/>
+      </el-form-item>
       <el-form-item label="反馈意见:" prop="feedback" v-if="permission.includes('sys:feedback:status')">
-                  <el-input
-                    v-model="form.feedback"
-                    :rows="4"
-                    maxlength="200"
-                    show-word-limit
-                    type="textarea"/>
+        <tinymce-editor v-model="form.feedback" :init="initEditor"/>
         </el-form-item>
     </el-form>
     <div slot="footer">
@@ -83,9 +73,11 @@
 
 <script>
 import { mapGetters } from "vuex";
+import TinymceEditor from '@/components/TinymceEditor';
 
 export default {
   name: 'NoticeEdit',
+  components: {TinymceEditor},
   props: {
     // 弹窗是否打开
     visible: Boolean,
@@ -141,6 +133,39 @@ export default {
   },
   computed: {
     ...mapGetters(["permission"]),
+    // 初始化富文本
+    initEditor() {
+      return {
+        height: 300,
+        branding: false,
+        skin_url: '/tinymce/skins/ui/oxide',
+        content_css: '/tinymce/skins/content/default/content.css',
+        language_url: '/tinymce/langs/zh_CN.js',
+        language: 'zh_CN',
+        plugins: 'code print preview fullscreen paste searchreplace save autosave link autolink image imagetools media table codesample lists advlist hr charmap emoticons anchor directionality pagebreak quickbars nonbreaking visualblocks visualchars wordcount',
+        toolbar: 'fullscreen preview code | undo redo | forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | formatselect fontselect fontsizeselect | link image media emoticons charmap anchor pagebreak codesample | ltr rtl',
+        toolbar_drawer: 'sliding',
+        images_upload_handler: (blobInfo, success, error) => {
+          let file = blobInfo.blob();
+          // 使用axios上传
+          const formData = new FormData();
+          formData.append('file', file, file.name);
+          this.$http.post('/upload/uploadImage', formData).then(res => {
+            if (res.data.code == 0) {
+              success(res.data.data.fileUrl);
+            } else {
+              error(res.data.msg);
+            }
+          }).catch(e => {
+            console.error(e);
+            error(e.message);
+          });
+        },
+        file_picker_types: 'media',
+        file_picker_callback: () => {
+        }
+      }
+    },
   },
   methods: {
     /* 保存编辑 */

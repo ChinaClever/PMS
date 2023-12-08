@@ -38,8 +38,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from application import settings
+from django.conf.urls.static import static
 
-urlpatterns = [
+urlpatterns = ([
     path('admin/', admin.site.urls),
     # 登录页
     path('', include('application.login.urls')),
@@ -118,4 +120,5 @@ urlpatterns = [
     path('workplace/', include('application.workplace.urls')),
     #综合看版
     path('comprehensive/', include('application.comprehensive.urls')),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0]) #地址映射静态资源
++ static(settings.UPLOADS_URL, document_root=settings.STATICFILES_DIRS[1]))

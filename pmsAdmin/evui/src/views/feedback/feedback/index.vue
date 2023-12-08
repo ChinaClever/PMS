@@ -133,7 +133,8 @@
             width="1000"
             trigger="click"
             :content=row.content>
-            <el-button slot="reference">{{ row.content }}</el-button>
+            <div v-html="row.content"></div>
+            <el-button slot="reference">点击查看</el-button>
           </el-popover>
         </template>
         <template slot="expand_2" slot-scope="{row}" v-if="row.feedback">
@@ -143,7 +144,8 @@
             width="1000"
             trigger="click"
             :content=row.feedback>
-            <el-button slot="reference">{{ row.feedback }}</el-button>
+            <div v-html="row.feedback"></div>
+            <el-button slot="reference">点击查看</el-button>
           </el-popover>
         </template>
       </ele-pro-table>
