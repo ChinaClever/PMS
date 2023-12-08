@@ -178,7 +178,7 @@ export default {
         ],
         bad_number:[
           {
-            validator: (bad_number, value, callback) => {
+            validator: (rule, value, callback) => {
               const intValue = Number(value);
               if (!Number.isInteger(intValue) || intValue < 0) {
                 callback(new Error('数量必须为大于0的整数'));
@@ -192,11 +192,16 @@ export default {
         ],
         repair_number:[
           {
-            validator: (bad_number, value, callback) => {
+            validator: (rule, value, callback) => {
               const intValue = Number(value);
+              const badValue= this.form.bad_number
+
               if (!Number.isInteger(intValue) || intValue < 0) {
                 callback(new Error('数量必须为大于0的整数'));
-              } else {
+              } else if(intValue>badValue){
+                callback(new Error('维修数量必须小于等于不良数量'))
+              }
+              else {
                 callback();
               }
             },
@@ -257,7 +262,6 @@ export default {
     ...mapGetters(["permission"])
     },
   methods: {
-  /* 保存编辑 */
     formatDateTime(date1) {//修改时间格式
       var date = new Date(date1);
       var month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -266,6 +270,7 @@ export default {
       var minutes = ("0" + date.getMinutes()).slice(-2);
       return date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
     },
+    /* 保存编辑 */
     save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {

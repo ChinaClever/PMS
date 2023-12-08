@@ -25,7 +25,7 @@ import json
 import logging
 
 from django.core.paginator import Paginator
-
+from datetime import datetime#改时间格式
 from application.supplier import forms
 from application.supplier.models import Dict
 from constant.constants import PAGE_LIMIT
@@ -47,6 +47,13 @@ def DictList(request):#查询设置，从前端返回order_id字段，再到数�
     work_order = request.GET.get('work_order')#前端返回的字段
     if work_order:
         query = query.filter(work_order__contains=work_order)
+    #时间筛选
+    selectStartDate = request.GET.get('selectStartDate')
+    selectEndDate = request.GET.get('selectEndDate')
+    if selectStartDate and selectEndDate:
+        start_date = datetime.strptime(selectStartDate, "%Y-%m-%d")
+        end_date = datetime.strptime(selectEndDate, "%Y-%m-%d")
+        query = query.filter(create_time__date_gte=start_date, create_time__date_lte=end_date)
     # 排序
     #query = query.order_by("-id")
     # 排序

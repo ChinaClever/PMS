@@ -10,33 +10,20 @@
         @submit.native.prevent>
         <el-row :gutter="10">
           <el-col :span="6">
-            <el-select v-model="selectedOption" placeholder="请选择时间范围" @change="calculateTimeRange">
-                <el-option label="一天" value="day"></el-option>
-                <el-option label="一周" value="week"></el-option>
-                <el-option label="一个月" value="month"></el-option>
-                <el-option label="一年" value="year"></el-option>
-            </el-select>
-          </el-col>
-          <el-col :span="6">
-            <el-date-picker 
-                ref="startDatePicker"
-                v-model="where.customStartTime" 
-                type="datetime"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                placeholder="开始时间" 
-                @change="changeCustomTime">
-            </el-date-picker>
-          </el-col>
-          <el-col :span="6">
-            <el-date-picker 
-                ref="endDatePicker"
-                v-model="where.customEndTime"
-                type="datetime"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                placeholder="结束时间" 
-                @change="changeCustomTime">
-            </el-date-picker>
-          </el-col>
+              <el-date-picker
+                v-model="selectDateRange"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="订单日期开始日期"
+                end-placeholder="订单日期结束日期"
+                format="yyyy 年 MM 月 dd 日"
+                value-format="yyyy-MM-dd"
+                :picker-options="pickerOptions"
+                @change="dateRangeHandleSelect">
+              </el-date-picker>
+            </el-col>
           <el-col :lg="6" :md="12">
             <div class="ele-form-actions">
               <el-button
@@ -105,11 +92,12 @@
           ],
 
           yAxis:[
-           {
+            {
+              name: '数量',
               type: 'value',
-              min:0,
-              max:10,
-              interval:2,  //纵坐标刻度
+              data: this.saleroomData.map(d => d.bad_total),
+
+              interval:10,  //纵坐标刻度
             },
 
           ],
@@ -129,7 +117,7 @@
               barGap: '-100%', // 负值使柱子重叠
               z: -1 ,// 调整柱状图层级，使其在底层
               itemStyle:{
-                color: function(params) {
+                color: function() {
                   return 'orange';
                 }
               }
@@ -144,7 +132,7 @@
                 color: 'rgba(180, 180, 180, 0.2)'
               },
               itemStyle:{
-                color: function(params) {
+                color: function() {
                   return 'blue';
                 }
               }
@@ -206,22 +194,76 @@
             minWidth: 100,
           },
         ],
+        pickerOptions: {
+          shortcuts: [{
+            text: '最近一天',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 );
+              picker.$emit('pick', [start, end]);
+            }
+          },
+            {
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+              text: '最近一个月',
+              onClick(picker) {
+                const end = new Date();
+                const start = new Date();
+                start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                picker.$emit('pick', [start, end]);
+              }
+            }, {
+              text: '最近三个月',
+              onClick(picker) {
+                const end = new Date();
+                const start = new Date();
+                start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                picker.$emit('pick', [start, end]);
+              }
+            },{
+              text: '最近半年',
+              onClick(picker) {
+                const end = new Date();
+                const start = new Date();
+                start.setTime(start.getTime() - 3600 * 1000 * 24 * 30 * 6);
+                picker.$emit('pick', [start, end]);
+              }
+            }, {
+              text: '最近一年',
+              onClick(picker) {
+                const end = new Date();
+                const start = new Date();
+                start.setTime(start.getTime() - 3600 * 1000 * 24 * 30 * 12);
+                picker.$emit('pick', [start, end]);
+              }
+            }
+          ]
+        },
+        //时间筛选
+        selectDateRange:'',
         saleroomData: [],
         // 表格搜索条件
         where: {},
-        selectedOption: 'day',
       };
     },
     created() {
-        this.calculateTimeRange();
-        this.loading = true;
-        const condition = {
-          startTime: this.where.startTime,
-          endTime: this.where.endTime,
 
-        };
-        this.$http.get('/repairreport/listOf',{params: condition}).then((res) => {
-        //this.$http.get('/repairreport/listOf').then((res) => {
+        this.loading = true;
+        // const condition = {
+        //   startTime: this.where.startTime,
+        //   endTime: this.where.endTime,
+
+        // };
+        this.$http.get('/repairreport/listOf').then((res) => {
+
         this.loading = false;
         if (res.data.code === 0) {
             this.saleroomData = res.data.data
@@ -234,40 +276,20 @@
         this.$message.error(e.message);
         });
     },
-    mounted() {
-      this.getSaleroomData();
-    },
-    methods: {
-      // getSaleroomData(){
-      //   this.saleroomData = [
-      //       {month: 'IP', value: 81},
-      //       {month: 'BM', value: 54},
-      //       {month: 'SI', value: 91},
-      //       {month: 'MPDU-Pro', value: 78},
-      //
-      //     ];
-      // },
-      getSaleroomData(){
-        // const months = ['IP','BM','SI','MPDU-Pro'];
-        // this.saleroomData = months.map(month =>({
-        //   month,
-        //   value:Math.floor(Math.random()*100)
-        // }))
 
-        this.saleroomData = [
-             {month: this.saleroomData.map(d => d.item_number), value: this.saleroomData.map(d => d.num),color:this.saleroomData.map(d => d.color)},
-           ];
+    methods: {
+      //向后端传时间
+      dateRangeHandleSelect(){
+        this.where.startTime = this.selectDateRange[0]
+        this.where.endTime = this.selectDateRange[1]
       },
+
+
       reload() {
-        if(this.where.customStartTime && this.where.customEndTime){
-            this.where.startTime = this.where.customStartTime;
-            this.where.endTime = this.where.customEndTime;
-            this.where.customStartTime = null;
-            this.where.customEndTime = null;
-        }
+
         this.$refs.table.reload({page: 1, where: this.where});
         const condition = {
-          startTime: this.where.startTime,
+          startTime: this.where.startTime ,
           endTime: this.where.endTime,
 
         };
@@ -283,49 +305,14 @@
         this.loading = false;
         this.$message.error(e.message);
         });
-        this.where = {};
       },
-      changeCustomTime(){
-        this.where.startTime = null;
-        this.where.endTime = null;
-        this.selectedOption = '';
-      },
+
       reset() {
         this.where = {};
-        this.selectedOption = '';
+
         this.reload();
       },
-      calculateTimeRange() {
-        const now = new Date();
-        let startDate, endDate;
-        if (this.selectedOption === 'day') {
-            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(),0,0,0);
-            endDate = now;
-        } else if (this.selectedOption === 'week') {
-            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6, 0, 0, 0);
-            endDate = now;
-        } else if (this.selectedOption === 'month') {
-            startDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate(), 0, 0, 0);
-            endDate = now;
-        } else if (this.selectedOption === 'year') {
-            startDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate(), 0, 0, 0);
-            endDate = now;
-        }
-        this.where = {};
-        this.where.startTime = this.formatDate(startDate);
-        this.where.endTime = this.formatDate(endDate);
-      },
-      formatDate(date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
 
-        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-       }
-  
     },
     activated() {
       ['saleChart', ].forEach((name) => {

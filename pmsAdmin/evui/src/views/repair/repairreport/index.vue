@@ -1,7 +1,7 @@
 <template>
     <div class="ele-body">
       <el-card shadow="never">
-        <!-- 意见反馈表单 -->
+        <!-- 维修报表表单 -->
         <el-form
           :model="where"
           label-width="77px"
@@ -25,6 +25,22 @@
                   placeholder="请输入工单号"/>
               </el-form-item>
             </el-col>
+            <el-col :span="6">
+              <el-date-picker
+                v-model="selectDateRange"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="订单日期开始日期"
+                end-placeholder="订单日期结束日期"
+                format="yyyy 年 MM 月 dd 日"
+                value-format="yyyy-MM-dd"
+                :picker-options="pickerOptions"
+                @change="dateRangeHandleSelect">
+              </el-date-picker>
+            </el-col>
+
             <!--<el-col span="6">
               <el-form-item label="状态:">
                 <el-select
@@ -99,6 +115,15 @@
               class="ele-btn-icon"
               @click="removeBatch"
               v-if="permission.includes('sys:repairreport:dall')">删除
+            </el-button>
+            <!-- 导出按钮 -->
+            <el-button
+              size="small"
+              type="success"
+              icon="el-icon-download"
+              class="ele-btn-icon"
+              @click="exportToExcel"
+              v-if="selection.length > 0">导出
             </el-button>
           </template>
           <!-- 操作列 -->
@@ -187,6 +212,9 @@
   <script>
   import { mapGetters } from "vuex";
   import RepairreportEdit from './repairreport-edit';
+  import XLSX from 'xlsx'
+  import { saveAs } from 'file-saver';
+
 
   export default {
     name: 'repairreport',
@@ -205,14 +233,6 @@
             type: 'selection',
             width: 45,
             align: 'center',
-            fixed: "left"
-          },
-          {
-            prop: 'id',
-            label: 'ID',
-            width: 60,
-            align: 'center',
-            showOverflowTooltip: true,
             fixed: "left"
           },
           {
@@ -257,30 +277,7 @@
             align: 'center',
             slot: 'expand_1',
           },
-          /*{
-            prop: 'type',
-            label: '类型',
-            showOverflowTooltip: true,
-            minWidth: 100,
-            align: 'center',
-            resizable: false,
-            slot: 'type',
-          },
-          {
-            prop: 'content',
-            label: '需求或建议',
-            width: 150,
-            align: 'center',
-            slot: 'expand_1',
-          },
-          {
-            prop: 'status',
-            label: '状态',
-            minWidth: 100,
-            align: 'center',
-            resizable: false,
-            slot: 'status',
-          },*/
+
           {
             prop: 'analysis',
             label: '原因分析',
@@ -295,20 +292,7 @@
             align: 'center',
             slot: 'expand_3',
           },
-          /*{
-            prop: 'priority',
-            label: '优先级',
-            sortable: 'custom',
-            showOverflowTooltip: true,
-            minWidth: 95,
-            align: 'center',
-            order: '', // 初始化排序方式为空字符串
-            sortableMethod: ()=> {
-              // 在这里实现自定义的排序逻辑
-              this.where.order = this.order;
-              this.reload();
-            }
-          },*/
+
           {
             prop: 'notes',
             label: '备注',
@@ -361,6 +345,52 @@
         }
 
         ],
+         pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          },{
+            text: '最近半年',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30 * 6);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一年',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30 * 12);
+              picker.$emit('pick', [start, end]);
+            }
+          }
+        ]
+        },
+        //时间筛选
+        selectDateRange:'',
         // 表格搜索条件
         where: {},
         // 表格选中数据
@@ -372,6 +402,11 @@
       };
     },
     methods: {
+      //向后端传时间
+      dateRangeHandleSelect(){
+        this.where.selectStartDate = this.selectDateRange[0]
+        this.where.selectEndDate = this.selectDateRange[1]
+      },
       /* 刷新表格 */
       reload() {
         this.$refs.table.reload({page: 1, where: this.where});
@@ -445,23 +480,58 @@
         }).catch(() => {
         });
       },
-      /* 更改状态 */
-      editStatus(row) {
-        const loading = this.$loading({lock: true});
-        this.$http.put('/notice/status',  {id: row.id, status: row.status}).then(res => {
-          loading.close();
-          if (res.data.code === 0) {
-            this.$message({type: 'success', message: res.data.msg});
-          } else {
-            row.status = !row.status ? 1 : 2;
-            this.$message.error(res.data.msg);
-          }
-        }).catch(e => {
-          loading.close();
-          this.$message.error(e.message);
-        });
-      },
+      exportToExcel() {
+       // 创建 Excel 文件
+      const workbook = XLSX.utils.book_new();
+      //去除不需要的字段，这里我不希望显示id，所以id不返回
+      let temp = this.selection;
+      // eslint-disable-next-line
+      this.selection = this.selection.map(({ id, ...rest }) => rest);
 
+      console.log(this.selection)
+      const worksheet = XLSX.utils.json_to_sheet(this.selection);
+
+      // 获取字段名称（中文）
+      const header = this.columns
+        .slice(1, -1) // 排除排除第一列和最后一列,这里我排除的是我的id列和操作列
+        .map(column => column.label);
+
+      // 获取要导出的数据（排除第一列和最后一列）
+      const data = this.selection.map(row =>
+        this.columns
+          .slice(1, -1) // 排除第一列和最后一列
+          .map(column => row[column.prop])
+      );
+
+      // 将字段名称添加到 Excel 文件中
+      XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: 'A1' });
+
+      // 将数据添加到 Excel 文件中
+      XLSX.utils.sheet_add_aoa(worksheet, data, { origin: 'A2' });
+
+      // 将工作表添加到工作簿中
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+      // 保存 Excel 文件
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+      // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
+      const fileName = '维修报表.xlsx';
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+      const date = String(currentDate.getDate()).padStart(2, '0');
+      const hours = String(currentDate.getHours()).padStart(2, '0');
+      const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+      const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+      const formattedDate = `${year}年${month}月${date}日${hours}时${minutes}分${seconds}秒`;
+      const newFileName = `${fileName.split('.')[0]}_${formattedDate}.${fileName.split('.')[1]}`;
+
+      saveAs(blob, newFileName);
+      this.selection = temp;
+      
+      }
     }
   }
   </script>

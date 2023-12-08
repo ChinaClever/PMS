@@ -25,6 +25,7 @@ import json
 import logging
 from application.user.services import UserDetail#绑定维修员真实id
 from django.core.paginator import Paginator
+from datetime import datetime#改时间格式
 from django.db.models import Q#查询用的
 from application.repairreport import forms
 from application.repairreport.models import Dict
@@ -50,6 +51,14 @@ def DictList(request):#查询设置，从前端返回order_id字段，再到数�
     repair_user = request.GET.get('repair_user')
     if repair_user:
        query = query.filter(repair_user__contains=repair_user)
+    #时间筛选
+    selectStartDate = request.GET.get('selectStartDate')
+    selectEndDate = request.GET.get('selectEndDate')
+    if selectStartDate and selectEndDate:
+        start_date = datetime.strptime(selectStartDate, "%Y-%m-%d").date()
+        end_date = datetime.strptime(selectEndDate, "%Y-%m-%d").date()
+        query = query.filter(create_time__date__gte=start_date, create_time__date__lte=end_date)
+
 
     # 按关键字查询
     # keyword = request.GET.get('keyword')
@@ -359,7 +368,7 @@ def RepairreportListOfTotal(request):
         startTime = startTime.replace("+", " ")
         endTime = endTime.replace("+", " ")
         #sql = 'SELECT item_number,sum(examine_an_amount) AS total,sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 AND start_time >= ' + str(startTime) + ' AND end_time <= ' + str(endTime)+ " GROUP BY item_number" + " limit " + str(limit)
-        sql = "SELECT id,name, bad_number, repair_number, analysis,sum(bad_number) AS bad_total, sum(repair_number) AS repair_total FROM django_repairreport WHERE is_delete = 0  AND create_time >= %s AND create_time <= %s GROUP BY id"
+        sql = "SELECT id,name, bad_number, repair_number, analysis,sum(bad_number) AS bad_total, sum(repair_number) AS repair_total FROM django_repairreport WHERE is_delete = 0  AND DATE(create_time) >= %s AND DATE(create_time) <= %s GROUP BY id"
         query = Dict.objects.raw(sql,[startTime, endTime])
         # 设置分页
         paginator = Paginator(query, limit)
@@ -381,6 +390,7 @@ def RepairreportListOfTotal(request):
             data = {
                 'id': item.id,
                 'name': item.name,
+                'bad_number':item.bad_number,
                 'bad_phenomenon': item.bad_phenomenon,
                 'analysis':item.analysis,
                 'repair_total':item.repair_total,
@@ -405,7 +415,7 @@ def RepairreportListOfTotal1(request):
         startTime = startTime.replace("+", " ")
         endTime = endTime.replace("+", " ")
         #sql = 'SELECT item_number,sum(examine_an_amount) AS total,sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 AND start_time >= ' + str(startTime) + ' AND end_time <= ' + str(endTime)+ " GROUP BY item_number" + " limit " + str(limit)
-        sql = "SELECT id,name, sum(bad_number) AS bad_total, sum(repair_number) AS repair_total FROM django_repairreport WHERE is_delete = 0  AND create_time >= %s AND create_time <= %s GROUP BY name "
+        sql = "SELECT id,name, sum(bad_number) AS bad_total, sum(repair_number) AS repair_total FROM django_repairreport WHERE is_delete = 0  AND DATE(create_time) >= %s AND DATE(create_time) <= %s GROUP BY name "
         query = Dict.objects.raw(sql,[startTime, endTime])
         # 设置分页
         paginator = Paginator(query, limit)
@@ -421,7 +431,7 @@ def RepairreportListOfTotal1(request):
     # 实例化结果
     result = []
     # 遍历数据源
-    if len(producerecord_list) > 0:
+    if len(producerecord_list) > 0 and len(producerecord_list)<20 :
         for item in producerecord_list:
             item.rate=str(item.repair_total)+str("/")+str(item.bad_total)
             data = {
@@ -447,6 +457,10 @@ def QuestionList(request):
     work_order1 = request.GET.get('work_order1')
     name = request.GET.get('name')
     work_order = request.GET.get('work_order')
+    startTime  = request.GET.get('selectStartDate')
+    endTime = request.GET.get('selectEndDate')
+
+
     if name1 :
         # sql = 'SELECT item_number,sum(examine_an_amount) AS total,sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 AND start_time >= ' + str(startTime) + ' AND end_time <= ' + str(endTime)+ " GROUP BY item_number" + " limit " + str(limit)
         sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0"
@@ -458,6 +472,10 @@ def QuestionList(request):
         if name:
             conditions.append("name LIKE %s")
             params.append(f"%{name}%")
+        if startTime and endTime:
+            conditions.append("DATE(create_time) >= %s AND DATE(create_time) <= %s")
+            params.append(startTime)
+            params.append(endTime)
         if conditions:
             sql += " AND " + " AND ".join(conditions)
         sql += " GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
@@ -485,14 +503,33 @@ def QuestionList(request):
         if name:
             conditions.append("name LIKE %s")
             params.append(f"%{name}%")
+        if startTime and endTime:
+            conditions.append("DATE(create_time) >= %s AND DATE(create_time) <= %s")
+            params.append(startTime)
+            params.append(endTime)
         if conditions:
             sql += " AND " + " AND ".join(conditions)
         sql += " GROUP BY work_order, bad_phenomenon ORDER BY work_order, num DESC"
         query = Dict.objects.raw(sql, params)
         paginator = Paginator(query, limit)
     else :
-        sql = "SELECT id,name, work_order, bad_phenomenon, count( bad_phenomenon) as num  FROM django_repairreport WHERE is_delete = 0 GROUP BY name ,bad_phenomenon ORDER BY name,num Desc"
-        query = Dict.objects.raw(sql)
+        sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0"
+        params = []
+        conditions = []
+        if work_order:
+            conditions.append("work_order LIKE %s")
+            params.append(f"%{work_order}%")
+        if name:
+            conditions.append("name LIKE %s")
+            params.append(f"%{name}%")
+        if startTime and endTime:
+            conditions.append("DATE(create_time) >= %s AND DATE(create_time) <= %s")
+            params.append(startTime)
+            params.append(endTime)
+        if conditions:
+            sql += " AND " + " AND ".join(conditions)
+        sql += " GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
+        query = Dict.objects.raw(sql, params)
         paginator = Paginator(query, limit)
     # 记录总数
     count = paginator.count

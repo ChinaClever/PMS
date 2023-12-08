@@ -17,6 +17,21 @@
                 placeholder="请输入工单号"/>
             </el-form-item>
           </el-col>
+          <el-col :span="6">
+              <el-date-picker
+                v-model="selectDateRange"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="订单日期开始日期"
+                end-placeholder="订单日期结束日期"
+                format="yyyy 年 MM 月 dd 日"
+                value-format="yyyy-MM-dd"
+                :picker-options="pickerOptions"
+                @change="dateRangeHandleSelect">
+              </el-date-picker>
+            </el-col>
           <el-col :lg="6" :md="12">
             <div class="ele-form-actions">
               <el-button
@@ -40,6 +55,15 @@
         height="calc(100vh - 315px)">
         <!-- 表头工具栏 -->
         <template slot="toolbar">
+          <!-- 导出按钮 -->
+          <el-button
+            size="small"
+            type="success"
+            icon="el-icon-download"
+            class="ele-btn-icon"
+            @click="exportToExcel"
+            v-if="selection.length > 0">导出
+          </el-button>
           <el-button
             size="small"
             type="primary"
@@ -228,6 +252,52 @@ export default {
           fixed: "right"
         }
       ],
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          },{
+            text: '最近半年',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30 * 6);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一年',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30 * 12);
+              picker.$emit('pick', [start, end]);
+            }
+          }
+        ]
+      },
+      //时间筛选
+      selectDateRange:'',
       // 表格搜索条件
       where: {},
       // 表格选中数据
@@ -241,6 +311,11 @@ export default {
     };
   },
   methods: {
+    //向后端传时间
+    dateRangeHandleSelect(){
+      this.where.selectStartDate = this.selectDateRange[0]
+      this.where.selectEndDate = this.selectDateRange[1]
+    },
     sortableMethod: ()=> {
             // 在这里实现自定义的排序逻辑
             this.where.order = this.order;
