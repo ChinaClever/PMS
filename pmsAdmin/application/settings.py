@@ -116,7 +116,7 @@ INSTALLED_APPS = [
     'application.menu',
     'application.config_web',
     'application.upload',
-    #'application.supplier',
+    'application.supplier',
     'application.repairreport',
     'application.suggestion',
     'application.inspectreport',
@@ -131,6 +131,7 @@ INSTALLED_APPS = [
     'application.shipmentreport',
     'application.mac',
     'application.workplace',
+    'application.comprehensive'
 
 ]
 
@@ -227,7 +228,11 @@ USE_TZ = False
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "public/static"),
+    os.path.join(BASE_DIR, "public/uploads"),
 ]
+UPLOADS_URL = '/uploads/'
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

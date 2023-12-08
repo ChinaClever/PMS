@@ -81,6 +81,11 @@ class DictForm(forms.ModelForm):
             'required': '不良数量不能为空',
         }
     )
+    repair_number = forms.IntegerField(
+        error_messages={
+            'required': '维修数量不能为空',
+        }
+    )
     bad_phenomenon = forms.CharField(
         required=False,
         max_length=150,
@@ -121,4 +126,4 @@ class DictForm(forms.ModelForm):
         model = models.Dict
         # 指定部分字段验证
         #fields = ['name', 'code', 'sort', 'note']
-        fields = ['name','work_order','bad_number','bad_phenomenon','analysis','solution','notes','repair_time']
+        fields = ['name','work_order','bad_number','repair_number','bad_phenomenon','analysis','solution','notes','repair_time']
