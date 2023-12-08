@@ -9,12 +9,10 @@
         @keyup.enter.native="reload"
         @submit.native.prevent>
         <el-row :gutter="10">
-          <el-col :span="6">
+          <el-col :lg="6" :md="12">
             <el-date-picker
                 v-model="selectDateRange"
                 type="daterange"
-                align="right"
-                unlink-panels
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"

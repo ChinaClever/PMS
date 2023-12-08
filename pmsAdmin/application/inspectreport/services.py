@@ -34,7 +34,11 @@ def InspectreportList(request):
     signal = request.GET.get('signal')
     if signal:
         query = query.filter(signal=signal)
-
+    # 时间
+    startTime = request.GET.get('startTime')
+    endTime = request.GET.get('endTime')
+    if startTime and endTime:
+        query = query.filter(start_time__gte=startTime).filter(start_time__lte=endTime)
     # 排序
     sort = request.GET.get('sort')
     order = request.GET.get('order')
