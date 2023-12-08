@@ -98,6 +98,10 @@ def SuggestionAdd(request):
         # 反馈
         feedback = form.cleaned_data.get('feedback')
 
+        # 处理富文本内容
+        content = saveEditContent(content, commit_user, "suggestion")
+        feedback = saveEditContent(feedback, commit_user, "suggestion")
+
         # 创建数据
         Suggestion.objects.create(
             commit_user=commit_user,
@@ -181,6 +185,10 @@ def SuggestionUpdate(request):
         return R.failed("意见反馈不存在")
     if suggestion.content != content:
         status = 1;
+
+    # 处理富文本内容
+    content = saveEditContent(content, commit_user, "suggestion")
+    feedback = saveEditContent(feedback, commit_user, "suggestion")
 
     # 对象赋值
     suggestion.commit_user = commit_user

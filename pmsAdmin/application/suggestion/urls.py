@@ -22,6 +22,8 @@
 # +----------------------------------------------------------------------
 
 from django.urls import path  # 导入路径相关配置
+from application import settings
+from django.conf.urls.static import static
 
 from application.suggestion import views
 
@@ -37,4 +39,5 @@ urlpatterns = [
     path('update', views.SuggestionUpdateView.as_view()),
     # 删除意见反馈
     path('delete/<str:suggestion_id>', views.SuggestionDeleteView.as_view()),
+
 ]

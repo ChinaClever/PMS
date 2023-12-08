@@ -50,7 +50,6 @@ class SuggestionForm(forms.ModelForm):
     # 通知公告内容
     content = forms.CharField(
         required=True,
-        max_length=200,
         error_messages={
             'required': '内容不能为空',
             'max_length': '内容长度不得超过200个字符',
@@ -59,9 +58,7 @@ class SuggestionForm(forms.ModelForm):
 
     feedback = forms.CharField(
         required=False,
-        max_length=200,
         error_messages={
-            'required': '反馈不能为空',
             'max_length': '内容长度不得超过200个字符',
         }
     )

@@ -4,6 +4,7 @@
       :title="isUpdate?'修改排期表单':'添加排期表单'"
       :visible="visible"
       width="800px"
+      top="5vh"
       :destroy-on-close="true"
       :lock-scroll="false"
       @update:visible="updateVisible">
@@ -165,6 +166,24 @@
               placeholder="请输入备注"/>
           </el-form-item>
 
+          <!-- <el-form-item label="附件:" prop="attachment">
+            <el-upload
+              class="upload-demo"
+              ref="upload"
+              :auto-upload="false"
+              :file-list="fileList"
+              :on-change="onChange"
+              :on-remove="onRemove"
+              :limit="10"
+              action=""
+              multiple
+              drag>
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+              <div class="el-upload__tip" slot="tip">文件大小不能超过100MB</div>
+            </el-upload>
+          </el-form-item> -->
+
       </el-form>
     
       <div slot="footer">
@@ -189,6 +208,7 @@
     },
     data() {
       return {
+        fileList: [],
         product_names: [],
         state: '',
         timeout:  null,
@@ -278,7 +298,65 @@
             return false;
           }
         });
+
+            
+        // this.$refs['form'].validate((valid) => {
+        //   if (valid) {
+        //     // 创建 formData 对象
+        //     const formData = new FormData()
+        //     // 文件上传
+        //     if (this.fileList.length != 0) {
+             
+        //         this.fileList.forEach((file) => {
+        //         formData.append('files', file.raw)
+        //   })}
+        //     // 获取表单对象的键
+        //     const keys = Object.keys(this.form);
+
+        //     // 遍历键，并将数据添加到新的 FormData 对象中
+        //     keys.forEach(key => {
+        //       if (Object.hasOwnProperty.call(this.form, key)) {
+        //         formData.append(key, this.form.key);
+        //       }
+        //     });
+        //     // formData.append('work_order', this.form.work_order)
+        //     // formData.append('client_name', this.form.client_name)
+        //     // formData.append('product_code', this.form.product_code)
+        //     // formData.append('product_name', this.form.product_name)
+        //     // formData.append('shape', this.form.shape)
+        //     // formData.append('product_count', this.form.product_count)
+        //     // formData.append('order_date', this.form.order_date)
+        //     // formData.append('delivery_date', this.form.delivery_date)
+        //     // formData.append('update_delivery_date', this.form.update_delivery_date)
+        //     // formData.append('finish_date', this.form.finish_date)
+        //     // formData.append('SO_RQ_id', this.form.SO_RQ_id)
+        //     // formData.append('remark', this.form.remark)
+
+        //     this.loading = true       
+        //     this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/shipmentreport/update' : '/shipmentreport/add', formData).then(res => {
+        //       this.loading = false;
+        //       if (res.data.code === 0) {
+        //         this.$message.success(res.data.msg);
+        //         if (!this.isUpdate) {
+        //           this.form = {};
+        //         }
+        //         this.updateVisible(false);
+        //         this.$emit('done');
+        //          //清空fileList
+        //         this.fileList = []
+        //       } else {
+        //         this.$message.error(res.data.msg);
+        //       }
+        //     }).catch(e => {
+        //       this.loading = false;
+        //       this.$message.error(e.message);
+        //     });
+        //   }else {
+        //     return false;
+        //   }
+        // });
       },
+
       /* 更新visible */
       updateVisible(value) {
         this.$emit('update:visible', value);
@@ -345,18 +423,75 @@
           cb(results);
         }, 300 * Math.random());
       },
-
       createStateFilter(queryString) {
         return (state) => {
           return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
         };
       },
 
+      // 选择产品名
       handleSelect(item) {
         this.form.product_name = item.value
         this.$refs.form.validateField('product_name', () => {});
       },
 
+      //文件自定义上传
+      onChange(file, fileList) {
+        if (file.size === 0) {
+            this.$message.error('上传文件不存在').duration(3000);
+            this.fileList = fileList.filter(item => item.uid !== file.uid)
+            return
+          }
+          // 获取文件大小（单位：字节）
+          const fileSize = file.size; 
+          // 将文件大小转换为MB
+          const fileSizeMB = Math.round(fileSize / (1024 * 1024));
+          // 验证文件大小是否超过100MB
+          if (fileSizeMB > 100) {
+            this.$message.error('文件大小不能超过100MB').duration(3000);
+            this.fileList = fileList.filter(item => item.uid !== file.uid)
+            return
+          }
+
+        this.fileList = fileList
+        },
+
+      onRemove(file, fileList) {
+      this.fileList = fileList.filter(item => item.uid !== file.uid)
+      },
+      //文件上传
+      // confirmSubmit() {
+      //   //判断是否有文件再上传
+      //   if (this.fileList.length != 0) {
+      //     // 创建 formData 对象
+      //     // const formData = new FormData()
+      //     // 将所有 的 upload 组件中的文件对象放入到 FormData 对象中
+      //     this.fileList.forEach((file) => {
+      //       // formData.append('files', file.raw)
+      //       this.form.append('files', file.raw)
+      //     })
+
+      //     this.loading = true
+      //     this.$http({
+      //       method: 'POST',
+      //       url: '/uploadEmailFiles',
+      //       data: formData
+      //     }).then(({code, data}) => {
+      //       if (code === '10001') {
+      //         this.$message.success('成功')
+      //       } else {
+      //         this.$message.error('失败')
+      //       }
+
+      //       //清空fileList
+      //       this.fileList = []
+      //       this.loading = false
+      //     }).catch(() => {
+      //       this.loading = false
+      //       this.$message.error('失败')
+      //     })
+      //   }
+      // }
     },
     mounted() {
       this.loadAll();
