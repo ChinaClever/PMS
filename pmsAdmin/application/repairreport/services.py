@@ -487,7 +487,7 @@ def QuestionList(request):
             params.append(f"%{name}%")
         if conditions:
             sql += " AND " + " AND ".join(conditions)
-        sql += " GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
+        sql += " GROUP BY work_order, bad_phenomenon ORDER BY work_order, num DESC"
         query = Dict.objects.raw(sql, params)
         paginator = Paginator(query, limit)
     else :
