@@ -9,7 +9,7 @@
           @keyup.enter.native="reload"
           @submit.native.prevent>
           <el-row :gutter="10">
-            <el-col span="5">
+            <el-col :span="5">
               <el-form-item label="维修员:">
                 <el-input
                   clearable
@@ -17,7 +17,7 @@
                   placeholder="请输入维修员"/>
               </el-form-item>
             </el-col>
-            <el-col span="5">
+            <el-col :span="5">
               <el-form-item label="工单号:">
                 <el-input
                   clearable
@@ -239,6 +239,13 @@
           {
             prop: 'bad_number',
             label: '不良数量',
+            width: 70,
+            align: 'center',
+            showOverflowTooltip: true,
+          },
+          {
+            prop: 'repair_number',
+            label: '维修数量',
             width: 70,
             align: 'center',
             showOverflowTooltip: true,
