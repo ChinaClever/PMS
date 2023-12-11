@@ -13,13 +13,17 @@
       :rules="rules"
       label-width="82px">
       <el-form-item
-        label="工单号"
-        prop="work_order">
-        <el-input
-          :maxlength="20"
+          label="工单号:"
+          prop="work_order">
+          <el-autocomplete
           v-model="form.work_order"
+          clearable
+          :fetch-suggestions="querySearchAsync"
+          @select="handleSelect1"
+          @clear="handleClear"
+          @keyup.enter.native="handleEnterKey"
           placeholder="请输入工单号"
-          clearable/>
+        ></el-autocomplete>  
       </el-form-item>
 
       <el-form-item
@@ -60,12 +64,12 @@
           clearable/>
       </el-form-item>
       <el-form-item
-        label="部件:"
+        label="物料:"
         prop="parts">
         <el-input
           :maxlength="20"
           v-model="form.parts"
-          placeholder="请输入部件"
+          placeholder="请输入物料"
           clearable/>
       </el-form-item>
 
@@ -93,7 +97,11 @@ export default {
   data() {
     return {
       // 表单数据
-      form: Object.assign({status: 1}, this.data),
+      form: Object.assign({
+        status: 1,
+        type : 1,
+        product_name:''
+      }, this.data),
       // 表单验证规则
       rules: {
         /*name: [
@@ -121,9 +129,12 @@ export default {
           {required: true, message: '请输入供应商', trigger: 'blur'}
         ],
         parts: [
-          {required: true, message: '请输入部件', trigger: 'blur'}
+          {required: true, message: '请输入物料', trigger: 'blur'}
         ],
       },
+      work_orders: [],
+      state: '',
+      timeout:  null,
       // 提交状态
       loading: false,
       // 是否是修改
@@ -171,7 +182,65 @@ export default {
     /* 更新visible */
     updateVisible(value) {
       this.$emit('update:visible', value);
-    }
+    },
+    loadAll() {
+        this.$http.get('/shipmentreport/work_order/list').then((res) => {
+            this.loading = false;
+            if (res.data.code === 0) {
+              this.work_orders = res.data.data
+            } 
+          })
+    },
+    // 异步查询产品名称
+    querySearchAsync(queryString, cb) {
+      var work_orders = this.work_orders;
+      var filteredResults = queryString ? work_orders.filter(this.createStateFilter1(queryString)) : work_orders;
+      var results = filteredResults.slice(0, 10); // 限制结果最多显示10条
+
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        cb(results);
+      }, 300 * Math.random());
+    },
+    createStateFilter1(queryString) {
+        return (state) => {
+          return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+    handleSelect1(item) {
+        this.form.work_order = item.value
+        this.$refs.form.validateField('work_order', () => {});
+        // 根据选择的工单号查其他数据自动填入
+        this.$http.get('/shipmentreport/detail/' + item.value).then((res) => {
+            this.loading = false;
+            const shipmentData = res.data.data;
+            if (res.data.code === 0 && res.data.data != null) {
+             this.form.product_name = shipmentData.product_name
+             this.form.customer = shipmentData.client_name
+             this.form.product_type  = shipmentData.shape
+            } 
+          })
+      },
+
+      handleClear(){
+        this.form.name = ''
+      },
+      handleEnterKey(event){
+      console.log("进入")
+      this.form.work_order = event.target.value.split("+")[0];
+      this.$refs.form.validateField('work_order', () => {});
+      // 根据选择的工单号查其他数据自动填入
+      this.$http.get('/shipmentreport/detail/' + event.target.value.split("+")[0]).then((res) => {
+        this.loading = false;
+        const shipmentData = res.data.data;
+        if (res.data.code === 0 && res.data.data != null) {
+          this.form.product_name = shipmentData.product_name
+        }
+      })
+    },
+  },
+  mounted() {
+    this.loadAll();
   }
 }
 </script>

@@ -3,7 +3,7 @@
   <el-dialog
     :title="isUpdate?'修改维修报表':'添加维修报表'"
     :visible="visible"
-    width="1100px"
+    width="800px"
     :destroy-on-close="true"
     :lock-scroll="false"
     @update:visible="updateVisible">
@@ -13,7 +13,22 @@
       :rules="rules"
       label-width="82px">
       <el-row :gutter="15">
-        <el-col :sm="6">
+        <el-col :span="10">
+          <el-form-item
+            label="工单号:"
+            prop="work_order">
+            <el-autocomplete
+            v-model="form.work_order"
+            clearable
+            :fetch-suggestions="querySearchAsync"
+            @select="handleSelect1"
+            @clear="handleClear"
+            @keyup.enter.native="handleEnterKey"
+            placeholder="请输入工单号"
+          ></el-autocomplete>  
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
           <el-form-item label="产品名称" prop="name">
             <el-autocomplete
               class="inline-input"
@@ -23,64 +38,10 @@
               @select="handleSelect"
             ></el-autocomplete>
           </el-form-item>
-          <el-form-item
-            label="工单号:"
-            prop="work_order">
-            <el-input
-              :maxlength="20"
-              v-model="form.work_order"
-              placeholder="请输入工单号"
-              clearable/>
-          </el-form-item>
-          <!--<el-row class="demo-autocomplete">
-            <el-col :span="12">
-              <div class="sub-title">请输入不良现象</div>
-              <el-autocomplete
-                class="inline-input"
-                v-model="form.bad_phenomenon"
-                :fetch-suggestions="querySearch"
-                placeholder="请输入内容"
-                @select="handleSelect"
-              ></el-autocomplete>
-            </el-col>
-          </el-row>-->
-          <!--<el-form-item label="类型:" prop="type">
-            <el-radio-group
-              v-model="form.type">
-              <el-radio :label="1">问题</el-radio>
-              <el-radio :label="2">建议</el-radio>
-              <el-radio :label="3">新需求</el-radio>
-            </el-radio-group>
-          </el-form-item>
         </el-col>
-        <el-col :sm="12">
-          <el-form-item
-            label="优先级:"
-            prop="priority">
-            <el-input
-              :maxlength="20"
-              v-model="form.priority"
-              placeholder="请输入优先级(1-10)"
-              clearable/>
-          </el-form-item>
-          <el-form-item label="状态:" prop="status" v-if="permission.includes('sys:suggestion:status')">
-            <el-radio-group
-              v-model="form.status" >
-              <el-radio :label="1">未查看</el-radio>
-              <el-radio :label="2">确认</el-radio>
-              <el-radio :label="3">完成</el-radio>
-              <el-radio :label="4">未通过</el-radio>
-            </el-radio-group>
-          </el-form-item>-->
-        </el-col>
-        <el-col :sm="6">
-          <el-form-item label="维修时间:" prop="repair_time">
-            <el-date-picker
-              v-model="form.repair_time"
-              type="datetime"
-              placeholder="选择日期时间"
-            ></el-date-picker>
-          </el-form-item>
+      </el-row>
+      <el-row :gutter="15">
+        <el-col :sm="10">
           <el-form-item
             label="不良数量:"
             prop="bad_number">
@@ -90,6 +51,8 @@
               placeholder="请输入不良数量"
               clearable/>
           </el-form-item>
+        </el-col>
+        <el-col :sm="10">
           <el-form-item
             label="维修数量:"
             prop="repair_number">
@@ -101,6 +64,13 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-form-item label="维修时间:" prop="repair_time">
+        <el-date-picker
+          v-model="form.repair_time"
+          type="datetime"
+          placeholder="选择日期时间"
+        ></el-date-picker>
+      </el-form-item>
       <el-form-item label="不良现象" prop="bad_phenomenon">
         <el-autocomplete
           class="inline-input"
@@ -166,8 +136,15 @@ export default {
   },
   data() {
     return {
+      work_orders: [],
+      state: '',
+      timeout:  null,
       // 表单数据
-      form: Object.assign({status: 1,type : 1}, this.data),
+      form: Object.assign({
+        status: 1,
+        type : 1,
+        name:''
+      }, this.data),
       // 表单验证规则
       rules: {
         name:[
@@ -372,10 +349,73 @@ export default {
       this.bad_phenomenonlist = this.loadbad_phenomenonlist(item.value);
       this.analysislist = this.loadanalysislist(item.value);
       this.solutionlist = this.loadsolutionlist(item.value);
-    }
+    },
+    loadAll() {
+        this.$http.get('/shipmentreport/work_order/list').then((res) => {
+            this.loading = false;
+            if (res.data.code === 0) {
+              this.work_orders = res.data.data
+            } 
+          })
+    },
+    // 异步查询产品名称
+    querySearchAsync(queryString, cb) {
+      var work_orders = this.work_orders;
+      var filteredResults = queryString ? work_orders.filter(this.createStateFilter1(queryString)) : work_orders;
+      var results = filteredResults.slice(0, 10); // 限制结果最多显示10条
+
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        cb(results);
+      }, 300 * Math.random());
+    },
+    createStateFilter1(queryString) {
+        return (state) => {
+          return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+    handleSelect1(item) {
+        this.form.work_order = item.value
+        this.$refs.form.validateField('work_order', () => {});
+        // 根据选择的工单号查其他数据自动填入
+        this.$http.get('/shipmentreport/detail/' + item.value).then((res) => {
+            this.loading = false;
+            const shipmentData = res.data.data;
+            if (res.data.code === 0 && res.data.data != null) {
+             this.form.name = shipmentData.product_name
+              this.bad_phenomenonlist = this.loadbad_phenomenonlist(shipmentData.product_name);
+              this.analysislist = this.loadanalysislist(shipmentData.product_name);
+              this.solutionlist = this.loadsolutionlist(shipmentData.product_name);
+
+            } 
+          })
+      },
+
+      handleClear(){
+        this.form.name = ''
+      },
+      handleEnterKey(event){
+      console.log("进入")
+      this.form.work_order = event.target.value.split("+")[0];
+      this.$refs.form.validateField('work_order', () => {});
+      // 根据选择的工单号查其他数据自动填入
+      this.$http.get('/shipmentreport/detail/' + event.target.value.split("+")[0]).then((res) => {
+        this.loading = false;
+        const shipmentData = res.data.data;
+        if (res.data.code === 0 && res.data.data != null) {
+          this.form.name = shipmentData.product_name
+          this.bad_phenomenonlist = this.loadbad_phenomenonlist(shipmentData.product_name);
+          this.analysislist = this.loadanalysislist(shipmentData.product_name);
+          this.solutionlist = this.loadsolutionlist(shipmentData.product_name);
+
+        }
+      })
+    },
+
   },
   mounted() {
     this.loadnamelist();
+    this.loadAll();
   }
   
 }
