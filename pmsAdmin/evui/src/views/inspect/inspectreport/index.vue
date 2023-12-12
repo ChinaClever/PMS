@@ -49,7 +49,7 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :lg="6" :md="12" :offset="4">
+          <el-col :lg="6" :md="12" :offset="5">
             <div class="ele-form-actions">
               <el-button
                 type="primary"
