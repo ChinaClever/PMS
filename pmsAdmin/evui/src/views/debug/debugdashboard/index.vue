@@ -52,7 +52,7 @@
       <el-row>
           <el-col :lg="28" :md="26">
             <div class="demo-monitor-title">
-              维修报告
+              调试总数量
             </div>
             <ele-chart
               ref="saleChart"
@@ -87,7 +87,7 @@
             {
               name: '产品名称',
               type: 'category',
-              data: this.saleroomData.map(d => d.name),
+              data: this.saleroomData.map(d => d.product_name),
             }
           ],
 
@@ -95,7 +95,7 @@
             {
               name: '数量',
               type: 'value',
-              data: this.saleroomData.map(d => d.bad_total),
+              data: this.saleroomData.map(d => d.number_total),
 
               interval:200,  //纵坐标刻度
             },
@@ -106,37 +106,21 @@
           ],
           series:[
             {
-              name: '不良数量总和',
+              name: '数量总和',
               type: 'bar',
-              data: this.saleroomData.map(d => d.bad_total),
+              data: this.saleroomData.map(d => d.number_total),
               showBackground: true,
               barWidth: 50,
               backgroundStyle: {
                 color: 'rgba(180, 180, 180, 0.2)'
               },
-              barGap: '-100%', // 负值使柱子重叠
-              z: -1 ,// 调整柱状图层级，使其在底层
+
               itemStyle:{
                 color: function() {
                   return 'orange';
                 }
               }
             },
-            {
-              name: '维修数量总和',
-              type: 'bar',
-              data: this.saleroomData.map(d => d.repair_total),  
-              showBackground: true,
-              barWidth: 50,
-              backgroundStyle: {
-                color: 'rgba(180, 180, 180, 0.2)'
-              },
-              itemStyle:{
-                color: function() {
-                  return 'blue';
-                }
-              }
-            }
           ]
         };
       },
@@ -144,46 +128,36 @@
     data() {
       return {
         // 表格数据接口
-        url: '/repairreport/listOfTotal',
+        url: '/debugreport/list',
         // 表格列配置
         columns: [
           {
-            prop: 'name',
+            prop: 'work_order',
+            label: '工单号',
+            showOverflowTooltip: true,
+            minWidth: 100,
+            align: 'center',
+          },
+          {
+            prop: 'client_name',
+            label: '客户名称',
+            showOverflowTooltip: true,
+            minWidth: 100,
+            align: 'center',
+          },
+          {
+            prop: 'product_name',
             label: '产品名称',
             showOverflowTooltip: true,
             minWidth: 100,
             align: 'center',
           },
           {
-            prop: 'bad_number',
-            label: '不良数量',
-            // sortable: 'custom',
-            showOverflowTooltip: true,
-            align: 'center',
-            minWidth: 150,
-            resizable: false,
-            // slot: 'status',
-          },
-          {
-            prop: 'bad_phenomenon',
-            label: '不良现象',
+            prop: 'product_count',
+            label: '产品数量',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 100
-          },
-          {
-            prop: 'analysis',
-            label: '原因分析',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100,
-          },
-          {
-            prop: 'rate',
-            label: '进度',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100,
           },
         ],
         pickerOptions: {
@@ -192,7 +166,7 @@
             onClick(picker) {
               const end = new Date();
               const start = new Date();
-              //start.setTime(start.getTime() - 3600 * 1000 * 24 );
+              start.setTime(start.getTime() - 3600 * 1000 * 24 );
               picker.$emit('pick', [start, end]);
             }
           },
@@ -249,12 +223,7 @@
     created() {
 
         this.loading = true;
-        // const condition = {
-        //   startTime: this.where.startTime,
-        //   endTime: this.where.endTime,
-
-        // };
-        this.$http.get('/repairreport/listOf').then((res) => {
+        this.$http.get('/debugreport/listOf').then((res) => {
 
         this.loading = false;
         if (res.data.code === 0) {
@@ -285,7 +254,7 @@
           endTime: this.where.endTime,
 
         };
-        this.$http.get('/repairreport/listOf',{params:condition}).then((res) => {
+        this.$http.get('/debugreport/listOf',{params:condition}).then((res) => {
         this.loading = false;
         if (res.data.code === 0) {
             this.saleroomData = res.data.data

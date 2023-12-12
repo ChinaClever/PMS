@@ -40,7 +40,7 @@ class Dict(BaseModel):
     analysis = models.CharField(null=True, max_length=150, verbose_name="原因分析", help_text="原因分析")
     solution = models.CharField(null=True, max_length=150, verbose_name="解决方法", help_text="解决方法")
     notes = models.CharField(null=True, max_length=150, verbose_name="备注", help_text="备注")
-    repair_time = models.DateTimeField(null=True, verbose_name="维修日期", help_text="维修日期")
+    repair_time = models.DateTimeField(null=True, max_length=11, verbose_name="维修日期", help_text="维修日期")
 
     # 字典名称
     #name = models.CharField(null=False, max_length=150, verbose_name="字典名称", help_text="字典名称")

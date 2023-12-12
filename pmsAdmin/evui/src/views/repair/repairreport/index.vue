@@ -25,7 +25,10 @@
                   placeholder="请输入工单号"/>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+          </el-row>
+          <el-row :gutter="10">
+            <el-col :lg="6" :md="12">
+              <el-form-item label="日期范围:">
               <el-date-picker
                 v-model="selectDateRange"
                 type="daterange"
@@ -39,45 +42,9 @@
                 :picker-options="pickerOptions"
                 @change="dateRangeHandleSelect">
               </el-date-picker>
-            </el-col>
-
-            <!--<el-col span="6">
-              <el-form-item label="状态:">
-                <el-select
-                  clearable
-                  v-model="where.status"
-                  placeholder="请选择状态"
-                  class="ele-fluid">
-                  <el-option label="未查看" value="1"/>
-                  <el-option label="确认" value="2"/>
-                  <el-option label="完成" value="3"/>
-                  <el-option label="未通过" value="4"/>
-                </el-select>
               </el-form-item>
             </el-col>
-            <el-col span="6">
-              <el-form-item label="类型:">
-                <el-select
-                  clearable
-                  v-model="where.type"
-                  placeholder="请选择类型"
-                  class="ele-fluid">
-                  <el-option label="问题" value="1"/>
-                  <el-option label="建议" value="2"/>
-                  <el-option label="新需求" value="3"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col span="7">
-              <el-form-item label="优先级:">
-                <el-input
-                  clearable
-                  v-model="where.priority"
-                  placeholder="请输入优先级(1-10)"/>
-              </el-form-item>
-            </el-col>-->
-
-            <el-col :lg="6" :md="12">
+            <el-col :lg="6" :md="12" :offset="5">
               <div class="ele-form-actions">
                 <el-button
                   type="primary"
@@ -238,21 +205,21 @@
           {
             prop: 'repair_user',
             label: '维修员',
-            width: 70,
+            width: 150,
             align: 'center',
             showOverflowTooltip: true,
           },
           {
             prop: 'work_order',
             label: '工单号',
-            width: 70,
+            width: 150,
             align: 'center',
             showOverflowTooltip: true,
           },
           {
             prop: 'name',
             label: '产品名称',
-            width: 70,
+            width: 150,
             align: 'center',
             showOverflowTooltip: true,
           },
@@ -305,11 +272,9 @@
             label: '维修时间',
             showOverflowTooltip: true,
             sortable: 'custom',
+
             minWidth: 160,
             align: 'center',
-            formatter: (row, column, cellValue) => {
-              return this.$util.toDateString(cellValue);
-            }
           },
           {
             prop: 'create_time',
@@ -347,6 +312,14 @@
         ],
          pickerOptions: {
           shortcuts: [{
+            text: '最近一天',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              //start.setTime(start.getTime() - 3600 * 1000 * 24 );
+              picker.$emit('pick', [start, end]);
+            }
+          },{
             text: '最近一周',
             onClick(picker) {
               const end = new Date();
