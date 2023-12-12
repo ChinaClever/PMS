@@ -8,12 +8,13 @@
         class="ele-form-search"
         @keyup.enter.native="reload"
         @submit.native.prevent>
-        <el-row :gutter="10">
+        <el-row :gutter="5">
           <el-col :span="9">
             <el-form-item label="搜索:">
               <el-input
                 clearable
                 v-model="where.keyword"
+                @clear="handleClear"
                 placeholder="请输入填写人或产品型号或工单号"/>
             </el-form-item>
           </el-col>
@@ -22,6 +23,7 @@
               <el-select
                 clearable
                 v-model="where.signal"
+                @clear="handleClear"
                 placeholder="请选择信号"
                 class="ele-fluid">
                 <el-option label="红色" value="1"/>
@@ -29,20 +31,25 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="10">
           <el-col :lg="6" :md="12">
-            <el-date-picker
-              v-model="selectDateRange"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              format="yyyy 年 MM 月 dd 日"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              :picker-options="pickerOptions"
-              @change="dateRangeHandleSelect">
-            </el-date-picker>
+            <el-form-item label="日期:">
+              <el-date-picker
+                v-model="selectDateRange"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                format="yyyy 年 MM 月 dd 日"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                :picker-options="pickerOptions"
+                @change="dateRangeHandleSelect"
+                @clear="handleClear">
+              </el-date-picker>
+            </el-form-item>
           </el-col>
-          <el-col :lg="6" :md="12">
+          <el-col :lg="6" :md="12" :offset="4">
             <div class="ele-form-actions">
               <el-button
                 type="primary"
@@ -552,15 +559,17 @@ export default {
       saveAs(blob, newFileName);
       this.selection = temp;
     },  
-      // 选择日期范围查询
-      dateRangeHandleSelect(){
-        this.where.year = null
-        this.where.month = null
-        this.selectDate = null
-        this.where.startTime = this.selectDateRange[0]
-        this.where.endTime = this.selectDateRange[1]
-      },
-    
+    // 选择日期范围查询
+    dateRangeHandleSelect(){
+      this.where.year = null
+      this.where.month = null
+      this.selectDate = null
+      this.where.startTime = this.selectDateRange[0]
+      this.where.endTime = this.selectDateRange[1]
+    },
+    handleClear(){
+      this.reload();
+    },
   }
 }
 </script>

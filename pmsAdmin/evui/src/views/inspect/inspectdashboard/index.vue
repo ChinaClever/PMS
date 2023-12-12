@@ -19,7 +19,8 @@
                 format="yyyy 年 MM 月 dd 日"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 :picker-options="pickerOptions"
-                @change="dateRangeHandleSelect">
+                @change="dateRangeHandleSelect"
+                @clear="handleClear">
               </el-date-picker>
           </el-col>
           <el-col :lg="6" :md="12" :offset="3">
@@ -357,6 +358,9 @@
         this.selectDate = null
         this.where.startTime = this.selectDateRange[0]
         this.where.endTime = this.selectDateRange[1]
+      },
+      handleClear(){
+        this.reload();
       },
     },
     
