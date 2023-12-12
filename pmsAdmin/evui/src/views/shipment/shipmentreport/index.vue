@@ -34,7 +34,7 @@
               </el-date-picker>
             </el-col>
           
-            <el-col :lg="6" :md="12">
+            <el-col :lg="6" :md="12" :offset="3">
               <div class="ele-form-actions">
                 <el-button
                   type="primary"
@@ -121,6 +121,13 @@
                   v-if="permission.includes('sys:shipmentreport:export')">导出
                 </el-button> -->
               </template>
+              <!-- 附件列 -->
+              <template slot="attachment" slot-scope="{row}">
+                <!-- <el-tag v-for="attachment in row.fileNameList" :key="attachment">{{ attachment }}</el-tag> -->
+                <el-link v-for="(attachment, index) in row.fileNameList" :key="index" :href="`${preUrl}/${row.attachmentList[index]}`" target="_blank">
+                  {{ attachment }}
+                </el-link>
+              </template>
               <!-- 操作列 -->
               <template slot="action" slot-scope="{row}">
                 <el-link
@@ -174,6 +181,7 @@
     },
     data() {
       return {
+        preUrl:process.env.VUE_APP_API_BASE_URL,
         // 表格数据接口
         url: '/shipmentreport/list',
         // 表格列配置
@@ -293,7 +301,14 @@
             minWidth: 200,
             align: 'center',
           },
-  
+          {
+            columnKey: 'attachment',
+            label: '附件',
+            width: 150,
+            align: 'center',
+            resizable: false,
+            slot: 'attachment',
+          },
           {
             columnKey: 'action',
             label: '操作',
@@ -306,11 +321,15 @@
         ],
         // 表格搜索条件
         where: {
-          product_module: '1',
-          year: new Date().getFullYear(),
-          month: new Date().getMonth() + 1,
+          // product_module: '1',
+          // year: new Date().getFullYear(),
+          // month: new Date().getMonth() + 1,
+          product_module: '',
+          year: '',
+          month: '',
         },
-        selectDate: new Date(),
+        // selectDate: new Date(),
+        selectDate: '',
         // 表格选中数据
         selection: [],
         // 当前编辑数据
@@ -384,7 +403,31 @@
     methods: {
       parseData(val) {
       // console.log(val,'返回val=====');
+      // 总数量
       this.items_total = val.items_total
+
+      if (val.data.length != null){
+        // 遍历每条数据 有附件的再处理
+        for (var i = 0; i < val.data.length; i++) {
+          if (val.data[i].attachment != null){
+            // 分成多个文件
+            var attachmentList = val.data[i].attachment.split(",");
+            var fileNameList = []
+            // 文件路径提取出文件名
+            for (var j = 0; j < attachmentList.length; j++){   
+              var filePath = attachmentList[j];
+              var fileNameTemp = filePath.substring(filePath.lastIndexOf("/") + 1);
+              var fileName = fileNameTemp.substring(fileNameTemp.indexOf("_") + 1);
+              fileNameList.push(fileName)
+            }
+
+            val.data[i].attachmentList = attachmentList
+            val.data[i].fileNameList = fileNameList
+            // console.log(fileNameList);
+          }
+          
+        }
+      }
       return val
     },
 
@@ -393,8 +436,14 @@
         this.where.year = null
         this.where.month = null
         this.selectDate = null
-        this.where.selectStartDate = this.selectDateRange[0]
-        this.where.selectEndDate = this.selectDateRange[1]
+        if (this.selectDateRange != null){
+          this.where.selectStartDate = this.selectDateRange[0]
+          this.where.selectEndDate = this.selectDateRange[1]
+        }else{
+          this.where.selectStartDate = null
+          this.where.selectEndDate = null
+        }
+
       },
       // 选择年月
       yearAndMonthHandleSelect() {
@@ -438,7 +487,7 @@
           this.$http.get('/shipmentreport/detail/' + row.id).then((res) => {
             this.loading = false;
             if (res.data.code === 0) {
-              this.current = Object.assign({}, res.data.data);
+              this.current = Object.assign({fileNameList: row.fileNameList, attachmentList:row.attachmentList}, res.data.data);
               this.showEdit = true;
             } else {
               this.$message.error(res.data.msg);

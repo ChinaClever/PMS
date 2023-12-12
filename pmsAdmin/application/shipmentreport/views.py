@@ -36,10 +36,10 @@ class ShipmentReportAddView(PermissionRequired, View):
         result = services.ShipmentReportAdd(request)
         return result
 
-@method_decorator(check_login, name="put")
+@method_decorator(check_login, name="dispatch")
 class ShipmentReportUpdateView(PermissionRequired, View):
     permission_required = ('sys:shipmentreport:update',)
-    def put(self, request):
+    def post(self, request):
         if DEBUG:
             return R.failed("演示环境，暂无操作权限")
         # 调用更新服务方法

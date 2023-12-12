@@ -122,4 +122,6 @@ urlpatterns = ([
     #综合看版
     path('comprehensive/', include('application.comprehensive.urls')),
 ] + static(settings.TEMP_URL, document_root=settings.STATICFILES_DIRS[2])
-+ static(settings.IMAGES_URL, document_root=settings.STATICFILES_DIRS[3]))
++ static(settings.IMAGES_URL, document_root=settings.STATICFILES_DIRS[3])
++ static(settings.UPLOADS_URL, document_root=settings.STATICFILES_DIRS[1])
+               )

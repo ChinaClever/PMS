@@ -1,15 +1,15 @@
-import logging
-import json
+
+import os
+import uuid
 from datetime import datetime
 
-from django.core.files.uploadedfile import UploadedFile
 from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage, EmptyPage
 from django.db import transaction
 from django.db.models import Q
 from application.shipmentreport.models import Shipment
 from application.shipmentreport.models import Product
 from constant.constants import PAGE_LIMIT
-from utils import R, regular
+from utils import R
 
 # 查询分页数据
 from utils.utils import uid
@@ -23,7 +23,7 @@ def ShipmentReportList(request):
     # 筛选成品 模块
     product_module = request.GET.get('product_module')
     query = Shipment.objects.filter(is_delete=False)
-    # 查询数据(前端默认展示1成品)
+    # 查询数据
     if product_module:
         query = Shipment.objects.filter(is_delete=False, product_module = product_module)
     # else:
@@ -36,12 +36,12 @@ def ShipmentReportList(request):
             Q(product_name__icontains=keyword) |
             Q(work_order__icontains=keyword)
         )
-    # 筛选年份(前端默认展示当前年)
+    # 筛选年份
     year = request.GET.get('year')
     if year:
         query = query.filter(delivery_date__year=int(year))
 
-    # 筛选月份(前端默认展示当前月)
+    # 筛选月份
     month = request.GET.get('month')
     if month:
         query = query.filter(delivery_date__month=int(month))
@@ -138,40 +138,48 @@ def ShipmentReportDetail(shipment_id):
 
 @transaction.atomic
 def ShipmentReportAdd(request):
-    print(request.body.decode())
-    try:
-        # 接收请求参数
-        json_data = request.body.decode()
-        # 参数为空判断
-        if not json_data:
-            return R.failed("参数不能为空")
-        # 数据类型转换
-        dict_data = json.loads(json_data)
+    FileSavePath = "public/uploads/shipmentFiles"
+    files = request.FILES.getlist('files')
+    # 存储文件路径和名称的列表字符串
+    attachmentListToString = []
+    if files:
+        # 存储文件路径和名称的列表
+        attachment_list = []
+        for file in files:
+            # 生成唯一的文件名
+            unique_filename = str(uuid.uuid4()) + '_' + file.name
+            # 构建文件的完整保存路径
+            save_path = os.path.join(FileSavePath, unique_filename)
+            # 数据库存的去掉"public/" 方便前端调用
+            save_path1 = save_path.replace("public/", "")
+            # 确保目标文件夹存在
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            # 将文件保存到服务器
+            with open(save_path, 'wb') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+            # 将文件路径和名称添加到列表中
+            attachment_list.append(save_path1)
+            # 将文件路径和名称列表转换为字符串，使用逗号分隔
+        attachmentListToString = ','.join(attachment_list)
 
-    except Exception as e:
-        logging.info("错误信息：\n{}", format(e))
-        return R.failed("参数错误")
-    # files = request.FILES.getlist('files')
-    # filecount = 0
-    # for file in files:
-    #     if isinstance(file, UploadedFile):
-    #         # 在这里处理上传的文件，例如保存到服务器或进行进一步的处理
-    #         # 例如：file.save('uploaded_files/' + file.name)
-    #         filecount += 1
-    #         pass
+    work_order = request.POST.get('work_order')
+    client_name = request.POST.get('client_name')
+    product_code = request.POST.get('product_code')
+    product_name = request.POST.get('product_name')
+    shape = request.POST.get('shape')
+    order_date = request.POST.get('order_date')
+    delivery_date = request.POST.get('delivery_date')
+    finish_date = request.POST.get('finish_date')
+    product_count = request.POST.get('product_count')
+    SO_RQ_id = request.POST.get('SO_RQ_id')
+    remark = request.POST.get('remark')
+    product_module = request.POST.get('product_module')
 
-    work_order = dict_data.get('work_order')
-    client_name = dict_data.get('client_name')
-    product_code = dict_data.get('product_code')
-    product_name = dict_data.get('product_name')
-    shape = dict_data.get('shape')
-    order_date = dict_data.get('order_date')
-    delivery_date = dict_data.get('delivery_date')
-    finish_date = dict_data.get('finish_date')
-    product_count = dict_data.get('product_count')
-    SO_RQ_id = dict_data.get('SO_RQ_id')
-    remark = dict_data.get('remark')
-    product_module = dict_data.get('product_module')
+    # 根据work_order查询 不能有相同工单号
+    shipment = Shipment.objects.only('id').filter(work_order=work_order, is_delete=False).first()
+    if shipment:
+        return R.failed("工单号相同")
 
     Shipment.objects.create(
         work_order=work_order,
@@ -186,6 +194,7 @@ def ShipmentReportAdd(request):
         SO_RQ_id=SO_RQ_id,
         product_module=product_module,
         remark=remark if remark else None,
+        attachment = attachmentListToString if files else None,
         create_user=uid(request)
         )
 
@@ -204,73 +213,135 @@ def ShipmentReportAdd(request):
 
 @transaction.atomic
 def ShipmentReportUpdate(request):
-    try:
-        # 接收请求参数
-        json_data = request.body.decode()
-        # 参数为空判断
-        if not json_data:
-            return R.failed("参数不能为空")
-        # 数据类型转换
-        dict_data = json.loads(json_data)
-        # ID
-        shipment_id = dict_data.get('id')
-        # ID判空
-        if not shipment_id or int(shipment_id) <= 0:
-            return R.failed("ID不能为空")
+    FileSavePath = "public/uploads/shipmentFiles"
+    files = request.FILES.getlist('files')
+    # 存储文件路径和名称的列表
+    attachment_list = []
+    if files:
+        for file in files:
+            # 生成唯一的文件名
+            unique_filename = str(uuid.uuid4()) + '_' + file.name
+            # 构建文件的完整保存路径
+            save_path = os.path.join(FileSavePath, unique_filename)
+            # 数据库存的去掉"public/" 方便前端调用
+            save_path1 = save_path.replace("public/", "")
+            # 确保目标文件夹存在
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            # 将文件保存到服务器
+            with open(save_path, 'wb') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+            # 将文件路径和名称添加到列表中
+            attachment_list.append(save_path1)
 
-        work_order = dict_data.get('work_order')
-        client_name = dict_data.get('client_name')
-        product_code = dict_data.get('product_code')
-        product_name = dict_data.get('product_name')
-        shape = dict_data.get('shape')
-        order_date = dict_data.get('order_date')
-        delivery_date = dict_data.get('delivery_date')
-        update_delivery_date = dict_data.get('update_delivery_date')
-        finish_date = dict_data.get('finish_date')
-        product_count = dict_data.get('product_count')
-        SO_RQ_id = dict_data.get('SO_RQ_id')
-        remark = dict_data.get('remark')
-        product_module = dict_data.get('product_module')
+    # ID
+    shipment_id = request.POST.get('id')
+    # ID判空
+    if not shipment_id or int(shipment_id) <= 0:
+        return R.failed("ID不能为空")
+    work_order = request.POST.get('work_order')
+    client_name = request.POST.get('client_name')
+    product_code = request.POST.get('product_code')
+    product_name = request.POST.get('product_name')
+    shape = request.POST.get('shape')
+    order_date = request.POST.get('order_date')
+    delivery_date = request.POST.get('delivery_date')
+    update_delivery_date = request.POST.get('update_delivery_date')
+    finish_date = request.POST.get('finish_date')
+    product_count = request.POST.get('product_count')
+    SO_RQ_id = request.POST.get('SO_RQ_id')
+    remark = request.POST.get('remark')
+    product_module = request.POST.get('product_module')
+    # 根据ID查询
+    shipment = Shipment.objects.only('id').filter(id=shipment_id, is_delete=False).first()
+    # 查询结果判断
+    if not shipment:
+        return R.failed("数据不存在,请重试！")
+    # 日期格式转化
+    if update_delivery_date == "null":
+        update_delivery_date = ""
+    if finish_date == "null":
+        finish_date = ""
 
-        # 根据ID查询
-        shipment = Shipment.objects.only('id').filter(id=shipment_id, is_delete=False).first()
-        # 查询结果判断
-        if not shipment:
-            return R.failed("数据不存在")
-        # 保存原先的product_code 方便更新product表
-        origin_product_code = shipment.product_code
-        # 对象赋值
-        shipment.work_order = work_order
-        shipment.client_name = client_name
-        shipment.product_code = product_code
-        shipment.product_name = product_name
-        shipment.shape = shape
-        shipment.order_date = order_date
-        shipment.delivery_date = delivery_date
-        shipment.finish_date = finish_date
-        shipment.update_delivery_date = update_delivery_date
-        shipment.product_count = product_count
-        shipment.SO_RQ_id = SO_RQ_id
-        shipment.remark = remark
-        shipment.product_module = product_module
-        shipment.update_user = uid(request)
-        shipment.save()
-        # 更新product表 用原先的product_code查
-        product = Product.objects.filter(is_delete=False, product_code=origin_product_code).first()
-        # 查询结果判断
-        if not product:
-            return R.failed("产品数据不存在")
-        product.product_code = product_code
-        product.product_name = product_name
-        product.shape = shape
-        product.product_module = product_module
-        product.update_user = uid(request)
-        product.save()
-        # 返回结果
-        return R.ok(msg="更新成功")
-    except Exception as e:
-        logging.info("错误信息：\n{}", format(e))
-        return R.failed("参数错误")
+    # 删除文件
+    deleteFileList = request.POST.get('deleteFileList')
+    # 使用逗号分割字符串，得到文件路径列表
+    file_paths = shipment.attachment.split(',') if shipment.attachment else []
+
+    if deleteFileList:
+        # 提取文件名列表
+        file_names = [path.split('_')[-1] for path in file_paths]
+        for index,file_name in enumerate(file_names):
+            # 存在deleteFileList列表中 表示要删除
+            if file_name in deleteFileList:
+                delete_file_path = 'public/'+file_paths[index]
+                try:
+                    os.remove(delete_file_path)
+                    print(delete_file_path+"文件删除成功")
+                except OSError as e:
+                    print(f"文件删除失败: {e}")
+            # 不用删除的添加进attachment_list 后续加入数据库
+            else:
+                attachment_list.append(file_paths[index])
+    # 没有删除文件的时候 原本的路径全添加进attachment_list
+    else:
+        attachment_list += file_paths
+
+    if attachment_list:
+        # 将文件路径和名称列表转换为一个字符串，使用逗号分隔
+        attachmentListToString = ','.join(attachment_list)
+        # 没有attachment_list 有deleteFileList表示删除全部
+    elif deleteFileList:
+        attachmentListToString = ''
+    else:
+        # 没有attachment_list和deleteFileList表示没有对附件操作
+        attachmentListToString = shipment.attachment
+
+    # 保存原先的product_code 方便更新product表
+    origin_product_code = shipment.product_code
+    # 对象赋值
+    shipment.work_order = work_order
+    shipment.client_name = client_name
+    shipment.product_code = product_code
+    shipment.product_name = product_name
+    shipment.shape = shape
+    shipment.order_date = order_date
+    shipment.delivery_date = delivery_date
+    shipment.finish_date = finish_date if finish_date else None
+    shipment.update_delivery_date = update_delivery_date if update_delivery_date else None
+    shipment.product_count = product_count
+    shipment.SO_RQ_id = SO_RQ_id
+    shipment.remark = remark
+    shipment.product_module = product_module
+    shipment.attachment = attachmentListToString
+    shipment.update_user = uid(request)
+    shipment.update_time = datetime.now()
+    shipment.save()
+
+    isProductExist = Product.objects.filter(is_delete=False, product_code=product_code).first()
+    # 修改了一个新的成品编码(数据库里没有) 这时添加一条数据
+    if not isProductExist:
+        if origin_product_code != product_code:
+            Product.objects.create(
+                product_code=product_code,
+                product_name=product_name,
+                shape=shape,
+                product_module=product_module,
+            )
+        else:
+            # 没修改成品编码 则更新product表 用原先的product_code查
+            product = Product.objects.filter(is_delete=False, product_code=origin_product_code).first()
+            if not product:
+                return R.failed("产品数据不存在")
+            product.product_name = product_name
+            product.shape = shape
+            product.product_module = product_module
+            product.update_user = uid(request)
+            product.update_time = datetime.now()
+            product.save()
+    # 返回结果
+    return R.ok(msg="更新成功")
+
 
 def ShipmentReportDelete(shipment_id):
     if not shipment_id:
