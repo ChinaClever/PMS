@@ -4,7 +4,7 @@
       <!-- 质检报表表单 -->
       <el-form
         :model="where"
-        label-width="77px"
+        label-width="100px"
         class="ele-form-search"
         @keyup.enter.native="reload"
         @submit.native.prevent>

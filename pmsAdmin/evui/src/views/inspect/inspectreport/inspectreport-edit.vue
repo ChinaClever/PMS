@@ -28,6 +28,8 @@
             style="width: 277px;"
           ></el-autocomplete>  
           </el-form-item>
+        </el-col>
+        <el-col :sm="12">
           <el-form-item label="成品/模块:" prop="product_module">
             <el-radio-group
               v-model="form.product_module" >
@@ -35,6 +37,8 @@
               <el-radio :label="2">模块</el-radio>
             </el-radio-group>
           </el-form-item>
+        </el-col>
+          <el-col :sm="12">
           <el-form-item
             label="日期:"
             prop="date">
@@ -320,7 +324,10 @@ export default {
         this.form = Object.assign({}, this.data);
         this.isUpdate = true;
       } else {
-        this.form = {};
+        this.form = {
+          product_name : '',
+          item_number: '',
+          product_module:'',};
         this.isUpdate = false;
       }
     }
@@ -339,7 +346,10 @@ export default {
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
               if (!this.isUpdate) {
-                this.form = {};
+                this.form = {
+                  product_name : '',
+                  item_number: '',
+                  product_module:'',};
               }
               this.updateVisible(false);
               this.$emit('done');

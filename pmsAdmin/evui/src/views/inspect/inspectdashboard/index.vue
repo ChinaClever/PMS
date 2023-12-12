@@ -4,12 +4,12 @@
       <el-card shadow="never">
         <el-form
         :model="where"
-        label-width="77px"
+        label-width="100px"
         class="ele-form-search"
         @keyup.enter.native="reload"
         @submit.native.prevent>
         <el-row :gutter="10">
-          <el-col :lg="6" :md="12">
+          <el-col :lg="6" :md="12"  >
             <el-date-picker
                 v-model="selectDateRange"
                 type="daterange"
@@ -22,7 +22,7 @@
                 @change="dateRangeHandleSelect">
               </el-date-picker>
           </el-col>
-          <el-col :lg="6" :md="12">
+          <el-col :lg="6" :md="12" :offset="3">
             <div class="ele-form-actions">
               <el-button
                 type="primary"
@@ -374,6 +374,5 @@
     padding: 0 20px;
     margin: 15px 0 5px 0;
   }
-  
   </style>
   
