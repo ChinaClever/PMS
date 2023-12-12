@@ -296,6 +296,7 @@ def InspectreportUpdate(request):
     inspectreport.problem = problem
     inspectreport.action = action
     inspectreport.update_user = uid(request)
+    inspectreport.update_time = datetime.now()
 
     # 更新数据
     inspectreport.save()

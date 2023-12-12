@@ -32,8 +32,8 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row :gutter="5">
-          <el-col :lg="6" :md="12" >
+        <el-row :gutter="10">
+          <el-col :lg="12" :md="12" >
             <el-form-item label="日期:">
               <el-date-picker
                 v-model="selectDateRange"
@@ -569,11 +569,14 @@ export default {
     },  
     // 选择日期范围查询
     dateRangeHandleSelect(){
-      this.where.year = null
-      this.where.month = null
-      this.selectDate = null
-      this.where.startTime = this.selectDateRange[0]
-      this.where.endTime = this.selectDateRange[1]
+      if(this.selectDateRange){
+        this.where.startTime = this.selectDateRange[0]
+        this.where.endTime = this.selectDateRange[1]
+      } else {
+        this.where.startTime = null
+        this.where.endTime = null
+        this.reload();
+      }
     },
     handleClear(){
       this.reload();
