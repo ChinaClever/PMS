@@ -213,7 +213,7 @@ export default {
           align: 'center',
         }, {
           prop: 'parts',
-          label: '部件',
+          label: '物料',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
