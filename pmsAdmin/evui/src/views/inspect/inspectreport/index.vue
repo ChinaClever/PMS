@@ -9,7 +9,7 @@
         @keyup.enter.native="reload"
         @submit.native.prevent>
         <el-row :gutter="5">
-          <el-col :span="9">
+          <el-col :lg="6" :md="12" :xs="11">
             <el-form-item label="搜索:">
               <el-input
                 clearable
@@ -18,7 +18,7 @@
                 placeholder="请输入填写人或产品型号或工单号"/>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :lg="6" :md="12" :xs="11">
             <el-form-item label="信号:">
               <el-select
                 clearable
@@ -32,8 +32,8 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row :gutter="10">
-          <el-col :lg="6" :md="12">
+        <el-row :gutter="12">
+          <el-col :lg="12" :md="12" :xs="12" :xl="12">
             <el-form-item label="日期:">
               <el-date-picker
                 v-model="selectDateRange"
@@ -49,7 +49,7 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :lg="6" :md="12" :offset="5">
+          <el-col :lg="6" :md="6" :xs="6" :xl="6">
             <div class="ele-form-actions">
               <el-button
                 type="primary"

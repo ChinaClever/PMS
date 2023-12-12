@@ -9,7 +9,7 @@
         @keyup.enter.native="reload"
         @submit.native.prevent>
         <el-row :gutter="10">
-          <el-col :lg="6" :md="12"  >
+          <el-col :lg="12" :md="12" :xs="12" :xl="12" >
             <el-date-picker
                 v-model="selectDateRange"
                 type="daterange"
@@ -23,7 +23,7 @@
                 @clear="handleClear">
               </el-date-picker>
           </el-col>
-          <el-col :lg="6" :md="12" :offset="3">
+          <el-col :lg="6" :md="6" :xs="6" :xl="6">
             <div class="ele-form-actions">
               <el-button
                 type="primary"
