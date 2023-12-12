@@ -13,7 +13,8 @@
               <div class="ele-cell-content">模块生产总数量</div>
               <el-tag size="mini">个</el-tag>
             </div>
-            <div class="analysis-chart-card-num">{{ ShipmentAllData.AllShipmentModelQuantity }}</div>
+            <div v-if="ShipmentAllDataIsLoading" class="analysis-chart-card-num">0</div>
+            <div v-else class="analysis-chart-card-num">{{ ShipmentAllData.AllShipmentModelQuantity }}</div>
             <el-divider/>
           </el-card>
         </el-col>
@@ -23,7 +24,8 @@
               <div class="ele-cell-content">模块生产效率</div>
               <el-tag size="mini">个/天</el-tag>
             </div>
-            <div class="analysis-chart-card-num">{{ ShipmentAllData.ModelTotalEfficiency }}</div>
+            <div v-if="ShipmentAllDataIsLoading" class="analysis-chart-card-num">0</div>
+            <div v-else class="analysis-chart-card-num">{{ ShipmentAllData.ModelTotalEfficiency }}</div>
             <el-divider/>
           </el-card>
         </el-col>
@@ -34,7 +36,11 @@
               <el-tag  size="mini">总</el-tag>
               <div class="ele-cell-content ele-text-right">模块半成品合格率</div>
             </div>
-            <div class="container">
+            <div v-if="AllPassDataIsLoading" class="container">
+              <div class="analysis-chart-card-num ele-text-left">0%</div>
+              <div class="analysis-chart-card-num ele-text-right">0%</div>
+            </div>
+            <div v-else class="container">
               <div class="analysis-chart-card-num ele-text-left">{{ AllPassData.ModelTotalAllPass }}%</div>
               <div class="analysis-chart-card-num ele-text-right">{{ AllPassData.ModelTotalHalfPass }}%</div>
             </div>
@@ -47,9 +53,11 @@
               <div class="ele-cell-content">工具使用时长</div>
               <el-tag size="mini">总</el-tag>
             </div>
-            <div class="container">
-              <div class="analysis-chart-card-num ele-text-left">{{ AllUseToolTime.AllUseToolTimeHours }}</div>
-              <div class="analysis-chart-card-num ele-text-right">H</div>
+            <div v-if="AllUseToolTimeLoading" class="container">
+              <div class="analysis-chart-card-num ele-text-left">0</div>
+            </div>
+            <div v-else class="container">
+              <div class="analysis-chart-card-num ele-text-left">{{ AllUseToolTime.AllUseToolTimeHours }}H</div>
             </div>
             <el-divider/>
           </el-card>
@@ -94,22 +102,31 @@
         <el-row>
           <el-col :lg="48" :md="58">
             <div v-if="ModelsaleSearch.type === 'procedureNumber'">
-                 <ele-chart
+              <div v-if="AllModelsDataIsLoading">数据正在加载中。。。</div>
+              <div v-else>
+                <ele-chart
                 ref="saleChart"
                 style="height: 285px;"
                 :option="AllModelsDataChartOption" />
+              </div>
             </div>
             <div v-else-if="ModelsaleSearch.type === 'pass'">
+              <div v-if="AllModelsDataIsLoading">数据正在加载中。。。</div>
+              <div v-else>
                 <ele-chart
                   ref="saleChart"
                   style="height: 285px;"
                   :option="ModelPassChartOption"/>
+              </div>
             </div>
             <div v-else-if="ModelsaleSearch.type === 'tooltime'">
+              <div v-if="GetToolTimeIsLoading">数据正在加载中。。。</div>
+              <div v-else>
                 <ele-chart
                   ref="saleChart"
                   style="height: 285px;"
                   :option="tooltimeChartOption"/>
+              </div>
             </div>
 
           </el-col>
@@ -129,7 +146,8 @@
               <div class="ele-cell-content">成品生产总数量</div>
               <el-tag size="mini">个</el-tag>
             </div>
-            <div class="analysis-chart-card-num">{{ ShipmentAllData.AllShipmentFinishedQuantity }}</div>
+            <div v-if="ShipmentAllDataIsLoading" class="analysis-chart-card-num">0</div>
+            <div v-else class="analysis-chart-card-num">{{ ShipmentAllData.AllShipmentFinishedQuantity }}</div>
             <el-divider/>
           </el-card>
         </el-col>
@@ -139,7 +157,8 @@
               <div class="ele-cell-content">成品生产效率</div>
               <el-tag size="mini">个/天</el-tag>
             </div>
-            <div class="analysis-chart-card-num">{{ ShipmentAllData.FinishedTotalEfficiency }}</div>
+            <div v-if="ShipmentAllDataIsLoading" class="analysis-chart-card-num">0</div>
+            <div v-else class="analysis-chart-card-num">{{ ShipmentAllData.FinishedTotalEfficiency }}</div>
             <el-divider/>
           </el-card>
         </el-col>
@@ -150,7 +169,11 @@
               <el-tag  size="mini">总</el-tag>
               <div class="ele-cell-content ele-text-right">半成品合格率</div>
             </div>
-            <div class="container">
+            <div v-if="AllPassDataIsLoading" class="container">
+              <div class="analysis-chart-card-num ele-text-left">0%</div>
+              <div class="analysis-chart-card-num ele-text-right">0%</div>
+            </div>
+            <div v-else class="container">
               <div class="analysis-chart-card-num ele-text-left">{{ AllPassData.FinishedTotalAllPass }}%</div>
               <div class="analysis-chart-card-num ele-text-right">{{ AllPassData.FinishedTotalHalfPass }}%</div>
             </div>
@@ -196,16 +219,22 @@
         <el-row>
           <el-col :lg="48" :md="58">
             <div v-if="saleSearch.type === 'procedureNumber'">
-                 <ele-chart
+              <div v-if="AllFinishedDataIsLoading">数据正在加载中。。。</div>
+              <div v-else>
+                <ele-chart
                 ref="saleChart"
                 style="height: 285px;"
                 :option="AllFinishedDataChartOption" />
+              </div>
             </div>
             <div v-else-if="saleSearch.type === 'pass'">
+              <div v-if="AllFinishedDataIsLoading">数据正在加载中。。。</div>
+              <div v-else>
                 <ele-chart
                   ref="saleChart"
                   style="height: 285px;"
                   :option="FinishedPassChartOption"/>
+              </div>
             </div>
 
           </el-col>
@@ -243,20 +272,29 @@ export default {
         {label:'今天',value:'today'},
       ],
 
-
+      //生产排单总数据
       ShipmentAllData:{} ,
+      ShipmentAllDataIsLoading:true,
 
+      //通过率总数据
       AllPassData:{},
+      AllPassDataIsLoading:true,
 
       //总的工具使用时长
       AllUseToolTime: {},
+      AllUseToolTimeLoading:true,
 
       //所有模块的生产数据
       AllModelsData:[],
+      AllModelsDataIsLoading:true,
+
       //所有成品的生产数据
       AllFinishedData:[],
+      AllFinishedDataIsLoading:true,
+
       //获取工具的使用时长
       GetToolTime: [],
+      GetToolTimeIsLoading:true,
 
     };
   },
@@ -544,7 +582,13 @@ export default {
     getAllNumAndEff(){
       this.$http.get('/workplace/ShipmentAllQuantity').then(res =>{
           if(res.data.code === 0) {
+          this.ShipmentAllDataIsLoading = false;
           this.ShipmentAllData = res.data.data;
+          // console.log(res.data.data)
+            if(this.ShipmentAllData === null)
+            {
+              this.ShipmentAllDataIsLoading = true;
+            }
           }
       }).catch(e => {
           this.$message.error(e.message);
@@ -554,20 +598,32 @@ export default {
     getModelAndFinishedPass() {
       this.$http.get('/workplace/AllPass').then(res =>{
         if(res.data.code === 0) {
+          this.AllPassDataIsLoading = false;
           this.AllPassData = res.data.data;
+          if(this.AllPassData === null)
+          {
+            this.AllPassDataIsLoading = true;
+          }
         }
       }).catch(e => {
-          this.$message.error(e.message);
+        this.AllPassDataIsLoading = true;
+        this.$message.error(e.message);
       });
     },
     //获取工具使用的总时长
     getAllUseToolTime(){
       this.$http.get('/workplace/AllUseToolTime').then(res =>{
         if(res.data.code === 0) {
+          this.AllUseToolTimeLoading = false;
           this.AllUseToolTime = res.data.data;
+          if(this.AllUseToolTime === null)
+          {
+            this.AllUseToolTimeLoading = true;
+          }
         }
       }).catch(e => {
-          this.$message.error(e.message);
+        this.AllUseToolTimeLoading = true;
+        this.$message.error(e.message);
       });
     },
     //获取模块所有数据（生产数量，生产合格率，使用时长）
@@ -582,11 +638,17 @@ export default {
           }
             }).then(res =>{
           if(res.data.code === 0) {
+            this.AllModelsDataIsLoading = false;
             this.AllModelsData = res.data.data;
             // console.log(res.data.data)
+            if(this.AllModelsData === null)
+            {
+              this.AllModelsDataIsLoading = true;
+            }
           }
         }).catch(e => {
-            this.$message.error(e.message);
+          this.AllModelsDataIsLoading = true;
+          this.$message.error(e.message);
         });
       }
       else {
@@ -596,11 +658,17 @@ export default {
           }
             }).then(res =>{
           if(res.data.code === 0) {
+            this.AllModelsDataIsLoading = false;
             this.AllModelsData = res.data.data;
             // console.log(res.data.data)
+            if(this.AllModelsData === null)
+            {
+              this.AllModelsDataIsLoading = true;
+            }
           }
         }).catch(e => {
-            this.$message.error(e.message);
+          this.AllModelsDataIsLoading = true;
+          this.$message.error(e.message);
         });
       }
     },
@@ -616,8 +684,13 @@ export default {
           }
             }).then(res =>{
           if(res.data.code === 0) {
+            this.AllFinishedDataIsLoading = false;
             this.AllFinishedData = res.data.data;
             // console.log(res.data.data)
+            if(this.AllFinishedData === null)
+            {
+              this.AllFinishedDataIsLoading = true;
+            }
           }
         }).catch(e => {
             this.$message.error(e.message);
@@ -630,8 +703,13 @@ export default {
           }
             }).then(res =>{
           if(res.data.code === 0) {
+            this.AllFinishedDataIsLoading = false;
             this.AllFinishedData = res.data.data;
             // console.log(res.data.data)
+            if(this.AllFinishedData === null)
+            {
+              this.AllFinishedDataIsLoading = true;
+            }
           }
         }).catch(e => {
             this.$message.error(e.message);
@@ -651,6 +729,11 @@ export default {
           }
             }).then(res =>{
           if(res.data.code === 0) {
+            if(res.data.data === null)
+            {
+              this.GetToolTimeIsLoading = true;
+            }
+            this.GetToolTimeIsLoading = false;
             const getdata = {
               value1 : res.data.data.GetUseToolTimeDebugQuantity,
               value2 : res.data.data.GetUseToolTimeTestQuantity
@@ -669,6 +752,11 @@ export default {
           }
             }).then(res =>{
           if(res.data.code === 0) {
+            if(res.data.data === null)
+            {
+              this.GetToolTimeIsLoading = true;
+            }
+            this.GetToolTimeIsLoading = false;
             const getdata = {
               value1 : res.data.data.GetUseToolTimeDebugQuantity,
               value2 : res.data.data.GetUseToolTimeTestQuantity
@@ -693,11 +781,6 @@ export default {
       this.getAllFinishedData();
     },
   },
-  activated() {
-    ['saleChart'].forEach((name) => {
-      this.$refs[name].resize();
-    });
-  }
 }
 </script>
 
