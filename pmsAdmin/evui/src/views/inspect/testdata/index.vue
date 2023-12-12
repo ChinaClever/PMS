@@ -15,6 +15,7 @@
                 <el-input
                   clearable
                   v-model="where.keyword"
+                  @clear="handleClear"
                   placeholder="软件类型、产品类型或结果"/>
               </el-form-item>
             </el-col>
@@ -425,6 +426,9 @@
         // if(rowIndex === 0){
           return 'animation';
         // }
+      },
+      handleClear(){
+        this.reload();
       },
     }
   }

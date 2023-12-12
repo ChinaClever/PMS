@@ -17,12 +17,19 @@
           <el-form-item
             label="工单号:"
             prop="work_order">
-            <el-input
-              :maxlength="20"
-              v-model="form.work_order"
-              placeholder="请输入工单号"
-              clearable/>
+            <el-autocomplete
+            v-model="form.work_order"
+            clearable
+            :fetch-suggestions="querySearchAsync"
+            @select="handleSelect"
+            @clear="handleClear"
+            @keyup.enter.native="handleEnterKey"
+            placeholder="请输入工单号"
+            style="width: 277px;"
+          ></el-autocomplete>  
           </el-form-item>
+        </el-col>
+        <el-col :sm="12">
           <el-form-item label="成品/模块:" prop="product_module">
             <el-radio-group
               v-model="form.product_module" >
@@ -30,6 +37,8 @@
               <el-radio :label="2">模块</el-radio>
             </el-radio-group>
           </el-form-item>
+        </el-col>
+          <el-col :sm="12">
           <el-form-item
             label="日期:"
             prop="date">
@@ -47,7 +56,8 @@
               v-model="form.start_time"
               value-format="yyyy-MM-dd HH:mm"
               format="HH:mm"
-              placeholder="任意时间点">
+              placeholder="任意时间点"
+              @input="handleStartTimeInput">
             </el-time-picker>
           </el-form-item>
           <el-form-item
@@ -57,7 +67,8 @@
               v-model="form.end_time"
               value-format="yyyy-MM-dd HH:mm"
               format="HH:mm"
-              placeholder="任意时间点">
+              placeholder="任意时间点"
+              @input="handleEndTimeInput">
             </el-time-picker>
           </el-form-item>
           <el-form-item
@@ -168,8 +179,15 @@ export default {
   },
   data() {
     return {
+      work_orders: [],
+      state: '',
+      timeout:  null,
       // 表单数据
-      form: Object.assign({ }, this.data),
+      form: Object.assign({ 
+        product_name : '',
+        item_number: '',
+        product_module:'',
+      }, this.data),
       // 表单验证规则
       rules: {
         work_order:[
@@ -199,8 +217,10 @@ export default {
             validator: (rule, value, callback) => {
                 // 获取订单日期的值
                 const startTime = new Date(this.form.start_time);
+                console.log(startTime);
                 // 获取交货日期的值
                 const endTime = new Date(value);
+                console.log(endTime);
                 // 比较日期
                 if (endTime <= startTime) {
                   callback(new Error('结束时间必须大于开始时间'));
@@ -304,7 +324,10 @@ export default {
         this.form = Object.assign({}, this.data);
         this.isUpdate = true;
       } else {
-        this.form = {};
+        this.form = {
+          product_name : '',
+          item_number: '',
+          product_module:'',};
         this.isUpdate = false;
       }
     }
@@ -323,7 +346,10 @@ export default {
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
               if (!this.isUpdate) {
-                this.form = {};
+                this.form = {
+                  product_name : '',
+                  item_number: '',
+                  product_module:'',};
               }
               this.updateVisible(false);
               this.$emit('done');
@@ -344,13 +370,93 @@ export default {
       this.$emit('update:visible', value);
     },
     isNubmer(rule, value, callback) {
-              const intValue = Number(value);
-              if (!Number.isInteger(intValue) || intValue <= 0) {
-                callback(new Error('数量必须为大于0的整数'));
-              } else {
-                callback();
-              }
-            }
+      const intValue = Number(value);
+      if (!Number.isInteger(intValue) || intValue <= 0) {
+        callback(new Error('数量必须为大于0的整数'));
+      } else {
+        callback();
+      }
+    },
+    loadAll() {
+      this.$http.get('/shipmentreport/work_order/list').then((res) => {
+        this.loading = false;
+        if (res.data.code === 0) {
+          this.work_orders = res.data.data
+        } 
+      })
+    },
+    // 异步查询产品名称
+    querySearchAsync(queryString, cb) {
+      var work_orders = this.work_orders;
+      var filteredResults = queryString ? work_orders.filter(this.createStateFilter(queryString)) : work_orders;
+      var results = filteredResults.slice(0, 10); // 限制结果最多显示10条
+
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        cb(results);
+      }, 300 * Math.random());
+    },
+    createStateFilter(queryString) {
+      return (state) => {
+        return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    handleSelect(item) {
+      this.form.work_order = item.value
+      this.$refs.form.validateField('work_order', () => {});
+      // 根据选择的工单号查其他数据自动填入
+      this.$http.get('/shipmentreport/detail/' + item.value).then((res) => {
+        this.loading = false;
+        const shipmentData = res.data.data;
+        if (res.data.code === 0 && res.data.data != null) {
+          this.form.product_name = shipmentData.product_name
+          this.form.item_number  = shipmentData.shape
+          this.form.product_module = shipmentData.product_module
+        } 
+      })
+    },
+    handleClear(){
+      this.form.product_name = ''
+      this.form.item_number  = ''
+      this.form.product_module = ''
+    },
+    handleEnterKey(event){
+      console.log("进入")
+      console.log(event)
+      this.form.work_order = event.target.value.split("+")[0];
+      this.$refs.form.validateField('work_order', () => {});
+      // 根据选择的工单号查其他数据自动填入
+      this.$http.get('/shipmentreport/detail/' + event.target.value.split("+")[0]).then((res) => {
+        this.loading = false;
+        const shipmentData = res.data.data;
+        if (res.data.code === 0 && res.data.data != null) {
+          this.form.product_name = shipmentData.product_name
+          this.form.item_number  = shipmentData.shape
+          this.form.product_module = shipmentData.product_module
+        } 
+      })
+    },
+    handleStartTimeInput(value){
+      if (value) {
+        const currentDate = new Date();
+        const currentDateString = currentDate.toISOString().split('T')[0];
+        const timeString = value.split(' ')[1];
+        const dateTimeString = `${currentDateString} ${timeString}`;
+        this.form.start_time = dateTimeString;
+      }
+    },
+    handleEndTimeInput(value) {
+      if (value) {
+        const currentDate = new Date();
+        const currentDateString = currentDate.toISOString().split('T')[0];
+        const timeString = value.split(' ')[1];
+        const dateTimeString = `${currentDateString} ${timeString}`;
+        this.form.end_time = dateTimeString;
+      }
+    },
+  },
+  mounted() {
+      this.loadAll();
   }
 }
 </script>
