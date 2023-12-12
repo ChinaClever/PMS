@@ -1,5 +1,6 @@
 import json
 import logging
+from datetime import datetime
 
 from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage, EmptyPage
 from django.db.models import Q
@@ -29,6 +30,13 @@ def DebugList(request):
             Q(work_order__icontains=keyword) |
             Q(shape__icontains=keyword)
         )
+    # 筛选年月范围
+    selectStartDate = request.GET.get('selectStartDate')
+    selectEndDate = request.GET.get('selectEndDate')
+    if selectStartDate and selectEndDate:
+        start_date = datetime.strptime(selectStartDate, "%Y-%m-%d")
+        end_date = datetime.strptime(selectEndDate, "%Y-%m-%d")
+        query = query.filter(order_date__gte=start_date, order_date__lte=end_date)
     # 排序
     sort = request.GET.get('sort')
     order = request.GET.get('order')
@@ -278,3 +286,47 @@ def DebugDelete(debug_id):
             count += 1
     # 返回结果
     return R.ok(msg="本次共删除{0}条数据".format(count))
+
+#图表传输
+def DebugreportListOfTotal1(request):
+    # 页码
+    page = int(request.GET.get("page", 1))
+    # 每页数
+    limit = int(request.GET.get("limit", PAGE_LIMIT))
+    # 实例化查询对象
+    query = Debug.objects.filter(is_delete=False)
+    startTime = request.GET.get('selectStartDate')
+    endTime = request.GET.get('selectEndDate')
+    if startTime and endTime:
+        startTime = startTime.replace("+", " ")
+        endTime = endTime.replace("+", " ")
+        #sql = 'SELECT item_number,sum(examine_an_amount) AS total,sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 AND start_time >= ' + str(startTime) + ' AND end_time <= ' + str(endTime)+ " GROUP BY item_number" + " limit " + str(limit)
+        sql = "SELECT id,work_order,client_name,product_name, sum(product_count) AS number_total FROM django_debugreport WHERE is_delete = 0  AND DATE(finish_time) >= %s AND DATE(finish_time) <= %s GROUP BY product_name "
+        query = Debug.objects.raw(sql,[startTime, endTime])
+        # 设置分页
+        paginator = Paginator(query, limit)
+    else:
+        sql = "SELECT id,work_order,client_name,product_name, sum(product_count) AS number_total FROM django_debugreport WHERE is_delete = 0  GROUP BY product_name "
+        query = Debug.objects.raw(sql)
+        paginator = Paginator(query, limit)
+
+    # 记录总数
+    count = paginator.count
+    # 分页查询
+    producerecord_list = paginator.page(page)
+    # 实例化结果
+    result = []
+    # 遍历数据源
+    if len(producerecord_list) > 0 and len(producerecord_list)<20 :
+        for item in producerecord_list:
+            data = {
+                'id': item.id,
+                'work_order':item.work_order,
+                'client_name': item.client_name,
+                'product_name': item.product_name,
+                'number_total':item.number_total,
+
+            }
+            result.append(data)
+    # 返回结果
+    return R.ok(data=result, count=count)

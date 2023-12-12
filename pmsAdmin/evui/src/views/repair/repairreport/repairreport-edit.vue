@@ -66,8 +66,10 @@
       </el-row>
       <el-form-item label="维修时间:" prop="repair_time">
         <el-date-picker
+          class="ele-fluid"
           v-model="form.repair_time"
-          type="datetime"
+          type="date"
+          format="yyyy-MM-dd"
           placeholder="选择日期时间"
         ></el-date-picker>
       </el-form-item>
@@ -136,9 +138,6 @@ export default {
   },
   data() {
     return {
-      work_orders: [],
-      state: '',
-      timeout:  null,
       // 表单数据
       form: Object.assign({
         status: 1,
@@ -192,29 +191,11 @@ export default {
       loading: false,
       // 是否是修改
       isUpdate: false,
-      //维修时间
-      pickerOptions: {
-        shortcuts: [{
-          text: '今天',
-          onClick(picker) {
-            picker.$emit('pick', new Date());
-          }
-        }, {
-          text: '昨天',
-          onClick(picker) {
-            const date = new Date();
-            date.setTime(date.getTime() - 3600 * 1000 * 24);
-            picker.$emit('pick', date);
-          }
-        }, {
-          text: '一周前',
-          onClick(picker) {
-            const date = new Date();
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-            picker.$emit('pick', date);
-          }
-        }]
-      },
+      //一键填入
+      work_orders: [],
+      state: '',
+      timeout:  null,
+      
       repair_time: null,
       //不良现象返回值
       bad_phenomenonlist: [],
@@ -243,9 +224,9 @@ export default {
       var date = new Date(date1);
       var month = ("0" + (date.getMonth() + 1)).slice(-2);
       var day = ("0" + date.getDate()).slice(-2);
-      var hours = ("0" + date.getHours()).slice(-2);
-      var minutes = ("0" + date.getMinutes()).slice(-2);
-      return date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
+      //var hours = ("0" + date.getHours()).slice(-2);
+      //var minutes = ("0" + date.getMinutes()).slice(-2);
+      return date.getFullYear() + "-" + month + "-" + day 
     },
     /* 保存编辑 */
     save() {

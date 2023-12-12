@@ -84,3 +84,16 @@ class DebugDeleteView(PermissionRequired, View):
         result = services.DebugDelete(debug_id)
         # 返回结果
         return result
+#接收图表请求
+@method_decorator(check_login, name="get")
+class DebugreportListOfTotalView1(PermissionRequired, View):
+    # 方法权限标识
+    permission_required = ("sys:repairreport:list",)
+
+    # 接收GET请求
+    def get(self, request):
+        # 调用查询质检报表分页数据方法
+        result = services.DebugreportListOfTotal1(request)
+
+        # 返回结果
+        return result
