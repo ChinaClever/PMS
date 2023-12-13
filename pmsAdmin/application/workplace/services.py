@@ -39,8 +39,8 @@ def ShipmentAll():
     if total_time.days > 0:
         FinishedTotalEfficiency = shipmentFinishedlQuantity / total_time.days
 
-    ModelTotalEfficiency = round(ModelTotalEfficiency, 2)
-    FinishedTotalEfficiency = round(FinishedTotalEfficiency, 2)
+    ModelTotalEfficiency = round(ModelTotalEfficiency, 1)
+    FinishedTotalEfficiency = round(FinishedTotalEfficiency, 1)
     data = {
             'AllShipmentModelQuantity': shipmentModelQuantity,  #总模块数量
             'AllShipmentFinishedQuantity': shipmentFinishedlQuantity,   #总成品数量
@@ -59,19 +59,16 @@ def AllPass():
     ModelAllInspectQuantity = Inspectreport.objects.filter(is_delete=False, product_module='2').aggregate(ModelAllInspectQuantity=Sum('examine_an_amount'))['ModelAllInspectQuantity']
     if ModelAllInspectQuantity == None:
         ModelAllInspectQuantity = 0
-    #获取质检模块所有数据
-    ModelInspectData = Inspectreport.objects.filter(is_delete=False, product_module='2')
-    if not ModelInspectData:
-        return None
-
-    #质检所有时间
-    ModelAllInspectTime = 0
-    for inspect in ModelInspectData:
-        InspectDuration = inspect.end_time - inspect.start_time
-        ModelAllInspectTime += InspectDuration.days
+    #获取质检模块所有时间
+    ModelAllInspectTime = Inspectreport.objects.filter(is_delete=False,
+                                             product_module='2').aggregate(ModelAllInspectTime=Sum('work_hours'))['ModelAllInspectTime']
+    if ModelAllInspectTime == None:
+        ModelAllInspectTime = 0
 
     #计算模块的成品合格率
+    ModelAllInspectTime = round(ModelAllInspectTime/24, 1)
     ModelTotalAllPass = ModelAllInspectQuantity / ModelAllInspectTime if ModelAllInspectTime > 0 else 0
+    ModelTotalAllPass = round(ModelTotalAllPass, 1)
 
 #2.模块的半成品合格率计算    使用调试表格内的数据
     # 调试模块数量总计
@@ -83,13 +80,13 @@ def AllPass():
     # 调试模块所有时间
     ModelAllDebugTime = Debug.objects.filter(is_delete=False,
                                              product_module='2').aggregate(ModelAllDebugTime=Sum('work_hours'))['ModelAllDebugTime']
-    if not ModelAllDebugTime:
-        return None
+    if ModelAllDebugTime == None:
+        ModelAllDebugTime = 0
 
-    ModelAllDebugTime = round(ModelAllDebugTime/24.0, 2)
     # 计算模块总半成品合格率
+    ModelAllDebugTime = round(ModelAllDebugTime/24, 1)
     ModelTotalHalfPass = ModelAllDebugQuantity / ModelAllDebugTime if ModelAllDebugTime > 0 else 0
-    ModelTotalHalfPass = round(ModelTotalHalfPass, 2)
+    ModelTotalHalfPass = round(ModelTotalHalfPass, 1)
 
 #3.成品的成品合格率计算  使用质检表格内的数据
     #质检成品数量总计
@@ -99,19 +96,22 @@ def AllPass():
     # print(f"质检成品数量总计{FinishedAllInspectQuantity}")
     if FinishedAllInspectQuantity == None:
         FinishedAllInspectQuantity = 0
-    #获取质检成品所有数据
-    FinishedInspectData = Inspectreport.objects.filter(is_delete=False, product_module='1')
-    if not FinishedInspectData:
-        return None
+    #获取质检成品所有时间
+    FinishedAllInspectTime = Inspectreport.objects.filter(is_delete=False,
+                                             product_module='1').aggregate(FinishedAllInspectTime=Sum('work_hours'))['FinishedAllInspectTime']
+    if FinishedAllInspectTime == None:
+        FinishedAllInspectTime = 0
 
     #质检所有时间
-    FinishedAllInspectTime = 0
-    for inspect in FinishedInspectData:
-        InspectDuration = inspect.end_time - inspect.start_time
-        FinishedAllInspectTime += InspectDuration.days
+    # FinishedAllInspectTime = 0
+    # for inspect in FinishedInspectData:
+    #     InspectDuration = inspect.end_time - inspect.start_time
+    #     FinishedAllInspectTime += InspectDuration.days
 
     #计算成品的成品合格率
+    FinishedAllInspectTime = round(FinishedAllInspectTime/24, 1)
     FinishedTotalAllPass = FinishedAllInspectQuantity / FinishedAllInspectTime if FinishedAllInspectTime > 0 else 0
+    FinishedTotalAllPass = round(FinishedTotalAllPass, 1)
 
 #4.成品的半成品合格率计算 使用调试表格内的数据
     # 调试成品数量总计
@@ -127,8 +127,9 @@ def AllPass():
         FinishedAllDebugTime = 0
 
     # 计算成品总半成品合格率
+    FinishedAllDebugTime = round(FinishedAllDebugTime/24, 1)
     FinishedTotalHalfPass = FinishedAllDebugQuantity / FinishedAllDebugTime if FinishedAllDebugTime > 0 else 0
-    FinishedTotalHalfPass = round(FinishedTotalHalfPass, 2)
+    FinishedTotalHalfPass = round(FinishedTotalHalfPass, 1)
 
     data = {
         'ModelTotalAllPass':ModelTotalAllPass,          #模块的成品合格率
@@ -156,7 +157,7 @@ def AllUseToolTime():
 
     #总的工具使用时常
     AllUseToolTimeHours = UseInspectToolTimeHours + UseDebugToolTimeHours
-    AllUseToolTimeHours = round(AllUseToolTimeHours, 3)
+    AllUseToolTimeHours = round(AllUseToolTimeHours, 1)
     data = {
         'AllUseToolTimeHours':AllUseToolTimeHours
     }
@@ -246,13 +247,13 @@ def AllModelsData(request):
         # 计算每个产品的生产效率
 
         efficiency = shipmentModelQuantity / getDifferenceDay if getDifferenceDay > 0 else 0
-        efficiency = round(efficiency, 2)
+        efficiency = round(efficiency, 1)
         # 计算模块的半成品合格率
         Model_HalfPass = total_quantity_Debug / shipmentModelQuantity if shipmentModelQuantity > 0 else 0
-        Model_HalfPass = round(Model_HalfPass, 3)
+        Model_HalfPass = round(Model_HalfPass, 1)
         # 计算模块的成品合格率
         Model_AllPass = total_quantity_Inspect / shipmentModelQuantity if shipmentModelQuantity > 0 else 0
-        Model_AllPass = round(Model_AllPass, 3)
+        Model_AllPass = round(Model_AllPass, 1)
 
         product_data = {
             'product_name': productName,  # 模块产品名字
@@ -342,13 +343,13 @@ def AllFinishedData(request):
 
         #计算每个产品的生产效率
         efficiency = FinishedData / getDifferenceDay if getDifferenceDay > 0 else 0
-        efficiency = round(efficiency, 2)
+        efficiency = round(efficiency, 1)
         #计算成品的半成品合格率
         Finished_HalfPass = GetDebugQuantity / FinishedData if FinishedData > 0 else 0
-        Finished_HalfPass = round(Finished_HalfPass, 2)
+        Finished_HalfPass = round(Finished_HalfPass, 1)
         #计算成品的成品合格率
         Finished_AllPass = GetInspectQuantity / FinishedData if FinishedData > 0 else 0
-        Finished_AllPass = round(Finished_AllPass, 2)
+        Finished_AllPass = round(Finished_AllPass, 1)
 
         product_data = {
             'product_name':productName, #成品产品名字
@@ -405,7 +406,7 @@ def GetToolUseTime(request):
 
     # 转成小时
     GetUseToolTimeDebugQuantity = GetUseToolTimeDebugQuantityTime / 3600
-    GetUseToolTimeDebugQuantity = round(GetUseToolTimeDebugQuantity, 2)
+    GetUseToolTimeDebugQuantity = round(GetUseToolTimeDebugQuantity, 1)
 
     GetUseToolTimeTestQuantityTime = (Testdata.objects.filter(is_delete=False,
                                                             testEndTime__range=(start_date, end_date))
@@ -414,10 +415,10 @@ def GetToolUseTime(request):
         GetUseToolTimeTestQuantityTime = 0
 
     GetUseToolTimeTestQuantity = GetUseToolTimeTestQuantityTime / 3600
-    GetUseToolTimeTestQuantity = round(GetUseToolTimeTestQuantity, 2)
+    GetUseToolTimeTestQuantity = round(GetUseToolTimeTestQuantity, 1)
 
     GetUseToolTimeQuantity = GetUseToolTimeDebugQuantity + GetUseToolTimeTestQuantity
-    GetUseToolTimeQuantity = round(GetUseToolTimeQuantity, 2)
+    GetUseToolTimeQuantity = round(GetUseToolTimeQuantity, 1)
 
     data = {
         'GetUseToolTimeDebugQuantity':GetUseToolTimeDebugQuantity,#调试时间
