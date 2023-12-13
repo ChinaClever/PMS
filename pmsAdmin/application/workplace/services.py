@@ -86,7 +86,7 @@ def AllPass():
     if not ModelAllDebugTime:
         return None
 
-    ModelAllDebugTime = round(ModelAllDebugTime/24, 2)
+    ModelAllDebugTime = round(ModelAllDebugTime/24.0, 2)
     # 计算模块总半成品合格率
     ModelTotalHalfPass = ModelAllDebugQuantity / ModelAllDebugTime if ModelAllDebugTime > 0 else 0
     ModelTotalHalfPass = round(ModelTotalHalfPass, 2)

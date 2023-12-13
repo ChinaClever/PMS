@@ -222,6 +222,13 @@ export default {
           order: '', // 初始化排序方式为空字符串
         },
         {
+          prop: 'work_hours',
+          label: '工时',
+          minWidth: 100,
+          align: 'center',
+          resizable: false,
+        },
+        {
           prop: 'commit_user',
           label: '填写者',
           width: 80,
