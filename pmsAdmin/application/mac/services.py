@@ -23,6 +23,9 @@
 
 import json
 import logging
+import re
+from datetime import datetime
+
 from django.core.paginator import Paginator
 from django.db.models import Q
 
@@ -108,6 +111,11 @@ def MacAdd(request):
             return R.failed("参数不能为空")
         # 数据类型转换
         dict_data = json.loads(json_data)
+        MAC_PATTERN = r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$'
+        if re.match(MAC_PATTERN, dict_data['mac_address']):
+            pass
+        else:
+            return R.failed("mac地址i格式错误")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
@@ -163,36 +171,49 @@ def MacUpdate(request):
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
-    # 表单验证
-    form = forms.MacForm(dict_data)
-    if form.is_valid():
-        work_order = form.cleaned_data.get('work_order')
-        # 客户名称
-        name = form.cleaned_data.get('name')
-        # 产品类型
-        code = form.cleaned_data.get('code')
-        # 序列号
-        serial_id = form.cleaned_data.get('serial_id')
-        # mac地址
-        mac_address = form.cleaned_data.get('mac_address')
+    # # 表单验证
+    # form = forms.MacForm(dict_data)
+    # if form.is_valid():
+    #     work_order = form.cleaned_data.get('work_order')
+    #     # 客户名称
+    #     name = form.cleaned_data.get('name')
+    #     # 产品类型
+    #     code = form.cleaned_data.get('code')
+    #     # 序列号
+    #     serial_id = form.cleaned_data.get('serial_id')
+    #     # mac地址
+    #     mac_address = form.cleaned_data.get('mac_address')
+    # else:
+    #     # 获取错误信息
+    #     err_msg = regular.get_err(form)
+    #     # 返回错误信息
+    #     return R.failed(err_msg)
+    #
+    # # 根据ID查询客户
+    # user = mac.objects.only('id').filter(id=mac_id, is_delete=False).first()
+    # # 查询结果判断
+    # if not user:
+    #     return R.failed("不存在")
+    work_order = dict_data.get('work_order')
+    # 客户名称
+    name = dict_data.get('name')
+    # 产品类型
+    code = dict_data.get('code')
+    # 序列号
+    serial_id = dict_data.get('serial_id')
+    # mac地址
+    mac_address = dict_data.get('mac_address')
+    current_time = datetime.now()
+    user = mac.objects.filter(id=mac_id,is_delete=False, mac_address=mac_address).first()
+    if user:
+        user.work_order = work_order
+        user.name = name
+        user.code = code
+        user.serial_id = serial_id
+        user.update_time = current_time
     else:
-        # 获取错误信息
-        err_msg = regular.get_err(form)
-        # 返回错误信息
-        return R.failed(err_msg)
+        return R.failed('mac地址已经存在')
 
-    # 根据ID查询客户
-    user = mac.objects.only('id').filter(id=mac_id, is_delete=False).first()
-    # 查询结果判断
-    if not user:
-        return R.failed("客户不存在")
-
-    # 对象赋值
-    user.work_order = work_order
-    user.name = name
-    user.code = code
-    user.serial_id = serial_id
-    user.mac_address= mac_address
 
     # 更新数据
     user.save()

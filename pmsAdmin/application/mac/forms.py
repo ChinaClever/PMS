@@ -30,41 +30,41 @@ class MacForm(forms.ModelForm):
     # 工单号
     work_order = forms.CharField(
         required=False,
-        max_length=50,
+        max_length=255,
         error_messages={
-            'max_length': '工单号不得超过50个字符'
+            'max_length': '工单号不得超过255个字符'
         }
     )
     # 客户名称
     name = forms.CharField(
         required=False,
-        max_length=6,
+        max_length=255,
         error_messages={
-            'max_length': '客户名称长度不得超过6个字符'
+            'max_length': '客户名称长度不得超过255个字符'
         }
     )
     # 产品类型
     code = forms.CharField(
         required=False,
-        max_length=50,
+        max_length=255,
         error_messages={
-            'max_length': '产品类型长度不得超过50个字符'
+            'max_length': '产品类型长度不得超过255个字符'
         }
     )
     # 序列号
     serial_id = forms.CharField(
         required=False,
-        max_length=150,
+        max_length=255,
         error_messages={
-            'max_length': '序列号长度不得超过50个字符'
+            'max_length': '序列号长度不得超过255个字符'
         }
     )
     # mac地址
     mac_address = forms.CharField(
         required=False,
-        max_length=50,
+        max_length=255,
         error_messages={
-            'max_length': 'mac地址不得超过50个字符'
+            'max_length': 'mac地址不得超过255个字符'
         }
     )
 

@@ -131,7 +131,8 @@ INSTALLED_APPS = [
     'application.shipmentreport',
     'application.mac',
     'application.workplace',
-    'application.comprehensive'
+    'application.comprehensive',
+
 
 ]
 
