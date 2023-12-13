@@ -10,6 +10,7 @@
       @update:visible="updateVisible">
       <el-form
         ref="form"
+        enctype="multipart/form-data"
         :model="form"
         :rules="rules"
         label-width="86px"
@@ -22,6 +23,7 @@
           <el-input
             v-model="form.work_order"
             placeholder="请输入工单号"
+            @keyup.enter.native="handleEnterKey"
             clearable>
             <el-tooltip slot="prefix" effect="dark" placement="top">
               <i class="el-icon-question"></i>
@@ -166,7 +168,7 @@
               placeholder="请输入备注"/>
           </el-form-item>
 
-          <!-- <el-form-item label="附件:" prop="attachment">
+          <el-form-item label="附件:" prop="attachment">
             <el-upload
               class="upload-demo"
               ref="upload"
@@ -180,9 +182,9 @@
               drag>
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              <div class="el-upload__tip" slot="tip">文件大小不能超过100MB</div>
+              <div class="el-upload__tip" slot="tip">支持多文件上传,单个文件大小不能超过100MB</div>
             </el-upload>
-          </el-form-item> -->
+          </el-form-item>
 
       </el-form>
     
@@ -258,18 +260,41 @@
         // 提交状态
         loading: false,
         // 是否是修改
-        isUpdate: false
+        isUpdate: false,
+        // 需要删除的文件
+        deleteFileList: [],
       };
     },
     watch: {
       data() {
         if (this.data && this.data.id) {
           this.form = Object.assign({}, this.data);
+          this.fileList = [];
+           // 遍历文件名列表，为每个文件名创建一个文件对象
+           if (this.data.fileNameList != null){
+             this.data.fileNameList.forEach((fileName, index) => {
+            const file = {
+              name: fileName,
+              uid: `file-${index}`, 
+              status: 'success', 
+              url: '' 
+              };
+              this.fileList.push(file); 
+            });
+           }
+         
           this.isUpdate = true;
         } else {
           this.form = {product_code: '', product_name:'', shape:'', product_module:''};
           this.isUpdate = false;
         }
+      },
+      visible(){
+        if (this.visible == false){
+          this.fileList = [];
+          this.deleteFileList = [];
+        }
+        
       }
     },
     methods: {
@@ -277,8 +302,33 @@
       save() {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.loading = true;
-            this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/shipmentreport/update' : '/shipmentreport/add', this.form).then(res => {
+            // 创建 formData 对象  加入需要删除的文件
+            const formData = new FormData()
+            if (this.deleteFileList != null){
+              formData.append('deleteFileList',this.deleteFileList)
+            }
+            // 文件上传
+            if (this.fileList.length != 0) {         
+                this.fileList.forEach((file) => {
+                  if (file.status === 'success') {
+                    // 文件已上传成功，不再重新上传
+                    return;
+                  }
+                formData.append('files', file.raw)
+              }
+          )}
+            // 获取表单对象的键
+            const keys = Object.keys(this.form);
+
+            // 遍历键，并将数据添加到新的 FormData 对象中
+            keys.forEach(key => {
+              if (Object.hasOwnProperty.call(this.form, key)) {
+                formData.append(key, this.form[key]);
+              }
+            });
+          
+            this.loading = true       
+            this.$http['post'](this.isUpdate ? '/shipmentreport/update' : '/shipmentreport/add', formData).then(res => {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -287,6 +337,8 @@
                 }
                 this.updateVisible(false);
                 this.$emit('done');
+                 //清空fileList
+                this.fileList = []
               } else {
                 this.$message.error(res.data.msg);
               }
@@ -294,67 +346,10 @@
               this.loading = false;
               this.$message.error(e.message);
             });
-          } else {
+          }else {
             return false;
           }
         });
-
-            
-        // this.$refs['form'].validate((valid) => {
-        //   if (valid) {
-        //     // 创建 formData 对象
-        //     const formData = new FormData()
-        //     // 文件上传
-        //     if (this.fileList.length != 0) {
-             
-        //         this.fileList.forEach((file) => {
-        //         formData.append('files', file.raw)
-        //   })}
-        //     // 获取表单对象的键
-        //     const keys = Object.keys(this.form);
-
-        //     // 遍历键，并将数据添加到新的 FormData 对象中
-        //     keys.forEach(key => {
-        //       if (Object.hasOwnProperty.call(this.form, key)) {
-        //         formData.append(key, this.form.key);
-        //       }
-        //     });
-        //     // formData.append('work_order', this.form.work_order)
-        //     // formData.append('client_name', this.form.client_name)
-        //     // formData.append('product_code', this.form.product_code)
-        //     // formData.append('product_name', this.form.product_name)
-        //     // formData.append('shape', this.form.shape)
-        //     // formData.append('product_count', this.form.product_count)
-        //     // formData.append('order_date', this.form.order_date)
-        //     // formData.append('delivery_date', this.form.delivery_date)
-        //     // formData.append('update_delivery_date', this.form.update_delivery_date)
-        //     // formData.append('finish_date', this.form.finish_date)
-        //     // formData.append('SO_RQ_id', this.form.SO_RQ_id)
-        //     // formData.append('remark', this.form.remark)
-
-        //     this.loading = true       
-        //     this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/shipmentreport/update' : '/shipmentreport/add', formData).then(res => {
-        //       this.loading = false;
-        //       if (res.data.code === 0) {
-        //         this.$message.success(res.data.msg);
-        //         if (!this.isUpdate) {
-        //           this.form = {};
-        //         }
-        //         this.updateVisible(false);
-        //         this.$emit('done');
-        //          //清空fileList
-        //         this.fileList = []
-        //       } else {
-        //         this.$message.error(res.data.msg);
-        //       }
-        //     }).catch(e => {
-        //       this.loading = false;
-        //       this.$message.error(e.message);
-        //     });
-        //   }else {
-        //     return false;
-        //   }
-        // });
       },
 
       /* 更新visible */
@@ -405,6 +400,7 @@
         }
       },
 
+      // 加载全部产品名
       loadAll() {
         this.$http.get('/shipmentreport/product/list').then((res) => {
             this.loading = false;
@@ -413,6 +409,7 @@
             } 
           })
       },
+
       // 异步查询产品名称
       querySearchAsync(queryString, cb) {
         var product_names = this.product_names;
@@ -435,13 +432,14 @@
         this.$refs.form.validateField('product_name', () => {});
       },
 
-      //文件自定义上传
+      // 文件自定义上传
       onChange(file, fileList) {
         if (file.size === 0) {
             this.$message.error('上传文件不存在').duration(3000);
             this.fileList = fileList.filter(item => item.uid !== file.uid)
             return
           }
+        
           // 获取文件大小（单位：字节）
           const fileSize = file.size; 
           // 将文件大小转换为MB
@@ -456,45 +454,25 @@
         this.fileList = fileList
         },
 
+      // 文件移除
       onRemove(file, fileList) {
       this.fileList = fileList.filter(item => item.uid !== file.uid)
+      this.deleteFileList.push(file.name)
+      console.log(this.deleteFileList)
       },
-      //文件上传
-      // confirmSubmit() {
-      //   //判断是否有文件再上传
-      //   if (this.fileList.length != 0) {
-      //     // 创建 formData 对象
-      //     // const formData = new FormData()
-      //     // 将所有 的 upload 组件中的文件对象放入到 FormData 对象中
-      //     this.fileList.forEach((file) => {
-      //       // formData.append('files', file.raw)
-      //       this.form.append('files', file.raw)
-      //     })
 
-      //     this.loading = true
-      //     this.$http({
-      //       method: 'POST',
-      //       url: '/uploadEmailFiles',
-      //       data: formData
-      //     }).then(({code, data}) => {
-      //       if (code === '10001') {
-      //         this.$message.success('成功')
-      //       } else {
-      //         this.$message.error('失败')
-      //       }
-
-      //       //清空fileList
-      //       this.fileList = []
-      //       this.loading = false
-      //     }).catch(() => {
-      //       this.loading = false
-      //       this.$message.error('失败')
-      //     })
-      //   }
-      // }
+      handleEnterKey(event){
+        console.log(event)
+        this.$refs.form.validateField('work_order', () => {});
     },
+
+    },
+
     mounted() {
+      // 加载全部产品名
       this.loadAll();
+      
+
     }
   }
   </script>

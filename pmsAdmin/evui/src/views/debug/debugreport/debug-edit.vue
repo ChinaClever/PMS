@@ -24,6 +24,7 @@
             :fetch-suggestions="querySearchAsync"
             @select="handleSelect"
             @clear="handleClear"
+            @keyup.enter.native="handleEnterKey"
             placeholder="请输入工单号"
             style="width: 277px;"
           ></el-autocomplete>  
@@ -345,7 +346,29 @@
         this.form.shape  = ''
         this.form.submit_time = ''
         this.form.product_module = ''
-      }
+      },
+
+      handleEnterKey(event){
+      console.log("进入")
+      console.log(event)
+      this.form.work_order = event.target.value.split("+")[0];
+      this.$refs.form.validateField('work_order', () => {});
+      // 根据选择的工单号查其他数据自动填入
+      this.$http.get('/shipmentreport/detail/' + event.target.value.split("+")[0]).then((res) => {
+        this.loading = false;
+        const shipmentData = res.data.data;
+        if (res.data.code === 0 && res.data.data != null) {
+          this.form.product_name = shipmentData.product_name
+             this.form.client_name = shipmentData.client_name
+             this.form.product_count = shipmentData.product_count
+             this.form.order_time = shipmentData.order_date
+             this.form.shape  = shipmentData.shape
+             this.form.submit_time = shipmentData.delivery_date
+             this.form.product_module = shipmentData.product_module
+        } 
+      })
+    },
+
 
     },
     mounted() {

@@ -15,6 +15,7 @@ from application.testdata.models import Testdata
 from application.testdata_teststep.models import TestDataTestStep
 from constant.constants import PAGE_LIMIT
 from utils import R, regular
+from datetime import datetime
 
 
 from utils.utils import uid
@@ -289,6 +290,7 @@ def TestDataUpdate(request):
         testdata.testEndTime = testEndTime
         testdata.testTime = testTime
         testdata.update_user = uid(request)
+        testdata.update_time = datetime.now()
         # 更新数据
         testdata.save()
         # 更新testdata_teststep表
