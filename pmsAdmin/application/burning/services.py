@@ -23,6 +23,8 @@
 
 import json
 import logging
+from datetime import datetime
+
 from django.core.paginator import Paginator
 from django.db.models import Q
 
@@ -44,6 +46,15 @@ def BurningList(request):
     keyword = request.GET.get('keyword')
     if keyword:
         query = query.filter(Q(name__contains=keyword) | Q(work_order=keyword))
+
+    # 筛选年月范围
+    selectStartDate = request.GET.get('selectStartDate')
+    selectEndDate = request.GET.get('selectEndDate')
+    if selectStartDate and selectEndDate:
+        start_date = datetime.strptime(selectStartDate, "%Y-%m-%d")
+        end_date = datetime.strptime(selectEndDate, "%Y-%m-%d")
+        query = query.filter(order_time__gte=start_date, order_time__lte=end_date)
+
     sort = request.GET.get('sort')
     order = request.GET.get('order')
     if sort and order:
@@ -219,6 +230,7 @@ def BurningUpdate(request):
     if not user:
         return R.failed("客户不存在")
 
+    current_time = datetime.now()
     # 对象赋值
     user.work_order = work_order
     user.name = name
@@ -230,6 +242,7 @@ def BurningUpdate(request):
     user. quantity =  quantity
     user.remark = remark
     user.rcerder = rcerder
+    user.update_time = current_time
 
     # 更新数据
     user.save()

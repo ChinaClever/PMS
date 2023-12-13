@@ -10,10 +10,11 @@
         @submit.native.prevent>
         <el-row :gutter="15">
           <el-col :lg="6" :md="19">
-            <el-form-item label="客户名称或工单号:">
+            <el-form-item label="查询:">
               <el-input
                 clearable
                 v-model="where.keyword"
+                @clear="reload"
                 placeholder="请输入客户名称或工单号"/>
             </el-form-item>
           </el-col>
@@ -55,6 +56,15 @@
             class="ele-btn-icon"
             @click="removeBatch"
             v-if="permission.includes('sys:mac:dall')">删除
+          </el-button>
+          <el-button
+          size="small"
+            type="primary"
+            icon="el-icon-plus"
+            class="ele-btn-icon"
+            @click="make"
+      
+            v-if="permission.includes('sys:mac:dall')">一键生成
           </el-button>
            <!-- 导出按钮 -->
            <el-button
@@ -199,7 +209,12 @@ export default {
           minWidth: 160,
           align: 'center',
           formatter: (row, column, cellValue) => {
-            return this.$util.toDateString(cellValue);
+            const date = new Date(cellValue);
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            
+            return `${year}-${month}-${day}`;
           }
         },
         {
@@ -210,7 +225,12 @@ export default {
           minWidth: 160,
           align: 'center',
           formatter: (row, column, cellValue) => {
-            return this.$util.toDateString(cellValue);
+            const date = new Date(cellValue);
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            
+            return `${year}-${month}-${day}`;
           }
         },
         {
@@ -308,6 +328,20 @@ export default {
         });
       }).catch(() => {
       });
+    },
+    make() {
+      // 在这里调用后端函数
+      this.$http.get('/mac/make')
+        .then(response => {
+          // 处理成功响应
+          console.log(response.data);
+          // 可以在这里更新页面或执行其他操作
+          this.reload();
+        })
+        .catch(error => {
+          // 处理错误响应
+          console.error(error);
+        });
     },
     /* 更改状态 */
     editStatus(row) {

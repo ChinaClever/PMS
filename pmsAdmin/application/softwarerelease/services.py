@@ -23,6 +23,8 @@
 
 import json
 import logging
+from datetime import datetime
+
 from django.core.paginator import Paginator
 from constant.constants import PAGE_LIMIT
 from application.softwarerelease import forms
@@ -42,6 +44,14 @@ def SoftwarereleaseList(request):
     name = request.GET.get('name')
     if name:
         query = query.filter(name__contains=name)
+        # 筛选年月范围
+    selectStartDate = request.GET.get('selectStartDate')
+    selectEndDate = request.GET.get('selectEndDate')
+    if selectStartDate and selectEndDate:
+        start_date = datetime.strptime(selectStartDate, "%Y-%m-%d")
+        end_date = datetime.strptime(selectEndDate, "%Y-%m-%d")
+        query = query.filter(modify_time__gte=start_date, modify_time__lte=end_date)
+
     sort = request.GET.get('sort')
     order = request.GET.get('order')
     if sort and order:
@@ -243,7 +253,7 @@ def SoftwarereleaseUpdate(request):
     # 查询结果判断
     if not user:
         return R.failed("客户不存在")
-
+    current_time = datetime.now()
     # 对象赋值
     user.name = name
     user.products = products
@@ -259,8 +269,7 @@ def SoftwarereleaseUpdate(request):
     user.upgrade_cause = upgrade_cause
     user.documentation_position = documentation_position
     user.User_Manual_position = User_Manual_position
-    print(user.documentation_position)
-    print('------------')
+    user.update_time = current_time
 
     # 更新数据
     user.save()
