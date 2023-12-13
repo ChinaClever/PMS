@@ -241,6 +241,7 @@ def DictUpdate(request):
         solution = form.cleaned_data.get('solution')
         notes = form.cleaned_data.get('notes')
         repair_time = form.cleaned_data.get('repair_time')
+        update_time = form.cleaned_data.get('update_time')
     else:
         # 获取错误信息
         err_msg = regular.get_err(form)
@@ -268,6 +269,7 @@ def DictUpdate(request):
     dict.notes = notes
     dict.repair_time = repair_time
     dict.update_user = uid(request)
+    dict.update_time = update_time
 
     # 更新数据
     dict.save()
@@ -415,12 +417,18 @@ def RepairreportListOfTotal1(request):
         startTime = startTime.replace("+", " ")
         endTime = endTime.replace("+", " ")
         #sql = 'SELECT item_number,sum(examine_an_amount) AS total,sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 AND start_time >= ' + str(startTime) + ' AND end_time <= ' + str(endTime)+ " GROUP BY item_number" + " limit " + str(limit)
-        sql = "SELECT id,name, sum(bad_number) AS bad_total, sum(repair_number) AS repair_total FROM django_repairreport WHERE is_delete = 0  AND DATE(create_time) >= %s AND DATE(create_time) <= %s GROUP BY name "
+        sql = ("SELECT id,name, sum(bad_number) AS bad_total, sum(repair_number) AS repair_total"
+               " FROM django_repairreport "
+               "WHERE is_delete = 0  AND DATE(create_time) >= %s AND DATE(create_time) <= %s "
+               "GROUP BY name ")
         query = Dict.objects.raw(sql,[startTime, endTime])
         # 设置分页
         paginator = Paginator(query, limit)
     else:
-        sql = "SELECT id,name, sum(bad_number) AS bad_total, sum(repair_number) AS repair_total FROM django_repairreport WHERE is_delete = 0 GROUP BY name"
+        sql = ("SELECT id,name, sum(bad_number) AS bad_total, sum(repair_number) AS repair_total "
+               "FROM django_repairreport "
+               "WHERE is_delete = 0 "
+               "GROUP BY name")
         query = Dict.objects.raw(sql)
         paginator = Paginator(query, limit)
 
@@ -463,7 +471,9 @@ def QuestionList(request):
 
     if name1 :
         # sql = 'SELECT item_number,sum(examine_an_amount) AS total,sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 AND start_time >= ' + str(startTime) + ' AND end_time <= ' + str(endTime)+ " GROUP BY item_number" + " limit " + str(limit)
-        sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0"
+        sql = ("SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num , sum(bad_number) as bad_number_total "
+               "FROM django_repairreport "
+               "WHERE is_delete = 0")
         params = []
         conditions = []
         if work_order:
@@ -494,7 +504,9 @@ def QuestionList(request):
         #     sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0  GROUP BY name, bad_phenomenon ORDER BY name, num DESC"
         # query = Dict.objects.raw(sql)
     elif work_order1:
-        sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0"
+        sql = ("SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num, sum(bad_number) as bad_number_total "
+               "FROM django_repairreport "
+               "WHERE is_delete = 0")
         params = []
         conditions = []
         if work_order:
@@ -513,7 +525,9 @@ def QuestionList(request):
         query = Dict.objects.raw(sql, params)
         paginator = Paginator(query, limit)
     else :
-        sql = "SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num FROM django_repairreport WHERE is_delete = 0"
+        sql = ("SELECT id, name, work_order, bad_phenomenon, count(bad_phenomenon) as num, sum(bad_number) as bad_number_total "
+               "FROM django_repairreport "
+               "WHERE is_delete = 0")
         params = []
         conditions = []
         if work_order:
@@ -545,6 +559,7 @@ def QuestionList(request):
                 'name': item.name,
                 'work_order': item.work_order,
                 'bad_phenomenon':item.bad_phenomenon,
+                'bad_number_total':item.bad_number_total,
                 'num':item.num,
             }
             result.append(data)
