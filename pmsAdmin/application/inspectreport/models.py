@@ -60,6 +60,7 @@ class Inspectreport(BaseModel):
 
     action = models.TextField(null=True, verbose_name="行动", help_text="行动")
 
+    work_hours = models.IntegerField(null=False, verbose_name="工时", help_text="工时")
     class Meta:
         # 数据表名
         db_table = TABLE_PREFIX + "inspectreport"
