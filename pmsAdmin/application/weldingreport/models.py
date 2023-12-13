@@ -16,11 +16,11 @@ class Welding(BaseModel):
     # 下单日期
     order_time = models.DateTimeField(auto_now_add=False, verbose_name="下单日期", max_length=11)
     # 客户名称
-    client_name = models.CharField(max_length=150, verbose_name="客户名称", help_text="客户名称")
+    client_name = models.CharField(max_length=255, verbose_name="客户名称", help_text="客户名称")
     # 规格型号
     shape = models.CharField(max_length=255, verbose_name="规格型号", help_text="规格型号")
     # 产品名称
-    product_name = models.CharField(max_length=150, verbose_name="产品名称", help_text="产品名称")
+    product_name = models.CharField(max_length=255, verbose_name="产品名称", help_text="产品名称")
     # 数量
     product_count = models.IntegerField(default=0, verbose_name="数量", help_text="数量")
     # 交期
@@ -32,9 +32,9 @@ class Welding(BaseModel):
     # 所用工时
     work_hours = models.IntegerField(null=True, default=0, verbose_name="所用工时", help_text="所用工时")
     # 具体说明
-    instruction = models.CharField(null=True, max_length=150, verbose_name="具体说明", help_text="具体说明")
+    instruction = models.CharField(null=True, max_length=255, verbose_name="具体说明", help_text="具体说明")
     # 备注
-    remark = models.CharField(null=True, max_length=150, verbose_name="备注", help_text="备注")
+    remark = models.CharField(null=True, max_length=255, verbose_name="备注", help_text="备注")
 
     class Meta:
         # 数据表名

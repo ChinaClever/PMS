@@ -124,7 +124,7 @@
               <!-- 附件列 -->
               <template slot="attachment" slot-scope="{row}">
                 <!-- <el-tag v-for="attachment in row.fileNameList" :key="attachment">{{ attachment }}</el-tag> -->
-                <el-link v-for="(attachment, index) in row.fileNameList" :key="index" :href="`${preUrl}/${row.attachmentList[index]}`" target="_blank">
+                <el-link v-for="(attachment, index) in row.fileNameList" :key="index" :href="`${preUrl}/${encodeURIComponent(row.attachmentList[index])}`" target="_blank">
                   {{ attachment }}
                 </el-link>
               </template>

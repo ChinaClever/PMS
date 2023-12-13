@@ -31,12 +31,12 @@ def DebugList(request):
             Q(shape__icontains=keyword)
         )
     # 筛选年月范围
-    selectStartDate = request.GET.get('selectStartDate')
-    selectEndDate = request.GET.get('selectEndDate')
+    selectStartDate = request.GET.get('startTime')
+    selectEndDate = request.GET.get('endTime')
     if selectStartDate and selectEndDate:
         start_date = datetime.strptime(selectStartDate, "%Y-%m-%d")
         end_date = datetime.strptime(selectEndDate, "%Y-%m-%d")
-        query = query.filter(order_date__gte=start_date, order_date__lte=end_date)
+        query = query.filter(order_time__gte=start_date, order_time__lte=end_date)
     # 排序
     sort = request.GET.get('sort')
     order = request.GET.get('order')
@@ -295,8 +295,8 @@ def DebugreportListOfTotal1(request):
     limit = int(request.GET.get("limit", PAGE_LIMIT))
     # 实例化查询对象
     query = Debug.objects.filter(is_delete=False)
-    startTime = request.GET.get('selectStartDate')
-    endTime = request.GET.get('selectEndDate')
+    startTime = request.GET.get('startTime')
+    endTime = request.GET.get('endTime')
     if startTime and endTime:
         startTime = startTime.replace("+", " ")
         endTime = endTime.replace("+", " ")
