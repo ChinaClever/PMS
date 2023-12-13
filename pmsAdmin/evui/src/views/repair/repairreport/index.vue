@@ -377,8 +377,13 @@
     methods: {
       //向后端传时间
       dateRangeHandleSelect(){
-        this.where.selectStartDate = this.selectDateRange[0]
-        this.where.selectEndDate = this.selectDateRange[1]
+        if(where.selectDateRange!=null){
+          this.where.selectStartDate = this.selectDateRange[0]
+          this.where.selectEndDate = this.selectDateRange[1]
+        }else{
+          this.where.selectStartDate = null
+          this.where.selectEndDate = null
+        }
       },
       /* 刷新表格 */
       reload() {
