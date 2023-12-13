@@ -272,8 +272,15 @@
     methods: {
       //向后端传时间
       dateRangeHandleSelect(){
-        this.where.startTime = this.selectDateRange[0]
-        this.where.endTime = this.selectDateRange[1]
+        if(this.selectDateRange){
+          this.where.startTime = this.selectDateRange[0]
+          this.where.endTime = this.selectDateRange[1]
+        }else{
+          this.where.startTime = null
+          this.where.endTime = null
+          this.reload()
+        }
+  
       },
 
 

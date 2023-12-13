@@ -10,13 +10,32 @@
         @submit.native.prevent>
         <el-row :gutter="15">
           <el-col :lg="6" :md="12">
-            <el-form-item label="程序名称:">
+            <el-form-item label="查询:">
               <el-input
                 clearable
                 v-model="where.name"
+                @clear="reload"
                 placeholder="请输入程序名称"/>
             </el-form-item>
           </el-col>
+          
+          <el-col :lg="6" :md="12">
+              <el-date-picker
+                v-model="selectDateRange"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="修改日期开始日期"
+                end-placeholder="修改日期结束日期"
+                format="yyyy 年 MM 月 dd 日"
+                value-format="yyyy-MM-dd"
+                @clear="reload"
+                :picker-options="pickerOptions"
+                @change="dateRangeHandleSelect">
+              </el-date-picker>
+            </el-col>
+
           <el-col :lg="6" :md="12">
             <div class="ele-form-actions">
               <el-button
@@ -268,7 +287,12 @@ export default {
           minWidth: 160,
           align: 'center',
           formatter: (row, column, cellValue) => {
-            return this.$util.toDateString(cellValue);
+            const date = new Date(cellValue);
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            
+            return `${year}-${month}-${day}`;
           }
         },
         {
@@ -279,7 +303,12 @@ export default {
           minWidth: 160,
           align: 'center',
           formatter: (row, column, cellValue) => {
-            return this.$util.toDateString(cellValue);
+            const date = new Date(cellValue);
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            
+            return `${year}-${month}-${day}`;
           }
         },
         {
@@ -292,6 +321,7 @@ export default {
           fixed: "right"
         }
       ],
+      selectDateRange: '',
       // 表格搜索条件
       where: {},
       // 表格选中数据
@@ -301,7 +331,19 @@ export default {
       // 是否显示编辑弹窗
       showEdit: false,
       // 是否显示导入弹窗
-      showImport: false
+      showImport: false,
+      // 查询日期范围的左边栏快捷选项
+      pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+       },
     };
   },
   methods: {
@@ -311,9 +353,24 @@ export default {
     },
     /* 重置搜索 */
     reset() {
+      this.selectDateRange = null
+      this.selectDate = null
       this.where = {};
       this.reload();
     },
+     // 选择日期范围查询
+     dateRangeHandleSelect(){
+        this.where.year = null
+        this.where.month = null
+        this.selectDate = null
+        if (this.selectDateRange != null){
+          this.where.selectStartDate = this.selectDateRange[0]
+          this.where.selectEndDate = this.selectDateRange[1]
+        }else{
+          this.where.selectStartDate = null
+          this.where.selectEndDate = null
+        }
+      },
     /* 显示编辑 */
     openEdit(row) {
       if (!row) {

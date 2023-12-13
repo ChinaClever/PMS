@@ -14,6 +14,7 @@
               <el-input
                 clearable
                 v-model="where.work_order"
+                @clear="this.reload"
                 placeholder="请输入工单号"/>
             </el-form-item>
           </el-col>
@@ -313,8 +314,14 @@ export default {
   methods: {
     //向后端传时间
     dateRangeHandleSelect(){
-      this.where.selectStartDate = this.selectDateRange[0]
-      this.where.selectEndDate = this.selectDateRange[1]
+      if(this.selectDateRange!=null){
+          this.where.selectStartDate = this.selectDateRange[0]
+          this.where.selectEndDate = this.selectDateRange[1]
+        }else{
+          this.where.selectStartDate = null
+          this.where.selectEndDate = null
+          this.reload()
+        }
     },
     sortableMethod: ()=> {
             // 在这里实现自定义的排序逻辑

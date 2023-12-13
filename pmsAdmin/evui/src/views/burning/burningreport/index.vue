@@ -10,13 +10,32 @@
         @submit.native.prevent>
         <el-row :gutter="15">
           <el-col :lg="6" :md="19">
-            <el-form-item label="客户名称或工单号:">
+            <el-form-item label="查询:">
               <el-input
                 clearable
                 v-model="where.keyword"
+                @clear="reload"
                 placeholder="请输入客户名称或工单号"/>
             </el-form-item>
           </el-col>
+          
+          <el-col :lg="6" :md="12">
+              <el-date-picker
+                v-model="selectDateRange"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="订单日期开始日期"
+                end-placeholder="订单日期结束日期"
+                format="yyyy 年 MM 月 dd 日"
+                value-format="yyyy-MM-dd"
+                @clear="reload"
+                :picker-options="pickerOptions"
+                @change="dateRangeHandleSelect">
+              </el-date-picker>
+            </el-col>
+
           <el-col :lg="6" :md="12">
             <div class="ele-form-actions">
               <el-button
@@ -66,6 +85,8 @@
             @click="exportToExcel"
             v-if="selection.length > 0">导出
           </el-button>
+
+         
           <!-- <el-button
             @click="showImport=true"
             icon="el-icon-upload2"
@@ -100,6 +121,7 @@
               :underline="false"
               icon="el-icon-delete"
               v-if="permission.includes('sys:burningreport:delete')">删除
+
             </el-link>
           </el-popconfirm>
         </template>
@@ -240,7 +262,12 @@ export default {
           minWidth: 160,
           align: 'center',
           formatter: (row, column, cellValue) => {
-            return this.$util.toDateString(cellValue);
+            const date = new Date(cellValue);
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            
+            return `${year}-${month}-${day}`;
           }
         },
         {
@@ -251,7 +278,12 @@ export default {
           minWidth: 160,
           align: 'center',
           formatter: (row, column, cellValue) => {
-            return this.$util.toDateString(cellValue);
+            const date = new Date(cellValue);
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            
+            return `${year}-${month}-${day}`;
           }
         },
         {
@@ -264,6 +296,9 @@ export default {
           fixed: "right"
         }
       ],
+      selectDate: new Date(),
+     // 选择的日期范围
+      selectDateRange: '',
       // 表格搜索条件
       where: {},
       // 表格选中数据
@@ -272,8 +307,21 @@ export default {
       current: null,
       // 是否显示编辑弹窗
       showEdit: false,
+      // 查询日期范围的左边栏快捷选项
+      pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+       },
       // 是否显示导入弹窗
       showImport: false
+      
     };
   },
   methods: {
@@ -283,9 +331,26 @@ export default {
     },
     /* 重置搜索 */
     reset() {
+      this.selectDateRange = null
+      this.selectDate = null
       this.where = {};
       this.reload();
     },
+    // 选择日期范围查询
+    dateRangeHandleSelect(){
+        this.where.year = null
+        this.where.month = null
+        this.selectDate = null
+        if (this.selectDateRange != null){
+          this.where.selectStartDate = this.selectDateRange[0]
+          this.where.selectEndDate = this.selectDateRange[1]
+        }else{
+          this.where.selectStartDate = null
+          this.where.selectEndDate = null
+        }
+
+      },
+      
     /* 显示编辑 */
     openEdit(row) {
       if (!row) {

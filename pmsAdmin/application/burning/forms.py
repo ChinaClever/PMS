@@ -30,45 +30,45 @@ class BurningForm(forms.ModelForm):
     # 客户名称
     work_order = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '工单号不能为空',
-            'max_length': '工单号不得超过150个字符'
+            'max_length': '工单号不得超过255个字符'
         }
     )
     name = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '客户名称不能为空',
-            'max_length': '客户名称长度不得超过150个字符'
+            'max_length': '客户名称长度不得超过255个字符'
         }
     )
     # 规格型号
     code = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '规格型号不能为空',
-            'max_length': '规格型号长度不得超过150个字符'
+            'max_length': '规格型号长度不得超过255个字符'
         }
     )
     # 版本号
     version = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '版本号不能为空',
-            'max_length': '版本号长度不得超过150个字符'
+            'max_length': '版本号长度不得超过255个字符'
         }
     )
     # 程序要求
     require = forms.CharField(
         required=True,
-        max_length=20,
+        max_length=255,
         error_messages={
             'required': '程序要求不能为空',
-            'max_length': '程序要求不得超过20个字符'
+            'max_length': '程序要求不得超过255个字符'
         }
     )
     # 订单日期
@@ -99,18 +99,18 @@ class BurningForm(forms.ModelForm):
     # 备注
     remark = forms.CharField(
         required=False,
-        max_length=150,
+        max_length=255,
         error_messages={
-            'max_length': '备注长度不得超过150个字符'
+            'max_length': '备注长度不得超过255个字符'
         }
     )
     # rcerder
     rcerder = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '备注不能为空',
-            'max_length': '备注长度不得超过150个字符'
+            'max_length': '备注长度不得超过255个字符'
         }
     )
 

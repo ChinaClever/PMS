@@ -32,21 +32,21 @@ from config.env import TABLE_PREFIX
 # 烧录表格
 class Softwarerelease(BaseModel):
     # 程序名称
-    name = models.CharField(null=False, max_length=6, verbose_name="程序名称", help_text="程序名称")
+    name = models.CharField(null=False, max_length=255, verbose_name="程序名称", help_text="程序名称")
     # 使用产品
-    products = models.CharField(null=False, max_length=20, verbose_name="使用产品", help_text="使用产品")
+    products = models.CharField(null=False, max_length=255, verbose_name="使用产品", help_text="使用产品")
     # 历史版本
-    history_version = models.CharField(null=True, max_length=20, verbose_name="历史版本", help_text="历史版本")
+    history_version = models.CharField(null=True, max_length=255, verbose_name="历史版本", help_text="历史版本")
     # 当前版本
-    version = models.CharField(null=False, max_length=6, verbose_name="当前版本", help_text="当前版本")
+    version = models.CharField(null=False, max_length=255, verbose_name="当前版本", help_text="当前版本")
     # 修改日期
     modify_time = models.DateTimeField(null=False, max_length=18, verbose_name="修改日期", help_text="修改日期")
     # 版本说明
-    version_explain = models.CharField(null=True, max_length=18, verbose_name="版本说明", help_text="版本说明")
+    version_explain = models.CharField(null=True, max_length=255, verbose_name="版本说明", help_text="版本说明")
     # 此次更新
-    updata = models.CharField(null=True, max_length=150,verbose_name="此次更新", help_text="此次更新")
+    updata = models.CharField(null=True, max_length=255,verbose_name="此次更新", help_text="此次更新")
     # 烧录方法
-    burn_method = models.CharField(null=True,max_length=150, verbose_name="烧录方法", help_text="烧录方法")
+    burn_method = models.CharField(null=True,max_length=255, verbose_name="烧录方法", help_text="烧录方法")
     # 升级方法
     upgrade_method = models.CharField(null=True, max_length=150, verbose_name="升级方法", help_text="升级方法")
     # 校准方法
@@ -54,11 +54,11 @@ class Softwarerelease(BaseModel):
     # 用户手册
     User_Manual = models.CharField(null=True, max_length=150, verbose_name="用户手册", help_text="用户手册")
     # 升级原因
-    upgrade_cause = models.CharField(null=True, max_length=150, verbose_name="升级原因", help_text="升级原因")
+    upgrade_cause = models.CharField(null=True, max_length=255, verbose_name="升级原因", help_text="升级原因")
     # 程序和文档公盘位置
-    documentation_position = models.CharField(null=True, max_length=150, verbose_name="程序和文档公盘位置", help_text="程序和文档公盘位置")
+    documentation_position = models.CharField(null=True, max_length=255, verbose_name="程序和文档公盘位置", help_text="程序和文档公盘位置")
     # 用户使用手册和协议公盘位置
-    User_Manual_position = models.CharField(null=True, max_length=150, verbose_name="用户使用手册和协议公盘位置", help_text="用户使用手册和协议公盘位置")
+    User_Manual_position = models.CharField(null=True, max_length=255, verbose_name="用户使用手册和协议公盘位置", help_text="用户使用手册和协议公盘位置")
     class Meta:
         # 数据表名
         db_table = TABLE_PREFIX + "softwarerelease"

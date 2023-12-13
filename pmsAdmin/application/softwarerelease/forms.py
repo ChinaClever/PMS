@@ -30,37 +30,37 @@ class SoftwarereleaseForm(forms.ModelForm):
     # 程序名称
     name = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '程序名称不能为空',
-            'max_length': '程序名称长度不得超过150个字符'
+            'max_length': '程序名称长度不得超过255个字符'
         }
     )
     # 使用产品
     products = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '使用产品不能为空',
-            'max_length': '使用产品长度不得超过150个字符'
+            'max_length': '使用产品长度不得超过255个字符'
         }
     )
     # 历史版本
     history_version = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '历史版本不能为空',
-            'max_length': '历史版本长度不得超过150个字符'
+            'max_length': '历史版本长度不得超过255个字符'
         }
     )
     # 当前版本
     version = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '当前版本不能为空',
-            'max_length': '当前版本长度不得超过150个字符'
+            'max_length': '当前版本长度不得超过255个字符'
         }
     )
     # 修改日期
@@ -73,64 +73,64 @@ class SoftwarereleaseForm(forms.ModelForm):
     # 版本说明
     version_explain = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '版本说明不能为空',
-            'max_length': '版本说明不得超过150个字符'
+            'max_length': '版本说明不得超过255个字符'
         }
     )
     # 此次更新
     updata = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '此次更新不能为空',
-            'max_length': '此次更新不得超过150个字符'
+            'max_length': '此次更新不得超过255个字符'
         }
     )
     # 烧录方法
     burn_method = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '烧录方法不能为空',
-            'max_length': '烧录方法不得超过150个字符'
+            'max_length': '烧录方法不得超过255个字符'
         }
     )
     # 升级方法
     upgrade_method = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '升级方法不能为空',
-            'max_length': '升级方法不得超过20个字符'
+            'max_length': '升级方法不得超过255个字符'
         }
     )
     # 校准方法
     calibration_method = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '校准方法不能为空',
-            'max_length': '校准方法不得超过150个字符'
+            'max_length': '校准方法不得超过255个字符'
         }
     )
     # 用户手册
     User_Manual = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '用户手册不能为空',
-            'max_length': '用户手册不得超过150个字符'
+            'max_length': '用户手册不得超过255个字符'
         }
     )
     # 升级原因
     upgrade_cause = forms.CharField(
         required=True,
-        max_length=150,
+        max_length=255,
         error_messages={
             'required': '升级原因不能为空',
-            'max_length': '升级原因不得超过150个字符'
+            'max_length': '升级原因不得超过255个字符'
         }
     )
     # 程序和文档公盘位置
