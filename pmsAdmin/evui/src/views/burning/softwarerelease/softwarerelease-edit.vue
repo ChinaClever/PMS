@@ -156,6 +156,8 @@
         label="程序和文档公盘位置:"
         prop="documentation_position">
          <el-input
+          :rows="3"
+          type="textarea"
           :maxlength="255"
           v-model="form.documentation_position"
           placeholder="请输入程序和文档公盘位置"
@@ -165,6 +167,8 @@
         label="用户使用手册和协议公盘位置:"
         prop="User_Manual_position">
         <el-input
+          :rows="3"
+          type="textarea"
           :maxlength="255"
           v-model="form.User_Manual_position"
           placeholder="请输入用户使用手册和协议公盘位置"
