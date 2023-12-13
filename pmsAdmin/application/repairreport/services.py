@@ -101,7 +101,7 @@ def DictList(request):#查询设置，从前端返回order_id字段，再到数�
                 'solution': item.solution,
                 'notes': item.notes,
                 'create_user':item.create_user,
-                'repair_time': str(item.repair_time.strftime('%Y-%m-%d')) if item.repair_time else None,
+                'repair_time': str(item.repair_time.strftime('%Y-%m-%d')) if item.repair_time else '',
                 'create_time': str(item.create_time.strftime('%Y-%m-%d %H:%M:%S')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d %H:%M:%S')) if item.update_time else None,
             }
