@@ -14,6 +14,7 @@
                 <el-input
                   clearable
                   v-model="where.repair_user"
+                  @clear="this.reload"
                   placeholder="请输入维修员"/>
               </el-form-item>
             </el-col>
@@ -22,6 +23,7 @@
                 <el-input
                   clearable
                   v-model="where.work_order"
+                  @clear="this.reload"
                   placeholder="请输入工单号"/>
               </el-form-item>
             </el-col>
@@ -377,12 +379,13 @@
     methods: {
       //向后端传时间
       dateRangeHandleSelect(){
-        if(where.selectDateRange!=null){
+        if(this.selectDateRange!=null){
           this.where.selectStartDate = this.selectDateRange[0]
           this.where.selectEndDate = this.selectDateRange[1]
         }else{
           this.where.selectStartDate = null
           this.where.selectEndDate = null
+          this.reload()
         }
       },
       /* 刷新表格 */
