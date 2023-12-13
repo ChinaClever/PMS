@@ -45,7 +45,7 @@
                 value-format="yyyy-MM-dd HH:mm:ss"
                 :picker-options="pickerOptions"
                 @change="dateRangeHandleSelect"
-                @clear="handleClear">
+                >
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -512,8 +512,10 @@ export default {
       const workbook = XLSX.utils.book_new();
       //去除不需要的字段，这里我不希望显示id，所以id不返回
       let temp = this.selection;
+
       // eslint-disable-next-line
       this.selection = this.selection.map(({ id, ...rest }) => rest);
+
       //可以将对应字段的数字经过判断转为对应的中文
       this.selection = this.selection.map(obj => {
         if (obj.signal === 2) {
@@ -523,7 +525,14 @@ export default {
         }
         return obj;
       });
-      console.log(this.selection)
+      this.selection = this.selection.map(obj => {
+        if (obj.product_module === 2) {
+          return { ...obj, product_module: '模块' };
+        } else if (obj.product_module === 1) {
+          return { ...obj, product_module: '成品' };
+        }
+        return obj;
+      });
       const worksheet = XLSX.utils.json_to_sheet(this.selection);
 
       // 获取字段名称（中文）
@@ -531,12 +540,15 @@ export default {
         .slice(1, -1) // 排除排除第一列和最后一列,这里我排除的是我的id列和操作列
         .map(column => column.label);
 
+
       // 获取要导出的数据（排除第一列和最后一列）
+      console.log(this.selection)
       const data = this.selection.map(row =>
         this.columns
           .slice(1, -1) // 排除第一列和最后一列
           .map(column => row[column.prop])
       );
+      console.log(data)
 
       // 将字段名称添加到 Excel 文件中
       XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: 'A1' });
@@ -586,6 +598,7 @@ export default {
       const workbook = XLSX.utils.book_new();
       this.$http.get(this.url,{ params : {...this.where} }).then((res) => {
         if (res.data.code === 0) {
+          
           // eslint-disable-next-line
           res.data.data = res.data.data.map(({ id, ...rest }) => rest);
           res.data.data = res.data.data.map(obj => {
@@ -605,7 +618,7 @@ export default {
             .map(column => column.label);
 
           // 获取要导出的数据（排除第一列和最后一列）
-          const data = this.selection.map(row =>
+          const data = res.data.data.map(row =>
             this.columns
               .slice(1, -1) // 排除第一列和最后一列
               .map(column => row[column.prop])
