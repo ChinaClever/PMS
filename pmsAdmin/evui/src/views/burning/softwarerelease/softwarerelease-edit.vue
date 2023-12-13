@@ -15,7 +15,7 @@
         label="程序名称:"
         prop="name">
         <el-input
-          :maxlength="20"
+          :maxlength="255"
           v-model="form.name"
           placeholder="请输入程序名称"
           clearable/>
@@ -24,7 +24,7 @@
         label="使用产品:"
         prop="products">
         <el-input
-          :maxlength="20"
+          :maxlength="255"
           v-model="form.products"
           placeholder="请输入使用产品"
           clearable/>
@@ -33,7 +33,7 @@
         label="历史版本:"
         prop="history_version">
         <el-input
-          :maxlength="20"
+          :maxlength="255"
           v-model="form.history_version"
           placeholder="请输入历史版本"
           clearable/>
@@ -42,7 +42,7 @@
         label="当前版本:"
         prop="version">
         <el-input
-          :maxlength="20"
+          :maxlength="255"
           v-model="form.version"
           placeholder="请输入程序要求"
           clearable/>
@@ -60,20 +60,29 @@
       <el-form-item
       label="版本说明:"
         prop="version_explain">
-        <el-select
-          clearable
-          v-model="form.version_explain"
-          placeholder="请选择版本说明"
-          class="ele-fluid">
-          <el-option label="公司标准" value="公司标准"/>
-          <el-option label="特殊说明" value="特殊说明"/>
-          <el-option label="版本升级" value="版本升级"/>
-        </el-select>
+        <el-input v-model="form.version_explain" placeholder="请选择或输入版本说明" class="ele-fluid">
+        <template #prepend>
+          <el-select v-model="form.version_explain" placeholder="请选择版本说明">
+            <el-option label="公司标准" value="公司标准"/>
+            <el-option label="特殊说明" value="特殊说明"/>
+            <el-option label="版本升级" value="版本升级"/>
+          </el-select>
+        </template>
+      </el-input>
       </el-form-item>
       <el-form-item
         label="此次更新:"
         prop="updata">
-        <el-select
+        <el-input v-model="form.updata" placeholder="请选择或输入此次更新" class="ele-fluid">
+        <template #prepend>
+          <el-select v-model="form.updata" placeholder="请选择此次更新">
+            <el-option label="立刻更新（所有在途订单需升级)" value="立刻更新（所有在途订单需升级)"/>
+            <el-option label="正常更新（新订单需升级）" value="正常更新（新订单需升级）"/>
+            <el-option label="临时更新（针对某一订单升级）" value="临时更新（针对某一订单升级）"/>
+          </el-select>
+        </template>
+      </el-input>
+        <!-- <el-select
           clearable
           v-model="form.updata"
           placeholder="请选择此次更新"
@@ -81,19 +90,19 @@
           <el-option label="立刻更新（所有在途订单需升级)" value="立刻更新（所有在途订单需升级)"/>
           <el-option label="正常更新（新订单需升级)" value="正常更新（新订单需升级)"/>
           <el-option label="临时更新（针对某一订单升级）" value="临时更新（针对某一订单升级）"/>
-        </el-select>
+        </el-select> -->
       </el-form-item>
       <el-form-item
         label="烧录方法:"
         prop="burn_method">
-        <el-select
-          clearable
-          v-model="form.burn_method"
-          placeholder="请选择烧录方法"
-          class="ele-fluid">
-          <el-option label="未变更，与前一版本相同" value="未变更，与前一版本相同"/>
-          <el-option label="已变更，见附件" value="已变更，见附件"/>
-        </el-select>
+        <el-input v-model="form.burn_method" placeholder="请选择或输入烧录方法" class="ele-fluid">
+        <template #prepend>
+          <el-select v-model="form.burn_method" placeholder="请选择烧录方法">
+            <el-option label="未变更，与前一版本相同" value="未变更，与前一版本相同"/>
+            <el-option label="已变更，见附件" value="已变更，见附件"/>
+          </el-select>
+        </template>
+      </el-input>
       </el-form-item>
       <!-- <el-form-item
         label="升级方法:"
@@ -104,42 +113,41 @@
         </el-radio-group> 
       </el-form-item> -->
       <el-form-item label="升级方法:">
-        <el-select
-          clearable
-          v-model="form.upgrade_method"
-          placeholder="请选择升级方法"
-          class="ele-fluid">
-          <el-option label="未变更，与前一版本相同" value="未变更，与前一版本相同"/>
-          <el-option label="已变更，见附件" value="已变更，见附件"/>
-        </el-select>
+        <el-input v-model="form.upgrade_method" placeholder="请选择或输入升级方法" class="ele-fluid">
+        <template #prepend>
+          <el-select v-model="form.upgrade_method" placeholder="请选择升级方法">
+            <el-option label="未变更，与前一版本相同" value="未变更，与前一版本相同"/>
+            <el-option label="已变更，见附件" value="已变更，见附件"/>
+          </el-select>
+        </template>
+      </el-input>
       </el-form-item>
-      <el-form-item
-        label="校准方法:">
-        <el-select
-          clearable
-          v-model="form.calibration_method"
-          placeholder="请选择校准方法"
-          class="ele-fluid">
-          <el-option label="未变更，与前一版本相同" value="未变更，与前一版本相同"/>
-          <el-option label="已变更，见附件" value="已变更，见附件"/>
-        </el-select>
-      </el-form-item>
+      <el-form-item label="校准方法:">
+      <el-input v-model="form.calibration_method" placeholder="请选择或输入校准方法" class="ele-fluid">
+        <template #prepend>
+          <el-select v-model="form.calibration_method" placeholder="请选择校准方法">
+            <el-option label="未变更，与前一版本相同" value="未变更，与前一版本相同"/>
+            <el-option label="已变更，见附件" value="已变更，见附件"/>
+          </el-select>
+        </template>
+      </el-input>
+    </el-form-item>
       <el-form-item
         label="用户手册:">
-        <el-select
-          clearable
-          v-model="form.User_Manual"
-          placeholder="请选择用户手册"
-          class="ele-fluid">
-          <el-option label="未变更，与前一版本相同" value="未变更，与前一版本相同"/>
-          <el-option label="已变更，见附件" value="已变更，见附件"/>
-        </el-select>
+        <el-input v-model="form.User_Manual" placeholder="请选择或输入用户手册" class="ele-fluid">
+        <template #prepend>
+          <el-select v-model="form.User_Manual" placeholder="请选择用户手册">
+            <el-option label="未变更，与前一版本相同" value="未变更，与前一版本相同"/>
+            <el-option label="已变更，见附件" value="已变更，见附件"/>
+          </el-select>
+        </template>
+      </el-input>
       </el-form-item>
       <el-form-item
         label="升级原因:"
         prop="upgrade_cause">
         <el-input
-          :maxlength="20"
+          :maxlength="255"
           v-model="form.upgrade_cause"
           placeholder="请输入升级原因"
           clearable/>
@@ -148,7 +156,7 @@
         label="程序和文档公盘位置:"
         prop="documentation_position">
          <el-input
-          :maxlength="20"
+          :maxlength="255"
           v-model="form.documentation_position"
           placeholder="请输入程序和文档公盘位置"
           clearable/> 
@@ -157,7 +165,7 @@
         label="用户使用手册和协议公盘位置:"
         prop="User_Manual_position">
         <el-input
-          :maxlength="20"
+          :maxlength="255"
           v-model="form.User_Manual_position"
           placeholder="请输入用户使用手册和协议公盘位置"
           clearable/>
@@ -231,7 +239,6 @@ export default {
         ],
         
       },
-      
       // 提交状态
       loading: false,
       // 是否是修改
@@ -250,6 +257,7 @@ export default {
     }
   },
   methods: {
+    
   /* 保存编辑 */
   save() {
     this.$refs['form'].validate((valid) => {

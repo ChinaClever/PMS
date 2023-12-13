@@ -32,15 +32,15 @@ from config.env import TABLE_PREFIX
 # 烧录表格
 class burning(BaseModel):
     # 工单号
-    work_order = models.CharField(null=False, max_length=150, verbose_name="工单号", help_text="工单号")
+    work_order = models.CharField(null=False, max_length=255, verbose_name="工单号", help_text="工单号")
     # 客户名称
-    name = models.CharField(null=False, max_length=6, verbose_name="客户名称", help_text="客户名称")
+    name = models.CharField(null=False, max_length=255, verbose_name="客户名称", help_text="客户名称")
     # 规格型号
-    code = models.CharField(null=False, max_length=20, verbose_name="规格型号", help_text="规格型号")
+    code = models.CharField(null=False, max_length=255, verbose_name="规格型号", help_text="规格型号")
     # 版本号
-    version = models.CharField(null=True, max_length=20, verbose_name="版本号", help_text="版本号")
+    version = models.CharField(null=True, max_length=255, verbose_name="版本号", help_text="版本号")
     # 程序要求
-    require = models.CharField(null=False, max_length=6, verbose_name="程序要求", help_text="程序要求")
+    require = models.CharField(null=False, max_length=255, verbose_name="程序要求", help_text="程序要求")
     # 订单日期
     order_time = models.DateTimeField(null=False, max_length=18, verbose_name="订单日期", help_text="订单日期")
     # 交货日期
@@ -48,9 +48,9 @@ class burning(BaseModel):
     # 数量
     quantity = models.IntegerField(null=True, verbose_name="数量", help_text="数量")
     # 备注
-    remark = models.CharField(null=True, max_length=150, verbose_name="备注", help_text="备注")
+    remark = models.CharField(null=True, max_length=255, verbose_name="备注", help_text="备注")
     # rcerder
-    rcerder = models.CharField(null=True, max_length=150, verbose_name="rcerder", help_text="rcerder")
+    rcerder = models.CharField(null=True, max_length=255, verbose_name="rcerder", help_text="rcerder")
 
     class Meta:
         # 数据表名

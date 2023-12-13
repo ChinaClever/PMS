@@ -32,15 +32,15 @@ from config.env import TABLE_PREFIX
 # 烧录表格
 class mac(BaseModel):
     # 工单号
-    work_order = models.CharField(null=False, max_length=150, verbose_name="工单号", help_text="工单号")
+    work_order = models.CharField(null=False, max_length=255, verbose_name="工单号", help_text="工单号")
     # 客户名称
-    name = models.CharField(null=False, max_length=6, verbose_name="客户名称", help_text="客户名称")
+    name = models.CharField(null=False, max_length=255, verbose_name="客户名称", help_text="客户名称")
     # 产品类型
-    code = models.CharField(null=False, max_length=50, verbose_name="产品型号", help_text="产品型号")
+    code = models.CharField(null=False, max_length=255, verbose_name="产品型号", help_text="产品型号")
     # 序列号
-    serial_id= models.CharField(null=True, max_length=50, verbose_name="序列号", help_text="序列号")
+    serial_id= models.CharField(null=True, max_length=255, verbose_name="序列号", help_text="序列号")
     # mac地址
-    mac_address = models.CharField(null=True, max_length=50,unique=True, verbose_name="mac地址", help_text="mac地址")
+    mac_address = models.CharField(null=True, max_length=255,unique=True, verbose_name="mac地址", help_text="mac地址")
 
 
     class Meta:
