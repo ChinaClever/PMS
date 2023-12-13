@@ -176,13 +176,14 @@
               :file-list="fileList"
               :on-change="onChange"
               :on-remove="onRemove"
-              :limit="10"
+              :on-exceed="handleExceed"
+              :limit="5"
               action=""
               multiple
               drag>
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              <div class="el-upload__tip" slot="tip">支持多文件上传,单个文件大小不能超过100MB</div>
+              <div class="el-upload__tip" slot="tip">支持多文件上传,最多5个,单个文件大小不能超过100MB</div>
             </el-upload>
           </el-form-item>
 
@@ -464,7 +465,11 @@
       handleEnterKey(event){
         console.log(event)
         this.$refs.form.validateField('work_order', () => {});
-    },
+      },
+
+      handleExceed(files, fileList) {
+        this.$message.warning(`当前限制上传 5 个文件，已选择了 ${fileList.length} 个文件`);
+      },
 
     },
 

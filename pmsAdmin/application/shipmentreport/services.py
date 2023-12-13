@@ -138,6 +138,23 @@ def ShipmentReportDetail(shipment_id):
 
 @transaction.atomic
 def ShipmentReportAdd(request):
+    work_order = request.POST.get('work_order')
+    client_name = request.POST.get('client_name')
+    product_code = request.POST.get('product_code')
+    product_name = request.POST.get('product_name')
+    shape = request.POST.get('shape')
+    order_date = request.POST.get('order_date')
+    delivery_date = request.POST.get('delivery_date')
+    finish_date = request.POST.get('finish_date')
+    product_count = request.POST.get('product_count')
+    SO_RQ_id = request.POST.get('SO_RQ_id')
+    remark = request.POST.get('remark')
+    product_module = request.POST.get('product_module')
+    # 根据work_order查询 不能有相同工单号
+    isWorkOrderExist = Shipment.objects.only('id').filter(work_order=work_order, is_delete=False).first()
+    if isWorkOrderExist:
+        return R.failed("工单号已存在")
+
     FileSavePath = "public/uploads/shipmentFiles"
     files = request.FILES.getlist('files')
     # 存储文件路径和名称的列表字符串
@@ -162,24 +179,6 @@ def ShipmentReportAdd(request):
             attachment_list.append(save_path1)
             # 将文件路径和名称列表转换为字符串，使用逗号分隔
         attachmentListToString = ','.join(attachment_list)
-
-    work_order = request.POST.get('work_order')
-    client_name = request.POST.get('client_name')
-    product_code = request.POST.get('product_code')
-    product_name = request.POST.get('product_name')
-    shape = request.POST.get('shape')
-    order_date = request.POST.get('order_date')
-    delivery_date = request.POST.get('delivery_date')
-    finish_date = request.POST.get('finish_date')
-    product_count = request.POST.get('product_count')
-    SO_RQ_id = request.POST.get('SO_RQ_id')
-    remark = request.POST.get('remark')
-    product_module = request.POST.get('product_module')
-
-    # 根据work_order查询 不能有相同工单号
-    shipment = Shipment.objects.only('id').filter(work_order=work_order, is_delete=False).first()
-    if shipment:
-        return R.failed("工单号相同")
 
     Shipment.objects.create(
         work_order=work_order,
@@ -213,6 +212,22 @@ def ShipmentReportAdd(request):
 
 @transaction.atomic
 def ShipmentReportUpdate(request):
+    # ID
+    shipment_id = request.POST.get('id')
+    # ID判空
+    if not shipment_id or int(shipment_id) <= 0:
+        return R.failed("ID不能为空")
+    # 根据ID查询
+    shipment = Shipment.objects.only('id').filter(id=shipment_id, is_delete=False).first()
+    # 查询结果判断
+    if not shipment:
+        return R.failed("数据不存在,请重试！")
+    # 根据work_order查询 不能有相同工单号
+    work_order = request.POST.get('work_order')
+    isWorkOrderExist = Shipment.objects.only('id').filter(work_order=work_order, is_delete=False).exclude(id=shipment_id).first()
+    if isWorkOrderExist:
+        return R.failed("工单号已存在")
+
     FileSavePath = "public/uploads/shipmentFiles"
     files = request.FILES.getlist('files')
     # 存储文件路径和名称的列表
@@ -234,12 +249,6 @@ def ShipmentReportUpdate(request):
             # 将文件路径和名称添加到列表中
             attachment_list.append(save_path1)
 
-    # ID
-    shipment_id = request.POST.get('id')
-    # ID判空
-    if not shipment_id or int(shipment_id) <= 0:
-        return R.failed("ID不能为空")
-    work_order = request.POST.get('work_order')
     client_name = request.POST.get('client_name')
     product_code = request.POST.get('product_code')
     product_name = request.POST.get('product_name')
@@ -252,11 +261,7 @@ def ShipmentReportUpdate(request):
     SO_RQ_id = request.POST.get('SO_RQ_id')
     remark = request.POST.get('remark')
     product_module = request.POST.get('product_module')
-    # 根据ID查询
-    shipment = Shipment.objects.only('id').filter(id=shipment_id, is_delete=False).first()
-    # 查询结果判断
-    if not shipment:
-        return R.failed("数据不存在,请重试！")
+
     # 日期格式转化
     if update_delivery_date == "null":
         update_delivery_date = ""
@@ -270,7 +275,8 @@ def ShipmentReportUpdate(request):
 
     if deleteFileList:
         # 提取文件名列表
-        file_names = [path.split('_')[-1] for path in file_paths]
+        file_names = [path.split('_', 1)[-1] for path in file_paths]
+        print(file_names)
         for index,file_name in enumerate(file_names):
             # 存在deleteFileList列表中 表示要删除
             if file_name in deleteFileList:
@@ -438,16 +444,4 @@ def SelectShipmentDetailByWorkOrder(work_order):
     # 返回结果
     return data
 
-# def uploadFile(request):
-#     if request.method == 'POST':
-#         files = request.FILES.getlist('files')
-#
-#         for file in files:
-#             if isinstance(file, UploadedFile):
-#                 # 在这里处理上传的文件，例如保存到服务器或进行进一步的处理
-#                 # 例如：file.save('uploaded_files/' + file.name)
-#                 pass
-#         return R.ok(msg="文件上传成功")
-#     else:
-#         return R.failed('文件上传失败')
 
