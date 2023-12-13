@@ -41,7 +41,6 @@
                     :option="saleChartOption"/>
                   </div>
                 </el-card>
-
             </el-col>
         </el-row>
     <!-- 最近1小时访问情况 -->
