@@ -4,7 +4,7 @@ from config.env import TABLE_PREFIX
 
 class Shipment(BaseModel):
     # 工单号
-    work_order = models.CharField(max_length=255, verbose_name="工单号", help_text="工单号")
+    work_order = models.CharField(max_length=255, unique=True, verbose_name="工单号", help_text="工单号")
     # 客户名称
     client_name = models.CharField(max_length=255, verbose_name="客户名称", help_text="客户名称")
     # 成品编码
@@ -34,7 +34,7 @@ class Shipment(BaseModel):
     )
     product_module = models.IntegerField(null=False, choices=product_module_CHOICES, verbose_name="成品_模块：1-成品 2-模块", help_text="成品_模块：1-成品 2-模块")
     # 附件
-    attachment = models.CharField(null=True, max_length=255, verbose_name="附件", help_text="附件")
+    attachment = models.CharField(null=True, max_length=1000, verbose_name="附件", help_text="附件")
 
     class Meta:
         db_table = TABLE_PREFIX + 'shipmentreport'

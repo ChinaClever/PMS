@@ -97,10 +97,4 @@ class ProductListView(PermissionRequired, View):
         # 返回结果
         return R.ok(data=data)
 
-# @method_decorator(check_login, name='dispatch')
-# class UploadFileView(View):
-#     permission_required = ('sys:shipmentreport:add',)
-#     def post(self, request):
-#         result = services.uploadFile(request)
-#         return result
 
