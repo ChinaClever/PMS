@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="86c6fa76-31a4-40ef-a0b6-d9dff1735994" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/pmsAdmin/application/workplace/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/pmsAdmin/application/workplace/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pmsAdmin/application/workplace/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/pmsAdmin/application/workplace/services.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pmsAdmin/application/workplace/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/pmsAdmin/application/workplace/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pmsAdmin/evui/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/pmsAdmin/evui/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pmsAdmin/evui/src/views/dashboard/workplace.vue" beforeDir="false" afterPath="$PROJECT_DIR$/pmsAdmin/evui/src/views/dashboard/workplace.vue" afterDir="false" />
-    </list>
+    <list default="true" id="86c6fa76-31a4-40ef-a0b6-d9dff1735994" name="更改" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -39,30 +33,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Ljy&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/work/PMS/pmsAdmin/document/django_menu.csv&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/opt/pycharm-2023.2.1/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "luosuofan",
+    "last_opened_file_path": "/home/work/PMS/pmsAdmin/document/django_menu.csv",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "/opt/pycharm-2023.2.1/plugins/javascript-impl/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ],
-    &quot;vue.recent.templates&quot;: [
-      &quot;Vue Composition API Component&quot;
+    "vue.recent.templates": [
+      "Vue Composition API Component"
     ]
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="默认任务">
@@ -167,5 +161,8 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/PMS$services.coverage" NAME="services 覆盖结果" MODIFIED="1702454954219" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pmsAdmin/application/workplace" />
   </component>
 </project>
