@@ -56,6 +56,16 @@
           clearable/>
       </el-form-item>
       <el-form-item
+        label="数量:"
+        prop="quantity"
+        v-if="mk">
+        <el-input
+          :maxlength="255"
+          v-model="form.quantity"
+          placeholder="请输入数量"
+          clearable/>
+      </el-form-item>
+      <el-form-item
         label="mac地址:"
         prop="mac_address">
         <el-input
@@ -105,25 +115,56 @@ export default {
         //   {required: true, message: '请输入序列号', trigger: 'blur'}
         // ],
         mac_address: [
-          {required: true, message: '请输入mac地址', trigger: 'blur'}
+        { 
+    required: false, 
+    message: '请输入mac地址', 
+    trigger: 'blur' 
+  },
+  {
+    pattern: /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/, 
+    message: 'MAC地址格式不正确', 
+    trigger: 'blur'
+  }
+        ],
+        quantity: [
+          { required: true, message: '请输入数量', trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              const intValue = Number(value);
+              if (!Number.isInteger(intValue) || intValue <= 0) {
+                callback(new Error('数量必须为大于0的整数'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
         ],
       },
       // 提交状态
       loading: false,
       // 是否是修改
-      isUpdate: false
+      isUpdate: false,
+
+      mk:false
     };
   },
   watch: {
     data() {
       if (this.data && this.data.id) {
-        this.form = Object.assign({}, this.data);
+        this.form = Object.assign({ name: '',code : ''}, this.data);
+        this.mk = false;
         this.isUpdate = true;
-      } else {
-        this.form = {};
+      }else if(this.data && this.data.mk){
+        this.form = { name: '',code : ''};
+        this.mk = true;
+      }else {
+        this.mk = false;
+        this.form = { name: '',code : ''};
         this.isUpdate = false;
       }
-    }
+    },
+    
   },
   methods: {
     loadAll() {
@@ -145,6 +186,11 @@ export default {
         cb(results);
       }, 300 * Math.random());
     },
+    createStateFilter(queryString) {
+        return (state) => {
+          return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
     handleSelect(item) {
       this.form.work_order = item.value
       this.$refs.form.validateField('work_order', () => {});
