@@ -21,35 +21,56 @@
 # | 法律所允许的合法合规的软件产品研发，详细声明内容请阅读《框架免责声明》附件；
 # +----------------------------------------------------------------------
 
-from django.db import models
-
-# Create your models here.
-from application.models import BaseModel
-
-from config.env import TABLE_PREFIX
+from django import forms
+# 客户表单验证
+from application.safety import models
 
 
-# 烧录表格
-class mac(BaseModel):
-    # 工单号
-    work_order = models.CharField(null=False, max_length=255, verbose_name="工单号", help_text="工单号")
-    # 客户名称
-    name = models.CharField(null=False, max_length=255, verbose_name="客户名称", help_text="客户名称")
-    # 产品类型
-    code = models.CharField(null=False, max_length=255, verbose_name="产品型号", help_text="产品型号")
-    # 序列号
-    serial_id= models.CharField(null=True, max_length=255, verbose_name="序列号", help_text="序列号")
-    # mac地址
-    mac_address = models.CharField(null=True, max_length=255,unique=True, verbose_name="mac地址", help_text="mac地址")
-    # 数量
-    quantity = models.IntegerField(null=True, verbose_name="数量", help_text="数量")
+class SafetyForm(forms.ModelForm):
+    pn = forms.CharField(
+        required=False,
+        max_length=255,
+        error_messages={
+            'max_length': 'pn不得超过255个字符'
+        }
+    )
+
+    softwareType = forms.CharField(
+        required=False,
+        max_length=255,
+        error_messages={
+            'max_length': 'softwareType长度不得超过255个字符'
+        }
+    )
+
+    productType = forms.CharField(
+        required=False,
+        max_length=255,
+        error_messages={
+            'max_length': 'productType长度不得超过255个字符'
+        }
+    )
+
+    productSN = forms.CharField(
+        required=False,
+        max_length=255,
+        error_messages={
+            'max_length': 'productSN长度不得超过255个字符'
+        }
+    )
+
+    Gnd = forms.CharField(
+        required=False,
+        max_length=255,
+        error_messages={
+            'max_length': 'Gnd地址不得超过255个字符'
+        }
+    )
 
 
     class Meta:
-        # 数据表名
-        db_table = TABLE_PREFIX + "mac"
-        verbose_name = ("mac管理表")
-        verbose_name_plural = verbose_name
-
-    def __str__(self):
-        return 'mac{}'.format(self.id)
+        # 绑定模型
+        model = models.safety
+        # 指定部分字段验证
+        fields = ['pn','softwareType','productType','productSN','Gnd'
+                  ]

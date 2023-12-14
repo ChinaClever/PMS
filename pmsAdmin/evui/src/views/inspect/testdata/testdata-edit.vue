@@ -12,7 +12,12 @@
       :model="form"
       :rules="rules"
       label-width="120px">
-
+      <el-form-item label="工单号:" prop="work_order">
+        <el-input
+          v-model="form.work_order"
+          placeholder="工单号"
+          clearable/>
+      </el-form-item>
       <el-form-item
         label="软件类型:"
         prop="softwareType">
@@ -87,12 +92,7 @@
           clearable/>
       </el-form-item>
 
-      <el-form-item label="客户名称:" prop="clientName">
-        <el-input
-          v-model="form.clientName"
-          placeholder="请输入客户名称"
-          clearable/>
-      </el-form-item>
+      
     </el-col>
       <el-col :sm="12">
       <el-form-item label="公司名称:" prop="companyName">
@@ -229,6 +229,9 @@ export default {
           return false;
         }
       });
+      while(this.form.testStep.length > 0){
+        this.removeInput();
+      }
     },
     /* 更新visible */
     updateVisible(value) {

@@ -210,8 +210,8 @@
             showOverflowTooltip: true,
           },
           {
-            prop: 'clientName',
-            label: '客户名称',
+            prop: 'work_order',
+            label: '工单号',
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',         

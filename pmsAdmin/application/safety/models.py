@@ -29,26 +29,28 @@ from application.models import BaseModel
 from config.env import TABLE_PREFIX
 
 
-# 烧录表格
-class mac(BaseModel):
-    # 工单号
-    work_order = models.CharField(null=False, max_length=255, verbose_name="工单号", help_text="工单号")
-    # 客户名称
-    name = models.CharField(null=False, max_length=255, verbose_name="客户名称", help_text="客户名称")
-    # 产品类型
-    code = models.CharField(null=False, max_length=255, verbose_name="产品型号", help_text="产品型号")
-    # 序列号
-    serial_id= models.CharField(null=True, max_length=255, verbose_name="序列号", help_text="序列号")
-    # mac地址
-    mac_address = models.CharField(null=True, max_length=255,unique=True, verbose_name="mac地址", help_text="mac地址")
-    # 数量
-    quantity = models.IntegerField(null=True, verbose_name="数量", help_text="数量")
+class safety(BaseModel):
+    pn = models.CharField(null=False, max_length=255,  verbose_name="工单号", help_text="工单号")
+    softwareType = models.CharField(null=False, max_length=255, verbose_name="软件类型", help_text="软件类型" )
+    productType = models.CharField(null=False, max_length=255,  verbose_name="产品类型", help_text="产品类型")
+    productSN = models.CharField(null=True, max_length=255,  verbose_name="产品序列号", help_text="产品序列号")
+    Gnd = models.CharField(null=True, max_length=255, )
+    Ir = models.CharField(null=True, max_length=255, )
+    Dcw =  models.CharField(null=True, max_length=255, )
+    result = models.CharField(null=True, max_length=255, )
+    softwareVersion = models.CharField(null=True, max_length=255, )
+    clientName = models.CharField(null=True, max_length=255, )
+    companyName = models.CharField(null=True, max_length=255, )
+    protocolVersion = models.CharField(null=True, max_length=255, )
+    testStartTime = models.CharField(null=True, max_length=255, )
+    testEndTime = models.CharField(null=True, max_length=255, )
+    testTime = models.CharField(null=True, max_length=255, )
 
 
     class Meta:
         # 数据表名
-        db_table = TABLE_PREFIX + "mac"
-        verbose_name = ("mac管理表")
+        db_table = TABLE_PREFIX + "safety"
+        verbose_name = ("安规管理表")
         verbose_name_plural = verbose_name
 
     def __str__(self):
