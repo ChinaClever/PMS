@@ -14,7 +14,8 @@
                 <el-input
                   clearable
                   v-model="where.keyword"
-                  placeholder="工单号、客户名称、产品名称"/>
+                  placeholder="工单号、客户名称、产品名称"
+                  @clear="clearSearchHandle"/>
               </el-form-item>
             </el-col>
 
@@ -75,10 +76,17 @@
                   @click="removeBatch"
                   v-if="permission.includes('sys:shipmentreport:dall')">删除
                 </el-button>
-
+                <el-button
+                  size="small"
+                  type="success"
+                  icon="el-icon-download"
+                  class="ele-btn-icon"
+                  @click="exportToExcel"
+                  v-if="permission.includes('sys:shipmentreport:export')">导出
+                </el-button>
                  <el-date-picker
                 v-model="selectDate"
-                style="width: 160px; margin-left: 400px;"
+                style="width: 160px; margin-left: 336px;"
                 type="month"
                 format="yyyy 年 MM 月"
                 placeholder="选择年月"
@@ -112,14 +120,7 @@
                   class="ele-btn-icon"
                   size="small">导入
                 </el-button> -->
-                <!-- <el-button
-                  size="small"
-                  type="success"
-                  icon="el-icon-download"
-                  class="ele-btn-icon"
-                  @click="exportExcel"
-                  v-if="permission.includes('sys:shipmentreport:export')">导出
-                </el-button> -->
+                
               </template>
               <!-- 附件列 -->
               <template slot="attachment" slot-scope="{row}">
@@ -172,6 +173,8 @@
   <script>
   import { mapGetters } from "vuex";
   import ShipmentreportEdit from './shipmentreport-edit';
+  import XLSX from 'xlsx';
+  import { saveAs } from 'file-saver';
 
   export default {
     name: 'SystemShipmentReport',
@@ -324,9 +327,6 @@
           // product_module: '1',
           // year: new Date().getFullYear(),
           // month: new Date().getMonth() + 1,
-          product_module: '',
-          year: '',
-          month: '',
         },
         // selectDate: new Date(),
         selectDate: '',
@@ -442,6 +442,7 @@
         }else{
           this.where.selectStartDate = null
           this.where.selectEndDate = null
+          this.$refs.table.reload({page: 1, where: this.where});
         }
 
       },
@@ -461,7 +462,10 @@
       },
       // 下拉选择成品或模块
       productOrModuleHandleSelect() {
-        console.log(this.where)
+        this.$refs.table.reload({page: 1, where: this.where});
+      },
+      // 清除搜索框
+      clearSearchHandle(){
         this.$refs.table.reload({page: 1, where: this.where});
       },
       /* 刷新表格 */
@@ -539,6 +543,68 @@
         }).catch(() => {
         });
       },
+      // 数据导出
+      async exportToExcel() {
+        // 创建 Excel 文件
+        const workbook = XLSX.utils.book_new();
+        //去除不需要的字段，这里我不希望显示id，所以id不返回
+        let temp = this.selection;
+        if(this.selection.length == 0){
+          await this.$http.get(this.url,{ params : {...this.where} }).then((res) => {
+            if (res.data.code === 0) {
+              // eslint-disable-next-line
+              this.selection = res.data.data;
+            } else {
+              this.$message.error(res.data.msg);
+            }
+          }).catch((e) => {
+            this.$message.error(e.message);
+          });
+        } 
+        // eslint-disable-next-line
+        this.selection = this.selection.map(({ id,attachment,product_module, ...rest }) => rest);
+
+        // 获取字段名称（中文）
+        const header = this.columns
+          .slice(1, -2) // 排除排除第一列和最后两列,这里我排除的是我的id列、附件列和操作列
+          .map(column => column.label);
+
+        // 获取要导出的数据（排除第一列和最后两列）
+        const data = this.selection.map(row =>
+          this.columns
+            .slice(1, -2) 
+            .map(column => row[column.prop])
+        );
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        // 将字段名称添加到 Excel 文件中
+        XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: 'A1' });
+
+        // 将数据添加到 Excel 文件中
+        XLSX.utils.sheet_add_aoa(worksheet, data, { origin: 'A2' });
+
+        // 将工作表添加到工作簿中
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+        // 保存 Excel 文件
+        const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+        // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
+        const fileName = '排期表单.xlsx';
+        
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const date = String(currentDate.getDate()).padStart(2, '0');
+        const hours = String(currentDate.getHours()).padStart(2, '0');
+        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+        const formattedDate = `${year}年${month}月${date}日${hours}时${minutes}分${seconds}秒`;
+        const newFileName = `${fileName.split('.')[0]}_${formattedDate}.${fileName.split('.')[1]}`;
+
+        saveAs(blob, newFileName);
+        this.selection = temp;
+    },  
     }
   }
   </script>

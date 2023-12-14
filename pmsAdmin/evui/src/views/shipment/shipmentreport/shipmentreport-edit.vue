@@ -459,7 +459,6 @@
       onRemove(file, fileList) {
       this.fileList = fileList.filter(item => item.uid !== file.uid)
       this.deleteFileList.push(file.name)
-      console.log(this.deleteFileList)
       },
 
       handleEnterKey(event){

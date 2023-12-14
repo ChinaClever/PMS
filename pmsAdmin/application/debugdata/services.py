@@ -234,11 +234,11 @@ def DebugDataAdd(request):
                 result = item.get('result'),
                 )
         # 返回结果
-        return R.ok(msg="创建成功")
+        return R.ok(msg="添加成功")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         print(format(e))
-        return R.failed("参数错误")
+        return R.failed("添加失败")
 
 # 更新
 @transaction.atomic
@@ -305,7 +305,7 @@ def DebugDataUpdate(request):
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         print(e)
-        return R.failed("参数错误")
+        return R.failed("更新失败")
 
 # 删除（不删dabugdata_teststep表）
 def DebugDataDelete(debugdata_id):
