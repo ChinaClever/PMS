@@ -254,8 +254,8 @@
       reload() {
         this.$refs.table.reload({page: 1, where: this.where});
         const condition = {
-          startTime: this.where.startTime ,
-          endTime: this.where.endTime,
+          startTime: this.where.selectStartDate ,
+          endTime: this.where.selectEndDate,
 
         };
         this.$http.get('/debugreport/listOf',{params:condition}).then((res) => {
