@@ -288,6 +288,7 @@ export default {
   methods: {
     /* 刷新表格 */
     reload() {
+      console.log(this.selection)
       this.$refs.table.reload({page: 1, where: this.where});
     },
     /* 重置搜索 */
@@ -457,7 +458,7 @@ export default {
       const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
       const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
       // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
-      const fileName = '质检报表.xlsx';
+      const fileName = 'mac管理报表.xlsx';
       
       const currentDate = new Date();
       const year = currentDate.getFullYear();

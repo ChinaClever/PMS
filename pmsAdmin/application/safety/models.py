@@ -30,10 +30,10 @@ from config.env import TABLE_PREFIX
 
 
 class safety(BaseModel):
-    pn = models.CharField(null=False, max_length=255, )
-    softwareType = models.CharField(null=False, max_length=255, )
-    productType = models.CharField(null=False, max_length=255, )
-    productSN = models.CharField(null=True, max_length=255, )
+    pn = models.CharField(null=False, max_length=255,  verbose_name="工单号", help_text="工单号")
+    softwareType = models.CharField(null=False, max_length=255, verbose_name="软件类型", help_text="软件类型" )
+    productType = models.CharField(null=False, max_length=255,  verbose_name="产品类型", help_text="产品类型")
+    productSN = models.CharField(null=True, max_length=255,  verbose_name="产品序列号", help_text="产品序列号")
     Gnd = models.CharField(null=True, max_length=255, )
     Ir = models.CharField(null=True, max_length=255, )
     Dcw =  models.CharField(null=True, max_length=255, )
