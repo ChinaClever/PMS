@@ -55,7 +55,7 @@ def receive_udp_data():
             macAddress = dict_data.get('macAddress')
             result = dict_data.get('result')
             softwareVersion = dict_data.get('softwareVersion')
-            clientName = dict_data.get('clientName')
+            work_order = dict_data.get('work_order')
             companyName = dict_data.get('companyName')
             protocolVersion = dict_data.get('protocolVersion')
             testStartTime = dict_data.get('testStartTime')
@@ -72,7 +72,7 @@ def receive_udp_data():
                     macAddress=macAddress,
                     result=result,
                     softwareVersion=softwareVersion,
-                    clientName=clientName,
+                    work_order=work_order,
                     companyName=companyName,
                     protocolVersion=protocolVersion,
                     testStartTime=testStartTime,
@@ -144,7 +144,7 @@ def TestDataList(request):
                 'macAddress': item.macAddress,
                 'result': item.result,
                 'softwareVersion': item.softwareVersion,
-                'clientName': item.clientName,
+                'work_order': item.work_order,
                 'companyName': item.companyName,
                 'protocolVersion': item.protocolVersion,
                 'testStartTime': str(item.testStartTime.strftime('%Y-%m-%d %H:%M:%S')),
@@ -174,7 +174,7 @@ def TestDataDetail(testdata_id):
         'macAddress': testdata.macAddress,
         'result': testdata.result,
         'softwareVersion': testdata.softwareVersion,
-        'clientName': testdata.clientName,
+        'work_order': testdata.work_order,
         'companyName': testdata.companyName,
         'protocolVersion': testdata.protocolVersion,
         'testStartTime': str(testdata.testStartTime.strftime('%Y-%m-%d %H:%M:%S')),
@@ -204,7 +204,7 @@ def TestDataAdd(request):
         macAddress = dict_data.get('macAddress')
         result = dict_data.get('result')
         softwareVersion = dict_data.get('softwareVersion')
-        clientName = dict_data.get('clientName')
+        work_order = dict_data.get('work_order')
         companyName = dict_data.get('companyName')
         protocolVersion = dict_data.get('protocolVersion')
         testStartTime = dict_data.get('testStartTime')
@@ -219,7 +219,7 @@ def TestDataAdd(request):
             macAddress=macAddress,
             result=result,
             softwareVersion=softwareVersion,
-            clientName=clientName,
+            work_order=work_order,
             companyName=companyName,
             protocolVersion=protocolVersion,
             testStartTime=testStartTime,
@@ -264,7 +264,7 @@ def TestDataUpdate(request):
         macAddress = dict_data.get('macAddress')
         result = dict_data.get('result')
         softwareVersion = dict_data.get('softwareVersion')
-        clientName = dict_data.get('clientName')
+        work_order = dict_data.get('work_order')
         companyName = dict_data.get('companyName')
         protocolVersion = dict_data.get('protocolVersion')
         testStartTime = dict_data.get('testStartTime')
@@ -283,7 +283,7 @@ def TestDataUpdate(request):
         testdata.macAddress = macAddress
         testdata.result = result
         testdata.softwareVersion = softwareVersion
-        testdata.clientName = clientName
+        testdata.work_order = work_order
         testdata.companyName = companyName
         testdata.protocolVersion = protocolVersion
         testdata.testStartTime = testStartTime
@@ -359,7 +359,7 @@ def TestDataNewestList(request):
                 'macAddress': item.macAddress,
                 'result': item.result,
                 'softwareVersion': item.softwareVersion,
-                'clientName': item.clientName,
+                'work_order': item.work_order,
                 'companyName': item.companyName,
                 'protocolVersion': item.protocolVersion,
                 'testStartTime': str(item.testStartTime.strftime('%Y-%m-%d %H:%M:%S')),

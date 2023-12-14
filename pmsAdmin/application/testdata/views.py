@@ -38,7 +38,7 @@ class TestDataDetailView(PermissionRequired, View):
 
 # 添加
 
-class TestDataAddView(PermissionRequired, View):
+class TestDataAddView(View):
 
     # 接收POST网络请求
     def post(self, request):
