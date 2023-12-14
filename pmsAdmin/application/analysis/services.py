@@ -52,6 +52,7 @@ def RepairData(request):
     if len(producerecord_list) > 0 and len(producerecord_list) < 20:
         for item in producerecord_list:
             item.rate = int(item.repair_total/item.total)
+            item.rate = round(item.rate,2)
             data = {
                 'product_name': item.name,
                 'repair_total': item.repair_total,
