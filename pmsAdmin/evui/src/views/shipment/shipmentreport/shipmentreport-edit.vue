@@ -29,10 +29,9 @@
               <i class="el-icon-question"></i>
               <div slot="content">
                 智能填入步骤：<br>
-                1. 光标放在工单号输入框内<br>
+                1. 点击工单号输入框<br>
                 2. 输入法切换至英文大写<br>
                 3. 使用扫码枪扫码<br>
-                4. 点击表单内任意空白处
               </div>
             </el-tooltip>
           </el-input>
@@ -459,7 +458,6 @@
       onRemove(file, fileList) {
       this.fileList = fileList.filter(item => item.uid !== file.uid)
       this.deleteFileList.push(file.name)
-      console.log(this.deleteFileList)
       },
 
       handleEnterKey(event){

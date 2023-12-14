@@ -24,7 +24,7 @@
 import json
 import logging
 import re
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -40,27 +40,13 @@ def MacList(request):
     # 页码
     page = int(request.GET.get('page', 1))
     # 每页数
-    limit = request.GET.get('limit')
-    if limit:
-        limit = int(request.GET.get('limit'))
-    else:
-        limit = 65535000;
+    limit = int(request.GET.get('limit', PAGE_LIMIT))
     # 分页查询
     query = mac.objects.filter(is_delete=False)
     # 角色名称模糊筛选
     keyword = request.GET.get('keyword')
     if keyword:
         query = query.filter(Q(name__contains=keyword) | Q(work_order=keyword))
-
-        # 筛选年月范围
-    selectStartDate = request.GET.get('selectStartDate')
-    selectEndDate = request.GET.get('selectEndDate')
-    if selectStartDate and selectEndDate:
-        start_date = datetime.strptime(selectStartDate, "%Y-%m-%d")
-        end_date = datetime.strptime(selectEndDate, "%Y-%m-%d")
-        end_date = end_date + timedelta(days=1)
-        query = query.filter(create_time__gte=start_date, create_time__lte=end_date)
-
     sort = request.GET.get('sort')
     order = request.GET.get('order')
     if sort and order:
@@ -114,7 +100,7 @@ def MacDetail(mac_id):
     # 返回结果
     return data
 
-mac_suffix = 0
+
 # 添加客户
 def MacAdd(request):
     try:
@@ -125,6 +111,11 @@ def MacAdd(request):
             return R.failed("参数不能为空")
         # 数据类型转换
         dict_data = json.loads(json_data)
+        MAC_PATTERN = r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$'
+        if re.match(MAC_PATTERN, dict_data['mac_address']):
+            pass
+        else:
+            return R.failed("mac地址i格式错误")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
@@ -141,78 +132,24 @@ def MacAdd(request):
         serial_id = form.cleaned_data.get('serial_id')
         # mac地址
         mac_address = form.cleaned_data.get('mac_address')
-        obj = mac.objects.filter(is_delete=False,mac_address=mac_address)
+        obj = mac.objects.filter(mac_address=mac_address)
         if obj:
             return R.failed('mac地址不能重复')
         # 创建数据
         else:
-            quantity = dict_data.get('quantity')
-            if quantity:
-               if mac_address:
-                   for i in range(int(quantity)):
-                       original_mac = mac_address
-                       new_mac_int = (int(original_mac.replace(':', ''), 16) + i) % (256 ** 6)
-                       # 将新的值转换为十六进制字符串，并保持12位长度
-                       new_mac_str = hex(new_mac_int)[2:].zfill(12)
-                       # 在每两位字符之间加上冒号并生成新的 MAC 地址
-                       new_mac = ':'.join([new_mac_str[i:i + 2] for i in range(0, len(new_mac_str), 2)])
-                       # 连接每个部分并生成新的 MAC 地址
-                       mac_id = new_mac
-
-                       mac.objects.create(
-                           work_order=work_order,
-                           name=name,
-                           code=code,
-                           serial_id=serial_id,
-                           mac_address=mac_id,
-                       )
-
-               else:
-                   for i in range(int(quantity)):
-                       global mac_suffix  # 声明为全局变量
-                       objs = mac.objects.all()
-                       if objs:
-                           last_row = mac.objects.filter(is_delete=0).latest('id')
-                           original_mac = last_row.mac_address
-                           # 将原始 MAC 地址转换为十进制整数，并增加1
-                           new_mac_int = (int(original_mac.replace(':', ''), 16) + 1) % (256 ** 6)
-                           # 将新的值转换为十六进制字符串，并保持12位长度
-                           new_mac_str = hex(new_mac_int)[2:].zfill(12)
-                           # 在每两位字符之间加上冒号并生成新的 MAC 地址
-                           new_mac = ':'.join([new_mac_str[i:i + 2] for i in range(0, len(new_mac_str), 2)])
-                           # 连接每个部分并生成新的 MAC 地址
-                           mac_id = new_mac
-                       else:
-                           # 将 MAC 地址后缀转换为十六进制字符串
-                           mac_hex = hex(mac_suffix)[2:].zfill(12)
-                           # 拼接 MAC 地址
-                           mac_id = f"{mac_hex[0:2]}:{mac_hex[2:4]}:{mac_hex[4:6]}:{mac_hex[6:8]}:{mac_hex[8:10]}:{mac_hex[10:12]}"
-                       mac_address = mac_id
-
-                       # 创建数据库对象
-                       mac.objects.create(
-                           work_order=work_order,
-                           name=name,
-                           code=code,
-                           serial_id=serial_id,
-                           mac_address=mac_address,
-                       )
-                       # 增加 MAC 地址后缀
-                       mac_suffix += 1
-            else:
-                mac.objects.create(
-                    work_order=work_order,
-                    name=name,
-                    code= code,
-                    serial_id=serial_id,
-                    mac_address=mac_address,
-                )
+            mac.objects.create(
+                work_order=work_order,
+                name=name,
+                code= code,
+                serial_id=serial_id,
+                mac_address=mac_address,
+            )
             # 返回结果
             return R.ok(msg="创建成功")
     else:
         # 获取错误信息
         err_msg = regular.get_err(form)
-
+        print(err_msg)
         # 返回错误信息
         return R.failed(err_msg)
 
