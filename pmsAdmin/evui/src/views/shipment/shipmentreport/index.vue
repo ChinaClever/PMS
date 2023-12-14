@@ -429,7 +429,7 @@
         }
       }
       return val
-    },
+      },
 
       // 选择日期范围查询
       dateRangeHandleSelect(){
@@ -444,7 +444,6 @@
           this.where.selectEndDate = null
           this.$refs.table.reload({page: 1, where: this.where});
         }
-
       },
       // 选择年月
       yearAndMonthHandleSelect() {
