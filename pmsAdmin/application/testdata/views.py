@@ -37,10 +37,8 @@ class TestDataDetailView(PermissionRequired, View):
 
 
 # 添加
-@method_decorator(check_login, name='dispatch')
+
 class TestDataAddView(PermissionRequired, View):
-    # 方法权限标识
-    permission_required = ('sys:testdata:add',)
 
     # 接收POST网络请求
     def post(self, request):
