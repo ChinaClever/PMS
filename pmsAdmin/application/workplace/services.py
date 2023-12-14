@@ -230,22 +230,23 @@ def AllModelsData(request):
                                                  product_name=productName,
                                                  submit_time__range=(start_date, end_date)
                                                  ).aggregate(total_quantity_Debug=Sum('product_count'))['total_quantity_Debug']
+
         if total_quantity_Debug == None:
             total_quantity_Debug = 0
 
 
         # 获取质检表单内按照产品名字筛选获取到的数量   成品
         total_quantity_Inspect = Inspectreport.objects.filter(is_delete=False,
-                                                     product_module='2',
-                                                     product_name=productName,
-                                                     end_time__range=(start_date, end_date)
-                                                              ).aggregate(total_quantity_Inspect=Sum('examine_an_amount'))['total_quantity_Inspect']
+                                                         product_module='2',
+                                                         product_name=productName,
+                                                         end_time__range=(start_date, end_date)
+                                                         ).aggregate(total_quantity_Inspect=Sum('examine_an_amount'))['total_quantity_Inspect']
 
         if total_quantity_Inspect == None:
             total_quantity_Inspect = 0
 
-        # 计算每个产品的生产效率
 
+        # 计算每个产品的生产效率
         efficiency = shipmentModelQuantity / getDifferenceDay if getDifferenceDay > 0 else 0
         efficiency = round(efficiency, 1)
         # 计算模块的半成品合格率
