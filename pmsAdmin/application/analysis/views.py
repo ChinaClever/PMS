@@ -8,15 +8,15 @@ from . import services
 from middleware.login_middleware import check_login
 from utils import R
 
-#获取所有的数据
+#获取维修的数据
 @method_decorator(check_login, name='get')
-class DetailAllView(View):
+class RepairDataView(View):
     def get(self, request):
-        data = services.DetailAll(request)
+        data = services.RepairData(request)
         return  data
 
 @method_decorator(check_login, name='get')
-class getShipmentDataView(View):
+class ResultDataView(View):
     def get(self, request):
-        data = services.getShipmentData()
+        data = services.ResultData(request)
         return  data

@@ -1,10 +1,10 @@
 from django.urls import path  # 导入路径相关配置
-from application.comprehensive import views
+from application.analysis import views
 
 # 模块路由
 urlpatterns = [
-    #获取所有数据
-    path('DetailAll', views.DetailAllView.as_view()),
-
-    path('ShipmentData', views.getShipmentDataView.as_view()),
+    #获取维修数据
+    path('RepairData', views.RepairDataView.as_view()),
+    #获取原因
+    path('ResultData', views.ResultDataView.as_view()),
 ]
