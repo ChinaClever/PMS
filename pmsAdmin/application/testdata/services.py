@@ -225,7 +225,6 @@ def TestDataAdd(request):
             testStartTime=testStartTime,
             testEndTime=testEndTime,
             testTime=testTime,
-            create_user=uid(request)
         )
         # 存id和teststep数据
         for item in testStep:
