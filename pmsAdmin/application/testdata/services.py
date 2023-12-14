@@ -224,8 +224,7 @@ def TestDataAdd(request):
             protocolVersion=protocolVersion,
             testStartTime=testStartTime,
             testEndTime=testEndTime,
-            testTime=testTime,
-            create_user=uid(request)
+            testTime=testTime
         )
         # 存id和teststep数据
         for item in testStep:
@@ -239,6 +238,7 @@ def TestDataAdd(request):
         return R.ok(msg="创建成功")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
+        print(e)
         return R.failed("参数错误")
 
 
