@@ -19,7 +19,11 @@ def InspectreportList(request):
     # 页码
     page = int(request.GET.get("page", 1))
     # 每页数
-    limit = int(request.GET.get("limit", PAGE_LIMIT))
+    limit = request.GET.get("limit", PAGE_LIMIT)
+    if limit:
+        limit = int(limit)
+    else:
+        limit = 655350000
     # 实例化查询对象
     query = Inspectreport.objects.filter(is_delete=False)
     # 按关键字查询
