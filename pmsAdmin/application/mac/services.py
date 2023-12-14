@@ -40,7 +40,11 @@ def MacList(request):
     # 页码
     page = int(request.GET.get('page', 1))
     # 每页数
-    limit = int(request.GET.get('limit', PAGE_LIMIT))
+    limit = request.GET.get('limit')
+    if limit:
+        limit = int(request.GET.get('limit'))
+    else:
+        limit = 65535000;
     # 分页查询
     query = mac.objects.filter(is_delete=False)
     # 角色名称模糊筛选
