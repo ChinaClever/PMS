@@ -19,6 +19,5 @@ urlpatterns = [
     path('product/detail/<str:product_code>', views.ProductDetailView.as_view()),
     # 获取所有产品名
     path('product/list', views.ProductListView.as_view()),
-    # 附件上传
-    # path('upload/', views.upload_file.as_view())
+
 ]

@@ -97,7 +97,6 @@
               type: 'value',
               data: this.saleroomData.map(d => d.number_total),
 
-              interval:200,  //纵坐标刻度
             },
 
           ],
@@ -166,7 +165,7 @@
             onClick(picker) {
               const end = new Date();
               const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 );
+              //start.setTime(start.getTime() - 3600 * 1000 * 24 );
               picker.$emit('pick', [start, end]);
             }
           },
@@ -241,13 +240,18 @@
     methods: {
       //向后端传时间
       dateRangeHandleSelect(){
-        this.where.startTime = this.selectDateRange[0]
-        this.where.endTime = this.selectDateRange[1]
+        if (this.selectDateRange != null){
+          this.where.selectStartDate = this.selectDateRange[0]
+          this.where.selectEndDate = this.selectDateRange[1]
+        }else{
+          this.where.selectStartDate = null
+          this.where.selectEndDate = null
+          this.$refs.table.reload({page: 1, where: this.where});
+        }
       },
 
 
       reload() {
-
         this.$refs.table.reload({page: 1, where: this.where});
         const condition = {
           startTime: this.where.startTime ,
@@ -270,7 +274,7 @@
 
       reset() {
         this.where = {};
-
+        this.selectDateRange = null;
         this.reload();
       },
 

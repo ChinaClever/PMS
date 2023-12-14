@@ -389,6 +389,7 @@ export default {
         },
         series: [
           {
+            name:'饼图',
             type: 'pie',
             radius: ['45%', '70%'],
             center: ['50%', '43%'],

@@ -76,6 +76,7 @@ def InspectreportList(request):
                 'signal': item.signal,
                 'problems': item.problem,
                 'actions': item.action,
+                'work_hours':item.work_hours,
             }
             result.append(data)
     # 返回结果
@@ -132,7 +133,7 @@ def InspectreportAdd(request):
         # 信号
         signal = 2 if target_actual_pass_rate >= target_pass_rate else 1
         # 创建数据
-        selectedDate = dict_data.get("selectedDate");
+        selectedDate = dict_data.get("selectedDate")
         if selectedDate:
             # 提取 selectedDate 的年月日部分
             selectedDate_date = datetime.strptime(selectedDate, '%Y-%m-%d %H:%M')
@@ -155,6 +156,7 @@ def InspectreportAdd(request):
 
             # 拼接年月日和时分秒
             end_time = datetime(year, month, day, hours, minutes, seconds)
+        work_hours = round((end_time - start_time).total_seconds() / 3600 + 0.5)
         Inspectreport.objects.create(
             commit_user=UserDetail(uid(request)).get("realname"),
             product_name=product_name,
@@ -172,6 +174,7 @@ def InspectreportAdd(request):
             signal=signal,
             problem=problem,
             action=action,
+            work_hours=work_hours,
             create_user=uid(request)
         )
         # 返回结果
@@ -267,6 +270,29 @@ def InspectreportUpdate(request):
         target_actual_pass_rate = ((examine_amount_total_amount - examine_bad_total_amount) * 100) / examine_amount_total_amount
         # 信号
         signal = 2 if target_actual_pass_rate >= target_pass_rate else 1
+        selectedDate = dict_data.get("selectedDate")
+        if selectedDate:
+            # 提取 selectedDate 的年月日部分
+            selectedDate_date = datetime.strptime(selectedDate, '%Y-%m-%d %H:%M')
+            year = selectedDate_date.year
+            month = selectedDate_date.month
+            day = selectedDate_date.day
+
+            # 提取 start_time 的时分秒部分
+            hours = start_time.hour
+            minutes = start_time.minute
+            seconds = start_time.second
+
+            # 拼接年月日和时分秒
+            start_time = datetime(year, month, day, hours, minutes, seconds)
+
+            # 提取 end_time 的时分秒部分
+            hours = end_time.hour
+            minutes = end_time.minute
+            seconds = end_time.second
+
+            # 拼接年月日和时分秒
+            end_time = datetime(year, month, day, hours, minutes, seconds)
     else:
         # 获取错误信息
         err_msg = regular.get_err(form)
@@ -295,6 +321,7 @@ def InspectreportUpdate(request):
     inspectreport.signal = signal
     inspectreport.problem = problem
     inspectreport.action = action
+    inspectreport.work_hours = round((end_time - start_time).total_seconds() / 3600 + 0.5)
     inspectreport.update_user = uid(request)
     inspectreport.update_time = datetime.now()
 

@@ -3,7 +3,7 @@
   <el-dialog
     :title="isUpdate?'修改报表':'添加报表'"
     :visible="visible"
-    width="1100px"
+    width="1500px"
     :destroy-on-close="true"
     :lock-scroll="false"
     @update:visible="updateVisible">
@@ -28,17 +28,6 @@
             style="width: 277px;"
           ></el-autocomplete>  
           </el-form-item>
-        </el-col>
-        <el-col :sm="12">
-          <el-form-item label="成品/模块:" prop="product_module">
-            <el-radio-group
-              v-model="form.product_module" >
-              <el-radio :label="1">成品</el-radio>
-              <el-radio :label="2">模块</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-          <el-col :sm="12">
           <el-form-item
             label="日期:"
             prop="date">
@@ -91,6 +80,13 @@
         </el-form-item>
         </el-col>
         <el-col :sm="12">
+          <el-form-item label="成品/模块:" prop="product_module">
+            <el-radio-group
+              v-model="form.product_module" >
+              <el-radio :label="1">成品</el-radio>
+              <el-radio :label="2">模块</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item
             label="检验数量:"
             prop="examine_an_amount">
@@ -137,6 +133,8 @@
               clearable/>
           </el-form-item>
         </el-col>
+          
+       
       </el-row>
       <el-form-item label="问题:" prop="problems">
                   <el-input

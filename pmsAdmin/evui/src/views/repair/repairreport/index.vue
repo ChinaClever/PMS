@@ -14,6 +14,7 @@
                 <el-input
                   clearable
                   v-model="where.repair_user"
+                  @clear="this.reload"
                   placeholder="请输入维修员"/>
               </el-form-item>
             </el-col>
@@ -22,6 +23,7 @@
                 <el-input
                   clearable
                   v-model="where.work_order"
+                  @clear="this.reload"
                   placeholder="请输入工单号"/>
               </el-form-item>
             </el-col>
@@ -89,8 +91,7 @@
               type="success"
               icon="el-icon-download"
               class="ele-btn-icon"
-              @click="exportToExcel"
-              v-if="selection.length > 0">导出
+              @click="exportToExcel">导出
             </el-button>
           </template>
           <!-- 操作列 -->
@@ -272,7 +273,7 @@
             label: '维修时间',
             showOverflowTooltip: true,
             sortable: 'custom',
-
+            default:'',
             minWidth: 160,
             align: 'center',
           },
@@ -377,8 +378,14 @@
     methods: {
       //向后端传时间
       dateRangeHandleSelect(){
-        this.where.selectStartDate = this.selectDateRange[0]
-        this.where.selectEndDate = this.selectDateRange[1]
+        if(this.selectDateRange!=null){
+          this.where.selectStartDate = this.selectDateRange[0]
+          this.where.selectEndDate = this.selectDateRange[1]
+        }else{
+          this.where.selectStartDate = null
+          this.where.selectEndDate = null
+          this.reload()
+        }
       },
       /* 刷新表格 */
       reload() {
@@ -453,29 +460,40 @@
         }).catch(() => {
         });
       },
-      exportToExcel() {
+      async exportToExcel() {
        // 创建 Excel 文件
       const workbook = XLSX.utils.book_new();
-      //去除不需要的字段，这里我不希望显示id，所以id不返回
+      //去除不需要的字段，这里我不希望显示id，所以id不返回          
       let temp = this.selection;
+      
+      if(this.selection.length == 0){
+        await this.$http.get(this.url,{ params : {...this.where} }).then((res) => {
+          if (res.data.code === 0) {
+            // eslint-disable-next-line
+            this.selection = res.data.data;
+          } else {
+            this.$message.error(res.data.msg);
+          }
+        }).catch((e) => {
+          this.$message.error(e.message);
+        });
+      } 
+
+
       // eslint-disable-next-line
       this.selection = this.selection.map(({ id, ...rest }) => rest);
-
-      console.log(this.selection)
-      const worksheet = XLSX.utils.json_to_sheet(this.selection);
 
       // 获取字段名称（中文）
       const header = this.columns
         .slice(1, -1) // 排除排除第一列和最后一列,这里我排除的是我的id列和操作列
         .map(column => column.label);
-
       // 获取要导出的数据（排除第一列和最后一列）
       const data = this.selection.map(row =>
         this.columns
           .slice(1, -1) // 排除第一列和最后一列
           .map(column => row[column.prop])
       );
-
+      const worksheet = XLSX.utils.json_to_sheet(data);
       // 将字段名称添加到 Excel 文件中
       XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: 'A1' });
 
@@ -504,7 +522,8 @@
       saveAs(blob, newFileName);
       this.selection = temp;
       
-      }
+      },
+
     }
   }
   </script>

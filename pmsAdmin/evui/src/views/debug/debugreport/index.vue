@@ -17,6 +17,23 @@
                   placeholder="工单号、客户名称、规格型号或客户名称"/>
               </el-form-item>
             </el-col>
+            
+            <el-col :lg="6" :md="12">
+              <el-date-picker
+                v-model="selectDateRange"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="完成日期开始日期"
+                end-placeholder="完成日期结束日期"
+                format="yyyy 年 MM 月 dd 日"
+                value-format="yyyy-MM-dd"
+                :picker-options="pickerOptions"
+                @change="dateRangeHandleSelect">
+              </el-date-picker>
+            </el-col>
+
             <el-col :lg="6" :md="12">
               <div class="ele-form-actions">
                 <el-button
@@ -274,16 +291,77 @@
         // 是否显示编辑弹窗
         showEdit: false,
         // 是否显示导入弹窗
-        showImport: false
+        showImport: false,
+        // 查询日期范围的左边栏快捷选项
+        pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30 * 3);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近半年',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30 * 6);
+              picker.$emit('pick', [start, end]);
+            }
+          }
+          , {
+            text: '最近一年',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30 * 12);
+              picker.$emit('pick', [start, end]);
+            }
+          }
+        ]
+        },
+        // 选择的日期范围
+        selectDateRange: '',
       };
     },
     methods: {
+       // 选择日期范围查询
+       dateRangeHandleSelect(){
+        if (this.selectDateRange != null){
+          this.where.selectStartDate = this.selectDateRange[0]
+          this.where.selectEndDate = this.selectDateRange[1]
+        }else{
+          this.where.selectStartDate = null
+          this.where.selectEndDate = null
+          this.$refs.table.reload({page: 1, where: this.where});
+        }
+      },
+
       /* 刷新表格 */
       reload() {
         this.$refs.table.reload({page: 1, where: this.where});
       },
       /* 重置搜索 */
       reset() {
+        this.selectDateRange = null;
         this.where = {};
         this.reload();
       },

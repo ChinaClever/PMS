@@ -51,15 +51,7 @@
             type="success"
             icon="el-icon-download"
             class="ele-btn-icon"
-            @click="exportToExcel"
-            v-if="selection.length > 0">导出
-          </el-button>
-          <el-button
-            size="small"
-            type="success"
-            icon="el-icon-download"
-            class="ele-btn-icon"
-            @click="exportAllToExcel">全导出
+            @click="exportToExcel">导出
           </el-button>
         </template>
         </ele-pro-table>
@@ -306,16 +298,29 @@
 
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
       },
-      exportToExcel() {
+      async exportToExcel() {
         // 创建 Excel 文件
         const workbook = XLSX.utils.book_new();
         //去除不需要的字段，这里我不希望显示id，所以id不返回
         let temp = this.selection;
+
+        if(this.selection.length == 0){
+          await this.$http.get(this.url,{ params : {...this.where} }).then((res) => {
+            if (res.data.code === 0) {
+              // eslint-disable-next-line
+              this.selection = res.data.data;
+            } else {
+              this.$message.error(res.data.msg);
+            }
+          }).catch((e) => {
+            this.$message.error(e.message);
+          });
+        } 
         // eslint-disable-next-line
         this.selection = this.selection.map(({ id, ...rest }) => rest);
         //可以将对应字段的数字经过判断转为对应的中文
 
-        const worksheet = XLSX.utils.json_to_sheet(this.selection);
+       
 
         // 获取字段名称（中文）
         const header = this.columns
@@ -329,6 +334,7 @@
             .map(column => row[column.prop])
         );
 
+        const worksheet = XLSX.utils.json_to_sheet(data);
         // 将字段名称添加到 Excel 文件中
         XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: 'A1' });
 
@@ -369,60 +375,7 @@
       handleClear(){
         this.reload();
       },
-      exportAllToExcel() {
-        // 创建 Excel 文件
-        const workbook = XLSX.utils.book_new();
-        this.$http.get(this.url,{ params : {...this.where} }).then((res) => {
-          if (res.data.code === 0) {
-            // eslint-disable-next-line
-            res.data.data = res.data.data.map(({ id, ...rest }) => rest);
-            const worksheet = XLSX.utils.json_to_sheet(res.data.data);
-            // 获取字段名称（中文）
-            const header = this.columns
-              .slice(1) // 排除排除第一列,这里我排除的是我的id列
-              .map(column => column.label);
-
-            // 获取要导出的数据（排除第一列）
-            const data = res.data.data.map(row =>
-              this.columns
-                .slice(1) // 排除第一列
-                .map(column => row[column.prop])
-            );
-            // 将字段名称添加到 Excel 文件中
-            XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: 'A1' });
-
-            // 将数据添加到 Excel 文件中
-            XLSX.utils.sheet_add_aoa(worksheet, data, { origin: 'A2' });
-
-            // 将工作表添加到工作簿中
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-
-            // 保存 Excel 文件
-            const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-            const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-            // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
-            const fileName = '质检报表统计.xlsx';
-
-            const currentDate = new Date();
-            const year = currentDate.getFullYear();
-            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-            const date = String(currentDate.getDate()).padStart(2, '0');
-            const hours = String(currentDate.getHours()).padStart(2, '0');
-            const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-            const seconds = String(currentDate.getSeconds()).padStart(2, '0');
-
-            const formattedDate = `${year}年${month}月${date}日${hours}时${minutes}分${seconds}秒`;
-            const newFileName = `${fileName.split('.')[0]}_${formattedDate}.${fileName.split('.')[1]}`;
-
-            saveAs(blob, newFileName);
-          }
-          else{
-            this.$message.error(res.data.msg);
-          }
-        }).catch((e) => {
-          this.$message.error(e.message);
-        });
-      },
+      
     },
     
     activated() {
