@@ -3,6 +3,7 @@
 <!--      模块数据-->
     <el-card>
       <!-- 顶部统计卡片 -->
+
       <el-row :gutter="15">
         <div class="ele-text-left">
           <el-tag type="info" size="medium">模块数据</el-tag>
@@ -62,6 +63,7 @@
             <el-divider/>
           </el-card>
         </el-col>
+
       </el-row>
 <!--        柱状图-->
       <el-card shadow="never" body-style="padding: 0;">

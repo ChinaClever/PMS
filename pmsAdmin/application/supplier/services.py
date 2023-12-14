@@ -224,6 +224,7 @@ def DictUpdate(request):
         product_type = form.cleaned_data.get('product_type')
         supplier = form.cleaned_data.get('supplier')
         parts = form.cleaned_data.get('parts')
+        update_time = form.cleaned_data.get('update_time')
     else:
         # 获取错误信息
         err_msg = regular.get_err(form)
@@ -248,6 +249,7 @@ def DictUpdate(request):
     dict.supplier = supplier
     dict.parts = parts
     dict.update_user = uid(request)
+    dict.update_time = update_time
 
     # 更新数据
     dict.save()
