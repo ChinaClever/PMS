@@ -30,21 +30,21 @@ from config.env import TABLE_PREFIX
 
 
 class safety(BaseModel):
-    pn = models.CharField(null=False, max_length=255,  verbose_name="工单号", help_text="工单号")
+    work_order = models.CharField(null=False, max_length=255,  verbose_name="工单号", help_text="工单号")
     softwareType = models.CharField(null=False, max_length=255, verbose_name="软件类型", help_text="软件类型" )
     productType = models.CharField(null=False, max_length=255,  verbose_name="产品类型", help_text="产品类型")
     productSN = models.CharField(null=True, max_length=255,  verbose_name="产品序列号", help_text="产品序列号")
-    Gnd = models.CharField(null=True, max_length=255, )
-    Ir = models.CharField(null=True, max_length=255, )
-    Dcw =  models.CharField(null=True, max_length=255, )
-    result = models.CharField(null=True, max_length=255, )
-    softwareVersion = models.CharField(null=True, max_length=255, )
-    clientName = models.CharField(null=True, max_length=255, )
-    companyName = models.CharField(null=True, max_length=255, )
-    protocolVersion = models.CharField(null=True, max_length=255, )
-    testStartTime = models.CharField(null=True, max_length=255, )
-    testEndTime = models.CharField(null=True, max_length=255, )
-    testTime = models.CharField(null=True, max_length=255, )
+    Gnd = models.CharField(null=True, max_length=255, verbose_name="接地电阻", help_text="接地电阻")
+    Ir = models.CharField(null=True, max_length=255, verbose_name="绝缘电阻", help_text="绝缘电阻")
+    Dcw =  models.CharField(null=True, max_length=255, verbose_name="直流耐压", help_text="直流耐压")
+    Acw = models.CharField(null=True, max_length=255, verbose_name="交流耐压", help_text="交流耐压")
+    result = models.CharField(null=True, max_length=255, verbose_name="结果", help_text="结果")
+    softwareVersion = models.CharField(null=True, max_length=255, verbose_name="软件版本", help_text="软件版本")
+    companyName = models.CharField(null=True, max_length=255, verbose_name="公司名称", help_text="公司名称")
+    protocolVersion = models.CharField(null=True, max_length=255, verbose_name="协议版本", help_text="协议版本")
+    testStartTime = models.DateTimeField(help_text='测试开始时间', max_length=150, verbose_name='测试开始时间')
+    testEndTime = models.DateTimeField(help_text='测试结束时间', max_length=150, verbose_name='测试结束时间')
+    testTime = models.DateTimeField(help_text='测试时间', max_length=150, verbose_name='测试时间')
 
 
     class Meta:
@@ -54,4 +54,4 @@ class safety(BaseModel):
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return 'mac{}'.format(self.id)
+        return '安规{}'.format(self.id)

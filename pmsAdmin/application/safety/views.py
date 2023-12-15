@@ -30,9 +30,9 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.shortcuts import redirect,reverse
-from application.mac import services
+from application.safety import services
 from application.constants import CITY_LEVEL_LIST
-from application.mac.models import mac
+from application.safety.models import safety
 
 from config.env import DEBUG
 from middleware.login_middleware import check_login
@@ -43,149 +43,77 @@ from utils import R
 
 # 查询分页数据
 @method_decorator(check_login, name='get')
-class MacListView(PermissionRequired, View):
+class SafetyListView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:mac:list',)
+    permission_required = ('sys:safety:list',)
 
     # 接收GET请求
     def get(self, request):
         # 调用查询分页数据
-        result = services.MacList(request)
+        result = services.SafetyList(request)
         # 返回结果
         return result
 
 
 # 查询数据
 @method_decorator(check_login, name='get')
-class MacDetailView(PermissionRequired, View):
+class SafetyDetailView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:mac:detail',)
+    permission_required = ('sys:safety:detail',)
 
     # 接收GET请求
-    def get(self, request, mac_id):
+    def get(self, request, safety_id):
         # 调用查询方法
-        data = services.MacDetail(mac_id)
+        data = services.SafetyDetail(safety_id)
         # 返回结果
         return R.ok(data=data)
 
 
 # 添加
 @method_decorator(check_login, name='post')
-class MacAddView(PermissionRequired, View):
+class SafetyAddView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:mac:add',)
+    permission_required = ('sys:safety:add',)
 
     # 接收POST请求
     def post(self, request):
         if DEBUG:
             return R.failed("演示环境，暂无操作权限")
         # 调用添加方法
-        result = services.MacAdd(request)
+        result = services.SafetyAdd(request)
         # 返回结果
         return result
 
 
 # 更新
 @method_decorator(check_login, name='put')
-class MacUpdateView(PermissionRequired, View):
+class SafetyUpdateView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:mac:update',)
+    permission_required = ('sys:safety:update',)
 
     # 接收PUT请求
     def put(self, request):
         if DEBUG:
             return R.failed("演示环境，暂无操作权限")
         # 调用更新方法
-        result = services.MacUpdate(request)
+        result = services.SafetyUpdate(request)
         # 返回结果
         return result
 
 
 # 删除
 @method_decorator(check_login, name='delete')
-class MacDeleteView(PermissionRequired, View):
+class SafetyDeleteView(PermissionRequired, View):
     # 方法权限标识
-    permission_required = ('sys:mac:delete',)
+    permission_required = ('sys:safety:delete',)
 
     # 接收delete请求
-    def delete(self, request, mac_id):
+    def delete(self, request, safety_id):
         if DEBUG:
             return R.failed("演示环境，暂无操作权限")
         # 调用删除方法
-        result = services.MacDelete(mac_id)
+        result = services.SafetyDelete(safety_id)
         # 返回结果
         return result
 
 
-# 定义 MAC 地址初始值
-mac_suffix = 0
-
-def test(request):
-    global mac_suffix  # 声明为全局变量
-    objs = mac.objects.all()
-    if objs:
-        last_row = mac.objects.filter(is_delete=0).latest('id')
-        original_mac = last_row.mac_address
-        # 将原始 MAC 地址转换为十进制整数，并增加1
-        new_mac_int = (int(original_mac.replace(':', ''), 16) + 1) % (256 ** 6)
-        # 将新的值转换为十六进制字符串，并保持12位长度
-        new_mac_str = hex(new_mac_int)[2:].zfill(12)
-        # 在每两位字符之间加上冒号并生成新的 MAC 地址
-        new_mac = ':'.join([new_mac_str[i:i + 2] for i in range(0, len(new_mac_str), 2)])
-        # 连接每个部分并生成新的 MAC 地址
-        mac_id = new_mac
-    else:
-        # 将 MAC 地址后缀转换为十六进制字符串
-        mac_hex = hex(mac_suffix)[2:].zfill(12)
-        # 拼接 MAC 地址
-        mac_id = f"{mac_hex[0:2]}:{mac_hex[2:4]}:{mac_hex[4:6]}:{mac_hex[6:8]}:{mac_hex[8:10]}:{mac_hex[10:12]}"
-
-    work_order = request.GET.get('work_order')
-    name = request.GET.get('name')
-    code = request.GET.get('code')
-    serial_id = request.GET.get('serial_id')
-    mac_address = mac_id
-
-    # 创建数据库对象
-    obj = mac(work_order=work_order, name=name, code=code, serial_id=serial_id, mac_address=mac_address)
-    # 保存对象到数据库
-    obj.save()
-
-    response_data = {'mac_address': mac_address}
-    # 增加 MAC 地址后缀
-    mac_suffix += 1
-    return HttpResponse(json.dumps(response_data))
-#http://localhost:8000/mac/test?code=1234&work_order=12345&serial_id=12345&name=hk
-
-def make(request):
-    for i in range(50):
-        global mac_suffix  # 声明为全局变量
-        objs = mac.objects.all()
-        if objs:
-            last_row = mac.objects.filter(is_delete=0).latest('id')
-            original_mac = last_row.mac_address
-            # 将原始 MAC 地址转换为十进制整数，并增加1
-            new_mac_int = (int(original_mac.replace(':', ''), 16) + 1) % (256 ** 6)
-            # 将新的值转换为十六进制字符串，并保持12位长度
-            new_mac_str = hex(new_mac_int)[2:].zfill(12)
-            # 在每两位字符之间加上冒号并生成新的 MAC 地址
-            new_mac = ':'.join([new_mac_str[i:i + 2] for i in range(0, len(new_mac_str), 2)])
-            # 连接每个部分并生成新的 MAC 地址
-            mac_id = new_mac
-        else:
-            # 将 MAC 地址后缀转换为十六进制字符串
-            mac_hex = hex(mac_suffix)[2:].zfill(12)
-            # 拼接 MAC 地址
-            mac_id = f"{mac_hex[0:2]}:{mac_hex[2:4]}:{mac_hex[4:6]}:{mac_hex[6:8]}:{mac_hex[8:10]}:{mac_hex[10:12]}"
-
-        mac_address = mac_id
-
-        # 创建数据库对象
-        obj = mac(mac_address=mac_address)
-        # 保存对象到数据库
-        obj.save()
-
-        response_data = {'mac_address': mac_address}
-        # 增加 MAC 地址后缀
-        mac_suffix += 1
-    return redirect('/mac/list?page=1&limit=10')

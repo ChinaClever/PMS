@@ -23,22 +23,20 @@
 
 from django.urls import path
 
-from application.mac import views
+from application.safety import views
 
 # 模块路由
 urlpatterns = [
     # 查询分页数据
-    path('list', views.MacListView.as_view()),
+    path('list', views.SafetyListView.as_view()),
     # 查询数据
-    path('detail/<int:mac_id>', views.MacDetailView.as_view()),
+    path('detail/<int:safety_id>', views.SafetyDetailView.as_view()),
     # 添加数据
-    path('add', views.MacAddView.as_view()),
+    path('add', views.SafetyAddView.as_view()),
     # 更新数据
-    path('update', views.MacUpdateView.as_view()),
+    path('update', views.SafetyUpdateView.as_view()),
     # 删除数据
-    path('delete/<str:mac_id>', views.MacDeleteView.as_view()),
-    # 测试请求
-    path('test',views.test),
-    # 一建生成
-    path('make', views.make),
+    path('delete/<str:safety_id>', views.SafetyDeleteView.as_view()),
+
+
 ]
