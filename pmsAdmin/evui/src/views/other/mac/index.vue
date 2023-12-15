@@ -142,7 +142,8 @@
     <mac-edit
       :data="current"
       :visible.sync="showEdit"
-      @done="reload"/>
+      @done="reload"
+      @child-event="receiveLimit"/>
   
   </div>
 </template>
@@ -410,14 +411,14 @@ export default {
         this.$message.error(e.message);
       });
     },
-    async exportToExcel() {
+    async exportToExcel(limits) {
        // 创建 Excel 文件
       const workbook = XLSX.utils.book_new();
       //去除不需要的字段，这里我不希望显示id，所以id不返回
       let temp = this.selection;
 
-      if(this.selection.length == 0){
-        await this.$http.get(this.url,{ params : {...this.where} }).then((res) => {
+      if(this.selection.length == 0||limits){
+        await this.$http.get(this.url,{ params : {...this.where,limit : limits} }).then((res) => {
           if (res.data.code === 0) {
             // eslint-disable-next-line
             this.selection = res.data.data;
@@ -474,6 +475,9 @@ export default {
       saveAs(blob, newFileName);
       this.selection = temp;
     },
+    receiveLimit(limit){
+      this.exportToExcel(limit);
+    }
   }
 }
 </script>

@@ -9,9 +9,10 @@
           @keyup.enter.native="reload"
           @submit.native.prevent>
           <el-row :gutter="15">
-            <el-col :lg="6" :md="12">
+            <el-col :lg="6" :md="12" >
               <el-form-item label="查询:">
                 <el-input
+                  style="width: 270px;"
                   clearable
                   v-model="where.keyword"
                   placeholder="工单号、客户名称、产品名称"
@@ -35,7 +36,7 @@
               </el-date-picker>
             </el-col>
           
-            <el-col :lg="6" :md="12" :offset="3">
+            <el-col :lg="6" :md="12" :offset="3" :pull="3">
               <div class="ele-form-actions">
                 <el-button
                   type="primary"
@@ -124,8 +125,8 @@
               </template>
               <!-- 附件列 -->
               <template slot="attachment" slot-scope="{row}">
-                <!-- <el-tag v-for="attachment in row.fileNameList" :key="attachment">{{ attachment }}</el-tag> -->
-                <el-link v-for="(attachment, index) in row.fileNameList" :key="index" :href="`${preUrl}/${encodeURIComponent(row.attachmentList[index])}`" target="_blank">
+                <el-link v-for="(attachment, index) in row.fileNameList" :key="index"
+                @click=" downloadFile(`${preUrl}/${encodeURIComponent(row.attachmentList[index])}`, attachment)" >
                   {{ attachment }}
                 </el-link>
               </template>
@@ -159,8 +160,13 @@
                   :active-value="1"
                   :inactive-value="2"/>
               </template>
+               <!-- 成品模块列 -->
+              <template slot="product_module" slot-scope="{row}">
+                <el-tag v-if="row.product_module === 1" type="success" size="medium">成品</el-tag>
+                <el-tag v-if="row.product_module === 2" size="medium">模块</el-tag>
+              </template>
+
             </ele-pro-table>
-       
       </el-card>
       <!-- 编辑弹窗 -->
     <Shipmentreport-edit
@@ -298,6 +304,14 @@
             align: 'center',
           },
           {
+          prop: 'product_module',
+          label: '成品/模块',
+          minWidth: 100,
+          align: 'center',
+          resizable: false,
+          slot: 'product_module',
+          },
+          {
             prop: 'remark',
             label: '备注',
             showOverflowTooltip: true,
@@ -429,7 +443,7 @@
         }
       }
       return val
-    },
+      },
 
       // 选择日期范围查询
       dateRangeHandleSelect(){
@@ -444,7 +458,6 @@
           this.where.selectEndDate = null
           this.$refs.table.reload({page: 1, where: this.where});
         }
-
       },
       // 选择年月
       yearAndMonthHandleSelect() {
@@ -562,7 +575,16 @@
           });
         } 
         // eslint-disable-next-line
-        this.selection = this.selection.map(({ id,attachment,product_module, ...rest }) => rest);
+        this.selection = this.selection.map(({ id,attachment, ...rest }) => rest);
+
+        this.selection = this.selection.map(obj => {
+          if (obj.product_module === 2) {
+            return { ...obj, product_module: '模块' };
+          } else if (obj.product_module === 1) {
+            return { ...obj, product_module: '成品' };
+          }
+          return obj;
+        });
 
         // 获取字段名称（中文）
         const header = this.columns
@@ -604,7 +626,19 @@
 
         saveAs(blob, newFileName);
         this.selection = temp;
-    },  
+      },
+      // 附件下载
+      downloadFile(fileUrl, fileName){
+        console.log(fileUrl)
+        this.$http.get(fileUrl, { responseType: 'blob' }).then(response => {
+          saveAs(response.data, fileName);
+        })
+        .catch(error => {
+          console.error(fileName+'文件下载失败', error);
+        });
+      },
+    
+    
     }
   }
   </script>

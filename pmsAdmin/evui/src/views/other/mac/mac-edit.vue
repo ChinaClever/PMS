@@ -234,11 +234,15 @@ export default {
             this.loading = false;
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
+              if(this.mk){
+                this.$emit('child-event', this.form.quantity);
+              }
               if (!this.isUpdate) {
                 this.form = {name: '',code : ''};
               }
               this.updateVisible(false);
               this.$emit('done');
+              
             } else {
               this.$message.error(res.data.msg);
             }

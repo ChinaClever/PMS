@@ -34,7 +34,7 @@
               </el-date-picker>
             </el-col>
 
-            <el-col :lg="6" :md="12">
+            <el-col :lg="6" :md="12" :offset="3" :pull="3">
               <div class="ele-form-actions">
                 <el-button
                   type="primary"
@@ -79,14 +79,13 @@
               class="ele-btn-icon"
               size="small">导入
             </el-button> -->
-            <!-- <el-button
+            <el-button
               size="small"
               type="success"
               icon="el-icon-download"
               class="ele-btn-icon"
-              @click="exportExcel"
-              v-if="permission.includes('sys:weldingreport:export')">导出
-            </el-button> -->
+              @click="exportToExcel">导出
+            </el-button>
           </template>
           <!-- 操作列 -->
           <template slot="action" slot-scope="{row}">
@@ -131,6 +130,8 @@
   <script>
   import { mapGetters } from "vuex";
   import WeldingEdit from './welding-edit';
+  import XLSX from 'xlsx'
+  import { saveAs } from 'file-saver';
 
   export default {
     name: 'SystemWelding',
@@ -353,7 +354,7 @@
       },
       /* 重置搜索 */
       reset() {
-        this.selectDateRange = null
+        this.selectDateRange = null;
         this.where = {};
         this.reload();
       },
@@ -421,6 +422,80 @@
         }).catch(() => {
         });
       },
+
+      async exportToExcel() {
+       // 创建 Excel 文件
+      const workbook = XLSX.utils.book_new();
+      //去除不需要的字段，这里我不希望显示id，所以id不返回
+      let temp = this.selection;
+      if(this.selection.length == 0){
+        await this.$http.get(this.url,{ params : {...this.where} }).then((res) => {
+          if (res.data.code === 0) {
+            // eslint-disable-next-line
+            this.selection = res.data.data;
+          } else {
+            this.$message.error(res.data.msg);
+          }
+        }).catch((e) => {
+          this.$message.error(e.message);
+        });
+      } 
+      // eslint-disable-next-line
+      this.selection = this.selection.map(({ id, ...rest }) => rest);
+
+      //可以将对应字段的数字经过判断转为对应的中文
+      this.selection = this.selection.map(obj => {
+        if (obj.product_module === 2) {
+          return { ...obj, product_module: '模块' };
+        } else if (obj.product_module === 1) {
+          return { ...obj, product_module: '成品' };
+        }
+        return obj;
+      });
+      
+
+      // 获取字段名称（中文）
+      const header = this.columns
+        .slice(1, -1) 
+        .map(column => column.label);
+
+
+      // 获取要导出的数据（排除第一列和最后一列）
+      const data = this.selection.map(row =>
+        this.columns
+          .slice(1, -1) // 排除第一列和最后一列
+          .map(column => row[column.prop])
+      );
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      // 将字段名称添加到 Excel 文件中
+      XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: 'A1' });
+
+      // 将数据添加到 Excel 文件中
+      XLSX.utils.sheet_add_aoa(worksheet, data, { origin: 'A2' });
+
+      // 将工作表添加到工作簿中
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+      // 保存 Excel 文件
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+      // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
+      const fileName = '焊接报表.xlsx';
+      
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+      const date = String(currentDate.getDate()).padStart(2, '0');
+      const hours = String(currentDate.getHours()).padStart(2, '0');
+      const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+      const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+      const formattedDate = `${year}年${month}月${date}日${hours}时${minutes}分${seconds}秒`;
+      const newFileName = `${fileName.split('.')[0]}_${formattedDate}.${fileName.split('.')[1]}`;
+
+      saveAs(blob, newFileName);
+      this.selection = temp;
+      },  
     }
   }
   </script>
