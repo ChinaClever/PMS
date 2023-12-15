@@ -132,6 +132,7 @@ INSTALLED_APPS = [
     'application.mac',
     'application.workplace',
     'application.comprehensive',
+    'application.analysis',
 
 
 ]
