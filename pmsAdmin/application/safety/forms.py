@@ -27,7 +27,7 @@ from application.safety import models
 
 
 class SafetyForm(forms.ModelForm):
-    pn = forms.CharField(
+    work_order = forms.CharField(
         required=False,
         max_length=255,
         error_messages={
@@ -72,5 +72,5 @@ class SafetyForm(forms.ModelForm):
         # 绑定模型
         model = models.safety
         # 指定部分字段验证
-        fields = ['pn','softwareType','productType','productSN','Gnd'
+        fields = ['work_order','softwareType','productType','productSN','Gnd'
                   ]

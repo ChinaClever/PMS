@@ -125,7 +125,8 @@
               </template>
               <!-- 附件列 -->
               <template slot="attachment" slot-scope="{row}">
-                <el-link v-for="(attachment, index) in row.fileNameList" :key="index" :href="`${preUrl}/${encodeURIComponent(row.attachmentList[index])}`" target="_blank">
+                <el-link v-for="(attachment, index) in row.fileNameList" :key="index"
+                @click=" downloadFile(`${preUrl}/${encodeURIComponent(row.attachmentList[index])}`, attachment)" >
                   {{ attachment }}
                 </el-link>
               </template>
@@ -625,7 +626,19 @@
 
         saveAs(blob, newFileName);
         this.selection = temp;
-    },  
+      },
+      // 附件下载
+      downloadFile(fileUrl, fileName){
+        console.log(fileUrl)
+        this.$http.get(fileUrl, { responseType: 'blob' }).then(response => {
+          saveAs(response.data, fileName);
+        })
+        .catch(error => {
+          console.error(fileName+'文件下载失败', error);
+        });
+      },
+    
+    
     }
   }
   </script>

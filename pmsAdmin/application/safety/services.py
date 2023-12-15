@@ -30,23 +30,27 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 from constant.constants import PAGE_LIMIT
-from application.mac import forms
-from application.mac.models import mac
+from application.safety import forms
+from application.safety.models import safety
 from utils import R, regular
 
 
 # 查询数据列表
-def MacList(request):
+def SafetyList(request):
     # 页码
     page = int(request.GET.get('page', 1))
     # 每页数
-    limit = int(request.GET.get('limit', PAGE_LIMIT))
+    limit = request.GET.get('limit')
+    if limit:
+        limit = int(request.GET.get('limit'))
+    else:
+        limit = 65535000;
     # 分页查询
-    query = mac.objects.filter(is_delete=False)
+    query = safety.objects.filter(is_delete=False)
     # 角色名称模糊筛选
     keyword = request.GET.get('keyword')
     if keyword:
-        query = query.filter(Q(name__contains=keyword) | Q(work_order=keyword))
+        query = query.filter(work_order=keyword)
     sort = request.GET.get('sort')
     order = request.GET.get('order')
     if sort and order:
@@ -67,10 +71,15 @@ def MacList(request):
             data = {
                 'id': item.id,
                 'work_order':item.work_order,
-                'name': item.name,
-                'code': item.code,
-                'serial_id':item.serial_id,
-                'mac_address': item.mac_address,
+                'softwareType': item.softwareType,
+                'productType': item.productType,
+                'productSN':item.productSN,
+                'Gnd':item.Gnd,
+                'Ir':item.Ir,
+                'Dcw':item.Dcw,
+                'Acw':item.Acw,
+                'result':item.result,
+                'safety_address': item.safety_address,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d ')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d ')) if item.update_time else None,
             }
@@ -81,20 +90,27 @@ def MacList(request):
 
 
 # 根据ID获取详情
-def MacDetail(mac_id):
+def SafetyDetail(safety_id):
     # 根据ID查询客户
-    user = mac.objects.filter(is_delete=False, id=mac_id).first()
+    user = safety.objects.filter(is_delete=False, id=safety_id).first()
     # 查询结果判空
     if not user:
         return None
     # 声明结构体
     data = {
-        'id': user.id,
-        'work_order': user.work_order,
-        'name': user.name,
-        'code': user.code,
-        'serial_id': user.serial_id,
-        'mac_address': user.mac_address,
+                'id': user.id,
+                'work_order':user.work_order,
+                'softwareType': user.softwareType,
+                'productType': user.productType,
+                'productSN':user.productSN,
+                'Gnd':user.Gnd,
+                'Ir':user.Ir,
+                'Dcw':user.Dcw,
+                'Acw':user.Acw,
+                'result':user.result,
+                'safety_address': user.safety_address,
+                'create_time': str(user.create_time.strftime('%Y-%m-%d ')) if user.create_time else None,
+                'update_time': str(user.update_time.strftime('%Y-%m-%d ')) if user.update_time else None,
 
     }
     # 返回结果
@@ -102,7 +118,7 @@ def MacDetail(mac_id):
 
 
 # 添加客户
-def MacAdd(request):
+def SafetyAdd(request):
     try:
         # 接收请求参数
         json_data = request.body.decode()
@@ -111,50 +127,48 @@ def MacAdd(request):
             return R.failed("参数不能为空")
         # 数据类型转换
         dict_data = json.loads(json_data)
-        MAC_PATTERN = r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$'
-        if re.match(MAC_PATTERN, dict_data['mac_address']):
-            pass
-        else:
-            return R.failed("mac地址i格式错误")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
-    # 表单验证
-    form = forms.MacForm(dict_data)
-    if form.is_valid():
-        # 工单号
-        work_order = form.cleaned_data.get('work_order')
-        # 客户名称
-        name = form.cleaned_data.get('name')
-        # 产品类型
-        code = form.cleaned_data.get('code')
-        # 序列号
-        serial_id = form.cleaned_data.get('serial_id')
-        # mac地址
-        mac_address = form.cleaned_data.get('mac_address')
-        obj = mac.objects.filter(mac_address=mac_address)
-        if obj:
-            return R.failed('mac地址不能重复')
-        # 创建数据
-        else:
-            mac.objects.create(
-                work_order=work_order,
-                name=name,
-                code= code,
-                serial_id=serial_id,
-                mac_address=mac_address,
-            )
-            # 返回结果
-            return R.ok(msg="创建成功")
-    else:
-        # 获取错误信息
-        err_msg = regular.get_err(form)
-        print(err_msg)
-        # 返回错误信息
-        return R.failed(err_msg)
+
+    work_order = dict_data.get('work_order')
+    softwareType = dict_data.get('softwareType')
+    productType = dict_data.get('productType')
+    productSN = dict_data.get('productSN')
+    Gnd = dict_data.get('Gnd')
+    Ir = dict_data.get('Ir')
+    Dcw = dict_data.get('Dcw')
+    Acw = dict_data.get('Acw')
+    result = dict_data.get('result')
+    softwareVersion = dict_data.get('softwareVersion')
+    companyName = dict_data.get('companyName')
+    protocolVersion = dict_data.get('protocolVersion')
+    testStartTime = dict_data.get('testStartTime')
+    testEndTime = dict_data.get('testEndTime')
+    testTime = dict_data.get('testTime')
+
+    safety.objects.create(
+        work_order=work_order,
+        softwareType=softwareType,
+        productType= productType,
+        productSN=productSN,
+        Gnd=Gnd,
+        Ir=Ir,
+        Dcw=Dcw,
+        Acw=Acw,
+        result=result,
+        softwareVersion=softwareVersion,
+        companyName=companyName,
+        protocolVersion=protocolVersion,
+        testStartTime=testStartTime,
+        testEndTime=testEndTime,
+        testTime=testTime,
+    )
+    # 返回结果
+    return R.ok(msg="创建成功")
 
 # 更新客户
-def MacUpdate(request):
+def SafetyUpdate(request):
     try:
         # 接收请求参数
         json_data = request.body.decode()
@@ -164,55 +178,51 @@ def MacUpdate(request):
         # 数据类型转换
         dict_data = json.loads(json_data)
         # 客户ID
-        mac_id = dict_data.get('id')
+        safety_id = dict_data.get('id')
         # 客户ID判空
-        if not mac_id or int(mac_id) <= 0:
+        if not safety_id or int(safety_id) <= 0:
             return R.failed("客户ID不能为空")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
-    # # 表单验证
-    # form = forms.MacForm(dict_data)
-    # if form.is_valid():
-    #     work_order = form.cleaned_data.get('work_order')
-    #     # 客户名称
-    #     name = form.cleaned_data.get('name')
-    #     # 产品类型
-    #     code = form.cleaned_data.get('code')
-    #     # 序列号
-    #     serial_id = form.cleaned_data.get('serial_id')
-    #     # mac地址
-    #     mac_address = form.cleaned_data.get('mac_address')
-    # else:
-    #     # 获取错误信息
-    #     err_msg = regular.get_err(form)
-    #     # 返回错误信息
-    #     return R.failed(err_msg)
-    #
-    # # 根据ID查询客户
-    # user = mac.objects.only('id').filter(id=mac_id, is_delete=False).first()
-    # # 查询结果判断
-    # if not user:
-    #     return R.failed("不存在")
+
     work_order = dict_data.get('work_order')
-    # 客户名称
-    name = dict_data.get('name')
-    # 产品类型
-    code = dict_data.get('code')
-    # 序列号
-    serial_id = dict_data.get('serial_id')
-    # mac地址
-    mac_address = dict_data.get('mac_address')
+    softwareType = dict_data.get('softwareType')
+    productType = dict_data.get('productType')
+    productSN = dict_data.get('productSN')
+    Gnd = dict_data.get('Gnd')
+    Ir = dict_data.get('Ir')
+    Dcw = dict_data.get('Dcw')
+    Acw = dict_data.get('Acw')
+    result = dict_data.get('result')
+    softwareVersion = dict_data.get('softwareVersion')
+    companyName = dict_data.get('companyName')
+    protocolVersion = dict_data.get('protocolVersion')
+    testStartTime = dict_data.get('testStartTime')
+    testEndTime = dict_data.get('testEndTime')
+    testTime = dict_data.get('testTime')
     current_time = datetime.now()
-    user = mac.objects.filter(id=mac_id,is_delete=False, mac_address=mac_address).first()
+    user = safety.objects.filter(id=safety_id,is_delete=False, ).first()
     if user:
         user.work_order = work_order
-        user.name = name
-        user.code = code
-        user.serial_id = serial_id
+        user.softwareType = softwareType
+        user.productType = productType
+        user.productSN = productSN
+        user.Gnd = Gnd
+        user.Ir = Ir
+        user.Dcw = Dcw
+        user.Acw = Acw
+        user.result = result
+        user.softwareVersion = softwareVersion
+        user.companyName = companyName
+        user.protocolVersion = protocolVersion
+        user.testStartTime = testStartTime
+        user.testEndTime = testEndTime
+        user.testTime = testTime
+
         user.update_time = current_time
     else:
-        return R.failed('mac地址已经存在')
+        return R.failed('safety地址已经存在')
 
 
     # 更新数据
@@ -221,19 +231,19 @@ def MacUpdate(request):
     return R.ok(msg="更新成功")
 
 # 删除客户
-def MacDelete(mac_id):
+def SafetyDelete(safety_id):
     # 记录ID为空判断
-    if not mac_id:
+    if not safety_id:
         return R.failed("记录ID不存在")
     # 分裂字符串
-    list = mac_id.split(',')
+    list = safety_id.split(',')
     # 计数器
     count = 0
     # 遍历数据源
     if len(list) > 0:
         for id in list:
             # 根据ID查询记录
-            user = mac.objects.only('id').filter(id=int(id), is_delete=False).first()
+            user = safety.objects.only('id').filter(id=int(id), is_delete=False).first()
             # 查询结果判空
             if not user:
                 return R.failed("不存在")

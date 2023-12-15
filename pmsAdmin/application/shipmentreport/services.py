@@ -274,10 +274,8 @@ def ShipmentReportUpdate(request):
     file_paths = shipment.attachment.split(',') if shipment.attachment else []
 
     if deleteFileList:
-        # 提取文件名列表
-        file_names = [path.split('_', 1)[-1] for path in file_paths]
-        print(file_names)
-        for index,file_name in enumerate(file_names):
+
+        for index,file_name in enumerate(file_paths):
             # 存在deleteFileList列表中 表示要删除
             if file_name in deleteFileList:
                 delete_file_path = 'public/'+file_paths[index]
