@@ -248,6 +248,7 @@
       /* 重置搜索 */
       reset() {
         this.where = {};
+        this.selectDateRange = '';
         this.selectedOption = 'name';
         this.reload();
       },

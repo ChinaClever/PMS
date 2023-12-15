@@ -336,6 +336,7 @@ export default {
     /* 重置搜索 */
     reset() {
       this.where = {};
+      this.selectDateRange = '';
       this.reload();
     },
     /* 显示编辑 */
