@@ -224,7 +224,7 @@ def TestDataAdd(request):
             protocolVersion=protocolVersion,
             testStartTime=testStartTime,
             testEndTime=testEndTime,
-            testTime=testTime
+            testTime=testTime,
         )
         # 存id和teststep数据
         for item in testStep:
@@ -317,7 +317,7 @@ def TestDataDelete(testdata_id):
     list = testdata_id.split(',')
     # 计数器
     count = 0
-    # 遍历数据源
+    # 遍历数据源django_debugdata
     if len(list) > 0:
         for id in list:
             # 根据ID查询记录

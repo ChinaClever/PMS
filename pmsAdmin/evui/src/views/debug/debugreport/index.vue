@@ -34,7 +34,7 @@
               </el-date-picker>
             </el-col>
 
-            <el-col :lg="6" :md="12">
+            <el-col :lg="6" :md="12" :offset="3" :pull="3">
               <div class="ele-form-actions">
                 <el-button
                   type="primary"
@@ -120,7 +120,7 @@
           <!-- 成品模块列 -->
           <template slot="product_module" slot-scope="{row}">
             <el-tag v-if="row.product_module === 1" type="success" size="medium">成品</el-tag>
-            <el-tag v-if="row.product_module === 2" type="success" size="medium">模块</el-tag>
+            <el-tag v-if="row.product_module === 2" size="medium">模块</el-tag>
           </template>
         </ele-pro-table>
       </el-card>
@@ -274,7 +274,7 @@
           align: 'center',
           resizable: false,
           slot: 'product_module',
-        },
+          },
           {
             columnKey: 'action',
             label: '操作',

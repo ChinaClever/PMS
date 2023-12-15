@@ -15,10 +15,10 @@
                 clearable
                 v-model="where.keyword"
                 @clear="reload"
-                placeholder="请输入客户名称或工单号"/>
+                placeholder="请输入工单号"/>
             </el-form-item>
           </el-col>
-          
+
           <el-col :lg="6" :md="12">
               <el-date-picker
                 v-model="selectDateRange"
@@ -26,8 +26,8 @@
                 align="right"
                 unlink-panels
                 range-separator="至"
-                start-placeholder="订单日期开始日期"
-                end-placeholder="订单日期结束日期"
+                start-placeholder="创建时间开始日期"
+                end-placeholder="创建时间结束日期"
                 format="yyyy 年 MM 月 dd 日"
                 value-format="yyyy-MM-dd"
                 @clear="reload"
@@ -65,7 +65,7 @@
             icon="el-icon-plus"
             class="ele-btn-icon"
             @click="openEdit(null)"
-            v-if="permission.includes('sys:burningreport:add')">添加
+            v-if="permission.includes('sys:safety:add')">添加
           </el-button>
           <el-button
             size="small"
@@ -73,19 +73,17 @@
             icon="el-icon-delete"
             class="ele-btn-icon"
             @click="removeBatch"
-            v-if="permission.includes('sys:burningreport:dall')">删除
+            v-if="permission.includes('sys:safety:dall')">删除
           </el-button>
-
-          <!-- 导出按钮 -->
-          <el-button
+          
+           <!-- 导出按钮 -->
+           <el-button
             size="small"
             type="success"
             icon="el-icon-download"
             class="ele-btn-icon"
             @click="exportToExcel">导出
           </el-button>
-
-         
           <!-- <el-button
             @click="showImport=true"
             icon="el-icon-upload2"
@@ -98,7 +96,7 @@
             icon="el-icon-download"
             class="ele-btn-icon"
             @click="exportExcel"
-            v-if="permission.includes('sys:burning:export')">导出
+            v-if="permission.includes('sys:safety:export')">导出
           </el-button> -->
         </template>
         <!-- 操作列 -->
@@ -108,7 +106,7 @@
             :underline="false"
             icon="el-icon-edit"
             @click="openEdit(row)"
-            v-if="permission.includes('sys:burningreport:update')">修改
+            v-if="permission.includes('sys:safety:update')">修改
           </el-link>
           <el-popconfirm
             class="ele-action"
@@ -119,8 +117,7 @@
               slot="reference"
               :underline="false"
               icon="el-icon-delete"
-              v-if="permission.includes('sys:burningreport:delete')">删除
-
+              v-if="permission.includes('sys:safety:delete')">删除
             </el-link>
           </el-popconfirm>
         </template>
@@ -135,7 +132,7 @@
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
-    <burning-edit
+    <safety-edit
       :data="current"
       :visible.sync="showEdit"
       @done="reload"/>
@@ -145,20 +142,22 @@
 
 <script>
 import { mapGetters } from "vuex";
-import BurningEdit from './burning-edit';
+import SafetyEdit from './safety-edit';
 import XLSX from 'xlsx'
 import { saveAs } from 'file-saver';
 
+
+
 export default {
-  name: 'SystemBurning',
-  components: {BurningEdit},
+  name: 'SystemSafety',
+  components: {SafetyEdit},
   computed: {
     ...mapGetters(["permission"]),
   },
   data() {
     return {
       // 表格数据接口
-      url: '/burningreport/list',
+      url: '/safety/list',
       // 表格列配置
       columns: [
         {
@@ -184,71 +183,106 @@ export default {
           align: 'center',
         },
         {
-          prop: 'name',
-          label: '客户名称',
+          prop: 'softwareType',
+          label: '软件类型',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
         },
         {
-          prop: 'code',
-          label: '规格型号',
+          prop: 'productType',
+          label: '产品类型',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
         },
         {
-          prop: 'version',
-          label: '版本号',
+          prop: 'productSN',
+          label: '产品序列号',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
         },
         {
-          prop: 'require',
-          label: '程序需求',
+          prop: 'Gnd',
+          label: '接地电阻',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
         },
         {
-          prop: 'order_time',
-          label: '订单日期',
-          sortable:'custom',
-          order:'',
-          sortableMethod:()=>{
-            //排序逻辑
-            this.where.order = this.order
-            this.reload();
-          },
+          prop: 'Ir',
+          label: '绝缘电阻',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
         },
         {
-          prop: 'delivery_time',
-          label: '交货日期',
-          sortable:'custom',
-          order:'',
-          sortableMethod:()=>{
-            //排序逻辑
-            this.where.order = this.order
-            this.reload();
-          },
+          prop: 'Dcw',
+          label: '直流耐压',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
         },
         {
-          prop: 'remark',
-          label: '备注',
+          prop: 'Dcw',
+          label: '直流耐压',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
         },
         {
-          prop: 'rcerder',
-          label: 'rcerder',
+          prop: 'Acw',
+          label: '交流耐压',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'result',
+          label: '结果',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'softwareVersion',
+          label: '软件版本',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'companyName',
+          label: '公司名称',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'protocolVersion',
+          label: '协议版本',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'testStartTime',
+          label: '测试开始时间',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'testEndTime',
+          label: '测试结束时间',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'testTime',
+          label: '测试时间',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
@@ -295,8 +329,7 @@ export default {
           fixed: "right"
         }
       ],
-      selectDate: new Date(),
-     // 选择的日期范围
+      // 选择的日期范围
       selectDateRange: '',
       // 表格搜索条件
       where: {},
@@ -320,12 +353,12 @@ export default {
        },
       // 是否显示导入弹窗
       showImport: false
-      
     };
   },
   methods: {
     /* 刷新表格 */
     reload() {
+      console.log(this.selection)
       this.$refs.table.reload({page: 1, where: this.where});
     },
     /* 重置搜索 */
@@ -349,7 +382,6 @@ export default {
         }
 
       },
-      
     /* 显示编辑 */
     openEdit(row) {
       if (!row) {
@@ -359,7 +391,7 @@ export default {
       } else {
         // 编辑
         this.loading = true;
-        this.$http.get('/burningreport/detail/' + row.id).then((res) => {
+        this.$http.get('/safety/detail/' + row.id).then((res) => {
           this.loading = false;
           if (res.data.code === 0) {
             this.current = Object.assign({}, res.data.data);
@@ -376,7 +408,7 @@ export default {
     /* 删除 */
     remove(row) {
       const loading = this.$loading({lock: true});
-      this.$http.delete('/burningreport/delete/' + row.id).then(res => {
+      this.$http.delete('/safety/delete/' + row.id).then(res => {
         loading.close();
         if (res.data.code === 0) {
           this.$message.success(res.data.msg);
@@ -399,7 +431,7 @@ export default {
         type: 'warning'
       }).then(() => {
         const loading = this.$loading({lock: true});
-        this.$http.delete('/burningreport/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
+        this.$http.delete('/safety/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -414,10 +446,24 @@ export default {
       }).catch(() => {
       });
     },
+    // make() {
+    //   // 在这里调用后端函数
+    //   this.$http.get('/safety/make')
+    //     .then(response => {
+    //       // 处理成功响应
+    //       console.log(response.data);
+    //       // 可以在这里更新页面或执行其他操作
+    //       this.reload();
+    //     })
+    //     .catch(error => {
+    //       // 处理错误响应
+    //       console.error(error);
+    //     });
+    // },
     /* 更改状态 */
     editStatus(row) {
       const loading = this.$loading({lock: true});
-      this.$http.put('/burningreport/status', {id: row.id, status: row.status}).then(res => {
+      this.$http.put('/safety/status', {id: row.id, status: row.status}).then(res => {
         loading.close();
         if (res.data.code === 0) {
           this.$message.success(res.data.msg);
@@ -430,7 +476,6 @@ export default {
         this.$message.error(e.message);
       });
     },
-    /* 导出数据Excel */
     async exportToExcel() {
        // 创建 Excel 文件
       const workbook = XLSX.utils.book_new();
@@ -450,26 +495,14 @@ export default {
         });
       } 
 
-
       // eslint-disable-next-line
       this.selection = this.selection.map(({ id, ...rest }) => rest);
-      //可以将对应字段的数字经过判断转为对应的中文
-      this.selection = this.selection.map(obj => {
-        if (obj.signal === 2) {
-          return { ...obj, signal: '合格' };
-        } else if (obj.signal === 1) {
-          return { ...obj, signal: '不合格' };
-        }
-        return obj;
-      });
-      console.log(this.selection)
       const worksheet = XLSX.utils.json_to_sheet(this.selection);
 
       // 获取字段名称（中文）
       const header = this.columns
         .slice(2, -1) // 排除排除第一列和最后一列,这里我排除的是我的id列和操作列
         .map(column => column.label);
-      console.log(header)
 
       // 获取要导出的数据（排除第一列和最后一列）
       const data = this.selection.map(row =>
@@ -491,7 +524,7 @@ export default {
       const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
       const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
       // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
-      const fileName = '烧录报表.xlsx';
+      const fileName = '安规测试表.xlsx';
       
       const currentDate = new Date();
       const year = currentDate.getFullYear();

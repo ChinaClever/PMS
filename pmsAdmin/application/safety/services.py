@@ -23,19 +23,20 @@
 
 import json
 import logging
+import re
 from datetime import datetime
 
 from django.core.paginator import Paginator
 from django.db.models import Q
 
 from constant.constants import PAGE_LIMIT
-from application.burning import forms
-from application.burning.models import burning
+from application.safety import forms
+from application.safety.models import safety
 from utils import R, regular
 
 
-# 查询客户数据列表
-def BurningList(request):
+# 查询数据列表
+def SafetyList(request):
     # 页码
     page = int(request.GET.get('page', 1))
     # 每页数
@@ -45,20 +46,11 @@ def BurningList(request):
     else:
         limit = 65535000;
     # 分页查询
-    query = burning.objects.filter(is_delete=False)
+    query = safety.objects.filter(is_delete=False)
     # 角色名称模糊筛选
     keyword = request.GET.get('keyword')
     if keyword:
-        query = query.filter(Q(name__contains=keyword) | Q(work_order=keyword))
-
-    # 筛选年月范围
-    selectStartDate = request.GET.get('selectStartDate')
-    selectEndDate = request.GET.get('selectEndDate')
-    if selectStartDate and selectEndDate:
-        start_date = datetime.strptime(selectStartDate, "%Y-%m-%d")
-        end_date = datetime.strptime(selectEndDate, "%Y-%m-%d")
-        query = query.filter(order_time__gte=start_date, order_time__lte=end_date)
-
+        query = query.filter(work_order=keyword)
     sort = request.GET.get('sort')
     order = request.GET.get('order')
     if sort and order:
@@ -79,15 +71,15 @@ def BurningList(request):
             data = {
                 'id': item.id,
                 'work_order':item.work_order,
-                'name': item.name,
-                'code': item.code,
-                'version': item.version,
-                'require': item.require ,
-                'order_time': str(item.order_time.strftime('%Y-%m-%d ')) if item.order_time else None,
-                'delivery_time': str(item.delivery_time.strftime('%Y-%m-%d ')) if item.delivery_time else None,
-                'quantity': item.quantity,
-                'remark': item.remark,
-                'rcerder': item.rcerder,
+                'softwareType': item.softwareType,
+                'productType': item.productType,
+                'productSN':item.productSN,
+                'Gnd':item.Gnd,
+                'Ir':item.Ir,
+                'Dcw':item.Dcw,
+                'Acw':item.Acw,
+                'result':item.result,
+                'safety_address': item.safety_address,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d ')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d ')) if item.update_time else None,
             }
@@ -98,32 +90,35 @@ def BurningList(request):
 
 
 # 根据ID获取详情
-def BurningDetail(burning_id):
+def SafetyDetail(safety_id):
     # 根据ID查询客户
-    user = burning.objects.filter(is_delete=False, id=burning_id).first()
+    user = safety.objects.filter(is_delete=False, id=safety_id).first()
     # 查询结果判空
     if not user:
         return None
     # 声明结构体
     data = {
-        'id': user.id,
-        'work_order': user.work_order,
-        'name': user.name,
-        'code': user.code,
-        'version': user.version,
-        'require': user.require,
-        'order_time': str(user.order_time.strftime('%Y-%m-%d ')) if user.order_time else None,
-        'delivery_time': str(user.delivery_time.strftime('%Y-%m-%d ')) if user.delivery_time else None,
-        'quantity': user.quantity,
-        'remark': user.remark,
-        'rcerder': user.rcerder,
+                'id': user.id,
+                'work_order':user.work_order,
+                'softwareType': user.softwareType,
+                'productType': user.productType,
+                'productSN':user.productSN,
+                'Gnd':user.Gnd,
+                'Ir':user.Ir,
+                'Dcw':user.Dcw,
+                'Acw':user.Acw,
+                'result':user.result,
+                'safety_address': user.safety_address,
+                'create_time': str(user.create_time.strftime('%Y-%m-%d ')) if user.create_time else None,
+                'update_time': str(user.update_time.strftime('%Y-%m-%d ')) if user.update_time else None,
+
     }
     # 返回结果
     return data
 
 
 # 添加客户
-def BurningAdd(request):
+def SafetyAdd(request):
     try:
         # 接收请求参数
         json_data = request.body.decode()
@@ -135,55 +130,45 @@ def BurningAdd(request):
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
-    # 表单验证
-    form = forms.BurningForm(dict_data)
-    if form.is_valid():
-        # 工单号
-        work_order = form.cleaned_data.get('work_order')
-        # 客户名称
-        name = form.cleaned_data.get('name')
-        # 规格型号
-        code = form.cleaned_data.get('code')
-        # 版本号
-        version = form.cleaned_data.get('version')
-        # 程序要求
-        require = form.cleaned_data.get('require')
-        # 订单日期
-        order_time = form.cleaned_data.get('order_time')
-        # 交货日期
-        delivery_time = form.cleaned_data.get('delivery_time')
-        # 数量
-        quantity = form.cleaned_data.get('quantity')
-        # 备注
-        remark = form.cleaned_data.get('remark')
-        # rxerder
-        rcerder = form.cleaned_data.get('rcerder')
-        if order_time > delivery_time:
-            return R.failed("交货日期不能小于订单日期")
-        # 创建数据
-        burning.objects.create(
-            work_order=work_order,
-            name=name,
-            code= code,
-            version=version,
-            require=require,
-            order_time=order_time,
-            delivery_time=delivery_time,
-            quantity=quantity,
-            remark= remark,
-            rcerder= rcerder,
-        )
-        # 返回结果
-        return R.ok(msg="创建成功")
-    else:
-        # 获取错误信息
-        err_msg = regular.get_err(form)
-        # 返回错误信息
-        return R.failed(err_msg)
 
+    work_order = dict_data.get('work_order')
+    softwareType = dict_data.get('softwareType')
+    productType = dict_data.get('productType')
+    productSN = dict_data.get('productSN')
+    Gnd = dict_data.get('Gnd')
+    Ir = dict_data.get('Ir')
+    Dcw = dict_data.get('Dcw')
+    Acw = dict_data.get('Acw')
+    result = dict_data.get('result')
+    softwareVersion = dict_data.get('softwareVersion')
+    companyName = dict_data.get('companyName')
+    protocolVersion = dict_data.get('protocolVersion')
+    testStartTime = dict_data.get('testStartTime')
+    testEndTime = dict_data.get('testEndTime')
+    testTime = dict_data.get('testTime')
+
+    safety.objects.create(
+        work_order=work_order,
+        softwareType=softwareType,
+        productType= productType,
+        productSN=productSN,
+        Gnd=Gnd,
+        Ir=Ir,
+        Dcw=Dcw,
+        Acw=Acw,
+        result=result,
+        softwareVersion=softwareVersion,
+        companyName=companyName,
+        protocolVersion=protocolVersion,
+        testStartTime=testStartTime,
+        testEndTime=testEndTime,
+        testTime=testTime,
+    )
+    # 返回结果
+    return R.ok(msg="创建成功")
 
 # 更新客户
-def BurningUpdate(request):
+def SafetyUpdate(request):
     try:
         # 接收请求参数
         json_data = request.body.decode()
@@ -193,81 +178,72 @@ def BurningUpdate(request):
         # 数据类型转换
         dict_data = json.loads(json_data)
         # 客户ID
-        burning_id = dict_data.get('id')
+        safety_id = dict_data.get('id')
         # 客户ID判空
-        if not burning_id or int(burning_id) <= 0:
+        if not safety_id or int(safety_id) <= 0:
             return R.failed("客户ID不能为空")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
-    # 表单验证
-    form = forms.BurningForm(dict_data)
-    if form.is_valid():
-        work_order = form.cleaned_data.get('work_order')
-        # 客户名称
-        name = form.cleaned_data.get('name')
-        # 规格型号
-        code = form.cleaned_data.get('code')
-        # 版本号
-        version = form.cleaned_data.get('version')
-        # 程序要求
-        require = form.cleaned_data.get('require')
-        # 订单要求
-        order_time = form.cleaned_data.get('order_time')
-        # 交货日期
-        delivery_time = form.cleaned_data.get('delivery_time')
-        # 数量
-        quantity = form.cleaned_data.get('quantity')
-        # 备注
-        remark = form.cleaned_data.get('remark')
-       
-        rcerder = form.cleaned_data.get('rcerder')
-    else:
-        # 获取错误信息
-        err_msg = regular.get_err(form)
-        # 返回错误信息
-        return R.failed(err_msg)
 
-    # 根据ID查询客户
-    user = burning.objects.only('id').filter(id=burning_id, is_delete=False).first()
-    # 查询结果判断
-    if not user:
-        return R.failed("客户不存在")
-
+    work_order = dict_data.get('work_order')
+    softwareType = dict_data.get('softwareType')
+    productType = dict_data.get('productType')
+    productSN = dict_data.get('productSN')
+    Gnd = dict_data.get('Gnd')
+    Ir = dict_data.get('Ir')
+    Dcw = dict_data.get('Dcw')
+    Acw = dict_data.get('Acw')
+    result = dict_data.get('result')
+    softwareVersion = dict_data.get('softwareVersion')
+    companyName = dict_data.get('companyName')
+    protocolVersion = dict_data.get('protocolVersion')
+    testStartTime = dict_data.get('testStartTime')
+    testEndTime = dict_data.get('testEndTime')
+    testTime = dict_data.get('testTime')
     current_time = datetime.now()
-    # 对象赋值
-    user.work_order = work_order
-    user.name = name
-    user.code = code
-    user.version = version
-    user.require = require
-    user.order_time = order_time
-    user.delivery_time = delivery_time
-    user. quantity =  quantity
-    user.remark = remark
-    user.rcerder = rcerder
-    user.update_time = current_time
+    user = safety.objects.filter(id=safety_id,is_delete=False, ).first()
+    if user:
+        user.work_order = work_order
+        user.softwareType = softwareType
+        user.productType = productType
+        user.productSN = productSN
+        user.Gnd = Gnd
+        user.Ir = Ir
+        user.Dcw = Dcw
+        user.Acw = Acw
+        user.result = result
+        user.softwareVersion = softwareVersion
+        user.companyName = companyName
+        user.protocolVersion = protocolVersion
+        user.testStartTime = testStartTime
+        user.testEndTime = testEndTime
+        user.testTime = testTime
+
+        user.update_time = current_time
+    else:
+        return R.failed('safety地址已经存在')
+
 
     # 更新数据
     user.save()
     # 返回结果
     return R.ok(msg="更新成功")
 
-
 # 删除客户
-def BurningDelete(burning_id):
+def SafetyDelete(safety_id):
     # 记录ID为空判断
-    if not burning_id:
+    if not safety_id:
         return R.failed("记录ID不存在")
     # 分裂字符串
-    list = burning_id.split(',')
+    list = safety_id.split(',')
     # 计数器
     count = 0
     # 遍历数据源
     if len(list) > 0:
         for id in list:
             # 根据ID查询记录
-            user = burning.objects.only('id').filter(id=int(id), is_delete=False).first()
+            user = safety.objects.only('id').filter(id=int(id), is_delete=False).first()
             # 查询结果判空
             if not user:
                 return R.failed("不存在")
