@@ -117,10 +117,14 @@ urlpatterns = ([
     path('shipmentreport/', include('application.shipmentreport.urls')),
     # mac地址
     path('mac/', include('application.mac.urls')),
+    # 安规测试
+    path('safety/', include('application.safety.urls')),
     #工作台
     path('workplace/', include('application.workplace.urls')),
     #综合看版
     path('comprehensive/', include('application.comprehensive.urls')),
+    #分析页
+    path('analysis/', include('application.analysis.urls')),
 ] + static(settings.TEMP_URL, document_root=settings.STATICFILES_DIRS[2])
 + static(settings.IMAGES_URL, document_root=settings.STATICFILES_DIRS[3])
 + static(settings.UPLOADS_URL, document_root=settings.STATICFILES_DIRS[1])

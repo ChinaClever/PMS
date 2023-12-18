@@ -160,4 +160,4 @@ cython_debug/
 #.idea/
 *.xz
 pmsAdmin/uwsgi.pid
-.idea/
+*.xlsx

@@ -1,6 +1,5 @@
 <template>
-    <div class="ele-body" 
-    >
+    <div class="ele-body" >
       <el-card shadow="never">
         <!-- 搜索表单 -->
         <el-form
@@ -210,8 +209,8 @@
             showOverflowTooltip: true,
           },
           {
-            prop: 'clientName',
-            label: '客户名称',
+            prop: 'work_order',
+            label: '工单号',
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',         
@@ -317,7 +316,6 @@
         console.log("开启定时任务")
         // 每隔60秒刷新数据
         this.timer = setInterval(() => {
-          console.log(this.$refs.table.data[this.$refs.table.data.length - 1].id)
           const elements = document.querySelectorAll('tr.animation');
           // eslint-disable-next-line
           const element = elements[0];
@@ -326,7 +324,6 @@
             if(res.data.data.length > 0){
               res.data.data = res.data.data.slice(-3).reverse();
               res.data.data.forEach((arr,index) => {
-                console.log(arr);
                 // eslint-disable-next-line
                 setTimeout((arr,index) => {
                   if(this.realTime){

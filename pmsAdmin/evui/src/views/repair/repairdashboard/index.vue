@@ -9,7 +9,7 @@
         @keyup.enter.native="reload"
         @submit.native.prevent>
         <el-row :gutter="10">
-          <el-col :lg="6" :md="12" >
+          <el-col :lg="12" :md="12" :xs="12" :xl="12" >
               <el-date-picker
                 v-model="selectDateRange"
                 type="daterange"
@@ -21,10 +21,11 @@
                 format="yyyy 年 MM 月 dd 日"
                 value-format="yyyy-MM-dd"
                 :picker-options="pickerOptions"
-                @change="dateRangeHandleSelect">
+                @change="dateRangeHandleSelect"
+                @clear="this.reload()">
               </el-date-picker>
-            </el-col>
-          <el-col :lg="6" :md="12" :offest="4">
+          </el-col>
+          <el-col :lg="6" :md="6" :xs="6" :xl="6">
             <div class="ele-form-actions">
               <el-button
                 type="primary"
@@ -97,7 +98,7 @@
               type: 'value',
               data: this.saleroomData.map(d => d.bad_total),
 
-              interval:200,  //纵坐标刻度
+
             },
 
           ],
@@ -114,6 +115,8 @@
               backgroundStyle: {
                 color: 'rgba(180, 180, 180, 0.2)'
               },
+              backgroundStyle: {
+              color: 'transparent'},// 将背景颜色设为无色
               barGap: '-100%', // 负值使柱子重叠
               z: -1 ,// 调整柱状图层级，使其在底层
               itemStyle:{
@@ -131,6 +134,8 @@
               backgroundStyle: {
                 color: 'rgba(180, 180, 180, 0.2)'
               },
+              backgroundStyle: {
+              color: 'transparent'},// 将背景颜色设为无色
               itemStyle:{
                 color: function() {
                   return 'blue';
@@ -308,7 +313,7 @@
 
       reset() {
         this.where = {};
-
+        this.selectDateRange = '';
         this.reload();
       },
 

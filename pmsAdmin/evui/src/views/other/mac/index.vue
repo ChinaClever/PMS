@@ -18,6 +18,24 @@
                 placeholder="请输入客户名称或工单号"/>
             </el-form-item>
           </el-col>
+
+          <el-col :lg="6" :md="12">
+              <el-date-picker
+                v-model="selectDateRange"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="创建时间开始日期"
+                end-placeholder="创建时间结束日期"
+                format="yyyy 年 MM 月 dd 日"
+                value-format="yyyy-MM-dd"
+                @clear="reload"
+                :picker-options="pickerOptions"
+                @change="dateRangeHandleSelect">
+              </el-date-picker>
+            </el-col>
+
           <el-col :lg="6" :md="12">
             <div class="ele-form-actions">
               <el-button
@@ -62,8 +80,7 @@
             type="primary"
             icon="el-icon-plus"
             class="ele-btn-icon"
-            @click="make"
-      
+            @click="hk"
             v-if="permission.includes('sys:mac:dall')">一键生成
           </el-button>
            <!-- 导出按钮 -->
@@ -72,8 +89,7 @@
             type="success"
             icon="el-icon-download"
             class="ele-btn-icon"
-            @click="exportToExcel"
-            v-if="selection.length > 0">导出
+            @click="exportToExcel">导出
           </el-button>
           <!-- <el-button
             @click="showImport=true"
@@ -126,7 +142,8 @@
     <mac-edit
       :data="current"
       :visible.sync="showEdit"
-      @done="reload"/>
+      @done="reload"
+      @child-event="receiveLimit"/>
   
   </div>
 </template>
@@ -243,6 +260,8 @@ export default {
           fixed: "right"
         }
       ],
+      // 选择的日期范围
+      selectDateRange: '',
       // 表格搜索条件
       where: {},
       // 表格选中数据
@@ -251,6 +270,18 @@ export default {
       current: null,
       // 是否显示编辑弹窗
       showEdit: false,
+      // 查询日期范围的左边栏快捷选项
+      pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+       },
       // 是否显示导入弹窗
       showImport: false
     };
@@ -258,13 +289,30 @@ export default {
   methods: {
     /* 刷新表格 */
     reload() {
+      console.log(this.selection)
       this.$refs.table.reload({page: 1, where: this.where});
     },
     /* 重置搜索 */
     reset() {
+      this.selectDateRange = null
+      this.selectDate = null
       this.where = {};
       this.reload();
     },
+    // 选择日期范围查询
+    dateRangeHandleSelect(){
+        this.where.year = null
+        this.where.month = null
+        this.selectDate = null
+        if (this.selectDateRange != null){
+          this.where.selectStartDate = this.selectDateRange[0]
+          this.where.selectEndDate = this.selectDateRange[1]
+        }else{
+          this.where.selectStartDate = null
+          this.where.selectEndDate = null
+        }
+
+      },
     /* 显示编辑 */
     openEdit(row) {
       if (!row) {
@@ -329,20 +377,24 @@ export default {
       }).catch(() => {
       });
     },
-    make() {
-      // 在这里调用后端函数
-      this.$http.get('/mac/make')
-        .then(response => {
-          // 处理成功响应
-          console.log(response.data);
-          // 可以在这里更新页面或执行其他操作
-          this.reload();
-        })
-        .catch(error => {
-          // 处理错误响应
-          console.error(error);
-        });
+    hk(){
+        this.showEdit = true;
+        this.current = Object.assign({mk:true}, { name: '',code : ''});
     },
+    // make() {
+    //   // 在这里调用后端函数
+    //   this.$http.get('/mac/make')
+    //     .then(response => {
+    //       // 处理成功响应
+    //       console.log(response.data);
+    //       // 可以在这里更新页面或执行其他操作
+    //       this.reload();
+    //     })
+    //     .catch(error => {
+    //       // 处理错误响应
+    //       console.error(error);
+    //     });
+    // },
     /* 更改状态 */
     editStatus(row) {
       const loading = this.$loading({lock: true});
@@ -359,34 +411,38 @@ export default {
         this.$message.error(e.message);
       });
     },
-    exportToExcel() {
+    async exportToExcel(limits) {
        // 创建 Excel 文件
       const workbook = XLSX.utils.book_new();
       //去除不需要的字段，这里我不希望显示id，所以id不返回
       let temp = this.selection;
+
+      if(this.selection.length == 0||limits){
+        await this.$http.get(this.url,{ params : {...this.where,limit : limits} }).then((res) => {
+          if (res.data.code === 0) {
+            // eslint-disable-next-line
+            this.selection = res.data.data;
+          } else {
+            this.$message.error(res.data.msg);
+          }
+        }).catch((e) => {
+          this.$message.error(e.message);
+        });
+      } 
+
       // eslint-disable-next-line
       this.selection = this.selection.map(({ id, ...rest }) => rest);
-      //可以将对应字段的数字经过判断转为对应的中文
-      this.selection = this.selection.map(obj => {
-        if (obj.signal === 2) {
-          return { ...obj, signal: '合格' };
-        } else if (obj.signal === 1) {
-          return { ...obj, signal: '不合格' };
-        }
-        return obj;
-      });
-      console.log(this.selection)
       const worksheet = XLSX.utils.json_to_sheet(this.selection);
 
       // 获取字段名称（中文）
       const header = this.columns
-        .slice(1, -1) // 排除排除第一列和最后一列,这里我排除的是我的id列和操作列
+        .slice(2, -1) // 排除排除第一列和最后一列,这里我排除的是我的id列和操作列
         .map(column => column.label);
 
       // 获取要导出的数据（排除第一列和最后一列）
       const data = this.selection.map(row =>
         this.columns
-          .slice(1, -1) // 排除第一列和最后一列
+          .slice(2, -1) // 排除第一列和最后一列
           .map(column => row[column.prop])
       );
 
@@ -403,7 +459,7 @@ export default {
       const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
       const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
       // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
-      const fileName = '质检报表.xlsx';
+      const fileName = 'mac管理报表.xlsx';
       
       const currentDate = new Date();
       const year = currentDate.getFullYear();
@@ -419,6 +475,9 @@ export default {
       saveAs(blob, newFileName);
       this.selection = temp;
     },
+    receiveLimit(limit){
+      this.exportToExcel(limit);
+    }
   }
 }
 </script>

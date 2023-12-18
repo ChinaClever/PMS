@@ -152,6 +152,13 @@
             
           },
           {
+            prop: 'work_order',
+            label: '工单号',
+            showOverflowTooltip: true,
+            minWidth: 200,
+            align: 'center',         
+          },
+          {
             prop: 'softwareType',
             label: '软件类型',
             showOverflowTooltip: true,
@@ -207,13 +214,6 @@
             width: 80,
             align: 'center',
             showOverflowTooltip: true,
-          },
-          {
-            prop: 'clientName',
-            label: '客户名称',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',         
           },
           {
             prop: 'companyName',

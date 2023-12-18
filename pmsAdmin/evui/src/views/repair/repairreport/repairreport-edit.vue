@@ -27,6 +27,24 @@
             placeholder="请输入工单号"
           ></el-autocomplete>  
           </el-form-item>
+          <el-form-item
+            label="不良数量:"
+            prop="bad_number">
+            <el-input
+              :maxlength="20"
+              v-model="form.bad_number"
+              placeholder="请输入不良数量"
+              clearable/>
+          </el-form-item>
+          <el-form-item label="维修时间:" prop="repair_time">
+            <el-date-picker
+              class="ele-fluid"
+              v-model="form.repair_time"
+              type="date"
+              format="yyyy-MM-dd"
+              placeholder="选择日期时间"
+            ></el-date-picker>
+          </el-form-item>
         </el-col>
         <el-col :span="10">
           <el-form-item label="产品名称" prop="name">
@@ -38,21 +56,6 @@
               @select="handleSelect"
             ></el-autocomplete>
           </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="15">
-        <el-col :sm="10">
-          <el-form-item
-            label="不良数量:"
-            prop="bad_number">
-            <el-input
-              :maxlength="20"
-              v-model="form.bad_number"
-              placeholder="请输入不良数量"
-              clearable/>
-          </el-form-item>
-        </el-col>
-        <el-col :sm="10">
           <el-form-item
             label="维修数量:"
             prop="repair_number">
@@ -64,20 +67,12 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-form-item label="维修时间:" prop="repair_time">
-        <el-date-picker
-          class="ele-fluid"
-          v-model="form.repair_time"
-          type="date"
-          format="yyyy-MM-dd"
-          placeholder="选择日期时间"
-        ></el-date-picker>
-      </el-form-item>
       <el-form-item label="不良现象" prop="bad_phenomenon">
         <el-autocomplete
           class="inline-input"
           v-model="form.bad_phenomenon"
           :fetch-suggestions="querySearch"
+          style="width: 100%;"
           placeholder="请输入不良现象"
         ></el-autocomplete>
       </el-form-item>
@@ -86,6 +81,7 @@
           class="inline-input"
           v-model="form.analysis"
           :fetch-suggestions="querySearch2"
+          style="width: 100%;"
           placeholder="请输入内容"
         ></el-autocomplete>
       </el-form-item>
@@ -94,6 +90,7 @@
           class="inline-input"
           v-model="form.solution"
           :fetch-suggestions="querySearch3"
+          style="width: 100%;"
           placeholder="请输入内容"
         ></el-autocomplete>
       </el-form-item>         
@@ -240,7 +237,7 @@ export default {
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
               if (!this.isUpdate) {
-                this.form = {};
+                this.form = {name:''};
               }
               this.updateVisible(false);
               this.$emit('done');

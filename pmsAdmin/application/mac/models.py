@@ -41,6 +41,8 @@ class mac(BaseModel):
     serial_id= models.CharField(null=True, max_length=255, verbose_name="序列号", help_text="序列号")
     # mac地址
     mac_address = models.CharField(null=True, max_length=255,unique=True, verbose_name="mac地址", help_text="mac地址")
+    # 数量
+    quantity = models.IntegerField(null=True, verbose_name="数量", help_text="数量")
 
 
     class Meta:

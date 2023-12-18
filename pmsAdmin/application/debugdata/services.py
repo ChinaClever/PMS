@@ -15,6 +15,7 @@ from application.debugdata.models import Debugdata
 from application.debugdata_teststep.models import DebugDataTestStep
 from constant.constants import PAGE_LIMIT
 from utils import R, regular
+from datetime import datetime
 
 
 from utils.utils import uid
@@ -54,7 +55,7 @@ def receive_udp_data():
             macAddress = dict_data.get('macAddress')
             result = dict_data.get('result')
             softwareVersion = dict_data.get('softwareVersion')
-            clientName = dict_data.get('clientName')
+            work_order = dict_data.get('work_order')
             companyName = dict_data.get('companyName')
             protocolVersion = dict_data.get('protocolVersion')
             testStartTime = dict_data.get('testStartTime')
@@ -71,7 +72,7 @@ def receive_udp_data():
                     macAddress=macAddress,
                     result=result,
                     softwareVersion=softwareVersion,
-                    clientName=clientName,
+                    work_order=work_order,
                     companyName=companyName,
                     protocolVersion=protocolVersion,
                     testStartTime=testStartTime,
@@ -83,7 +84,7 @@ def receive_udp_data():
                 # 存id和teststep数据
                 for item in testStep:
                     DebugDataTestStep.objects.create(
-                        debugdata_id=debugdata_id,
+                        Debugdata_id=debugdata_id,
                         no=item.get('no'),
                         name=item.get('name'),
                         result=item.get('result'),
@@ -143,11 +144,11 @@ def DebugDataList(request):
                 'macAddress': item.macAddress,
                 'result': item.result,
                 'softwareVersion': item.softwareVersion,
-                'clientName': item.clientName,
+                'work_order': item.work_order,
                 'companyName': item.companyName,
                 'protocolVersion': item.protocolVersion,
-                'testStartTime': str(item.testStartTime.strftime('%Y-%m-%d %H:%M:%S')) if item.testStartTime else None,
-                'testEndTime': str(item.testEndTime.strftime('%Y-%m-%d %H:%M:%S')) if item.testEndTime else None,
+                'testStartTime': str(item.testStartTime.strftime('%Y-%m-%d %H:%M:%S')),
+                'testEndTime': str(item.testEndTime.strftime('%Y-%m-%d %H:%M:%S')),
                 'testTime': item.testTime,
                 'testStep': testStep_list,
             }
@@ -173,22 +174,25 @@ def DebugDataDetail(debugdata_id):
         'macAddress': debugdata.macAddress,
         'result': debugdata.result,
         'softwareVersion': debugdata.softwareVersion,
-        'clientName': debugdata.clientName,
+        'work_order': debugdata.work_order,
         'companyName': debugdata.companyName,
         'protocolVersion': debugdata.protocolVersion,
-        'testStartTime': str(debugdata.testStartTime.strftime('%Y-%m-%d %H:%M:%S')) if debugdata.testStartTime else None,
-        'testEndTime': str(debugdata.testEndTime.strftime('%Y-%m-%d %H:%M:%S')) if debugdata.testEndTime else None,
+        'testStartTime': str(debugdata.testStartTime.strftime('%Y-%m-%d %H:%M:%S')),
+        'testEndTime': str(debugdata.testEndTime.strftime('%Y-%m-%d %H:%M:%S')),
         'testTime': debugdata.testTime,
         'testStep': testStep_list,
     }
     # 返回结果
     return data
 
+
 @transaction.atomic
 def DebugDataAdd(request):
+
     try:
         # 接收请求参数
         json_data = request.body.decode()
+        print(json_data)
         # 参数为空判断
         if not json_data:
             return R.failed("参数不能为空")
@@ -201,13 +205,14 @@ def DebugDataAdd(request):
         macAddress = dict_data.get('macAddress')
         result = dict_data.get('result')
         softwareVersion = dict_data.get('softwareVersion')
-        clientName = dict_data.get('clientName')
+        work_order = dict_data.get('work_order')
         companyName = dict_data.get('companyName')
         protocolVersion = dict_data.get('protocolVersion')
         testStartTime = dict_data.get('testStartTime')
         testEndTime = dict_data.get('testEndTime')
         testTime = dict_data.get('testTime')
         testStep = dict_data.get('testStep')
+        print("接受数据")
         # 创建数据
         debugdata = Debugdata.objects.create(
             softwareType=softwareType,
@@ -216,31 +221,31 @@ def DebugDataAdd(request):
             macAddress=macAddress,
             result=result,
             softwareVersion=softwareVersion,
-            clientName=clientName,
+            work_order=work_order,
             companyName=companyName,
             protocolVersion=protocolVersion,
             testStartTime=testStartTime,
             testEndTime=testEndTime,
             testTime=testTime,
-            create_user=uid(request)
         )
+        print("创建debugdata数据")
         # 存id和teststep数据
-        if testStep:
-            for item in testStep:
-                DebugDataTestStep.objects.create(
-                debugdata_id=debugdata.id,
-                no=item.get('no'),
-                name = item.get('name'),
-                result = item.get('result'),
-                )
+        for item in testStep:
+            DebugDataTestStep.objects.create(
+            debugdata_id=debugdata.id,
+            no=item.get('no'),
+            name = item.get('name'),
+            result = item.get('result'),
+            )
         # 返回结果
+        print("创建debugdata_debugstep")
         return R.ok(msg="创建成功")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
-        print(format(e))
+        print(e)
         return R.failed("参数错误")
 
-# 更新
+
 @transaction.atomic
 def DebugDataUpdate(request):
     try:
@@ -263,7 +268,7 @@ def DebugDataUpdate(request):
         macAddress = dict_data.get('macAddress')
         result = dict_data.get('result')
         softwareVersion = dict_data.get('softwareVersion')
-        clientName = dict_data.get('clientName')
+        work_order = dict_data.get('work_order')
         companyName = dict_data.get('companyName')
         protocolVersion = dict_data.get('protocolVersion')
         testStartTime = dict_data.get('testStartTime')
@@ -282,20 +287,21 @@ def DebugDataUpdate(request):
         debugdata.macAddress = macAddress
         debugdata.result = result
         debugdata.softwareVersion = softwareVersion
-        debugdata.clientName = clientName
+        debugdata.work_order = work_order
         debugdata.companyName = companyName
         debugdata.protocolVersion = protocolVersion
         debugdata.testStartTime = testStartTime
         debugdata.testEndTime = testEndTime
         debugdata.testTime = testTime
         debugdata.update_user = uid(request)
+        debugdata.update_time = datetime.now()
         # 更新数据
         debugdata.save()
         # 更新debugdata_teststep表
         DebugDataTestStep.objects.filter(debugdata_id=debugdata_id).delete()
         for item in testStep:
             DebugDataTestStep.objects.create(
-            debugdata_id=debugdata.id,
+            debugdata_id=debugdata_id,
             no=item.get('no'),
             name = item.get('name'),
             result = item.get('result'),
@@ -304,10 +310,9 @@ def DebugDataUpdate(request):
         return R.ok(msg="更新成功")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
-        print(e)
         return R.failed("参数错误")
 
-# 删除（不删dabugdata_teststep表）
+
 def DebugDataDelete(debugdata_id):
     # 记录ID为空判断
     if not debugdata_id:
@@ -332,7 +337,6 @@ def DebugDataDelete(debugdata_id):
             count += 1
     # 返回结果
     return R.ok(msg="本次共删除{0}条数据".format(count))
-
 
 def DebugDataNewestList(request):
     # 前端最新数据的id
@@ -359,7 +363,7 @@ def DebugDataNewestList(request):
                 'macAddress': item.macAddress,
                 'result': item.result,
                 'softwareVersion': item.softwareVersion,
-                'clientName': item.clientName,
+                'work_order': item.work_order,
                 'companyName': item.companyName,
                 'protocolVersion': item.protocolVersion,
                 'testStartTime': str(item.testStartTime.strftime('%Y-%m-%d %H:%M:%S')),

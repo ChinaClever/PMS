@@ -12,7 +12,7 @@ from config.env import TABLE_PREFIX
 # null：指定该字段在数据库中是否允许为空，默认为False，表示不允许该字段的值为空。
 class Debug(BaseModel):
     # 工单号
-    work_order = models.CharField(max_length=255, verbose_name="工单号", help_text="工单号")
+    work_order = models.CharField(null=False,max_length=255, verbose_name="工单号", help_text="工单号")
     # 下单日期
     order_time = models.DateTimeField(auto_now_add=False, verbose_name="下单日期", max_length=11)
     # 客户名称

@@ -18,8 +18,7 @@ class Testdata(BaseModel):
                                  help_text="结果：1-通过 2-失败")
     # 软件版本
     softwareVersion = models.CharField(max_length=30, verbose_name="软件版本", help_text="软件版本")
-    # 客户名称
-    clientName = models.CharField(max_length=150, verbose_name="客户名称", help_text="客户名称")
+
     # 公司名
     companyName = models.CharField(max_length=150, verbose_name="公司名", help_text="公司名")
     # 协议版本
@@ -31,6 +30,7 @@ class Testdata(BaseModel):
     # 测试时间
     testTime = models.CharField(max_length=150, verbose_name="测试时间", help_text="测试时间")
 
+    work_order = models.CharField(null=False, max_length=255, verbose_name="工单号", help_text="工单号")
     class Meta:
         # 数据表名
         db_table = settings.TABLE_PREFIX + "testdata"

@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="86c6fa76-31a4-40ef-a0b6-d9dff1735994" name="更改" comment="" />
+    <list default="true" id="86c6fa76-31a4-40ef-a0b6-d9dff1735994" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -38,8 +40,8 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Ljy&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/work/PMS/pmsAdmin/document/django_menu.csv&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;luosuofan&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/work/PMS/pmsAdmin/application/analysis&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -92,6 +94,7 @@
       <workItem from="1701412697558" duration="598000" />
       <workItem from="1701416257224" duration="2662000" />
       <workItem from="1701650387744" duration="1356000" />
+      <workItem from="1702519674862" duration="458000" />
     </task>
     <servers />
   </component>
@@ -168,6 +171,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/PMS$services.coverage" NAME="services 覆盖结果" MODIFIED="1702454954219" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pmsAdmin/application/workplace" />
+    <SUITE FILE_PATH="coverage/PMS$services.coverage" NAME="services 覆盖结果" MODIFIED="1702519873987" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pmsAdmin/application/repairreport" />
+    <SUITE FILE_PATH="coverage/PMS$views.coverage" NAME="views 覆盖结果" MODIFIED="1702518091710" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pmsAdmin/application/comprehensive" />
   </component>
 </project>
