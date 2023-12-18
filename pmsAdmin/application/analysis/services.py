@@ -51,13 +51,13 @@ def RepairData(request):
     # 遍历数据源
     if len(producerecord_list) > 0 and len(producerecord_list) < 20:
         for item in producerecord_list:
-            item.rate = int(item.repair_total/item.total)
+            item.rate = item.repair_total/item.total
             item.rate = round(item.rate,2)
             data = {
-                'product_name': item.name,
-                'repair_total': item.repair_total,
-                'total': item.total,
-                'rate': item.rate,
+                'product_name': item.name,  #客户名
+                'repair_total': item.repair_total,  #维修总数
+                'total': item.total,  #产品总数量
+                'rate': item.rate,   #百分比
             }
             result.append(data)
     # 返回结果
@@ -89,9 +89,10 @@ def ResultData(request):
     if len(query) > 0 :
         for item in query:
             data = {
-                'analysis': item.analysis,
-                'num': item.num,
+                'name': item.analysis, #原因
+                'value': item.num,  #数量
             }
             result.append(data)
+    print(f"result{result}")
     # 返回结果
     return R.ok(data=result)
