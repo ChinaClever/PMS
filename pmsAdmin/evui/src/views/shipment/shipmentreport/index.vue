@@ -78,6 +78,13 @@
                   v-if="permission.includes('sys:shipmentreport:dall')">删除
                 </el-button>
                 <el-button
+                  @click="showImport=true"
+                  icon="el-icon-upload2"
+                  class="ele-btn-icon"
+                  size="small"
+                  type="warning">导入
+                </el-button>
+                <el-button
                   size="small"
                   type="success"
                   icon="el-icon-download"
@@ -115,13 +122,7 @@
                 title="总数量"
                 style="padding-left: 200px; font-weight: bold;"
               ></el-statistic>
-                <!-- <el-button
-                  @click="showImport=true"
-                  icon="el-icon-upload2"
-                  class="ele-btn-icon"
-                  size="small">导入
-                </el-button> -->
-                
+      
               </template>
               <!-- 附件列 -->
               <template slot="attachment" slot-scope="{row}">
@@ -173,18 +174,23 @@
       :data="current"
       :visible.sync="showEdit"
       @done="reload"/>
+
+    <Shipmentimport
+      :visible.sync="showImport"
+      @done="reload"/>
     </div>
   </template>
   
   <script>
   import { mapGetters } from "vuex";
   import ShipmentreportEdit from './shipmentreport-edit';
+  import Shipmentimport from './shipmentimport';
   import XLSX from 'xlsx';
   import { saveAs } from 'file-saver';
 
   export default {
     name: 'SystemShipmentReport',
-    components: {ShipmentreportEdit},
+    components: {ShipmentreportEdit, Shipmentimport},
     computed: {
       ...mapGetters(["permission"]),
     },
