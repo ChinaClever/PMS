@@ -112,9 +112,9 @@
               data: this.saleroomData.map(d => d.bad_total),
               showBackground: true,
               barWidth: 50,
-              backgroundStyle: {
-                color: 'rgba(180, 180, 180, 0.2)'
-              },
+              // backgroundStyle: {
+              //   color: 'rgba(180, 180, 180, 0.2)'
+              // },
               backgroundStyle: {
               color: 'transparent'},// 将背景颜色设为无色
               barGap: '-100%', // 负值使柱子重叠
@@ -131,9 +131,9 @@
               data: this.saleroomData.map(d => d.repair_total),  
               showBackground: true,
               barWidth: 50,
-              backgroundStyle: {
-                color: 'rgba(180, 180, 180, 0.2)'
-              },
+              // backgroundStyle: {
+              //   color: 'rgba(180, 180, 180, 0.2)'
+              // },
               backgroundStyle: {
               color: 'transparent'},// 将背景颜色设为无色
               itemStyle:{
