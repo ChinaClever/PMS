@@ -238,6 +238,7 @@ def TestDataAdd(request):
         return R.ok(msg="创建成功")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
+        print(e)
         return R.failed("参数错误")
 
 
@@ -316,7 +317,7 @@ def TestDataDelete(testdata_id):
     list = testdata_id.split(',')
     # 计数器
     count = 0
-    # 遍历数据源
+    # 遍历数据源django_debugdata
     if len(list) > 0:
         for id in list:
             # 根据ID查询记录

@@ -44,7 +44,7 @@ class safety(BaseModel):
     protocolVersion = models.CharField(null=True, max_length=255, verbose_name="协议版本", help_text="协议版本")
     testStartTime = models.DateTimeField(help_text='测试开始时间', max_length=150, verbose_name='测试开始时间')
     testEndTime = models.DateTimeField(help_text='测试结束时间', max_length=150, verbose_name='测试结束时间')
-    testTime = models.DateTimeField(help_text='测试时间', max_length=150, verbose_name='测试时间')
+    testTime = models.CharField(null=True, max_length=255, verbose_name="测试时间", help_text="测试时间")
 
 
     class Meta:

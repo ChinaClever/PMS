@@ -192,6 +192,7 @@ def DebugDataAdd(request):
     try:
         # 接收请求参数
         json_data = request.body.decode()
+        print(json_data)
         # 参数为空判断
         if not json_data:
             return R.failed("参数不能为空")
@@ -211,6 +212,7 @@ def DebugDataAdd(request):
         testEndTime = dict_data.get('testEndTime')
         testTime = dict_data.get('testTime')
         testStep = dict_data.get('testStep')
+        print("接受数据")
         # 创建数据
         debugdata = Debugdata.objects.create(
             softwareType=softwareType,
@@ -226,6 +228,7 @@ def DebugDataAdd(request):
             testEndTime=testEndTime,
             testTime=testTime,
         )
+        print("创建debugdata数据")
         # 存id和teststep数据
         for item in testStep:
             DebugDataTestStep.objects.create(
@@ -235,9 +238,11 @@ def DebugDataAdd(request):
             result = item.get('result'),
             )
         # 返回结果
+        print("创建debugdata_debugstep")
         return R.ok(msg="创建成功")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
+        print(e)
         return R.failed("参数错误")
 
 

@@ -141,13 +141,13 @@ def test(request):
         mac_id = f"{mac_hex[0:2]}:{mac_hex[2:4]}:{mac_hex[4:6]}:{mac_hex[6:8]}:{mac_hex[8:10]}:{mac_hex[10:12]}"
 
     work_order = request.GET.get('work_order')
-    name = request.GET.get('name')
-    code = request.GET.get('code')
+
+
     serial_id = request.GET.get('serial_id')
     mac_address = mac_id
 
     # 创建数据库对象
-    obj = mac(work_order=work_order, name=name, code=code, serial_id=serial_id, mac_address=mac_address)
+    obj = mac(work_order=work_order,  serial_id=serial_id, mac_address=mac_address)
     # 保存对象到数据库
     obj.save()
 
@@ -155,7 +155,7 @@ def test(request):
     # 增加 MAC 地址后缀
     mac_suffix += 1
     return HttpResponse(json.dumps(response_data))
-#http://localhost:8000/mac/test?code=1234&work_order=12345&serial_id=12345&name=hk
+#http://localhost:8000/mac/test?work_order=12345&serial_id=12345
 
 def make(request):
     for i in range(50):
