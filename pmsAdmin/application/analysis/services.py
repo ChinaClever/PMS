@@ -63,6 +63,7 @@ def RepairData(request):
             }
             result.append(data)
     # 返回结果
+    print(f"{result}")
     return R.ok(data=result, count=count)
 
 
@@ -94,6 +95,7 @@ def ResultData(request):
                 'value': item.num,  #数量
             }
             result.append(data)
+
     # 返回结果
     return R.ok(data=result)
 #维修总数量
