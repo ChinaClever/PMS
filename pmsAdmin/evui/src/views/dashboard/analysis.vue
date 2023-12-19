@@ -64,7 +64,7 @@
           </el-card>
         </el-col>
         <el-col :lg="12" :md="16">
-          <el-card class="custom-card" :flex="true">
+          <el-card>
             <div class="card-header">
               <div class="card-label">维修原因排名</div>
             </div>
@@ -257,7 +257,8 @@ export default {
         this.reasonloading = false;
         // console.log(res.data.data)
         this.getResultData = res.data.data;
-        this.getResultData = this.getResultData.sort((a,b)=>a.value-b.value).slice(0,8)
+        // this.getResultData = this.getResultData.sort((a,b)=>a.value-b.value).slice(0,8)
+        // console.log(this.getResultData)
       }
       }).catch(e => {
           this.reasonloading = true;
@@ -269,6 +270,9 @@ export default {
 </script>
 
 <style scoped>
+.body{
+  background-color: #0000ff;
+}
 
 .demo-monitor-tool ::v-deep .el-tabs__nav-wrap:after {
   display: none;
