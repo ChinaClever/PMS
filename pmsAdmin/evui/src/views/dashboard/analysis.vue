@@ -8,17 +8,18 @@
                     <div class="card-label">维修数量占比</div>
                       <div class="card-month"></div>
                       <el-date-picker
-                      v-model="value2"
+                      v-model="makeUpModel"
                       type="month"
                       placeholder="选择月份"
-                      @change="getPayNumData">
+                      @change="getRepairDatas1">
                       </el-date-picker>
                   </div>
                   <div>
                   <ele-chart
                     ref="browserChart"
                     style="height: 280px;"
-                    :option="saleChartOption"/>
+                    v-loading="makeUploading"
+                    :option="makeUpChartOption"/>
                   </div>
                 </el-card>
 
@@ -29,16 +30,18 @@
                     <div class="card-label">维修数量</div>
                       <div class="card-month"></div>
                       <el-date-picker
-                      v-model="value2"
+                      v-model="numberModel"
                       type="month"
-                      placeholder="选择月">
+                      placeholder="选择月"
+                      @change="getRepairDatas2">
                       </el-date-picker>
                   </div>
                   <div>
                   <ele-chart
                     ref="browserChart"
+                    v-loading="numloading"
                     style="height: 280px;"
-                    :option="saleChartOption"/>
+                    :option="numberChartOption"/>
                   </div>
                 </el-card>
             </el-col>
@@ -47,31 +50,40 @@
       <div>
         <el-row :gutter="15">
         <el-col :lg="12" :md="16">
-          <el-card header="维修原因">
-            <ele-word-cloud
+            <el-card >
+            <div class="card-header">
+              <div class="card-label">维修原因</div>
+            </div>
+            <div>
+              <ele-word-cloud
               ref="hotSearchChart"
-              :data="hotSearchData"
+              v-loading="reasonloading"
+              :data="getResultData"
               style="height: 303px;"/>
+            </div>
           </el-card>
         </el-col>
         <el-col :lg="12" :md="16">
-          <el-card header="维修原因排名">
-          <div
-            v-for="(item, index) in saleroomRankData"
-            :key="index"
-            class="demo-monitor-rank-item ele-cell">
-            <el-tag
-              size="mini"
-              type="info"
-              :effect="index < 3 ? 'dark' : 'light'"
-              :color="index < 3 ? '#314659' : 'hsla(0, 0%, 60%, .2)'"
-              style="border-color: transparent;"
-              class="ele-tag-round">
-              {{ index + 1 }}
-            </el-tag>
-            <div class="ele-cell-content">{{ item.name }}</div>
-            <div class="ele-text-secondary">{{ item.value }}</div>
-          </div>
+          <el-card>
+            <div class="card-header">
+              <div class="card-label">维修原因排名</div>
+            </div>
+            <div
+              v-for="(item, index) in getResultData"
+              :key="index"
+              class="demo-monitor-rank-item ele-cell">
+              <el-tag
+                size="mini"
+                type="info"
+                :effect="index < 3 ? 'dark' : 'light'"
+                :color="index < 3 ? '#314659' : 'hsla(0, 0%, 60%, .2)'"
+                style="border-color: transparent;"
+                class="ele-tag-round">
+                {{ index + 1 }}
+              </el-tag>
+              <div class="ele-cell-content">{{ item.name }}</div>
+              <div class="ele-text-secondary">{{ item.value }}</div>
+            </div>
           </el-card>
         </el-col>
       </el-row>
@@ -88,26 +100,35 @@ export default {
   components: {EleChart, EleWordCloud},
   data() {
     return {
-      // 支付笔数
-      payNumData: [],
-      // 销售量数据
-      saleroomData: [],
-      // 销售量排名数据
-      saleroomRankData: [],
-      // 词云数据
-      hotSearchData: [],
-      value2:null
+      // 加载状态
+      makeUploading: true,
+      numloading:true,
+      reasonloading:true,
+
+      //维修数据
+      getRepairData1:[],
+      getRepairData2:[],
+      //原因数据
+      getResultData:[],
+      getResultData1:[],
+
+      //选择月的模型
+      makeUpModel:null,
+      numberModel:null,
+
+      startDate:null,
+      endDate:null,
     };
   },
   computed: {
-    // 销售额柱状图配置
-    saleChartOption() {
-        return {
+    //维修数量占比饼图
+    makeUpChartOption(){
+      return {
         tooltip: {
           trigger: 'item'
         },
         legend: {
-          data: this.payNumData.map(d => d.name),
+          data: this.getRepairData1.map(d => d.name),
           bottom: 10,
           itemWidth: 20,
           itemHeight: 20,
@@ -122,113 +143,137 @@ export default {
             label: {
               show: false
             },
-            data: this.payNumData
+            data: this.getRepairData1
+          }
+        ]
+      };
+    },
+    //维修数量饼图
+    numberChartOption(){
+      return {
+        tooltip: {
+          trigger: 'item'
+        },
+        legend: {
+          data: this.getRepairData2.map(d => d.name),
+          bottom: 10,
+          itemWidth: 20,
+          itemHeight: 20,
+          icon: 'circle',
+        },
+        series: [
+          {
+            type: 'pie',
+            radius: ['45%', '70%'],
+            center: ['50%', '43%'],
+
+            label: {
+              show: false
+            },
+            data: this.getRepairData2
           }
         ]
       };
     },
   },
   mounted() {
-    this.getPayNumData();
-    this.getSaleroomData();
-    this.getWordCloudData();
+    this.getRepairDatas1();
+    this.getRepairDatas2();
+    this.getResultDatas();
   },
   methods: {
-    /* 获取支付笔数数据 */
-    getPayNumData() {
-      console.log("选择的月份",this.value2);
-      this.payNumData = [
-        {name: 'IP-PDU', value: 9052},
-        {name: 'M-PDU', value: 535},
-        {name: 'SI-PDU', value: 1610},
-        {name: 'BM-PDU', value: 2800},
-        {name: '执行板', value: 3200},
-        {name: 'Other', value: 1700}
-      ];
+    //转换时间成数据库内的格式
+    formatDate(date) {
+      if (date != null){
+          return date.toLocaleString('zh-CN',{
+            year:'numeric',
+            month:'2-digit',
+            day:'2-digit',
+            hour12:false
+        }).replace(/\//g, '-');
+      }
     },
-    /* 获取销售量数据 */
-    getSaleroomData() {
-        this.saleroomData = [
-          {month: '1月', value: 816},
-          {month: '2月', value: 542},
-          {month: '3月', value: 914},
-          {month: '4月', value: 781},
-          {month: '5月', value: 355},
-          {month: '6月', value: 796},
-          {month: '7月', value: 714},
-          {month: '8月', value: 1195},
-          {month: '9月', value: 1055},
-          {month: '10月', value: 271},
-          {month: '11月', value: 384},
-          {month: '12月', value: 1098}
-        ];
-
-      this.saleroomRankData = [
-        {name: '硬件维修', value: '124,643'},
-        {name: '软件BUG', value: '456,465'},
-        {name: '测试软件BUG', value: '776,679'},
-        {name: '电源损坏', value: '456,658'},
-        {name: '芯片损毁', value: '245,466'},
-        {name: '模具损毁', value: '887,344'},
-        {name: '线路损坏', value: '897,233'},
-        {name: '无软件', value: '887,344'},
-      ];
-      this.saleroomRankData = this.saleroomRankData.sort((a,b)=>a.value-b.value).slice(0,8)
+    //获取维修数据
+    getRepairDatas1(){
+      if(this.makeUpModel === null)
+      {
+        const now = new Date();
+        const year = now.getFullYear();
+        this.startDate = this.formatDate(new Date(year, 0, 1));
+        this.endDate = this.formatDate(new Date(year, 11, 31));
+      }
+      else {
+        this.startDate = this.formatDate(new Date(this.makeUpModel));
+        this.endDate = new Date(this.makeUpModel);
+        this.endDate.setMonth(this.endDate.getMonth()+1)
+        this.endDate = this.formatDate(this.endDate)
+      }
+      this.$http.get('/analysis/RepairData', {
+        params:{
+                  startTime:this.startDate,
+                  endTime:this.endDate
+        }
+        }).then(res =>{
+      if(res.data.code === 0) {
+        this.getRepairData1 = res.data.data;
+        this.makeUploading = false;
+      }
+      }).catch(e => {
+          this.makeUploading = true;
+          this.$message.error(e.message);
+      });
     },
-    /* 获取词云数据 */
-    getWordCloudData() {
-      this.hotSearchData = [
-        {name: "硬件维修", value: 23},
-        {name: "软件", value: 23},
-        {name: "电源芯片损坏", value: 23},
-        {name: "通讯芯片损坏", value: 22},
-        {name: "硬件维修", value: 23},
-        {name: "软件", value: 23},
-        {name: "电源芯片损坏", value: 23},
-        {name: "通讯芯片损坏", value: 22},
-        {name: "硬件维修", value: 23},
-        {name: "软件", value: 23},
-        {name: "电源芯片损坏", value: 23},
-        {name: "通讯芯片损坏", value: 22},
-        {name: "硬件维修", value: 23},
-        {name: "软件", value: 23},
-        {name: "电源芯片损坏", value: 23},
-        {name: "通讯芯片损坏", value: 22},
-        {name: "硬件维修", value: 23},
-        {name: "软件", value: 23},
-        {name: "电源芯片损坏", value: 23},
-        {name: "通讯芯片损坏", value: 22},
-        {name: "硬件维修", value: 23},
-        {name: "软件", value: 23},
-        {name: "电源芯片损坏", value: 23},
-        {name: "通讯芯片损坏", value: 22},
-        {name: "硬件维修", value: 23},
-        {name: "电源芯片损坏", value: 23},
-        {name: "通讯芯片损坏", value: 22},
-        {name: "硬件维修", value: 23},
-        {name: "软件", value: 23},
-        {name: "电源芯片损坏", value: 23},
-        {name: "通讯芯片损坏", value: 22},
-        {name: "硬件维修", value: 23},
-        {name: "软件", value: 23},
-        {name: "电源芯片损坏", value: 23},
-        {name: "通讯芯片损坏", value: 22},
-      ];
+    getRepairDatas2(){
+      if(this.numberModel === null)
+      {
+        const now = new Date();
+        const year = now.getFullYear();
+        this.startDate = this.formatDate(new Date(year, 0, 1));
+        this.endDate = this.formatDate(new Date(year, 11, 31));
+      }
+      else {
+        this.startDate = this.formatDate(new Date(this.makeUpModel));
+        this.endDate = new Date(this.makeUpModel);
+        this.endDate.setMonth(this.endDate.getMonth()+1)
+        this.endDate = this.formatDate(this.endDate)
+      }
+      this.$http.get('/analysis/RepairnumberData', {
+        params:{
+                  startTime:this.startDate,
+                  endTime:this.endDate
+        }
+        }).then(res =>{
+      if(res.data.code === 0) {
+        this.getRepairData2 = res.data.data;
+        this.numloading = false;
+      }
+      }).catch(e => {
+          this.numloading = true;
+          this.$message.error(e.message);
+      });
     },
-    /* 销售量tab选择改变事件 */
-    onSaleTypeChange() {
-      this.getSaleroomData();
-    }
+    //获取原因
+    getResultDatas(){
+      this.$http.get('/analysis/ResultData', ).then(res =>{
+      if(res.data.code === 0) {
+        this.reasonloading = false;
+        // console.log(res.data.data)
+        this.getResultData = res.data.data;
+        this.getResultData = this.getResultData.sort((a,b)=>b.value-a.value).slice(0,8)
+      }
+      }).catch(e => {
+          this.reasonloading = true;
+          this.$message.error(e.message);
+      });
+    },
   },
-  activated() {
-    ['browserChart', 'payNumChart', 'saleChart', 'visitHourChart', 'hotSearchChart'].forEach((name) => {
-      this.$refs[name].resize();
-    });
-  }
 }
 </script>
 
 <style scoped>
+.body{
+  background-color: #0000ff;
+}
 
 .demo-monitor-tool ::v-deep .el-tabs__nav-wrap:after {
   display: none;
@@ -243,6 +288,10 @@ export default {
 .demo-monitor-tool .el-date-editor {
   width: 256px;
   margin-left: 10px;
+}
+.custom-card{
+  width: 770px;
+  height: 355px;
 }
 
 /* 排名item */

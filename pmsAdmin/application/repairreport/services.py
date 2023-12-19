@@ -48,9 +48,9 @@ def DictList(request):#查询设置，从前端返回order_id字段，再到数�
     work_order = request.GET.get('work_order')#前端返回的字段
     if work_order:
        query = query.filter(work_order__contains=work_order)
-    repair_user = request.GET.get('repair_user')
-    if repair_user:
-       query = query.filter(repair_user__contains=repair_user)
+    name = request.GET.get('name')
+    if name:
+       query = query.filter(name__contains=name)
     #时间筛选
     selectStartDate = request.GET.get('selectStartDate')
     selectEndDate = request.GET.get('selectEndDate')

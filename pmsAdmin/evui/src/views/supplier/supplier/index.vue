@@ -9,16 +9,16 @@
         @keyup.enter.native="reload"
         @submit.native.prevent>
         <el-row :gutter="15">
-          <el-col :lg="6" :md="12">
-            <el-form-item label="工单号:">
+          <el-col :lg="6" :md="12" :sm="24" >
+            <el-form-item label="单号:">
               <el-input
                 clearable
                 v-model="where.work_order"
                 @clear="this.reload"
-                placeholder="请输入工单号"/>
+                placeholder="请输入单号"/>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :lg="6" :md="12" :sm="24"  >
               <el-date-picker
                 v-model="selectDateRange"
                 type="daterange"
@@ -32,8 +32,8 @@
                 :picker-options="pickerOptions"
                 @change="dateRangeHandleSelect">
               </el-date-picker>
-            </el-col>
-          <el-col :lg="6" :md="12">
+          </el-col>
+          <el-col :lg="6" :md="12" :sm="24" :xs="24" :xl="6" :offset="3">
             <div class="ele-form-actions">
               <el-button
                 type="primary"
@@ -173,7 +173,7 @@ export default {
 
         {
           prop: 'work_order',
-          label: '工单号',
+          label: '单号',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
@@ -336,6 +336,7 @@ export default {
     /* 重置搜索 */
     reset() {
       this.where = {};
+      this.selectDateRange = '';
       this.reload();
     },
     /* 显示编辑 */

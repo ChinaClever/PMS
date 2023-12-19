@@ -19,12 +19,12 @@
               </el-form-item>
             </el-col>
             <el-col :span="5">
-              <el-form-item label="工单号:">
+              <el-form-item label="单号:">
                 <el-input
                   clearable
                   v-model="where.work_order"
                   @clear="this.reload"
-                  placeholder="请输入工单号"/>
+                  placeholder="请输入单号"/>
               </el-form-item>
             </el-col>
             <el-col :lg="6" :md="12">
@@ -44,7 +44,7 @@
               <el-form-item label="排序方式:">
               <el-select v-model="selectedOption" placeholder="请选择排序方式" @change="selectway">
                   <el-option label="产品名称" value="name"></el-option>
-                  <el-option label="工单号" value="work_order"></el-option>
+                  <el-option label="单号" value="work_order"></el-option>
               </el-select>
               </el-form-item>
             </el-col>
@@ -128,7 +128,7 @@
           },
           {
             prop: 'work_order',
-            label: '工单号',
+            label: '单号',
             width: 300,
             align: 'center',
             showOverflowTooltip: true,
@@ -248,6 +248,7 @@
       /* 重置搜索 */
       reset() {
         this.where = {};
+        this.selectDateRange = '';
         this.selectedOption = 'name';
         this.reload();
       },

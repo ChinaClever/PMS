@@ -10,21 +10,21 @@
           @submit.native.prevent>
           <el-row :gutter="10">
             <el-col :span="5">
-              <el-form-item label="维修员:">
-                <el-input
-                  clearable
-                  v-model="where.repair_user"
-                  @clear="this.reload"
-                  placeholder="请输入维修员"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="5">
-              <el-form-item label="工单号:">
+              <el-form-item label="单号:">
                 <el-input
                   clearable
                   v-model="where.work_order"
                   @clear="this.reload"
-                  placeholder="请输入工单号"/>
+                  placeholder="请输入单号"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="5">
+              <el-form-item label="产品名称:">
+                <el-input
+                  clearable
+                  v-model="where.name"
+                  @clear="this.reload"
+                  placeholder="请输入产品名称"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -212,7 +212,7 @@
           },
           {
             prop: 'work_order',
-            label: '工单号',
+            label: '单号',
             width: 150,
             align: 'center',
             showOverflowTooltip: true,
@@ -394,14 +394,16 @@
       /* 重置搜索 */
       reset() {
         this.where = {};
+        this.selectDateRange = '';
         this.reload();
       },
       /* 显示编辑 */
       openEdit(row) {
         if (!row) {
           // 添加
-          this.current = row;
+          this.current = Object.assign({repair_time:new Date().toISOString()},null);
           this.showEdit = true;
+   
         } else {
           // 编辑
           this.loading = true;

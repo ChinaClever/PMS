@@ -57,7 +57,7 @@
         prop="Gnd">
         <el-input
           :maxlength="255"
-          v-model="form.productSN"
+          v-model="form.Gnd"
           placeholder="请输入接地电阻"
           clearable/>
       </el-form-item>

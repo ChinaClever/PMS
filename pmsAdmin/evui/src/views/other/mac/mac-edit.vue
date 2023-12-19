@@ -116,7 +116,7 @@ export default {
         // ],
         mac_address: [
         { 
-    required: false, 
+    required: true, 
     message: '请输入mac地址', 
     trigger: 'blur' 
   },
