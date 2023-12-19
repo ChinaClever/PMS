@@ -14,7 +14,7 @@
                 <el-input
                   clearable
                   v-model="where.keyword"
-                  placeholder="工单号、客户名称、规格型号或客户名称"/>
+                  placeholder="单号、客户名称、规格型号或客户名称"/>
               </el-form-item>
             </el-col>
             
@@ -161,7 +161,7 @@
           },
           {
             prop: 'work_order',
-            label: '工单号',
+            label: '单号',
             showOverflowTooltip: true,
             minWidth: 160,
             align: 'center',

@@ -16,7 +16,7 @@
         <el-row :gutter="6">
         <el-col :span="12">
         <el-form-item
-          label="工单号:"
+          label="单号:"
           prop="work_order">
             <el-autocomplete
             v-model="form.work_order"
@@ -25,7 +25,7 @@
             @select="handleSelect"
             @clear="handleClear"
             @keyup.enter.native="handleEnterKey"
-            placeholder="请输入工单号"
+            placeholder="请输入单号"
             style="width: 277px;"
           ></el-autocomplete>  
         </el-form-item>
@@ -196,7 +196,7 @@
         // 表单验证规则
         rules: {
           work_order: [
-          {required: true, message: '请输入工单号', trigger: 'blur'}
+          {required: true, message: '请输入单号', trigger: 'blur'}
         ],
           order_time: [
           {required: true, message: '请输入下单时间', trigger: 'blur'}
@@ -315,14 +315,14 @@
 
       createStateFilter(queryString) {
         return (state) => {
-          return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+          return (state.value.toLowerCase().includes(queryString.toLowerCase()));
         };
       },
 
       handleSelect(item) {
         this.form.work_order = item.value
         this.$refs.form.validateField('work_order', () => {});
-        // 根据选择的工单号查其他数据自动填入
+        // 根据选择的单号查其他数据自动填入
         this.$http.get('/shipmentreport/detail/' + item.value).then((res) => {
             this.loading = false;
             const shipmentData = res.data.data;
@@ -353,7 +353,7 @@
       console.log(event)
       this.form.work_order = event.target.value.split("+")[0];
       this.$refs.form.validateField('work_order', () => {});
-      // 根据选择的工单号查其他数据自动填入
+      // 根据选择的单号查其他数据自动填入
       this.$http.get('/shipmentreport/detail/' + event.target.value.split("+")[0]).then((res) => {
         this.loading = false;
         const shipmentData = res.data.data;

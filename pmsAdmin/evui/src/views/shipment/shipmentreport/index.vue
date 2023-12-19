@@ -15,7 +15,7 @@
                   style="width: 270px;"
                   clearable
                   v-model="where.keyword"
-                  placeholder="工单号、客户名称、产品名称"
+                  placeholder="单号、客户名称、产品名称"
                   @clear="clearSearchHandle"/>
               </el-form-item>
             </el-col>
@@ -77,13 +77,13 @@
                   @click="removeBatch"
                   v-if="permission.includes('sys:shipmentreport:dall')">删除
                 </el-button>
-                <el-button
+                <!-- <el-button
                   @click="showImport=true"
                   icon="el-icon-upload2"
                   class="ele-btn-icon"
                   size="small"
                   type="warning">导入
-                </el-button>
+                </el-button> -->
                 <el-button
                   size="small"
                   type="success"
@@ -154,13 +154,13 @@
                 </el-popconfirm>
               </template>
               <!-- 状态列 -->
-              <template slot="status" slot-scope="{row}">
+              <!-- <template slot="status" slot-scope="{row}">
                 <el-switch
                   v-model="row.status"
                   @change="editStatus(row)"
                   :active-value="1"
                   :inactive-value="2"/>
-              </template>
+              </template> -->
                <!-- 成品模块列 -->
               <template slot="product_module" slot-scope="{row}">
                 <el-tag v-if="row.product_module === 1" type="success" size="medium">成品</el-tag>
@@ -210,7 +210,7 @@
           },
           {
             prop: 'work_order',
-            label: '工单号',
+            label: '单号',
             showOverflowTooltip: true,
             minWidth: 200,
             align: 'center',

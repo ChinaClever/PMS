@@ -1,4 +1,4 @@
-
+import json
 import os
 import uuid
 from datetime import datetime
@@ -386,7 +386,7 @@ def SelectProdcutDetailByProductCode(product_code):
     return data
 
 # 获取所有产品名称（不重复）
-def ProductNameList(request):
+def ProductList(request):
     productNameList = Product.objects.filter(is_delete=False)
     result = []
     existing_names = set()  # 存储已存在的product_name值
@@ -404,7 +404,13 @@ def ProductNameList(request):
 
 # 获取所有工单号 倒序返回
 def WorkOrderList(request):
-    workOrderList = Shipment.objects.filter(is_delete=False).order_by('-id').values_list('work_order', flat=True)
+    current_date = datetime.now()
+    workOrderList = Shipment.objects.filter(
+        is_delete=False
+    ).exclude(
+        Q(finish_date__isnull=False) & Q(finish_date__lt=current_date)
+    ).order_by('-id').values_list('work_order', flat=True)
+
     result = []
     if len(workOrderList) > 0:
         for item in workOrderList:
@@ -442,4 +448,155 @@ def SelectShipmentDetailByWorkOrder(work_order):
     # 返回结果
     return data
 
+# -----------------------产品名称模块-----------------------------------
+#####################################################################
+def ProductNameList(request):
+    # 页码
+    page = int(request.GET.get('page', 1))
+    # 每页数
+    limit = int(request.GET.get('limit', PAGE_LIMIT))
+    # 查询数据
+    query = Product.objects.filter(is_delete=False)
+    # 模糊筛选
+    keyword  = request.GET.get('keyword')
+    if keyword :
+        query = query.filter(
+            Q(product_code__icontains=keyword) |
+            Q(product_name__icontains=keyword)
+        )
+    # 排序 倒序
+    query = query.order_by("-id")
+    # 分页设置
+    paginator = Paginator(query, limit)
+    # 记录总数
+    count = paginator.count
+    # 分页查询
+    try:
+        productname_list = paginator.page(page)
+    except PageNotAnInteger:
+        # 如果请求的页数不是整数, 返回第一页。
+        productname_list = paginator.page(1)
+    except EmptyPage:
+        # 如果请求的页数不在合法的页数范围内，返回结果的最后一页。
+        productname_list = paginator.page(paginator.num_pages)
+    except InvalidPage:
+        # 如果请求的页数不存在, 重定向页面
+        return R.failed('找不到页面的内容')
+    # 遍历数据源
+    result = []
+    if len(productname_list) > 0:
+        for item in productname_list:
+            data = {
+                'id': item.id,
+                'product_code': item.product_code,
+                'shape': item.shape,
+                'product_name': item.product_name,
+                'product_module': item.product_module
+                         }
+            result.append(data)
+    # 返回结果
+    return R.ok(data=result, count=count)
 
+def ProductNameDetail(product_id):
+    # 根据ID查询
+    product = Product.objects.filter(is_delete=False, id=product_id).first()
+    # 查询结果判空
+    if not product:
+        return None
+    # 声明结构体
+    data = {
+        'id': product.id,
+        'product_code': product.product_code,
+        'product_name': product.product_name,
+        'shape': product.shape,
+        'product_module': product.product_module,
+    }
+    # 返回结果
+    return data
+
+def ProductNameUpdate(request):
+    # 接收请求参数
+    json_data = request.body.decode()
+    # 参数为空判断
+    if not json_data:
+        return R.failed("参数不能为空")
+    # 数据类型转换
+    dict_data = json.loads(json_data)
+
+    id = dict_data.get('id')
+    product_code = dict_data.get('product_code')
+    product_name = dict_data.get('product_name')
+    shape = dict_data.get('shape')
+    product_module = dict_data.get('product_module')
+    # 根据ID查询
+    product = Product.objects.only('id').filter(id=id, is_delete=False).first()
+
+    isProductCodeExist = Product.objects.only('id').filter(product_code=product_code, is_delete=False).exclude(
+        id=id).first()
+    if isProductCodeExist:
+        return R.failed("产品编码已存在")
+# 对象赋值
+    product.product_code = product_code
+    product.product_name = product_name
+    product.product_module = product_module
+    product.shape = shape
+    product.update_time = datetime.now()
+    product.update_user = uid(request)
+    # 更新数据
+    product.save()
+    # 返回结果
+    return R.ok(msg="更新成功")
+
+def ProductNameAdd(request):
+    # 接收请求参数
+    json_data = request.body.decode()
+    # 参数为空判断
+    if not json_data:
+        return R.failed("参数不能为空")
+        # 数据类型转换
+    dict_data = json.loads(json_data)
+
+    product_code = dict_data.get('product_code')
+    product_name = dict_data.get('product_name')
+    shape = dict_data.get('shape')
+    product_module = dict_data.get('product_module')
+
+    isProductCodeExist = Product.objects.filter(product_code=product_code, is_delete=False).first()
+    if isProductCodeExist:
+        return R.failed("产品编码已存在")
+
+    Product.objects.create(
+        product_code=product_code,
+        product_name=product_name,
+        product_module=product_module,
+        shape=shape,
+        create_user=uid(request)
+    )
+
+    # 返回结果
+    return R.ok(msg="创建成功")
+
+def ProductNameDelete(product_id):
+    # 记录ID为空判断
+    if not product_id:
+        return R.failed("ID不存在")
+    # 分裂字符串
+    list = product_id.split(',')
+    # 计数器
+    count = 0
+    # 遍历数据源
+    if len(list) > 0:
+        for id in list:
+            # 根据ID查询记录
+            product = Product.objects.only('id').filter(id=int(id), is_delete=False).first()
+            # 查询结果判空
+            if not product:
+                return R.failed("数据不存在")
+            # 设置删除标识
+            product.is_delete = True
+            # 更新记录
+            product.save()
+            # 计数器+1
+            count += 1
+    # 返回结果
+    return R.ok(msg="本次共删除{0}条数据".format(count))

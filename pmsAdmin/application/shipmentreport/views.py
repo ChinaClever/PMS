@@ -93,8 +93,60 @@ class ProductListView(PermissionRequired, View):
     permission_required = ('sys:shipmentreport:list',)
     def get(self, request):
         # 调用查询职级分页数据服务方法
-        data = services.ProductNameList(request)
+        data = services.ProductList(request)
         # 返回结果
         return R.ok(data=data)
 
 
+
+# -----------------------产品名称模块-----------------------------------
+#####################################################################
+@method_decorator(check_login, name='dispatch')
+class ProductNameListView(PermissionRequired, View):
+    permission_required = ('sys:productname:list',)
+
+    def get(self, request):
+        # 调用查询职级分页数据服务方法
+        result = services.ProductNameList(request)
+        # 返回结果
+        return result
+
+# 查询详情
+@method_decorator(check_login, name='dispatch')
+class ProductNameDetailView(PermissionRequired, View):
+    permission_required = ('sys:productname:detail',)
+
+    def get(self, request, product_id):
+        # 调用查询职级详情服务方法
+        data = services.ProductNameDetail(product_id)
+        # 返回结果
+        return R.ok(data=data)
+
+@method_decorator(check_login, name='dispatch')
+class ProductNameAddView(PermissionRequired, View):
+    permission_required = ('sys:productname:add',)
+    def post(self, request):
+        result = services.ProductNameAdd(request)
+        return result
+
+@method_decorator(check_login, name="put")
+class ProductNameUpdateView(PermissionRequired, View):
+    permission_required = ('sys:productname:update',)
+    def put(self, request):
+        if DEBUG:
+            return R.failed("演示环境，暂无操作权限")
+        # 调用更新服务方法
+        result = services.ProductNameUpdate(request)
+        # 返回结果
+        return result
+
+@method_decorator(check_login, name="delete")
+class ProductNameDeleteView(PermissionRequired, View):
+    permission_required = ('sys:shipmentreport:delete',)
+    def delete(self, request, product_id):
+        if DEBUG:
+            return R.failed("演示环境，暂无操作权限")
+        # 调用删除用户服务方法
+        result = services.ProductNameDelete(product_id)
+        # 返回结果
+        return result

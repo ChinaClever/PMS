@@ -153,7 +153,7 @@
           },
           {
             prop: 'work_order',
-            label: '工单号',
+            label: '单号',
             showOverflowTooltip: true,
             minWidth: 200,
             align: 'center',         

@@ -17,7 +17,18 @@ urlpatterns = [
     path('detail/<str:work_order>', views.ShipmentDetailView.as_view()),
     # 根据产品编码查产品详情
     path('product/detail/<str:product_code>', views.ProductDetailView.as_view()),
-    # 获取所有产品名
+    # 获取所有产品名(不重复)
     path('product/list', views.ProductListView.as_view()),
 
+
+    # 获取所有产品名称表的数据
+    path('productname/list', views.ProductNameListView.as_view()),
+
+    path('productname/detail/<int:product_id>', views.ProductNameDetailView.as_view()),
+
+    path('productname/add', views.ProductNameAddView.as_view()),
+
+    path('productname/update', views.ProductNameUpdateView.as_view()),
+
+    path('productname/delete/<str:product_id>', views.ProductNameDeleteView.as_view()),
 ]
