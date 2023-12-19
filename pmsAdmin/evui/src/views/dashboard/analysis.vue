@@ -204,8 +204,9 @@ export default {
       }
       else {
         this.startDate = this.formatDate(new Date(this.makeUpModel));
-        this.endDate = this.formatDate(new Date(this.makeUpModel));
+        this.endDate = new Date(this.makeUpModel);
         this.endDate.setMonth(this.endDate.getMonth()+1)
+        this.endDate = this.formatDate(this.endDate)
       }
       this.$http.get('/analysis/RepairData', {
         params:{
@@ -231,11 +232,12 @@ export default {
         this.endDate = this.formatDate(new Date(year, 11, 31));
       }
       else {
-        this.startDate = this.formatDate(new Date(this.numberModel));
-        this.endDate = this.formatDate(new Date(this.numberModel));
+        this.startDate = this.formatDate(new Date(this.makeUpModel));
+        this.endDate = new Date(this.makeUpModel);
         this.endDate.setMonth(this.endDate.getMonth()+1)
+        this.endDate = this.formatDate(this.endDate)
       }
-      this.$http.get('/analysis/RepairData', {
+      this.$http.get('/analysis/RepairnumberData', {
         params:{
                   startTime:this.startDate,
                   endTime:this.endDate
