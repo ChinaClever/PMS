@@ -139,7 +139,9 @@ export default {
       form: Object.assign({
         status: 1,
         type : 1,
-        name:''
+        name:'',
+        repair_time: new Date().toISOString(), // 当前日期
+
       }, this.data),
       // 表单验证规则
       rules: {
