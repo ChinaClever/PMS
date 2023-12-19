@@ -36,7 +36,7 @@
               </el-date-picker>
             </el-col>
 
-          <el-col :lg="6" :md="12">
+          <el-col :lg="6" :md="12" :offset="3" :pull="3">
             <div class="ele-form-actions">
               <el-button
                 type="primary"

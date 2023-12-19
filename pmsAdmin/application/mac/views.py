@@ -24,7 +24,7 @@ import json
 
 from django.http import HttpResponse
 from django.shortcuts import render
-
+from application.shipmentreport.models import Shipment
 # Create your views here.
 
 from django.utils.decorators import method_decorator
@@ -141,13 +141,18 @@ def test(request):
         mac_id = f"{mac_hex[0:2]}:{mac_hex[2:4]}:{mac_hex[4:6]}:{mac_hex[6:8]}:{mac_hex[8:10]}:{mac_hex[10:12]}"
 
     work_order = request.GET.get('work_order')
-
+    try:
+        shipment = Shipment.objects.filter(work_order=work_order).first()
+        name = shipment.client_name
+        code = shipment.shape
+    except Shipment.DoesNotExist:
+        return HttpResponse('排期表单没有该数据')
 
     serial_id = request.GET.get('serial_id')
     mac_address = mac_id
 
     # 创建数据库对象
-    obj = mac(work_order=work_order,  serial_id=serial_id, mac_address=mac_address)
+    obj = mac(work_order=work_order, name=name,code=code, serial_id=serial_id, mac_address=mac_address)
     # 保存对象到数据库
     obj.save()
 
