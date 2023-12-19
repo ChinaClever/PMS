@@ -20,3 +20,9 @@ class ResultDataView(View):
     def get(self, request):
         data = services.ResultData(request)
         return  data
+
+@method_decorator(check_login, name='get')
+class RepairnumberDataView(View):
+    def get(self, request):
+        data = services.RepairnumberData(request)
+        return data

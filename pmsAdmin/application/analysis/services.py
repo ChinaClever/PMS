@@ -96,3 +96,33 @@ def ResultData(request):
             result.append(data)
     # 返回结果
     return R.ok(data=result)
+#维修总数量
+def RepairnumberData(request):
+    startTime = request.GET.get('startTime')
+    endTime = request.GET.get('endTime')
+    if startTime and endTime:
+        # sql = 'SELECT item_number,sum(examine_an_amount) AS total,sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 AND start_time >= ' + str(startTime) + ' AND end_time <= ' + str(endTime)+ " GROUP BY item_number" + " limit " + str(limit)
+        sql = ("SELECT id, name, sum(repair_number) AS num "
+               "FROM django_repairreport "
+               "WHERE is_delete = 0  AND repair_time >= %s AND repair_time <= %s "
+               "GROUP BY name ")
+        query = Dict.objects.raw(sql, [startTime, endTime])
+
+    else:
+        sql =("SELECT id, name, sum(repair_number) AS num "
+               "FROM django_repairreport "
+               "WHERE is_delete = 0  "
+               "GROUP BY name ")
+        query = Dict.objects.raw(sql)
+    # 实例化结果
+    result = []
+    # 遍历数据源
+    if len(query) > 0 :
+        for item in query:
+            data = {
+                'name': item.name, #产品名称
+                'value': item.num,  #维修总数量
+            }
+            result.append(data)
+    # 返回结果
+    return R.ok(data=result)

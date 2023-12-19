@@ -10,12 +10,12 @@
         @submit.native.prevent>
         <el-row :gutter="15">
           <el-col :lg="6" :md="12" :sm="24" >
-            <el-form-item label="工单号:">
+            <el-form-item label="单号:">
               <el-input
                 clearable
                 v-model="where.work_order"
                 @clear="this.reload"
-                placeholder="请输入工单号"/>
+                placeholder="请输入单号"/>
             </el-form-item>
           </el-col>
           <el-col :lg="6" :md="12" :sm="24"  >
@@ -173,7 +173,7 @@ export default {
 
         {
           prop: 'work_order',
-          label: '工单号',
+          label: '单号',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
