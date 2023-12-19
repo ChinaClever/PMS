@@ -257,8 +257,7 @@ export default {
         this.reasonloading = false;
         // console.log(res.data.data)
         this.getResultData = res.data.data;
-        // this.getResultData = this.getResultData.sort((a,b)=>a.value-b.value).slice(0,8)
-        // console.log(this.getResultData)
+        this.getResultData = this.getResultData.sort((a,b)=>b.value-a.value).slice(0,8)
       }
       }).catch(e => {
           this.reasonloading = true;
