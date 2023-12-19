@@ -24,24 +24,24 @@ def RepairData(request):
         startTime = startTime.replace("+", " ")
         endTime = endTime.replace("+", " ")
         # sql = 'SELECT item_number,sum(examine_an_amount) AS total,sum(examine_a_bad_amount) AS badtotal FROM django_inspectreport WHERE is_delete = 0 AND start_time >= ' + str(startTime) + ' AND end_time <= ' + str(endTime)+ " GROUP BY item_number" + " limit " + str(limit)
-        sql = ("SELECT t1.id, t1.name, sum(t1.repair_number) AS repair_total, sum(t2.examine_an_amount) AS total "
+        sql = ("SELECT t1.id, t1.name, sum(t1.repair_number) AS repair_total, sum(t2.product_count) AS total "
                "FROM django_repairreport AS t1 "
                "Join django_shipmentreport AS t2 ON t1.name = t2.product_name "
-               "WHERE t1.is_delete = 0 AND t2.is_delete=0 and t1.repair_time >= %s AND t1.repair_time <= %s t2.order_date >= %s AND t2.order_date <= %s "
+               "WHERE t1.is_delete = 0 AND t2.is_delete=0 and t1.repair_time >= %s AND t1.repair_time <= %s AND t2.order_date >= %s AND t2.order_date <= %s "
                "GROUP BY name ")
-        query = Dict.objects.raw(sql, [startTime, endTime])
+        query = Dict.objects.raw(sql, [startTime, endTime,startTime, endTime])
         # 设置分页
         paginator = Paginator(query, limit)
     else:
         endTime = datetime.now().date()
         startTime = endTime - timedelta(days=365)
 
-        sql = ("SELECT t1.id, t1.name, sum(t1.repair_number) AS repair_total, sum(t2.examine_an_amount) AS total "
+        sql = ("SELECT t1.id, t1.name, sum(t1.repair_number) AS repair_total, sum(t2.product_count) AS total "
                "FROM django_repairreport AS t1 "
                "Join django_shipmentreport AS t2 ON t1.name = t2.product_name "
-               "WHERE t1.is_delete = 0 and t2.is_delete = 0 and t1.repair_time >= %s AND t1.repair_time <= %s t2.order_date >= %s AND t2.order_date <= %s "
+               "WHERE t1.is_delete = 0 and t2.is_delete = 0 and t1.repair_time >= %s AND t1.repair_time <= %s AND t2.order_date >= %s AND t2.order_date <= %s "
                "GROUP BY name ")
-        query = Dict.objects.raw(sql,[startTime,endTime])
+        query = Dict.objects.raw(sql,[startTime,endTime,startTime, endTime])
         paginator = Paginator(query, limit)
 
     # 记录总数
@@ -95,6 +95,6 @@ def ResultData(request):
                 'value': item.num,  #数量
             }
             result.append(data)
-    #print(f"result{result}")
+
     # 返回结果
     return R.ok(data=result)

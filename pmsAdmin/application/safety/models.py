@@ -47,6 +47,7 @@ class safety(BaseModel):
     testTime = models.CharField(null=True, max_length=255, verbose_name="测试时间", help_text="测试时间")
 
 
+
     class Meta:
         # 数据表名
         db_table = TABLE_PREFIX + "safety"
