@@ -198,7 +198,7 @@ def ShipmentReportAdd(request):
         )
 
     product = Product.objects.filter(product_code=product_code, is_delete=False).first()
-    # 查询结果判断
+    # 查询结果判断 product表不存在该成品编码-产品对应关系则添加数据 存在该数据则修改原先对应关系（不改成品编码）
     if not product:
         Product.objects.create(
             product_code=product_code,
@@ -206,6 +206,13 @@ def ShipmentReportAdd(request):
             shape=shape,
             product_module=product_module,
         )
+    else:
+        product.product_name = product_name
+        product.shape = shape
+        product.product_module = product_module
+        product.update_user = uid(request)
+        product.update_time = datetime.now()
+        product.save()
 
     return R.ok(msg="创建成功")
 

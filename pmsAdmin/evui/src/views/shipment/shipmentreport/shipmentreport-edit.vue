@@ -292,6 +292,8 @@
         if (this.visible == false){
           this.fileList = [];
           this.deleteFileList = [];
+        }else{
+          this.loadAll();
         }
         
       }
