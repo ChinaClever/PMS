@@ -140,8 +140,6 @@ export default {
         status: 1,
         type : 1,
         name:'',
-        repair_time: new Date().toISOString(), // 当前日期
-
       }, this.data),
       // 表单验证规则
       rules: {
@@ -149,7 +147,7 @@ export default {
           {required: true, message: '请输入产品名称', trigger: 'blur'}
         ],
         work_order:[
-          {required: true, message: '请输入工单号', trigger: 'blur'}
+          {required: true, message: '请输入单号', trigger: 'blur'}
         ],
         bad_number:[
           {
@@ -208,12 +206,12 @@ export default {
     data() {
       if (this.data && this.data.id) {
         this.form = Object.assign({}, this.data);
-        this.isUpdate = true;
+        this.isUpdate = true;      
       } else {
-        this.form = {};
+        this.form = Object.assign({}, this.data);
         this.isUpdate = false;
       }
-    }
+    }   
   },
   computed: {
     ...mapGetters(["permission"])
@@ -325,7 +323,6 @@ export default {
     
     handleSelect(item) {
       this.$refs.form.validateField('name'); // 手动触发验证
-      console.log(item);
       this.bad_phenomenonlist = this.loadbad_phenomenonlist(item.value);
       this.analysislist = this.loadanalysislist(item.value);
       this.solutionlist = this.loadsolutionlist(item.value);
@@ -362,11 +359,10 @@ export default {
             this.loading = false;
             const shipmentData = res.data.data;
             if (res.data.code === 0 && res.data.data != null) {
-             this.form.name = shipmentData.product_name
+              this.form.name = shipmentData.product_name
               this.bad_phenomenonlist = this.loadbad_phenomenonlist(shipmentData.product_name);
               this.analysislist = this.loadanalysislist(shipmentData.product_name);
               this.solutionlist = this.loadsolutionlist(shipmentData.product_name);
-
             } 
           })
       },

@@ -10,12 +10,12 @@
           @submit.native.prevent>
           <el-row :gutter="10">
             <el-col :span="5">
-              <el-form-item label="工单号:">
+              <el-form-item label="单号:">
                 <el-input
                   clearable
                   v-model="where.work_order"
                   @clear="this.reload"
-                  placeholder="请输入工单号"/>
+                  placeholder="请输入单号"/>
               </el-form-item>
             </el-col>
             <el-col :span="5">
@@ -212,7 +212,7 @@
           },
           {
             prop: 'work_order',
-            label: '工单号',
+            label: '单号',
             width: 150,
             align: 'center',
             showOverflowTooltip: true,
@@ -401,8 +401,9 @@
       openEdit(row) {
         if (!row) {
           // 添加
-          this.current = row;
+          this.current = Object.assign({repair_time:new Date().toISOString()},null);
           this.showEdit = true;
+   
         } else {
           // 编辑
           this.loading = true;
