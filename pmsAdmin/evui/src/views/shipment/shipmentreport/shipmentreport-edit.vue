@@ -18,18 +18,18 @@
         <el-row :gutter="6">
         <el-col :span="12">
         <el-form-item
-          label="工单号:"
+          label="单号:"
           prop="work_order">
           <el-input
             v-model="form.work_order"
-            placeholder="请输入工单号"
+            placeholder="请输入单号"
             @keyup.enter.native="handleEnterKey"
             clearable>
             <el-tooltip slot="prefix" effect="dark" placement="top">
               <i class="el-icon-question"></i>
               <div slot="content">
                 智能填入步骤：<br>
-                1. 点击工单号输入框<br>
+                1. 点击单号输入框<br>
                 2. 输入法切换至英文大写<br>
                 3. 使用扫码枪扫码<br>
               </div>
@@ -219,7 +219,7 @@
         // 表单验证规则
         rules: {
           work_order: [
-          {required: true, message: '请输入工单号', trigger: 'blur'},
+          {required: true, message: '请输入单号', trigger: 'blur'},
           { validator: (rule, value, callback) => this.checkWorkOrderId(rule, value, callback), trigger: 'blur' }
         ],
         client_name: [
@@ -292,6 +292,8 @@
         if (this.visible == false){
           this.fileList = [];
           this.deleteFileList = [];
+        }else{
+          this.loadAll();
         }
         
       }

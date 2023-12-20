@@ -244,6 +244,7 @@ def WeldingUpdate(request):
     welding.work_hours = work_hours
     welding.instruction = instruction
     welding.remark = remark
+    welding.update_time = datetime.now()
     welding.update_user = uid(request)
     # 更新数据
     welding.save()
@@ -255,7 +256,7 @@ def WeldingUpdate(request):
 def WeldingDelete(welding_id):
     # 记录ID为空判断
     if not welding_id:
-        return R.failed("记录ID不存在")
+        return R.failed("ID不存在")
     # 分裂字符串
     list = welding_id.split(',')
     # 计数器

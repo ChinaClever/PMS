@@ -204,8 +204,9 @@ export default {
       }
       else {
         this.startDate = this.formatDate(new Date(this.makeUpModel));
-        this.endDate = this.formatDate(new Date(this.makeUpModel));
+        this.endDate = new Date(this.makeUpModel);
         this.endDate.setMonth(this.endDate.getMonth()+1)
+        this.endDate = this.formatDate(this.endDate)
       }
       this.$http.get('/analysis/RepairData', {
         params:{
@@ -231,11 +232,12 @@ export default {
         this.endDate = this.formatDate(new Date(year, 11, 31));
       }
       else {
-        this.startDate = this.formatDate(new Date(this.numberModel));
-        this.endDate = this.formatDate(new Date(this.numberModel));
+        this.startDate = this.formatDate(new Date(this.makeUpModel));
+        this.endDate = new Date(this.makeUpModel);
         this.endDate.setMonth(this.endDate.getMonth()+1)
+        this.endDate = this.formatDate(this.endDate)
       }
-      this.$http.get('/analysis/RepairData', {
+      this.$http.get('/analysis/RepairnumberData', {
         params:{
                   startTime:this.startDate,
                   endTime:this.endDate
@@ -257,8 +259,7 @@ export default {
         this.reasonloading = false;
         // console.log(res.data.data)
         this.getResultData = res.data.data;
-        // this.getResultData = this.getResultData.sort((a,b)=>a.value-b.value).slice(0,8)
-        // console.log(this.getResultData)
+        this.getResultData = this.getResultData.sort((a,b)=>b.value-a.value).slice(0,8)
       }
       }).catch(e => {
           this.reasonloading = true;

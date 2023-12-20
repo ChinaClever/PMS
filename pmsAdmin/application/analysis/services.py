@@ -56,14 +56,13 @@ def RepairData(request):
             item.rate = item.repair_total/item.total
             item.rate = round(item.rate,2)
             data = {
-                'product_name': item.name,  #客户名
-                'repair_total': item.repair_total,  #维修总数
-                'total': item.total,  #产品总数量
-                'rate': item.rate,   #百分比
+                'name': item.name,  #客户名
+                # 'repair_total': item.repair_total,  #维修总数
+                # 'total': item.total,  #产品总数量
+                'value': item.rate,   #百分比
             }
             result.append(data)
     # 返回结果
-    print(f"{result}")
     return R.ok(data=result, count=count)
 
 

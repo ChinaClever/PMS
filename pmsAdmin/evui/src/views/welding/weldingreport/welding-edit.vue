@@ -15,7 +15,7 @@
         <el-row :gutter="6">
         <el-col :span="12">
         <el-form-item
-          label="工单号:"
+          label="单号:"
           prop="work_order">
             <el-autocomplete
             v-model="form.work_order"
@@ -23,7 +23,7 @@
             @select="handleSelect"
             @clear="handleClear"
             @keyup.enter.native="handleEnterKey"
-            placeholder="请输入工单号"
+            placeholder="请输入单号"
             clearable
             style="width: 277px;"
           ></el-autocomplete>  
@@ -34,7 +34,6 @@
           label="客户名称:"
           prop="client_name">
           <el-input
-            :maxlength="20"
             v-model="form.client_name"
             placeholder="请输入客户名称"
             clearable/>
@@ -47,7 +46,6 @@
           label="产品名称:"
           prop="product_name">
           <el-input
-            :maxlength="20"
             v-model="form.product_name"
             placeholder="请输入产品名称"
             clearable/>
@@ -68,7 +66,6 @@
           label="规格型号:"
           prop="shape">
           <el-input
-            :maxlength="20"
             v-model="form.shape"
             placeholder="请输入规格型号"
             clearable/>
@@ -134,7 +131,7 @@
               :rows="3"
               clearable
               type="textarea"
-              :maxlength="200"
+              :maxlength="400"
               v-model="form.instruction"
               placeholder="请输入具体说明"/>
           </el-form-item>
@@ -144,7 +141,7 @@
               clearable
               :rows="3"
               type="textarea"
-              :maxlength="200"
+              :maxlength="400"
               v-model="form.remark"
               placeholder="请输入备注"/>
           </el-form-item>
@@ -176,11 +173,11 @@
         state: '',
         timeout:  null,
         // 表单数据
-        form: Object.assign({status: 1}, this.data),
+        form: Object.assign({}, this.data),
         // 表单验证规则
         rules: {
           work_order: [
-          {required: true, message: '请输入工单号', trigger: 'blur'}
+          {required: true, message: '请输入单号', trigger: 'blur'}
         ],
           order_time: [
           {required: true, message: '请输入下单时间', trigger: 'blur'}
@@ -281,7 +278,7 @@
             } 
           })
       },
-      // 异步查询产品名称
+      // 异步查询单号
       querySearchAsync(queryString, cb) {
         var work_orders = this.work_orders;
         var filteredResults = queryString ? work_orders.filter(this.createStateFilter(queryString)) : work_orders;
@@ -295,14 +292,14 @@
 
       createStateFilter(queryString) {
         return (state) => {
-          return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+          return (state.value.toLowerCase().includes(queryString.toLowerCase()));
         };
       },
 
       handleSelect(item) {
         this.form.work_order = item.value
         this.$refs.form.validateField('work_order', () => {});
-        // 根据选择的工单号查其他数据自动填入
+        // 根据选择的单号查其他数据自动填入
         this.$http.get('/shipmentreport/detail/' + item.value).then((res) => {
             this.loading = false;
             const shipmentData = res.data.data;
@@ -330,7 +327,7 @@
       handleEnterKey(event){
       this.form.work_order = event.target.value.split("+")[0];
       this.$refs.form.validateField('work_order', () => {});
-      // 根据选择的工单号查其他数据自动填入
+      // 根据选择的单号查其他数据自动填入
       this.$http.get('/shipmentreport/detail/' + event.target.value.split("+")[0]).then((res) => {
         this.loading = false;
         const shipmentData = res.data.data;
