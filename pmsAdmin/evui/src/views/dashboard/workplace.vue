@@ -782,7 +782,13 @@ export default {
     onFinishedSaleTypeChange() {
       this.getAllFinishedData();
     },
+
   },
+  activated() {
+  ['saleChart', ].forEach((name) => {
+    this.$refs[name].resize();
+  });
+  }
 }
 </script>
 

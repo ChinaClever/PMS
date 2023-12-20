@@ -80,6 +80,9 @@ def DetailAll(request):
             if startDate == None:
                 startDate = 'None'
 
+            endDate = shipmentReport.finish_date.strftime("%Y-%m-%d")
+            if endDate == None:
+                endDate = 'None'
 
             Alldata = {
                 'work_order_id': workId,
@@ -87,7 +90,7 @@ def DetailAll(request):
                 'model': shipmentReport.shape,
                 'deliveryDate': deliveryDate,
                 'startDate': startDate,
-                'endDate': shipmentReport.finish_date,
+                'endDate': endDate,
                 'product_count':shipmentReport.product_count,
 
                 'inspect_quantity':inspectReport, #质检数量

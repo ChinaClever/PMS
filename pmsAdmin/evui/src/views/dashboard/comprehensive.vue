@@ -1,21 +1,6 @@
 <template>
   <div class="ele-body">
     <el-card shadow="never">
-      <!-- 数据表格 -->
-<!--      <el-table ref="table" :data="Data"  v-loading="loading" row-key="id" default-expand-all border-->
-<!--                height="calc(50vh - 100px)" highlight-current-row >-->
-<!--        <el-table-column label="序号" type="index" width="60" align="center" fixed="left"/>-->
-<!--        <el-table-column prop="work_order" label="工单号" min-width="150" align="center"/>-->
-<!--        <el-table-column prop="customer_name" label="客户名称" min-width="150" align="center"/>-->
-<!--        <el-table-column prop="specification_model" label="规格型号" min-width="150" align="center"/>-->
-<!--        <el-table-column prop="delivery_time" label="交期" min-width="150" align="center"/>-->
-<!--        <el-table-column prop="start_date" label="开始日期" min-width="150" align="center"/>-->
-<!--        <el-table-column prop="burn_date" label="烧录数量" min-width="100" align="center"/>-->
-<!--        <el-table-column prop="debug_quantity" label="调试数量" min-width="100" align="center"/>-->
-<!--        <el-table-column prop="quality_quantity" label="质检数量" min-width="100" align="center"/>-->
-<!--        <el-table-column prop="maintenance_quantity" label="维修数量" min-width="100" align="center"/>-->
-<!--        <el-table-column prop="end_date" label="完成日期" min-width="160" align="center"/>-->
-<!--      </el-table>-->
       <ele-pro-table
               ref="table"
               :datasource="url"
@@ -107,7 +92,6 @@ export default {
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
-
           },
           {
             prop: 'startDate',
@@ -115,7 +99,6 @@ export default {
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
-
           },
           {
             prop: 'burning_quantity',
@@ -151,6 +134,7 @@ export default {
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
+
           },
 
         ],
@@ -185,10 +169,15 @@ export default {
         })
     }
 
+  },
+  activated() {
+  ['saleChart', ].forEach((name) => {
+    this.$refs[name].resize();
+  });
   }
 }
 
 </script>
 
-<style scoped>
+<style>
 </style>
