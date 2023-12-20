@@ -27,6 +27,17 @@
                   placeholder="请输入产品名称"/>
               </el-form-item>
             </el-col>
+            <el-col :lg="6" :md="12" >
+              <div class="ele-form-actions">
+                <el-button
+                  type="primary"
+                  icon="el-icon-search"
+                  class="ele-btn-icon"
+                  @click="reload">查询
+                </el-button>
+                <el-button @click="reset">重置</el-button>
+              </div>
+            </el-col>
           </el-row>
           <el-row :gutter="10">
             <el-col :lg="6" :md="12">
@@ -45,17 +56,6 @@
                 @change="dateRangeHandleSelect">
               </el-date-picker>
               </el-form-item>
-            </el-col>
-            <el-col :lg="6" :md="12" :offset="5">
-              <div class="ele-form-actions">
-                <el-button
-                  type="primary"
-                  icon="el-icon-search"
-                  class="ele-btn-icon"
-                  @click="reload">查询
-                </el-button>
-                <el-button @click="reset">重置</el-button>
-              </div>
             </el-col>
           </el-row>
         </el-form>
@@ -401,7 +401,7 @@
       openEdit(row) {
         if (!row) {
           // 添加
-          this.current = Object.assign({repair_time:new Date().toISOString()},null);
+          this.current = null;
           this.showEdit = true;
    
         } else {
