@@ -3,7 +3,6 @@
 <!--      模块数据-->
     <el-card>
       <!-- 顶部统计卡片 -->
-
       <el-row :gutter="15">
         <div class="ele-text-left">
           <el-tag type="info" size="medium">模块数据</el-tag>
@@ -550,17 +549,7 @@ export default {
     this.getToolUseTime();
   },
   methods: {
-    //转换为中文的时间
-    convertoChineseDate(date) {
-      if (date != null) {
-        return date.toLocaleString('zh-CN', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        });
-      }
-    },
-      //转换时间成数据库内的格式
+    //转换时间成数据库内的格式
     formatDate(date) {
       if (date != null){
         return date.toLocaleString('zh-CN',{

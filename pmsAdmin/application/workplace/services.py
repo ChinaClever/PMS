@@ -240,7 +240,7 @@ def AllModelsData(request):
                                                      product_module='2',
                                                      product_name=productName,
                                                      end_time__range=(start_date, end_date)
-                                                              ).aggregate(total_quantity_Inspect=Sum('examine_an_amount'))['total_quantity_Inspect']
+                                                     ).aggregate(total_quantity_Inspect=Sum('examine_an_amount'))['total_quantity_Inspect']
 
         if total_quantity_Inspect == None:
             total_quantity_Inspect = 0

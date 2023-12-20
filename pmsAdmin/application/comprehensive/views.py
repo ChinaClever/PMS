@@ -18,5 +18,5 @@ class DetailAllView(View):
 @method_decorator(check_login, name='get')
 class getShipmentDataView(View):
     def get(self, request):
-        data = services.getShipmentData()
+        data = services.getShipmentData(request)
         return  data
