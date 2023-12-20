@@ -333,6 +333,7 @@
       cellStyle = 'color:white;background-color:#192a56';
       return cellStyle;
     },
+    //改变表头颜色
     headerCellStyle() {
       return {
         backgroundColor: '#192a56',
@@ -398,9 +399,9 @@
 }
 /*这个选择器用于将单元格内部的 div 元素的背景颜色设置为透明，并使用 !important 修饰符强制应用样式。 */
  
-::v-deep .el-table__row {
-  background-color: #192a56 !important;
-}
+/* ::v-deep .el-table__row {
+  background-color: transparent !important;
+} */
 /*这个选择器用于将整个表格的背景颜色设置为透明，并使用 !important 修饰符强制应用样式。 */
 /* 去除底部白线 */
  /* .el-table::before{
