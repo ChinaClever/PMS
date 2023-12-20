@@ -174,6 +174,25 @@
           placeholder="请输入用户使用手册和协议公盘位置"
           clearable/>
       </el-form-item>
+      <el-form-item label="附件:" prop="attachment">
+            <el-upload
+              class="upload-demo"
+              ref="upload"
+              :auto-upload="false"
+              :file-list="fileList"
+              :on-change="onChange"
+              :on-remove="onRemove"
+              :on-exceed="handleExceed"
+              :limit="5"
+              action=""
+              multiple
+              drag>
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+              <div class="el-upload__tip" slot="tip">支持多文件上传,最多5个,单个文件大小不能超过100MB</div>
+            </el-upload>
+          </el-form-item>
+
     </el-form>
     <div slot="footer">
       <el-button @click="updateVisible(false)">取消</el-button>

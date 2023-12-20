@@ -15,7 +15,7 @@
                 clearable
                 v-model="where.keyword"
                 @clear="reload"
-                placeholder="请输入客户名称或工单号"/>
+                placeholder="请输入客户名称或单号"/>
             </el-form-item>
           </el-col>
 
@@ -185,7 +185,7 @@ export default {
         },
         {
           prop: 'work_order',
-          label: '工单号',
+          label: '单号',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
