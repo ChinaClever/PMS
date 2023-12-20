@@ -134,6 +134,7 @@ INSTALLED_APPS = [
     'application.comprehensive',
     'application.safety',
     'application.analysis',
+    'application.product_handover',
 
 
 

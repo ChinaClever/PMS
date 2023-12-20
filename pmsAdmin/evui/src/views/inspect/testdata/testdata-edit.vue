@@ -12,10 +12,10 @@
       :model="form"
       :rules="rules"
       label-width="120px">
-      <el-form-item label="工单号:" prop="work_order">
+      <el-form-item label="单号:" prop="work_order">
         <el-input
           v-model="form.work_order"
-          placeholder="工单号"
+          placeholder="单号"
           clearable/>
       </el-form-item>
       <el-form-item
