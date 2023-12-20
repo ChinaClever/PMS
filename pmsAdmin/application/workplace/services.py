@@ -6,8 +6,6 @@ from application.testdata.models import Testdata    #质检数据
 from django.db.models import Sum
 from datetime import timedelta, datetime
 
-from utils import R, regular
-
 #查询生产总数量（模块和成品）--出货统计-出货报表
 def ShipmentAll():
     total_time = timedelta()
@@ -69,6 +67,8 @@ def AllPass():
     ModelAllInspectTime = round(ModelAllInspectTime/24, 1)
     ModelTotalAllPass = ModelAllInspectQuantity / ModelAllInspectTime if ModelAllInspectTime > 0 else 0
     ModelTotalAllPass = round(ModelTotalAllPass, 1)
+    if ModelTotalAllPass > 100:
+        ModelTotalAllPass = 100
 
 #2.模块的半成品合格率计算    使用调试表格内的数据
     # 调试模块数量总计
@@ -87,6 +87,8 @@ def AllPass():
     ModelAllDebugTime = round(ModelAllDebugTime/24, 1)
     ModelTotalHalfPass = ModelAllDebugQuantity / ModelAllDebugTime if ModelAllDebugTime > 0 else 0
     ModelTotalHalfPass = round(ModelTotalHalfPass, 1)
+    if ModelTotalHalfPass > 100:
+        ModelTotalHalfPass = 100
 
 #3.成品的成品合格率计算  使用质检表格内的数据
     #质检成品数量总计
@@ -102,16 +104,12 @@ def AllPass():
     if FinishedAllInspectTime == None:
         FinishedAllInspectTime = 0
 
-    #质检所有时间
-    # FinishedAllInspectTime = 0
-    # for inspect in FinishedInspectData:
-    #     InspectDuration = inspect.end_time - inspect.start_time
-    #     FinishedAllInspectTime += InspectDuration.days
-
     #计算成品的成品合格率
     FinishedAllInspectTime = round(FinishedAllInspectTime/24, 1)
     FinishedTotalAllPass = FinishedAllInspectQuantity / FinishedAllInspectTime if FinishedAllInspectTime > 0 else 0
     FinishedTotalAllPass = round(FinishedTotalAllPass, 1)
+    if FinishedTotalAllPass>100:
+        FinishedTotalAllPass=100
 
 #4.成品的半成品合格率计算 使用调试表格内的数据
     # 调试成品数量总计
@@ -130,6 +128,9 @@ def AllPass():
     FinishedAllDebugTime = round(FinishedAllDebugTime/24, 1)
     FinishedTotalHalfPass = FinishedAllDebugQuantity / FinishedAllDebugTime if FinishedAllDebugTime > 0 else 0
     FinishedTotalHalfPass = round(FinishedTotalHalfPass, 1)
+    if FinishedTotalHalfPass > 100:
+        FinishedTotalHalfPass = 100
+
 
     data = {
         'ModelTotalAllPass':ModelTotalAllPass,          #模块的成品合格率
