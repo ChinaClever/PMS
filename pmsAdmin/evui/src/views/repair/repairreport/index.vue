@@ -186,12 +186,11 @@
   import RepairreportEdit from './repairreport-edit';
   import XLSX from 'xlsx'
   import { saveAs } from 'file-saver';
-  import DictData from "@/views/data/dictionary/dict-data.vue";
 
 
   export default {
     name: 'repairreport',
-    components: {DictData, RepairreportEdit},
+    components: {RepairreportEdit},
     computed: {
       ...mapGetters(["permission"]),
     },
