@@ -5,11 +5,10 @@
           ref="table"
           :datasource="url"
           :columns="columns"
-          :row-style="getRowsStyle"
           border class="custom-table"
           :cell-style="cellStyle"
           :header-cell-style="headerCellStyle"
-          height="calc(60vh - 215px)">
+          height="calc(110vh - 215px)">
       </ele-pro-table>
     </el-card>
     <el-card class="custom-table" body-style="padding: 0;" align="center">
@@ -158,15 +157,27 @@ export default {
       WarningData:[],
       //状态
       status:null,
+      inspect_duration_days:[],
+      deliveryDateday:[],
 
     };
   },
   mounted() {
     this.getAllData();
     this.getWarningData();
-    this.getDaysStyle();
   },
   methods: {
+        //转换时间成数据库内的格式
+    formatDate(date) {
+      if (date != null){
+        return date.toLocaleString('zh-CN',{
+          year:'numeric',
+          month:'2-digit',
+          day:'2-digit',
+          hour12:false
+      }).replace(/\//g, '-');
+      }
+    },
     getAllData(){
       this.loading = true;
       this.DeliveryData = [];
@@ -189,6 +200,27 @@ export default {
       this.$http.get('/comprehensive/DetailAll').then(res => {
         if (res.data.code === 0) {
           this.WarningData = res.data.data;
+          // const nowDate = new Date();
+          // const nowDate1 = new Date(nowDate.getFullYear(), nowDate.getMonth(), 0)
+          // console.log("现在的时间："+nowDate1)
+          // //交货日期
+          // this.deliveryDateday = this.WarningData.map(d => d.deliveryDate)
+          // console.log(this.deliveryDateday)
+          // //质检所需天数
+          // this.inspect_duration_days = this.WarningData.map(d => d.inspect_duration_days)
+          // console.log("质检所需天数"+this.inspect_duration_days)
+          //
+          // this.inspect_duration_days.forEach((daysToAdd, index) => {
+          //   const futureDate = new Date(nowDate1 + daysToAdd*24*60*60*1000);
+          //   const date2 = this.deliveryDate[index]
+          //   if(futureDate >= date2){
+          //     console.log("现在日期+天数>=交货日期")
+          //   }
+          //   else {
+          //     console.log("现在日期+天数<交货日期")
+          //   }
+          // });
+
           } else {
             this.$message.error(res.data.msg || '获取工单号对应的数据失败');
           }
@@ -197,43 +229,44 @@ export default {
         })
     },
     // //改变表格某一列或者某一个单元格文本颜色
-    // cellStyle({row, column}) {
-    //
-    //   const dataAndDays = [
-    //     {days:this.WarningData.inspect_duration_days},//质检所需天数
-    //     {days:this.WarningData.debug_duration_days},//调试所需天数
-    //     {days:this.WarningData.burning_duration_days},//烧录所需天数
-    //     {days:this.WarningData.repair_duration_days},//维修所需天数
-    //   ]
-    //   dataAndDays.forEach(item=>{
-    //     const dueDate = new Date();
-    //     dueDate.setDate(dueDate.getDate()+ item.days)
-    //     if(dueDate >= this.WarningData.deliveryDate){  //现在的时间加上排期表单上所需要的时间大于交货的日期，说明时间不够了
-    //       this.status = 1;
-    //     }
-    //     else {
-    //       this.status = 0;
-    //     }
-    //     // 定义样式变量
-    //     let cellStyle;
-    //     switch (this.status){
-    //       case 0:
-    //         cellStyle = 'color:#70DB92;background-color:#192a56';
-    //         break;
-    //
-    //       case 1:
-    //         cellStyle = 'color:red;background-color:#192a56';
-    //         break;
-    //
-    //       default:
-    //         cellStyle = '';
-    //     }
-    //   })
-    //
-    //
-    //
-    //   return cellStyle;
-    // },
+    cellStyle({column}) {
+      // const dataAndDays = [
+      //   {days:this.WarningData.inspect_duration_days},//质检所需天数
+      //   // {days:this.WarningData.debug_duration_days},//调试所需天数
+      //   // {days:this.WarningData.burning_duration_days},//烧录所需天数
+      //   // {days:this.WarningData.repair_duration_days},//维修所需天数
+      // ]
+      // 定义样式变量
+      let cellStyle;
+
+      // console.log(this.WarningData.inspect_duration_days)
+      // console.log(this.WarningData.deliveryDate)
+      // dueDate.setDate(dueDate.getDate()+ dataAndDays.days)
+
+      // if(dueDate <= this.WarningData.deliveryDate){  //现在的时间加上排期表单上所需要的时间大于交货的日期，说明时间不够了
+        this.status = 1;
+      // }
+      // else {
+      //   this.status = 0;
+      // }
+
+      switch (this.status){
+        case 0:
+          cellStyle = 'color:#70DB92;background-color:#192a56';
+          break;
+
+        case 1:
+          cellStyle = 'color:red;background-color:#192a56';
+          break;
+
+        default:
+          cellStyle = '';
+      }
+      if(column.label === '质检数量'){
+        return cellStyle;
+      }
+
+    },
     headerCellStyle() {
       return {
         backgroundColor: '#192a56',

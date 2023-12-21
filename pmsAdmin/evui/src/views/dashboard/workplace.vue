@@ -559,7 +559,6 @@ export default {
           hour12:false
       }).replace(/\//g, '-');
       }
-
     },
     changeTime() {
       if(this.ModelsaleSearch.datetime == null)
