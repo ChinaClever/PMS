@@ -136,8 +136,6 @@ INSTALLED_APPS = [
     'application.analysis',
     'application.product_handover',
 
-
-
 ]
 
 MIDDLEWARE = [

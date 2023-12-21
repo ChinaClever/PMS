@@ -39,6 +39,5 @@ urlpatterns = [
     path('delete/<str:mac_id>', views.MacDeleteView.as_view()),
     # 测试请求
     path('test',views.test),
-    # 一建生成
-    path('make', views.make),
+
 ]

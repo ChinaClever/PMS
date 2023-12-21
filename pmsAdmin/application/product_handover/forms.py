@@ -27,6 +27,14 @@ from application.product_handover import models
 
 
 class Product_handoverForm(forms.ModelForm):
+    # 日期
+    time = forms.DateTimeField(
+        # max_length=18,
+        error_messages={
+            'required': '订单日期不能为空',
+            'max_length': '订单日期长度不得超过18个字符'
+        }
+    )
     # 客户名称
     work_order = forms.CharField(
         required=True,
@@ -53,64 +61,12 @@ class Product_handoverForm(forms.ModelForm):
             'max_length': '规格型号长度不得超过255个字符'
         }
     )
-    # 版本号
-    version = forms.CharField(
+    code = forms.CharField(
         required=True,
         max_length=255,
         error_messages={
-            'required': '版本号不能为空',
-            'max_length': '版本号长度不得超过255个字符'
-        }
-    )
-    # 程序要求
-    require = forms.CharField(
-        required=True,
-        max_length=255,
-        error_messages={
-            'required': '程序要求不能为空',
-            'max_length': '程序要求不得超过255个字符'
-        }
-    )
-    # 订单日期
-    order_time = forms.DateTimeField(
-        # max_length=18,
-        error_messages={
-            'required': '订单日期不能为空',
-            'max_length': '订单日期长度不得超过18个字符'
-        }
-    )
-    # 交货日期
-    delivery_time = forms.DateTimeField(
-        # max_length=18,
-        error_messages={
-            'required': '交货日期不能为空',
-            'max_length': '交货日期长度不得超过18个字符'
-        }
-    )
-
-    #  数量
-    quantity= forms.IntegerField(
-        required=True,
-        error_messages={
-            'required': '数量不能为空',
-        }
-    )
-    print(type(quantity))
-    # 备注
-    remark = forms.CharField(
-        required=False,
-        max_length=255,
-        error_messages={
-            'max_length': '备注长度不得超过255个字符'
-        }
-    )
-    # rcerder
-    rcerder = forms.CharField(
-        required=True,
-        max_length=255,
-        error_messages={
-            'required': '备注不能为空',
-            'max_length': '备注长度不得超过255个字符'
+            'required': '规格型号不能为空',
+            'max_length': '规格型号长度不得超过255个字符'
         }
     )
 
@@ -118,5 +74,5 @@ class Product_handoverForm(forms.ModelForm):
         # 绑定模型
         model = models.product_handover
         # 指定部分字段验证
-        fields = ['work_order','name', 'code', 'version', 'require', 'order_time', 'delivery_time', 'quantity', 'remark', 'rcerder',
+        fields = ['work_order','name', 'code',
                   ]

@@ -164,36 +164,3 @@ def test(request):
     mac_suffix += 1
     return HttpResponse(json.dumps(response_data))
 #http://localhost:8000/mac/test?work_order=12345&serial_id=12345
-
-def make(request):
-    for i in range(50):
-        global mac_suffix  # 声明为全局变量
-        objs = mac.objects.all()
-        if objs:
-            last_row = mac.objects.filter(is_delete=0).latest('id')
-            original_mac = last_row.mac_address
-            # 将原始 MAC 地址转换为十进制整数，并增加1
-            new_mac_int = (int(original_mac.replace(':', ''), 16) + 1) % (256 ** 6)
-            # 将新的值转换为十六进制字符串，并保持12位长度
-            new_mac_str = hex(new_mac_int)[2:].zfill(12)
-            # 在每两位字符之间加上冒号并生成新的 MAC 地址
-            new_mac = ':'.join([new_mac_str[i:i + 2] for i in range(0, len(new_mac_str), 2)])
-            # 连接每个部分并生成新的 MAC 地址
-            mac_id = new_mac
-        else:
-            # 将 MAC 地址后缀转换为十六进制字符串
-            mac_hex = hex(mac_suffix)[2:].zfill(12)
-            # 拼接 MAC 地址
-            mac_id = f"{mac_hex[0:2]}:{mac_hex[2:4]}:{mac_hex[4:6]}:{mac_hex[6:8]}:{mac_hex[8:10]}:{mac_hex[10:12]}"
-
-        mac_address = mac_id
-
-        # 创建数据库对象
-        obj = mac(mac_address=mac_address)
-        # 保存对象到数据库
-        obj.save()
-
-        response_data = {'mac_address': mac_address}
-        # 增加 MAC 地址后缀
-        mac_suffix += 1
-    return redirect('/mac/list?page=1&limit=10')

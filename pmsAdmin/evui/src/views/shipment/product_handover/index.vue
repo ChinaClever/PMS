@@ -26,8 +26,8 @@
                 align="right"
                 unlink-panels
                 range-separator="至"
-                start-placeholder="订单日期开始日期"
-                end-placeholder="订单日期结束日期"
+                start-placeholder="日期开始日期"
+                end-placeholder="日期结束日期"
                 format="yyyy 年 MM 月 dd 日"
                 value-format="yyyy-MM-dd"
                 @clear="reload"
@@ -65,7 +65,7 @@
             icon="el-icon-plus"
             class="ele-btn-icon"
             @click="openEdit(null)"
-            v-if="permission.includes('sys:burningreport:add')">添加
+            v-if="permission.includes('sys:product_handover:add')">添加
           </el-button>
           <el-button
             size="small"
@@ -73,7 +73,7 @@
             icon="el-icon-delete"
             class="ele-btn-icon"
             @click="removeBatch"
-            v-if="permission.includes('sys:burningreport:dall')">删除
+            v-if="permission.includes('sys:product_handover:dall')">删除
           </el-button>
 
           <!-- 导出按钮 -->
@@ -98,7 +98,7 @@
             icon="el-icon-download"
             class="ele-btn-icon"
             @click="exportExcel"
-            v-if="permission.includes('sys:burning:export')">导出
+            v-if="permission.includes('sys:product_handover:export')">导出
           </el-button> -->
         </template>
         <!-- 操作列 -->
@@ -108,7 +108,7 @@
             :underline="false"
             icon="el-icon-edit"
             @click="openEdit(row)"
-            v-if="permission.includes('sys:burningreport:update')">修改
+            v-if="permission.includes('sys:product_handover:update')">修改
           </el-link>
           <el-popconfirm
             class="ele-action"
@@ -119,7 +119,7 @@
               slot="reference"
               :underline="false"
               icon="el-icon-delete"
-              v-if="permission.includes('sys:burningreport:delete')">删除
+              v-if="permission.includes('sys:product_handover:delete')">删除
 
             </el-link>
           </el-popconfirm>
@@ -135,7 +135,7 @@
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
-    <burning-edit
+    <Product_handoverEdit
       :data="current"
       :visible.sync="showEdit"
       @done="reload"/>
@@ -145,20 +145,20 @@
 
 <script>
 import { mapGetters } from "vuex";
-import BurningEdit from './burning-edit';
+import Product_handoverEdit from './product_handover-edit';
 import XLSX from 'xlsx'
 import { saveAs } from 'file-saver';
 
 export default {
-  name: 'SystemBurning',
-  components: {BurningEdit},
+  name: 'SystemProduct_handover',
+  components: {Product_handoverEdit},
   computed: {
     ...mapGetters(["permission"]),
   },
   data() {
     return {
       // 表格数据接口
-      url: '/burningreport/list',
+      url: '/product_handover/list',
       // 表格列配置
       columns: [
         {
@@ -175,6 +175,20 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           fixed: "left"
+        },
+        {
+          prop: 'time',
+          label: '日期',
+          sortable:'custom',
+          order:'',
+          sortableMethod:()=>{
+            //排序逻辑
+            this.where.order = this.order
+            this.reload();
+          },
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
         },
         {
           prop: 'work_order',
@@ -198,36 +212,15 @@ export default {
           align: 'center',
         },
         {
-          prop: 'version',
-          label: '版本号',
-          showOverflowTooltip: true,
-          minWidth: 200,
-          align: 'center',
-        },
-        {
-          prop: 'require',
-          label: '程序需求',
-          showOverflowTooltip: true,
-          minWidth: 200,
-          align: 'center',
-        },
-        {
-          prop: 'order_time',
-          label: '订单日期',
-          sortable:'custom',
-          order:'',
-          sortableMethod:()=>{
-            //排序逻辑
-            this.where.order = this.order
-            this.reload();
-          },
+          prop: 'remark',
+          label: '安数',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
         },
         {
           prop: 'delivery_time',
-          label: '交货日期',
+          label: '交期',
           sortable:'custom',
           order:'',
           sortableMethod:()=>{
@@ -235,13 +228,6 @@ export default {
             this.where.order = this.order
             this.reload();
           },
-          showOverflowTooltip: true,
-          minWidth: 200,
-          align: 'center',
-        },
-        {
-          prop: 'remark',
-          label: '备注',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
@@ -254,8 +240,15 @@ export default {
           align: 'center',
         },
         {
-          prop: 'rcerder',
-          label: 'rcerder',
+          prop: 'control_version',
+          label: '主控板版本号',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'execute_version',
+          label: '执行板版本号',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
@@ -366,7 +359,7 @@ export default {
       } else {
         // 编辑
         this.loading = true;
-        this.$http.get('/burningreport/detail/' + row.id).then((res) => {
+        this.$http.get('/product_handover/detail/' + row.id).then((res) => {
           this.loading = false;
           if (res.data.code === 0) {
             this.current = Object.assign({}, res.data.data);
@@ -383,7 +376,7 @@ export default {
     /* 删除 */
     remove(row) {
       const loading = this.$loading({lock: true});
-      this.$http.delete('/burningreport/delete/' + row.id).then(res => {
+      this.$http.delete('/product_handover/delete/' + row.id).then(res => {
         loading.close();
         if (res.data.code === 0) {
           this.$message.success(res.data.msg);
@@ -406,7 +399,7 @@ export default {
         type: 'warning'
       }).then(() => {
         const loading = this.$loading({lock: true});
-        this.$http.delete('/burningreport/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
+        this.$http.delete('/product_handover/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -424,7 +417,7 @@ export default {
     /* 更改状态 */
     editStatus(row) {
       const loading = this.$loading({lock: true});
-      this.$http.put('/burningreport/status', {id: row.id, status: row.status}).then(res => {
+      this.$http.put('/product_handover/status', {id: row.id, status: row.status}).then(res => {
         loading.close();
         if (res.data.code === 0) {
           this.$message.success(res.data.msg);
@@ -498,7 +491,7 @@ export default {
       const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
       const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
       // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
-      const fileName = '烧录报表.xlsx';
+      const fileName = '成品交接报表.xlsx';
       
       const currentDate = new Date();
       const year = currentDate.getFullYear();

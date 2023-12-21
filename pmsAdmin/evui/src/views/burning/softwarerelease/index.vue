@@ -275,7 +275,7 @@ export default {
           prop: 'User_Manual_position',
           label: '用户使用手册和协议公盘位置',
           showOverflowTooltip: true,
-          minWidth: 200,
+          minWidth: 220,
           align: 'center',
         },
         {
