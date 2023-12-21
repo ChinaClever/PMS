@@ -119,6 +119,8 @@ urlpatterns = ([
     path('mac/', include('application.mac.urls')),
     # 安规测试
     path('safety/', include('application.safety.urls')),
+    # 成品交接表
+    path('product_handover/', include('application.product_handover.urls')),
     #工作台
     path('workplace/', include('application.workplace.urls')),
     #综合看版

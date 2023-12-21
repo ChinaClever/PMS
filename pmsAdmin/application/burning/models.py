@@ -45,13 +45,20 @@ class burning(BaseModel):
     order_time = models.DateTimeField(null=False, max_length=18, verbose_name="订单日期", help_text="订单日期")
     # 交货日期
     delivery_time = models.DateTimeField(null=True, max_length=18, verbose_name="交货日期", help_text="交货日期")
-    # 数量
-    quantity = models.IntegerField(null=True, verbose_name="数量", help_text="数量")
+    # 订单数量
+    quantity = models.IntegerField(null=True, verbose_name="订单数量", help_text="订单数量")
     # 备注
     remark = models.CharField(null=True, max_length=255, verbose_name="备注", help_text="备注")
     # rcerder
     rcerder = models.CharField(null=True, max_length=255, verbose_name="rcerder", help_text="rcerder")
-
+    # 烧录数量
+    burning_quantity = models.CharField(null=True, max_length=255, verbose_name="烧录数量", help_text="烧录数量")
+    # 开始日期
+    start_time = models.DateTimeField(auto_now_add=False, verbose_name="开始日期", max_length=11)
+    # 完成日期
+    finish_time = models.DateTimeField(auto_now_add=False, verbose_name="开始日期", max_length=11)
+    # 所用工时
+    work_hours = models.IntegerField(null=True, default=0, verbose_name="所用工时", help_text="所用工时")
     class Meta:
         # 数据表名
         db_table = TABLE_PREFIX + "burning"

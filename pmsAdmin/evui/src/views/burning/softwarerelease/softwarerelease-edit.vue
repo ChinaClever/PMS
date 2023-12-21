@@ -154,6 +154,7 @@
       </el-form-item>
       <el-form-item
         label="程序和文档公盘位置:"
+        label-width="120px"
         prop="documentation_position">
          <el-input
           :rows="3"
