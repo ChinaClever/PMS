@@ -8,6 +8,8 @@ from constant.constants import PAGE_LIMIT
 from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage, EmptyPage
 
 from django.db.models import Sum
+from datetime import datetime
+from django.utils import timezone
 from utils import R, regular
 
 # 根据工单查询所需要的数据
@@ -80,6 +82,9 @@ def DetailAll(request):
             if startDate == None:
                 startDate = 'None'
 
+            endDate = shipmentReport.finish_date.strftime("%Y-%m-%d")
+            if endDate == None:
+                endDate = 'None'
 
             Alldata = {
                 'work_order_id': workId,
@@ -87,7 +92,7 @@ def DetailAll(request):
                 'model': shipmentReport.shape,
                 'deliveryDate': deliveryDate,
                 'startDate': startDate,
-                'endDate': shipmentReport.finish_date,
+                'endDate': endDate,
                 'product_count':shipmentReport.product_count,
 
                 'inspect_quantity':inspectReport, #质检数量
@@ -100,18 +105,26 @@ def DetailAll(request):
     # print(f"根据工单查询所需要的数据{SendData}")
     return R.ok(data=SendData, count=count)
 
-def getShipmentData():
-    shipmentReportS = Shipment.objects.filter(is_delete=False)
+# 获取出货表的数据
+def getShipmentData(request):
+    today = timezone.now().date()
+    start_date = today.replace(day=1)
+    if start_date.month == 12:
+        end_date = start_date.replace(day=1, month=1, year=start_date.year+1) - timezone.timedelta(days=1)
+    else:
+        end_date = start_date.replace(day=1, month=start_date.month+1) - timezone.timedelta(days=1)
+
+    #按照范围时间来选择
+    shipmentReportS = Shipment.objects.filter(is_delete=False, delivery_date__range=(start_date, end_date))
     if not shipmentReportS:
-        return None
+        return R.failed("产品数据不存在")
     data = set()
     if len(shipmentReportS) > 0 or len(shipmentReportS) < 20:
         for shipmentReport in shipmentReportS:
             Alldata = {
-                'name': shipmentReport.client_name,
-                'product_count': shipmentReport.product_count,
+                'name': shipmentReport.client_name,#客户名字
+                'product_count': shipmentReport.product_count, #数量
             }
             data.add(tuple(Alldata.items()))
     SendData = [dict(item) for item in data]
-    # print(SendData)
     return R.ok(data=SendData)

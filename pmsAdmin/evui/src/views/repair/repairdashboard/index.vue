@@ -37,7 +37,7 @@
             </div>
           </el-col>
         </el-row>
-      </el-form>
+        </el-form>
         <!-- 数据表格 -->
         <ele-pro-table
           ref="table"
@@ -45,6 +45,9 @@
           :datasource="url"
           :columns="columns"
           
+          border class="custom-table"
+          :cell-style="cellStyle"
+          :header-cell-style="headerCellStyle"
           height="calc(100vh - 415px)">
         </ele-pro-table>
       </el-card>
@@ -89,6 +92,9 @@
               name: '产品名称',
               type: 'category',
               data: this.saleroomData.map(d => d.name),
+              axisLabel: {
+                color: 'white' // 设置 x 轴标签的颜色为白色
+              }
             }
           ],
 
@@ -97,7 +103,9 @@
               name: '数量',
               type: 'value',
               data: this.saleroomData.map(d => d.bad_total),
-
+              axisLabel: {
+                color: 'white' // 设置 x 轴标签的颜色为白色
+              }
 
             },
 
@@ -105,6 +113,7 @@
           color:[
             this.saleroomData.map(d => d.color)
           ],
+          backgroundColor: '#192a56', // 设置图表的背景颜色为蓝色
           series:[
             {
               name: '不良数量总和',
@@ -156,6 +165,7 @@
             prop: 'name',
             label: '产品名称',
             showOverflowTooltip: true,
+            
             minWidth: 100,
             align: 'center',
           },
@@ -316,7 +326,19 @@
         this.selectDateRange = '';
         this.reload();
       },
-
+       //改变表格某一列或者某一个单元格文本颜色 
+    cellStyle() {
+      // 定义样式变量
+      let cellStyle;
+      cellStyle = 'color:white;background-color:#192a56';
+      return cellStyle;
+    },
+    headerCellStyle() {
+      return {
+        backgroundColor: '#192a56',
+        color: 'white',
+      };
+    },
     },
     activated() {
       ['saleChart', ].forEach((name) => {
@@ -329,11 +351,59 @@
   <style scoped>
   /* 小标题 */
   .demo-monitor-title {
-    padding: 0 20px;
-    margin: 15px 0 5px 0;
+    padding: 0 0;
+    margin: 0 0 0 0;
+    font-size: 24px; /* 设置字体大小为 24 像素 */
+    color: white; /* 设置字体颜色为白色 */
     display: flex;
     justify-content: center; /* 水平居中对齐 */
     align-items: center; /* 垂直居中对齐 */
+    background-color: #192a56 !important; /* 设置表格的背景颜色 */
+    
   }
-  
+  .custom-table {
+    padding: 0 0;
+    margin: 0 0 0 0;
+  background-color: #192a56 !important; /* 设置表格的背景颜色 */
+}
+/* .custom-table::v-deep .el-table th.el-table__cell,
+::v-deep .el-table th,
+::v-deep.el-table tr{
+
+} */
+/* 表格内背景颜色 */
+::v-deep .el-table th,
+::v-deep .el-table tr,
+::v-deep .el-table td {
+  background-color: #192a56;
+}
+/*这些选择器用于设置表格的表头（th）、表格行（tr）和单元格（td）的背景颜色为透明。 */
+ 
+/* ::v-deep .el-table td.el-table__cell,
+::v-deep .el-table th.el-table__cell.is-leaf {
+  border-bottom: 0;
+} */
+ 
+ 
+ /* ::v-deep.el-table--enable-row-transition .el-table__body td.el-table__cell {
+  background-color: transparent !important;
+}  */
+/*这个选择器用于将表格行的单元格（td）的背景颜色设置为透明，并使用 !important 修饰符强制应用样式。 */
+/* ::v-deep.el-table td.el-table__cell div.cell {
+  background-color: transparent !important;
+} */
+/*这个选择器用于将单元格内部的 div 元素的背景颜色设置为透明，并使用 !important 修饰符强制应用样式。 */
+::v-deep .el-table {
+  background-color: transparent !important;
+}
+/*这个选择器用于将单元格内部的 div 元素的背景颜色设置为透明，并使用 !important 修饰符强制应用样式。 */
+ 
+::v-deep .el-table__row {
+  background-color: #192a56 !important;
+}
+/*这个选择器用于将整个表格的背景颜色设置为透明，并使用 !important 修饰符强制应用样式。 */
+/* 去除底部白线 */
+ /* .el-table::before{
+    background-color: transparent;
+  } */
   </style>

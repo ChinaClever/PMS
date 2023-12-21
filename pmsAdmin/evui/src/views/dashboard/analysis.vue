@@ -1,10 +1,10 @@
 <template>
-  <div class="ele-body ele-body-card">
+  <div class="ele-body ele-body-card body">
     <!-- 销售额、访问量 -->
         <el-row :gutter="15">
             <el-col :lg="12" :md="16">
                 <el-card >
-                  <div class="card-header">
+                  <div class="card-header ">
                     <div class="card-label">维修数量占比</div>
                       <div class="card-month"></div>
                       <el-date-picker
@@ -47,47 +47,45 @@
             </el-col>
         </el-row>
     <!-- 最近1小时访问情况 -->
-      <div>
         <el-row :gutter="15">
-        <el-col :lg="12" :md="16">
+          <el-col :lg="12" :md="16">
             <el-card >
-            <div class="card-header">
-              <div class="card-label">维修原因</div>
-            </div>
-            <div>
-              <ele-word-cloud
-              ref="hotSearchChart"
-              v-loading="reasonloading"
-              :data="getResultData"
-              style="height: 303px;"/>
-            </div>
+              <div class="card-header">
+                <div class="card-label">维修原因</div>
+              </div>
+              <div>
+                <ele-word-cloud
+                ref="hotSearchChart"
+                v-loading="reasonloading"
+                :data="getResultData"
+                style="height: 303px;"/>
+              </div>
           </el-card>
-        </el-col>
-        <el-col :lg="12" :md="16">
-          <el-card>
-            <div class="card-header">
-              <div class="card-label">维修原因排名</div>
-            </div>
-            <div
-              v-for="(item, index) in getResultData"
-              :key="index"
-              class="demo-monitor-rank-item ele-cell">
-              <el-tag
-                size="mini"
-                type="info"
-                :effect="index < 3 ? 'dark' : 'light'"
-                :color="index < 3 ? '#314659' : 'hsla(0, 0%, 60%, .2)'"
-                style="border-color: transparent;"
-                class="ele-tag-round">
-                {{ index + 1 }}
-              </el-tag>
-              <div class="ele-cell-content">{{ item.name }}</div>
-              <div class="ele-text-secondary">{{ item.value }}</div>
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
-      </div>
+          </el-col>
+          <el-col :lg="12" :md="16">
+            <el-card>
+              <div class="card-header">
+                <div class="card-label">维修原因排名</div>
+              </div>
+              <div
+                v-for="(item, index) in getResultData"
+                :key="index"
+                class="demo-monitor-rank-item ele-cell">
+                <el-tag
+                  size="mini"
+                  type="info"
+                  :effect="index < 3 ? 'dark' : 'light'"
+                  :color="index < 3 ? '#314659' : 'hsla(0, 0%, 60%, .2)'"
+                  style="border-color: transparent;"
+                  class="ele-tag-round">
+                  {{ index + 1 }}
+                </el-tag>
+                <div class="ele-cell-content">{{ item.name }}</div>
+                <div class="ele-text-secondary">{{ item.value }}</div>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
   </div>
 </template>
 

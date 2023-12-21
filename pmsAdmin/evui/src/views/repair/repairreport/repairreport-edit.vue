@@ -15,7 +15,7 @@
       <el-row :gutter="15">
         <el-col :span="10">
           <el-form-item
-            label="工单号:"
+            label="单号:"
             prop="work_order">
             <el-autocomplete
             v-model="form.work_order"
@@ -24,7 +24,7 @@
             @select="handleSelect1"
             @clear="handleClear"
             @keyup.enter.native="handleEnterKey"
-            placeholder="请输入工单号"
+            placeholder="请输入单号"
           ></el-autocomplete>  
           </el-form-item>
           <el-form-item
@@ -140,6 +140,7 @@ export default {
         status: 1,
         type : 1,
         name:'',
+        repair_time:new Date().toISOString()
       }, this.data),
       // 表单验证规则
       rules: {
@@ -208,15 +209,18 @@ export default {
         this.form = Object.assign({}, this.data);
         this.isUpdate = true;      
       } else {
-        this.form = Object.assign({}, this.data);
+        this.form = {};
         this.isUpdate = false;
       }
-    }   
+    }     
   },
   computed: {
     ...mapGetters(["permission"])
     },
   methods: {
+    getCurrentTime() {
+    return new Date().toISOString();
+  },
     formatDateTime(date1) {//修改时间格式
       var date = new Date(date1);
       var month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -237,7 +241,7 @@ export default {
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
               if (!this.isUpdate) {
-                this.form = {name:''};
+                this.form = {name:'',repair_time:new Date().toISOString()};
               }
               this.updateVisible(false);
               this.$emit('done');
@@ -348,13 +352,13 @@ export default {
     },
     createStateFilter1(queryString) {
         return (state) => {
-          return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+          return (state.value.toLowerCase().includes(queryString.toLowerCase()));
         };
       },
     handleSelect1(item) {
         this.form.work_order = item.value
         this.$refs.form.validateField('work_order', () => {});
-        // 根据选择的工单号查其他数据自动填入
+        // 根据选择的单号查其他数据自动填入
         this.$http.get('/shipmentreport/detail/' + item.value).then((res) => {
             this.loading = false;
             const shipmentData = res.data.data;
@@ -374,7 +378,7 @@ export default {
       console.log("进入")
       this.form.work_order = event.target.value.split("+")[0];
       this.$refs.form.validateField('work_order', () => {});
-      // 根据选择的工单号查其他数据自动填入
+      // 根据选择的单号查其他数据自动填入
       this.$http.get('/shipmentreport/detail/' + event.target.value.split("+")[0]).then((res) => {
         this.loading = false;
         const shipmentData = res.data.data;

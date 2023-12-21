@@ -204,7 +204,7 @@ export default {
     },
     createStateFilter1(queryString) {
         return (state) => {
-          return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+          return (state.value.toLowerCase().includes(queryString.toLowerCase()));
         };
       },
     handleSelect1(item) {
@@ -223,7 +223,10 @@ export default {
       },
 
       handleClear(){
-        this.form.name = ''
+        this.form.product_name = ''
+             this.form.customer = ''
+             this.form.product_type  = ''
+
       },
       handleEnterKey(event){
       console.log("进入")

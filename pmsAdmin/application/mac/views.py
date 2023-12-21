@@ -143,10 +143,13 @@ def test(request):
     work_order = request.GET.get('work_order')
     try:
         shipment = Shipment.objects.filter(work_order=work_order).first()
-        name = shipment.client_name
-        code = shipment.shape
+        if shipment==None:
+            return HttpResponse('排期表单没有该工单号')
+        else:
+            name = shipment.client_name
+            code = shipment.shape
     except Shipment.DoesNotExist:
-        return HttpResponse('排期表单没有该数据')
+        return HttpResponse('排期表单没有该工单号')
 
     serial_id = request.GET.get('serial_id')
     mac_address = mac_id
