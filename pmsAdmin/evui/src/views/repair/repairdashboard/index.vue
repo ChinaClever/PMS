@@ -53,17 +53,17 @@
       </el-card>
   
       <el-card shadow="never" body-style="padding: 0;">
-      <el-row>
-          <el-col :lg="28" :md="26">
-            <div class="demo-monitor-title">
-              维修报告
-            </div>
-            <ele-chart
-              ref="saleChart"
-              style="height: 385px;width: 100%"
-              :option="saleChartOption"/>
-          </el-col>
-      </el-row>
+        <el-row>
+            <el-col :lg="28" :md="26">
+              <div class="demo-monitor-title">
+                维修报告
+              </div>
+              <ele-chart
+                ref="saleChart"
+                style="height: 385px;width: 100%"
+                :option="saleChartOption"/>
+            </el-col>
+        </el-row>
       </el-card>
     </div>
     </div>
@@ -113,7 +113,7 @@
           color:[
             this.saleroomData.map(d => d.color)
           ],
-          backgroundColor: '#192a56', // 设置图表的背景颜色为蓝色
+          backgroundColor: '#072e7d', // 设置图表的背景颜色为蓝色
           series:[
             {
               name: '不良数量总和',
@@ -330,13 +330,13 @@
     cellStyle() {
       // 定义样式变量
       let cellStyle;
-      cellStyle = 'color:white;background-color:#192a56';
+      cellStyle = 'color:white;background-color:#072e7d';
       return cellStyle;
     },
     //改变表头颜色
     headerCellStyle() {
       return {
-        backgroundColor: '#192a56',
+        backgroundColor: '#072e7d',
         color: 'white',
       };
     },
@@ -352,59 +352,60 @@
   <style scoped>
   /* 小标题 */
   .demo-monitor-title {
-    padding: 0 0;
+    padding: -0px;
     margin: 0 0 0 0;
-    font-size: 24px; /* 设置字体大小为 24 像素 */
+    font-size: 15px; /* 设置字体大小为 24 像素 */
     color: white; /* 设置字体颜色为白色 */
     display: flex;
     justify-content: center; /* 水平居中对齐 */
     align-items: center; /* 垂直居中对齐 */
-    background-color: #192a56 !important; /* 设置表格的背景颜色 */
-    
+    background-color: #072e7d !important; /* 设置表格的背景颜色 */
+  flex: 1;
+
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
   }
   .custom-table {
     padding: 0 0;
     margin: 0 0 0 0;
-  background-color: #192a56 !important; /* 设置表格的背景颜色 */
+    background-color: #072e7d !important; /* 设置表格的背景颜色 */
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  
 }
-/* .custom-table::v-deep .el-table th.el-table__cell,
-::v-deep .el-table th,
-::v-deep.el-table tr{
-
-} */
+::v-deep .ele-body{
+  background-color: #072e7d !important; /* 设置最外面的背景颜色 */
+  display: flex;
+  flex-direction: column;
+  height: 90vh; /* 或者适当的高度 */
+}
 /* 表格内背景颜色 */
 ::v-deep .el-table th,
 ::v-deep .el-table tr,
 ::v-deep .el-table td {
-  background-color: #192a56;
+  background-color: #072e7d;
+  color:white;
 }
-/*这些选择器用于设置表格的表头（th）、表格行（tr）和单元格（td）的背景颜色为透明。 */
- 
-/* ::v-deep .el-table td.el-table__cell,
-::v-deep .el-table th.el-table__cell.is-leaf {
-  border-bottom: 0;
-} */
- 
- 
- /* ::v-deep.el-table--enable-row-transition .el-table__body td.el-table__cell {
-  background-color: transparent !important;
-}  */
-/*这个选择器用于将表格行的单元格（td）的背景颜色设置为透明，并使用 !important 修饰符强制应用样式。 */
-/* ::v-deep.el-table td.el-table__cell div.cell {
-  background-color: transparent !important;
-} */
-/*这个选择器用于将单元格内部的 div 元素的背景颜色设置为透明，并使用 !important 修饰符强制应用样式。 */
+
 ::v-deep .el-table {
   background-color: transparent !important;
 }
-/*这个选择器用于将单元格内部的 div 元素的背景颜色设置为透明，并使用 !important 修饰符强制应用样式。 */
- 
-/* ::v-deep .el-table__row {
-  background-color: transparent !important;
-} */
-/*这个选择器用于将整个表格的背景颜色设置为透明，并使用 !important 修饰符强制应用样式。 */
-/* 去除底部白线 */
- /* .el-table::before{
-    background-color: transparent;
-  } */
+::v-deep .el-card__body{
+  background-color: #072e7d !important; /* 设置表格的背景颜色 */
+}
+::v-deep  .ele-table-tool.ele-table-tool-default{
+  background-color: #072e7d !important; /* 设置的背景颜色 */
+}
+::v-deep  .el-pagination__total,::v-deep  .el-pagination__jump{
+  color: white !important; /* 设置最下面的文字颜色 */
+}
+::v-deep  .ele-tool-item, ::v-deep .ele-action, ::v-deep  .el-icon-_nav{
+  color: white !important; /* 右上方四个按钮 */
+}
+::v-deep  .el-input__inner{
+  background-color:#e9eaf0  !important; /* 按键 */
+}
   </style>

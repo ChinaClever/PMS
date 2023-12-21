@@ -65,28 +65,24 @@ class DictForm(forms.ModelForm):
     work_order = forms.CharField(
         max_length=150,
         error_messages={
-            'required': '工单号不能为空',
             'max_length': '工单号不得超过150个字符',
         }
     )
     customer = forms.CharField(
         max_length=150,
         error_messages={
-            'required': '客户不能为空',
             'max_length': '客户长度不得超过150个字符',
         }
     )
     product_name = forms.CharField(
         max_length=150,
         error_messages={
-            'required': '产品不能为空',
             'max_length': '产品长度不得超过150个字符',
         }
     )
     product_type= forms.CharField(
         max_length=150,
         error_messages={
-            'required': '产品类型不能为空',
             'max_length': '产品类型长度不得超过150个字符',
         }
     )
@@ -100,8 +96,18 @@ class DictForm(forms.ModelForm):
     parts = forms.CharField(
         max_length=150,
         error_messages={
-            'required': '部件不能为空',
-            'max_length': '部件长度不得超过150个字符',
+            'max_length': '物料长度不得超过150个字符',
+        }
+    )
+    product_number = forms.IntegerField(
+
+        error_messages={
+        }
+    )
+    notes = forms.CharField(
+        max_length=150,
+        error_messages={
+            'max_length': '备注长度不得超过150个字符',
         }
     )
 
@@ -111,4 +117,4 @@ class DictForm(forms.ModelForm):
         model = models.Dict
         # 指定部分字段验证
         #fields = ['name', 'code', 'sort', 'note']
-        fields = ['work_order', 'customer', 'product_name', 'product_type', 'supplier', 'parts']
+        fields = ['work_order', 'customer', 'product_name', 'product_type', 'supplier', 'parts','product_number','notes']

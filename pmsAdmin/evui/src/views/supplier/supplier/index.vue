@@ -55,15 +55,7 @@
         :selection.sync="selection"
         height="calc(100vh - 315px)">
         <!-- 表头工具栏 -->
-        <template slot="toolbar">
-          <!-- 导出按钮 -->
-          <el-button
-            size="small"
-            type="success"
-            icon="el-icon-download"
-            class="ele-btn-icon"
-            @click="exportToExcel">导出
-          </el-button>
+        <template slot="toolbar">         
           <el-button
             size="small"
             type="primary"
@@ -79,6 +71,14 @@
             class="ele-btn-icon"
             @click="removeBatch"
             v-if="permission.includes('sys:supplier:dall')">删除
+          </el-button>
+          <!-- 导出按钮 -->
+          <el-button
+            size="small"
+            type="success"
+            icon="el-icon-download"
+            class="ele-btn-icon"
+            @click="exportToExcel">导出
           </el-button>
           <!-- <el-button
             @click="showImport=true"
@@ -117,14 +117,16 @@
             </el-link>
           </el-popconfirm>
         </template>
-        <!-- 状态列 -->
-        <template slot="status" slot-scope="{row}">
-          <el-switch
-            v-model="row.status"
-            @change="editStatus(row)"
-            :active-value="1"
-            :inactive-value="2"/>
-        </template>
+        <template slot="expand_4" slot-scope="{row}" v-if="row.notes">
+            <el-popover
+              placement="top-start"
+              title="备注"
+              width="1000"
+              trigger="click"
+              :content=row.notes>
+              <el-button slot="reference">{{ row.notes }}</el-button>
+            </el-popover>
+          </template>
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
@@ -219,6 +221,20 @@ export default {
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
+        },
+        {
+          prop: 'product_number',
+          label: '数量',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'notes',
+          label: '备注',
+          width: 150,
+          align: 'center',
+          slot: 'expand_4',
         },
         {
           prop: 'create_time',

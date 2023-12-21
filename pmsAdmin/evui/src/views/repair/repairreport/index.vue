@@ -278,6 +278,13 @@
             align: 'center',
           },
           {
+            prop: 'work_hours',
+            label: '工时',
+            minWidth: 100,
+            align: 'center',
+            showOverflowTooltip: true,
+          },
+          {
             prop: 'create_time',
             label: '创建时间',
             showOverflowTooltip: true,
