@@ -347,7 +347,7 @@ def ShipmentReportUpdate(request):
     shipment.update_delivery_date = update_delivery_date if update_delivery_date else None
     shipment.product_count = product_count
     shipment.SO_RQ_id = SO_RQ_id
-    shipment.remark = remark
+    shipment.remark = remark if remark else None
     shipment.product_module = product_module
     shipment.attachment = attachmentListToString
     shipment.update_user = uid(request)

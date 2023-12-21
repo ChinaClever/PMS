@@ -103,25 +103,25 @@
               </el-date-picker>
 
               <el-select 
-              v-model="where.product_module" 
-              style="width: 120px; margin-left: 20px"
-              clearable 
-              placeholder="成品或模块"
-              @change="productOrModuleHandleSelect">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-                  </el-option>
-                </el-select>
+                v-model="where.product_module" 
+                style="width: 120px; margin-left: 20px"
+                clearable 
+                placeholder="成品或模块"
+                @change="productOrModuleHandleSelect">
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
 
-                <el-statistic
+              <el-statistic
                 group-separator=","
                 :value="items_total"
                 title="总数量"
-                style="padding-left: 200px; font-weight: bold;"
-              ></el-statistic>
+                style="padding-left: 290px; font-weight: bold;">
+              </el-statistic>
       
               </template>
               <!-- 附件列 -->
@@ -153,18 +153,17 @@
                   </el-link>
                 </el-popconfirm>
               </template>
-              <!-- 状态列 -->
-              <!-- <template slot="status" slot-scope="{row}">
-                <el-switch
-                  v-model="row.status"
-                  @change="editStatus(row)"
-                  :active-value="1"
-                  :inactive-value="2"/>
-              </template> -->
+          
                <!-- 成品模块列 -->
               <template slot="product_module" slot-scope="{row}">
                 <el-tag v-if="row.product_module === 1" type="success" size="medium">成品</el-tag>
                 <el-tag v-if="row.product_module === 2" size="medium">模块</el-tag>
+              </template>
+              <!-- 优先级列 -->
+              <template slot="priority" slot-scope="{row}">
+                <el-tag v-if="row.priority === 1" type="success" size="medium">低</el-tag>
+                <el-tag v-if="row.priority === 2" type="warning" size="medium">中</el-tag>
+                <el-tag v-if="row.priority === 3" type="danger" size="medium">高</el-tag>
               </template>
 
             </ele-pro-table>
@@ -207,6 +206,14 @@
             width: 45,
             align: 'center',
             fixed: "left"
+          },
+          {
+          prop: 'priority',
+          label: '优先级',
+          minWidth: 100,
+          align: 'center',
+          resizable: false,
+          slot: 'priority',
           },
           {
             prop: 'work_order',
@@ -507,7 +514,7 @@
         } else {
           // 编辑
           this.loading = true;
-          this.$http.get('/shipmentreport/detail/' + row.id).then((res) => {
+          this.$http.get('/shipmentreport/details/' + row.id).then((res) => {
             this.loading = false;
             if (res.data.code === 0) {
               this.current = Object.assign({fileNameList: row.fileNameList, attachmentList:row.attachmentList}, res.data.data);
@@ -565,8 +572,7 @@
       // 数据导出
       async exportToExcel() {
         // 创建 Excel 文件
-        const workbook = XLSX.utils.book_new();
-        //去除不需要的字段，这里我不希望显示id，所以id不返回
+        const workbook = XLSX.utils.book_new();     
         let temp = this.selection;
         if(this.selection.length == 0){
           await this.$http.get(this.url,{ params : {...this.where} }).then((res) => {
@@ -588,6 +594,17 @@
             return { ...obj, product_module: '模块' };
           } else if (obj.product_module === 1) {
             return { ...obj, product_module: '成品' };
+          }
+          return obj;
+        });
+
+        this.selection = this.selection.map(obj => {
+          if (obj.priority === 1) {
+            return { ...obj, priority: '低' };
+          } else if (obj.priority === 2) {
+            return { ...obj, priority: '中' };
+          } else if (obj.priority === 3) {
+            return { ...obj, priority: '高' };
           }
           return obj;
         });

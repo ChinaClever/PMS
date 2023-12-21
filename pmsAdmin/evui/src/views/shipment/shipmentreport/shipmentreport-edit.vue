@@ -232,7 +232,8 @@
               :limit="5"
               action=""
               multiple
-              drag>
+              drag
+              >
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
               <div class="el-upload__tip" slot="tip">支持多文件上传,最多5个,单个文件大小不能超过100MB</div>
@@ -402,10 +403,13 @@
                   }
                 formData.append('files', file.raw)
               }
-          )}
+            )}
             // 获取表单对象的键
             const keys = Object.keys(this.form);
-
+            // 不写的话保存空的备份会显示null
+            if (this.form.remark == null){
+              this.form.remark = ''
+            }
             // 遍历键，并将数据添加到新的 FormData 对象中
             keys.forEach(key => {
               if (Object.hasOwnProperty.call(this.form, key)) {
@@ -423,7 +427,7 @@
                 }
                 this.updateVisible(false);
                 this.$emit('done');
-                 //清空fileList
+                //清空fileList
                 this.fileList = []
               } else {
                 this.$message.error(res.data.msg);
@@ -580,9 +584,8 @@
   </script>
 
   <style scoped>
-   .el-row {
+  .el-row {
     margin-bottom: 16px;
-
   }
   </style>
 

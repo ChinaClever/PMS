@@ -4,7 +4,7 @@ from application.shipmentreport import views
 urlpatterns = [
     path('list', views.ShipmentReportListView.as_view()),
 
-    path('detail/<int:shipment_id>', views.ShipmentReportDetailView.as_view()),
+    path('details/<int:shipment_id>', views.ShipmentReportDetailView.as_view()),
 
     path('add', views.ShipmentReportAddView.as_view()),
 
