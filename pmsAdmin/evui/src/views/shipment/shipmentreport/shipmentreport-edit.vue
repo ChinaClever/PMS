@@ -81,7 +81,7 @@
             clearable/>
         </el-form-item>
         <el-row :gutter="6">
-        <el-col :span="12">
+        <el-col :span="8">
           <el-form-item label="成品/模块:" prop="product_module">
             <el-radio-group
               v-model="form.product_module">
@@ -90,7 +90,19 @@
             </el-radio-group>
           </el-form-item>
        </el-col>
-        <el-col :span="12">
+       <el-col :span="5">
+        <el-form-item label="优先级:" prop="priority">
+          <el-select v-model="form.priority" placeholder="">
+            <el-option
+              v-for="item in priorityOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+        <el-col :span="11">
           <el-form-item label="数量:" prop="product_count">
           <el-input-number
             :min="0"
@@ -104,59 +116,100 @@
         </el-row>
         <el-row :gutter="6">
         <el-col :span="12">
-        <el-form-item label="订单日期:" prop="order_date">
-            <el-date-picker
-              type="date"
-              class="ele-fluid"
-              v-model="form.order_date"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择订单日期"/>
-        </el-form-item>
+          <el-form-item label="订单日期:" prop="order_date">
+              <el-date-picker
+                type="date"
+                class="ele-fluid"
+                v-model="form.order_date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择订单日期"/>
+          </el-form-item>
         </el-col>
         <el-col :span="12">
-        <el-form-item label="交货日期:" prop="delivery_date">
-            <el-date-picker
-              type="date"
-              class="ele-fluid"
-              v-model="form.delivery_date"
-              value-format="yyyy-MM-dd"
-              :disabled="isUpdate"
-              placeholder="请选择交货日期"/>
-        </el-form-item>
+          <el-form-item label="SO/RQ号:" prop="SO_RQ_id">
+            <el-input
+              v-model="form.SO_RQ_id"
+              placeholder="请输入SO/RQ号"
+              clearable/>
+          </el-form-item>
       </el-col>
         </el-row>
         <el-row :gutter="6">
-        <el-col :span="12">
-          <el-form-item label="更改日期:" prop="update_delivery_date" v-if="isUpdate">
-            <el-date-picker
-              type="date"
-              class="ele-fluid"
-              v-model="form.update_delivery_date"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择更改日期"/>
-        </el-form-item>
-      </el-col>
-        <el-col :span="12">
-          <el-form-item label="完成日期:" prop="finish_date">
-            <el-date-picker
-              type="date"
-              class="ele-fluid"
-              v-model="form.finish_date"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择完成日期"/>
-        </el-form-item>
-       
-      </el-col>
-      <el-col :span="12">
-       <el-form-item label="SO/RQ号:" prop="SO_RQ_id">
-          <el-input
-            v-model="form.SO_RQ_id"
-            placeholder="请输入SO/RQ号"
-            clearable/>
-        </el-form-item>
-      </el-col>
+          <el-col :span="12">
+            <el-form-item label="交货日期:" prop="delivery_date">
+              <el-date-picker
+                type="date"
+                class="ele-fluid"
+                v-model="form.delivery_date"
+                value-format="yyyy-MM-dd"
+                :disabled="isUpdate"
+                placeholder="请选择交货日期"/>
+          </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="完成日期:" prop="finish_date">
+              <el-date-picker
+                type="date"
+                class="ele-fluid"
+                v-model="form.finish_date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择完成日期"/>
+          </el-form-item>
+          </el-col>
         </el-row>
-       
+        <el-row :gutter="6">
+        <el-col :span="12" v-if="isUpdate">
+          <el-form-item label="更改日期:" prop="update_delivery_date">
+              <el-date-picker
+                type="date"
+                class="ele-fluid"
+                v-model="form.update_delivery_date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择更改日期"/>
+            </el-form-item>
+        </el-col>
+    </el-row>
+    <el-row><el-divider content-position="center" style="color: #000;">完成各模块所需天数</el-divider></el-row>
+    <el-row>
+      <el-col :span="6">
+        <el-form-item label="烧录：" prop="burning_duration_days">
+          <el-input-number
+            :min="1"
+            v-model="form.burning_duration_days"
+            controls-position="right"
+            class="ele-fluid ele-text-left"/>
+        </el-form-item>
+      </el-col>
+      <el-col :span="6">
+        <el-form-item label="调试:" prop="debug_duration_days">
+          <el-input-number
+            :min="1"
+            v-model="form.debug_duration_days"
+            controls-position="right"
+            class="ele-fluid ele-text-left"/>
+        </el-form-item>
+      </el-col>
+      <el-col :span="6">
+        <el-form-item label="质检:" prop="inspect_duration_days">
+          <el-input-number
+            :min="1"
+            v-model="form.inspect_duration_days"
+            controls-position="right"
+            class="ele-fluid ele-text-left"/>
+        </el-form-item>
+      </el-col>
+      <el-col :span="6">
+        <el-form-item label="维修:" prop="repair_duration_days">
+          <el-input-number
+            :min="1"
+            v-model="form.repair_duration_days"
+            controls-position="right"
+            class="ele-fluid ele-text-left"/>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row><el-divider></el-divider></el-row>
+
           <el-form-item label="备注:" prop="remark">
             <el-input
               clearable
@@ -218,44 +271,63 @@
         form: Object.assign({product_code: '', product_name:'', shape:'', product_module:''}, this.data),
         // 表单验证规则
         rules: {
-          work_order: [
-          {required: true, message: '请输入单号', trigger: 'blur'},
-          { validator: (rule, value, callback) => this.checkWorkOrderId(rule, value, callback), trigger: 'blur' }
-        ],
-        client_name: [
-          {required: true, message: '请选择客户名称', trigger: 'blur'}
-        ],
-        product_code: [
-          {required: true, message: '请输入成品编码', trigger: 'blur'}
-        ],
-        product_name: [
-          {required: true, message: '请输入产品名称', trigger: 'blur'}
-        ],
-        shape: [
-          {required: true, message: '请输入规格型号', trigger: 'blur'}
-        ],
-        product_count: [
-          {required: true, message: '请输入数量', trigger: 'blur'}
-        ],
-        order_date: [
-          {required: true, message: '请选择订单日期', trigger: 'blur'}
-        ],
-        delivery_date: [
-          {required: true, message: '请选择交货日期', trigger: 'blur'},
-          { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
-        ],
-        update_delivery_date: [
-          { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
-        ],
-        finish_date: [
-          { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
-        ],
-        SO_RQ_id: [
-          {required: true, message: '请选择SO/RQ号', trigger: 'blur'}
-        ],
-        product_module: [
-          {required: true, message: '请选择成品/模块', trigger: 'blur'}
-        ],
+            work_order: [
+            {required: true, message: '请输入单号', trigger: 'blur'},
+            { validator: (rule, value, callback) => this.checkWorkOrderId(rule, value, callback), trigger: 'blur' }
+          ],
+          client_name: [
+            {required: true, message: '请选择客户名称', trigger: 'blur'}
+          ],
+          product_code: [
+            {required: true, message: '请输入成品编码', trigger: 'blur'}
+          ],
+          product_name: [
+            {required: true, message: '请输入产品名称', trigger: 'blur'}
+          ],
+          shape: [
+            {required: true, message: '请输入规格型号', trigger: 'blur'}
+          ],
+          product_count: [
+            {required: true, message: '请输入数量', trigger: 'blur'}
+          ],
+          order_date: [
+            {required: true, message: '请选择订单日期', trigger: 'blur'}
+          ],
+          delivery_date: [
+            {required: true, message: '请选择交货日期', trigger: 'blur'},
+            { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
+          ],
+          update_delivery_date: [
+            { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
+          ],
+          finish_date: [
+            { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
+          ],
+          SO_RQ_id: [
+            {required: true, message: '请选择SO/RQ号', trigger: 'blur'}
+          ],
+          product_module: [
+            {required: true, message: '请选择成品/模块', trigger: 'blur'}
+          ],
+          priority:[
+            {required: true, message: '选择优先级', trigger: 'blur'}
+          ],
+          burning_duration_days: [
+            {required: true, message: '输入烧录所需天数', trigger: 'blur'},
+            { validator: this.validateDurationDays, trigger: 'blur' }
+          ],
+          debug_duration_days: [
+            {required: true, message: '输入调试所需天数', trigger: 'blur'},
+            { validator: this.validateDurationDays, trigger: 'blur' }
+          ],
+          inspect_duration_days: [
+            {required: true, message: '输入质检所需天数', trigger: 'blur'},
+            { validator: this.validateDurationDays, trigger: 'blur' }
+          ],
+          repair_duration_days: [
+            {required: true, message: '输入维修所需天数', trigger: 'blur'},
+            { validator: this.validateDurationDays, trigger: 'blur' }
+          ],
         },
         // 提交状态
         loading: false,
@@ -263,6 +335,17 @@
         isUpdate: false,
         // 需要删除的文件
         deleteFileList: [],
+        // 优先级选项
+        priorityOptions: [{
+          value: 1,
+          label: '低'
+        }, {
+          value: 2,
+          label: '中'
+        }, {
+          value: 3,
+          label: '高'
+        }],
       };
     },
     watch: {
@@ -270,9 +353,9 @@
         if (this.data && this.data.id) {
           this.form = Object.assign({}, this.data);
           this.fileList = [];
-           // 遍历文件名列表，为每个文件名创建一个文件对象
-           if (this.data.attachmentList != null){
-             this.data.attachmentList.forEach((attachment, index) => {
+          // 遍历文件名列表，为每个文件名创建一个文件对象
+          if  (this.data.attachmentList != null){
+            this.data.attachmentList.forEach((attachment, index) => {
             const file = {
               name: this.data.fileNameList[index],
               uid: attachment, 
@@ -281,7 +364,9 @@
               };
               this.fileList.push(file); 
             });
-           }
+          }
+          // 优先级对应
+          
           this.isUpdate = true;
         } else {
           this.form = {product_code: '', product_name:'', shape:'', product_module:''};
@@ -357,6 +442,7 @@
       updateVisible(value) {
         this.$emit('update:visible', value);
       },
+
        // 订单号自动填入数据
       checkWorkOrderId(rule, value, callback){
         const regex = /^[a-zA-Z0-9]+[+][a-zA-Z0-9]+$/;
@@ -396,6 +482,18 @@
           callback();
         } else if (orderDate > thisDate) {
           callback(new Error('此日期必须晚于订单日期'));
+        } else {
+          callback();
+        }
+      },
+      // 天数检测
+      validateDurationDays(rule, value, callback) {
+        const currentDate = new Date();
+        const deliveryDate = new Date(this.form.delivery_date);
+        const durationDays = Math.ceil((deliveryDate - currentDate) / (1000 * 60 * 60 * 24));
+
+        if (value > durationDays) {
+          callback(new Error('所需天数超过剩余天数'));
         } else {
           callback();
         }
@@ -457,15 +555,15 @@
 
       // 文件移除
       onRemove(file, fileList) {
-      this.fileList = fileList.filter(item => item.uid !== file.uid)
-      this.deleteFileList.push(file.uid)
+        this.fileList = fileList.filter(item => item.uid !== file.uid)
+        this.deleteFileList.push(file.uid)
       },
-
+      // 单号按回车键
       handleEnterKey(event){
         console.log(event)
         this.$refs.form.validateField('work_order', () => {});
       },
-
+      // 文件上传超过数量
       handleExceed(files, fileList) {
         this.$message.warning(`当前限制上传 5 个文件，已选择了 ${fileList.length} 个文件`);
       },
