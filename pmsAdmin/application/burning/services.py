@@ -88,6 +88,10 @@ def BurningList(request):
                 'quantity': item.quantity,
                 'remark': item.remark,
                 'rcerder': item.rcerder,
+                'burning_quantity':item.burning_quantity,
+                'start_time': str(item.start_time.strftime('%Y-%m-%d')),
+                'finish_time': str(item.finish_time.strftime('%Y-%m-%d')),
+                'work_hours': item.work_hours,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d ')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d ')) if item.update_time else None,
             }
@@ -117,6 +121,10 @@ def BurningDetail(burning_id):
         'quantity': user.quantity,
         'remark': user.remark,
         'rcerder': user.rcerder,
+        'burning_quantity': user.burning_quantity,
+        'start_time': str(user.start_time.strftime('%Y-%m-%d')) if user.start_time else None,
+        'finish_time': str(user.finish_time.strftime('%Y-%m-%d')) if user.finish_time else None,
+        'work_hours': user.work_hours,
     }
     # 返回结果
     return data

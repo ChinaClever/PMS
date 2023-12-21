@@ -137,8 +137,6 @@ INSTALLED_APPS = [
     'application.packing',
     'application.product_handover',
 
-
-
 ]
 
 MIDDLEWARE = [

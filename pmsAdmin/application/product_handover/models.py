@@ -47,7 +47,7 @@ class product_handover(BaseModel):
     quantity = models.IntegerField(null=True, verbose_name="数量", help_text="数量")
     # 主控板版本号
     control_version = models.CharField(null=True, max_length=255, verbose_name="主控板版本号", help_text="主控板版本号")
-    # 执行版版本号
+    # 执行板版本号
     execute_version = models.CharField(null=False, max_length=255, verbose_name="执行版版本号", help_text="执行版版本号")
 
 
