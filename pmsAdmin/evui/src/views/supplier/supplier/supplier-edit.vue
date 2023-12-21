@@ -72,6 +72,24 @@
           placeholder="请输入物料"
           clearable/>
       </el-form-item>
+      <el-form-item
+        label="数量:"
+        prop="product_number">
+        <el-input
+          :maxlength="20"
+          v-model="form.product_number"
+          placeholder="请输入数量"
+          clearable/>
+      </el-form-item>
+      <el-form-item label="备注:" prop="notes" >
+          <el-input
+            v-model="form.notes"
+            :rows="4"
+            maxlength="150"
+            show-word-limit
+            type="textarea"/>
+      </el-form-item>
+
 
     </el-form>
     <div slot="footer">
@@ -114,22 +132,25 @@ export default {
           {required: true, message: '请输入排序号', trigger: 'blur'}
         ],*/
         work_order: [
-          {required: true, message: '请输入单号', trigger: 'blur'}
+          {required: false, message: '请输入单号', trigger: 'blur'}
         ],
         customer: [
-          {required: true, message: '请输入客户', trigger: 'blur'}
+          {required: false, message: '请输入客户', trigger: 'blur'}
         ],
         product_name: [
-          {required: true, message: '请输入产品', trigger: 'blur'}
+          {required: false, message: '请输入产品', trigger: 'blur'}
         ],
         product_type: [
-          {required: true, message: '请输入产品类型', trigger: 'blur'}
+          {required: false, message: '请输入产品类型', trigger: 'blur'}
         ],
         supplier: [
           {required: true, message: '请输入供应商', trigger: 'blur'}
         ],
         parts: [
           {required: true, message: '请输入物料', trigger: 'blur'}
+        ],
+        product_number: [
+          {required: true, message: '请输入数量', trigger: 'blur'}
         ],
       },
       work_orders: [],

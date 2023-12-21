@@ -94,6 +94,8 @@ def DictList(request):#查询设置，从前端返回order_id字段，再到数�
                 'product_type': item.product_type,
                 'supplier': item.supplier,
                 'parts': item.parts,
+                'product_number': item.product_number,
+                'notes': item.notes,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d %H:%M:%S')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d %H:%M:%S')) if item.update_time else None,
             }
@@ -127,6 +129,8 @@ def DictDetail(dict_id):
         'product_type': dict.product_type,
         'supplier': dict.supplier,
         'parts': dict.parts,
+        'product_number':dict.product_number,
+        'notes': dict.notes,
     }
     # 返回结果
     return data
@@ -166,6 +170,8 @@ def DictAdd(request):
         product_type = form.cleaned_data.get('product_type')
         supplier = form.cleaned_data.get('supplier')
         parts = form.cleaned_data.get('parts')
+        product_number = form.cleaned_data.get('product_number')
+        notes = form.cleaned_data.get('notes')
         # 创建数据
         Dict.objects.create(
             #name=name,
@@ -178,6 +184,8 @@ def DictAdd(request):
             product_type=product_type,
             supplier=supplier,
             parts=parts,
+            product_number=product_number,
+            notes=notes,
             create_user=uid(request)
         )
         # 返回结果
@@ -224,6 +232,8 @@ def DictUpdate(request):
         product_type = form.cleaned_data.get('product_type')
         supplier = form.cleaned_data.get('supplier')
         parts = form.cleaned_data.get('parts')
+        product_number = form.cleaned_data.get('product_number')
+        notes = form.cleaned_data.get('notes')
         update_time = form.cleaned_data.get('update_time')
     else:
         # 获取错误信息
@@ -248,6 +258,8 @@ def DictUpdate(request):
     dict.product_type = product_type
     dict.supplier = supplier
     dict.parts = parts
+    dict.product_number= product_number
+    dict.notes= notes
     dict.update_user = uid(request)
     dict.update_time = update_time
 

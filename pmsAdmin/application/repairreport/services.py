@@ -101,6 +101,7 @@ def DictList(request):#查询设置，从前端返回order_id字段，再到数�
                 'solution': item.solution,
                 'notes': item.notes,
                 'create_user':item.create_user,
+                'work_hours':item.work_hours,
                 'repair_time': str(item.repair_time.strftime('%Y-%m-%d')) if item.repair_time else '',
                 'create_time': str(item.create_time.strftime('%Y-%m-%d %H:%M:%S')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d %H:%M:%S')) if item.update_time else None,
@@ -133,6 +134,7 @@ def DictDetail(dict_id):
         'solution': dict.solution,
         'notes': dict.notes,
         'repair_time': str(dict.repair_time.strftime('%Y-%m-%d')) if dict.repair_time else None,
+        'work_hours':dict.work_hours,
 
     }
     # 返回结果
@@ -176,6 +178,7 @@ def DictAdd(request):
         solution = form.cleaned_data.get('solution')
         notes = form.cleaned_data.get('notes')
         repair_time = form.cleaned_data.get('repair_time')
+        work_hours = form.cleaned_data.get('work_hours')
         # 创建数据
         Dict.objects.create(
             #name=name,
@@ -192,6 +195,7 @@ def DictAdd(request):
             solution=solution,
             notes=notes,
             repair_time=repair_time,
+            work_hours=work_hours,
             create_user=uid(request)
         )
         # 返回结果
@@ -241,6 +245,7 @@ def DictUpdate(request):
         solution = form.cleaned_data.get('solution')
         notes = form.cleaned_data.get('notes')
         repair_time = form.cleaned_data.get('repair_time')
+        work_hours = form.cleaned_data.get('work_hours')
         update_time = form.cleaned_data.get('update_time')
     else:
         # 获取错误信息
@@ -268,6 +273,7 @@ def DictUpdate(request):
     dict.solution = solution
     dict.notes = notes
     dict.repair_time = repair_time
+    dict.work_hours = work_hours
     dict.update_user = uid(request)
     dict.update_time = update_time
 

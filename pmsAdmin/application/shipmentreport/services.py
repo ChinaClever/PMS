@@ -60,7 +60,7 @@ def ShipmentReportList(request):
     if sort and order:
         query = query.order_by(f'-{sort}' if order == 'desc' else sort)
     else:
-        query = query.order_by("-id")
+        query = query.order_by("-priority", "-id")
     # 分页设置
     paginator = Paginator(query, limit)
     # 记录总数

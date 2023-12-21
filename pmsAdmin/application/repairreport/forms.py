@@ -119,6 +119,11 @@ class DictForm(forms.ModelForm):
         error_messages={
         }
     )
+    work_hours = forms.IntegerField(
+        error_messages={
+            'required': '工时不能为空',
+        }
+    )
 
 
     class Meta:
@@ -126,4 +131,4 @@ class DictForm(forms.ModelForm):
         model = models.Dict
         # 指定部分字段验证
         #fields = ['name', 'code', 'sort', 'note']
-        fields = ['name','work_order','bad_number','repair_number','bad_phenomenon','analysis','solution','notes','repair_time']
+        fields = ['name','work_order','bad_number','repair_number','bad_phenomenon','analysis','solution','notes','repair_time','work_hours']
