@@ -44,24 +44,24 @@
           :where="where"
           :datasource="url"
           :columns="columns"
-          
           border class="custom-table"
           :cell-style="cellStyle"
-          :header-cell-style="headerCellStyle"
-          height="calc(100vh - 415px)">
+          :header-cell-style="headerCellStyle">
         </ele-pro-table>
       </el-card>
   
-      <el-card shadow="never" body-style="padding: 0;">
+      <el-card shadow="never" body-style="padding: 0;" align="center">
         <el-row>
-            <el-col :lg="28" :md="26">
+            <el-col :lg="48" :md="46">
               <div class="demo-monitor-title">
                 维修报告
               </div>
               <ele-chart
                 ref="saleChart"
-                style="height: 385px;width: 100%"
+
+                border class="custom-chart"
                 :option="saleChartOption"/>
+
             </el-col>
         </el-row>
       </el-card>
@@ -84,6 +84,10 @@
           // 柱状图配置
       saleChartOption() {
         return {
+          grid: {
+                  top: '10%',
+                  bottom: '20%'
+                },
           tooltip: {
             trigger: 'axis'
           },
@@ -105,6 +109,9 @@
               data: this.saleroomData.map(d => d.bad_total),
               axisLabel: {
                 color: 'white' // 设置 x 轴标签的颜色为白色
+              },
+              splitLine: {
+                color: 'transparent'
               }
 
             },
@@ -327,19 +334,22 @@
         this.reload();
       },
        //改变表格某一列或者某一个单元格文本颜色 
-    cellStyle() {
-      // 定义样式变量
-      let cellStyle;
-      cellStyle = 'color:white;background-color:#072e7d';
-      return cellStyle;
-    },
-    //改变表头颜色
-    headerCellStyle() {
-      return {
-        backgroundColor: '#072e7d',
-        color: 'white',
-      };
-    },
+    // cellStyle() {
+    //   // 定义样式变量
+    //   let cellStyle;
+    //   cellStyle = 'color:white;background-color:#072e7d';
+    //   return cellStyle;
+    // },
+    // //改变表头颜色
+    // headerCellStyle() {
+    //   return {
+    //     backgroundColor: '#072e7d',
+    //     color: 'white',
+    //   };
+    // },
+
+
+
     },
     activated() {
       ['saleChart', ].forEach((name) => {
@@ -352,43 +362,87 @@
   <style scoped>
   /* 小标题 */
   .demo-monitor-title {
-    padding: -0px;
+    padding: 0px;
     margin: 0 0 0 0;
     font-size: 15px; /* 设置字体大小为 24 像素 */
-    color: white; /* 设置字体颜色为白色 */
+    height: 20px;
     display: flex;
     justify-content: center; /* 水平居中对齐 */
     align-items: center; /* 垂直居中对齐 */
-    background-color: #072e7d !important; /* 设置表格的背景颜色 */
-  flex: 1;
+    /*margin-bottom: -10px;*/
 
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
   }
+
+  .custom-chart{
+    height: 30vh;
+    justify-content: center; /* 在水平方向上居中对齐 */
+  
+}
   .custom-table {
     padding: 0 0;
     margin: 0 0 0 0;
     background-color: #072e7d !important; /* 设置表格的背景颜色 */
-  flex: 1;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
+    height: 50vh;
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
   
 }
 ::v-deep .ele-body{
   background-color: #072e7d !important; /* 设置最外面的背景颜色 */
   display: flex;
   flex-direction: column;
-  height: 90vh; /* 或者适当的高度 */
+  height: 100vh; /* 或者适当的高度 */
 }
-/* 表格内背景颜色 */
+
+/* 表格内背景颜色*/
 ::v-deep .el-table th,
 ::v-deep .el-table tr,
 ::v-deep .el-table td {
-  background-color: #072e7d;
-  color:white;
+  background-color:#072e7d;  /* 背景透明*/
+  border: 0px;
+  color: #93dcfe;  /* 修改字体颜色*/
+  font-size: 10px;
+  height: 5px;
+
 }
+/* 去掉最下面的那一条线*/
+.el-table::before {
+  height: 0px;
+}
+/* 修改表头样式-加边框*/
+::v-deep .el-table__header-wrapper {
+  border: solid 1px white;
+  /* box-sizing: border-box;*/
+}
+/*表格斑马自定义颜色
+::v-deep .el-table__row.warning-row {
+  background: #090c0f;
+}*/
+
+
+/*修改高亮当前行颜色*/
+::v-deep .el-table tbody tr:hover > td {
+  background: #4a4c4e !important;
+}
+
+/*滚动条样式*/
+::v-deep .el-table__body-wrapper::-webkit-scrollbar-track {
+  background-color: #063570;
+}
+ 
+::v-deep .el-table__body-wrapper::-webkit-scrollbar {
+  width: 10px;
+  opacity: 0.5;
+}
+ 
+::v-deep .el-table__body-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 15px;
+  background-color: #0257aa;
+}
+
+
 
 ::v-deep .el-table {
   background-color: transparent !important;
