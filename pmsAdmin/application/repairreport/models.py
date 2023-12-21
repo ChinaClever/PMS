@@ -41,7 +41,7 @@ class Dict(BaseModel):
     solution = models.CharField(null=True, max_length=150, verbose_name="解决方法", help_text="解决方法")
     notes = models.CharField(null=True, max_length=150, verbose_name="备注", help_text="备注")
     repair_time = models.DateTimeField(null=True, max_length=11, verbose_name="维修日期", help_text="维修日期")
-
+    work_hours = models.IntegerField(null=False, verbose_name="工时", help_text="工时")
     # 字典名称
     #name = models.CharField(null=False, max_length=150, verbose_name="字典名称", help_text="字典名称")
     # 字典编码

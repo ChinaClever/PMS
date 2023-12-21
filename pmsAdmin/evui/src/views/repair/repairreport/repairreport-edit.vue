@@ -12,7 +12,7 @@
       :model="form"
       :rules="rules"
       label-width="82px">
-      <el-row :gutter="15">
+      <el-row :gutter="15" >
         <el-col :span="10">
           <el-form-item
             label="单号:"
@@ -65,8 +65,19 @@
               placeholder="请输入维修数量"
               clearable/>
           </el-form-item>
+          <el-form-item
+            label="工时:"
+            prop="work_hours">
+            <el-input
+              :maxlength="20"
+              v-model="form.work_hours"
+              placeholder="请输入工时"
+              clearable/>
+          </el-form-item>
+          
         </el-col>
       </el-row>
+      <el-row :gutter="15" class="row-spacing" >
       <el-form-item label="不良现象" prop="bad_phenomenon">
         <el-autocomplete
           class="inline-input"
@@ -102,6 +113,7 @@
                     show-word-limit
                     type="textarea"/>
       </el-form-item>
+      </el-row>
       <!--<div class="block">
         <span class="demonstration">维修时间</span>
            <el-date-picker
@@ -182,7 +194,21 @@ export default {
             required: true,
             trigger: 'blur'
           }
-        ]
+        ],
+        work_hours:[
+          {
+            validator: (rule, value, callback) => {
+              const intValue = Number(value);
+              if (!Number.isInteger(intValue) || intValue < 0) {
+                callback(new Error('数量必须为大于0的整数'));
+              } else {
+                callback();
+              }
+            },
+            required: true,
+            trigger: 'blur'
+          }
+        ],
 
       },
       // 提交状态
@@ -403,4 +429,8 @@ export default {
 </script>
  
 <style scoped>
+
+.row-spacing {
+  margin-top: 20px; /* 调整第二个 <el-row> 的顶部间距 */
+}
 </style>

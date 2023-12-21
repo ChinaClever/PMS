@@ -38,6 +38,8 @@ class Dict(BaseModel):
     product_type = models.CharField(null=False, max_length=150, verbose_name="产品类型", help_text="产品类型")
     supplier = models.CharField(null=False, max_length=150, verbose_name="供应商", help_text="供应商")
     parts = models.CharField(null=False, max_length=150, verbose_name="部件", help_text="部件")
+    product_number = models.IntegerField(null=False, verbose_name="数量", help_text="数量")
+    notes = models.CharField(null=False, max_length=150, verbose_name="备注", help_text="备注")
     # 字典名称
     #name = models.CharField(null=False, max_length=150, verbose_name="字典名称", help_text="字典名称")
     # 字典编码
