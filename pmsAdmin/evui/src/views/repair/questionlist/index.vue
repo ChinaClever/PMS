@@ -8,8 +8,8 @@
           class="ele-form-search"
           @keyup.enter.native="reload"
           @submit.native.prevent>
-          <el-row :gutter="10">
-            <el-col :span="5">
+          <el-row :gutter="25">
+            <el-col :lg="4" :md="12">
               <el-form-item label="产品名称:">
                 <el-input
                   clearable
@@ -18,7 +18,7 @@
                   placeholder="请输入产品名称"/>
               </el-form-item>
             </el-col>
-            <el-col :span="5">
+            <el-col :lg="4" :md="12">
               <el-form-item label="单号:">
                 <el-input
                   clearable
@@ -27,20 +27,7 @@
                   placeholder="请输入单号"/>
               </el-form-item>
             </el-col>
-            <el-col :lg="6" :md="12">
-              <div class="ele-form-actions">
-                <el-button
-                  type="primary"
-                  icon="el-icon-search"
-                  class="ele-btn-icon"
-                  @click="reload">查询
-                </el-button>
-                <el-button @click="reset">重置</el-button>
-              </div>
-            </el-col>
-          </el-row>
-          <el-row :gutter="10">
-            <el-col :span="5" >
+            <el-col :lg="4" :md="12">
               <el-form-item label="排序方式:">
               <el-select v-model="selectedOption" placeholder="请选择排序方式" @change="selectway">
                   <el-option label="产品名称" value="name"></el-option>
@@ -48,21 +35,37 @@
               </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="5">
-              <el-date-picker
-                v-model="selectDateRange"
-                type="daterange"
-                align="right"
-                unlink-panels
-                range-separator="至"
-                start-placeholder="订单日期开始日期"
-                end-placeholder="订单日期结束日期"
-                format="yyyy 年 MM 月 dd 日"
-                value-format="yyyy-MM-dd"
-                :picker-options="pickerOptions"
-                @change="dateRangeHandleSelect">
-              </el-date-picker>
+            <el-col :lg="12" :md="24">
+              <div class="container">
+                <div class="time-picker">
+                  <el-form-item label="日期范围:">
+                      <el-date-picker
+                      v-model="selectDateRange"
+                      type="daterange"
+                      align="right"
+                      unlink-panels
+                      range-separator="至"
+                      start-placeholder="订单日期开始日期"
+                      end-placeholder="订单日期结束日期"
+                      format="yyyy 年 MM 月 dd 日"
+                      value-format="yyyy-MM-dd"
+                      :picker-options="pickerOptions"
+                      @change="dateRangeHandleSelect">
+                    </el-date-picker>
+                  </el-form-item>
+                </div>
+                <div class="ele-text-center">
+                    <el-button
+                      type="primary"
+                      icon="el-icon-search"
+                      class="ele-btn-icon"
+                      @click="reload">查询
+                    </el-button>
+                    <el-button @click="reset">重置</el-button>
+                </div>
+              </div>
             </el-col>
+
           </el-row>
         </el-form>
   
@@ -331,4 +334,11 @@
   </script>
 
   <style scoped>
+    .container{
+    display: flex;
+    align-items: flex-start;
+  }
+  .time-picker{
+    flex: 1;
+  }
   </style>
