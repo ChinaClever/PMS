@@ -21,23 +21,41 @@
 # | 法律所允许的合法合规的软件产品研发，详细声明内容请阅读《框架免责声明》附件；
 # +----------------------------------------------------------------------
 
-from django.urls import path
+from django.db import models
 
-from application.mac import views
+# Create your models here.
+from application.models import BaseModel
 
-# 模块路由
-urlpatterns = [
-    # 查询分页数据
-    path('list', views.MacListView.as_view()),
-    # 查询数据
-    path('detail/<int:mac_id>', views.MacDetailView.as_view()),
-    # 添加数据
-    path('add', views.MacAddView.as_view()),
-    # 更新数据
-    path('update', views.MacUpdateView.as_view()),
-    # 删除数据
-    path('delete/<str:mac_id>', views.MacDeleteView.as_view()),
-    # 测试请求
-    path('test',views.test),
+from config.env import TABLE_PREFIX
 
-]
+
+# 产品表格
+class product_handover(BaseModel):
+    # 日期
+    time = models.DateTimeField(null=False, max_length=18, verbose_name="日期", help_text="日期")
+    # 工单号
+    work_order = models.CharField(null=False, max_length=255, verbose_name="工单号", help_text="工单号")
+    # 客户名称
+    name = models.CharField(null=False, max_length=255, verbose_name="客户名称", help_text="客户名称")
+    # 规格型号
+    code = models.CharField(null=False, max_length=255, verbose_name="规格型号", help_text="规格型号")
+    # 安数
+    remark = models.CharField(null=True, max_length=255, verbose_name="安数", help_text="安数")
+    # 交货日期
+    delivery_time = models.DateTimeField(null=True, max_length=18, verbose_name="交货日期", help_text="交货日期")
+    # 数量
+    quantity = models.IntegerField(null=True, verbose_name="数量", help_text="数量")
+    # 主控板版本号
+    control_version = models.CharField(null=True, max_length=255, verbose_name="主控板版本号", help_text="主控板版本号")
+    # 执行板版本号
+    execute_version = models.CharField(null=False, max_length=255, verbose_name="执行版版本号", help_text="执行版版本号")
+
+
+    class Meta:
+        # 数据表名
+        db_table = TABLE_PREFIX + "product_handover"
+        verbose_name = ("产品交接表")
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return '客户{}'.format(self.id)

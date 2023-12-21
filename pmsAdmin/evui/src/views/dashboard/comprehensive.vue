@@ -1,30 +1,17 @@
 <template>
-  <div class="ele-body">
-    <el-card shadow="never">
-      <!-- 数据表格 -->
-<!--      <el-table ref="table" :data="Data"  v-loading="loading" row-key="id" default-expand-all border-->
-<!--                height="calc(50vh - 100px)" highlight-current-row >-->
-<!--        <el-table-column label="序号" type="index" width="60" align="center" fixed="left"/>-->
-<!--        <el-table-column prop="work_order" label="工单号" min-width="150" align="center"/>-->
-<!--        <el-table-column prop="customer_name" label="客户名称" min-width="150" align="center"/>-->
-<!--        <el-table-column prop="specification_model" label="规格型号" min-width="150" align="center"/>-->
-<!--        <el-table-column prop="delivery_time" label="交期" min-width="150" align="center"/>-->
-<!--        <el-table-column prop="start_date" label="开始日期" min-width="150" align="center"/>-->
-<!--        <el-table-column prop="burn_date" label="烧录数量" min-width="100" align="center"/>-->
-<!--        <el-table-column prop="debug_quantity" label="调试数量" min-width="100" align="center"/>-->
-<!--        <el-table-column prop="quality_quantity" label="质检数量" min-width="100" align="center"/>-->
-<!--        <el-table-column prop="maintenance_quantity" label="维修数量" min-width="100" align="center"/>-->
-<!--        <el-table-column prop="end_date" label="完成日期" min-width="160" align="center"/>-->
-<!--      </el-table>-->
+  <div class="ele-text-center">
+    <el-card class="custom-table">
       <ele-pro-table
-              ref="table"
-              :datasource="url"
-              :columns="columns"
-              :selection.sync="selection"
-              height="calc(60vh - 215px)">
+          ref="table"
+          :datasource="url"
+          :columns="columns"
+          border class="custom-table"
+          :cell-style="cellStyle"
+          :header-cell-style="headerCellStyle"
+          height="calc(60vh - 215px)">
       </ele-pro-table>
     </el-card>
-    <el-card shadow="never" body-style="padding: 0;" align="center">
+    <el-card class="custom-table" body-style="padding: 0;" align="center">
       <el-col :lg="48" :md="46">
         <div class="demo-monitor-title">
           交付数量
@@ -35,14 +22,11 @@
         :option="deliveryChartOption"/>
       </el-col>
     </el-card>
-
-
   </div>
 </template>
 
 <script>
 import EleChart from 'ele-admin/packages/ele-chart';
-// import CityEdit from './city-edit';
 
 export default {
   name: 'DashboardComprehensive',
@@ -107,7 +91,6 @@ export default {
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
-
           },
           {
             prop: 'startDate',
@@ -115,7 +98,6 @@ export default {
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
-
           },
           {
             prop: 'burning_quantity',
@@ -151,13 +133,10 @@ export default {
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
+
           },
 
         ],
-      // 表格选中数据
-      selection: [],
-      // //数据
-      // Data:[],
       //交付数量
       DeliveryData:[],
 
@@ -183,12 +162,65 @@ export default {
           this.loading = false;
           this.$message.error(e.message);
         })
-    }
+    },
+    //改变表格某一列或者某一个单元格文本颜色
+    cellStyle() {
+      // 定义样式变量
+      let cellStyle;
+      cellStyle = 'color:white;background-color:#192a56';
+      return cellStyle;
+    },
+    headerCellStyle() {
+      return {
+        backgroundColor: '#192a56',
+        color: 'white',
+      };
+    },
+  },
 
+  activated() {
+  ['saleChart', ].forEach((name) => {
+    this.$refs[name].resize();
+  });
   }
 }
 
 </script>
 
 <style scoped>
+.demo-monitor-title {
+  padding: 0 0;
+  margin: 0 0 0 0;
+  font-size: 24px; /* 设置字体大小为 24 像素 */
+  color: white; /* 设置字体颜色为白色 */
+  display: flex;
+  justify-content: center; /* 水平居中对齐 */
+  align-items: center; /* 垂直居中对齐 */
+  background-color: #192a56 !important; /* 设置表格的背景颜色 */
+
+}
+.custom-table {
+    padding: 0 0;
+    margin: 0 0 0 0;
+  background-color: #192a56 !important; /* 设置表格的背景颜色 */
+}
+/* 表格内背景颜色 */
+::v-deep .el-table th,
+::v-deep .el-table tr,
+::v-deep .el-table td {
+  background-color: #192a56;
+}
+::v-deep .el-table {
+  background-color: transparent !important;
+}
+::v-deep .el-table__row {
+  background-color: #192a56 !important;
+}
+::v-deep .ele-text-center,::v-deep .number.active {
+  background-color: #192a56 !important;
+}
+::v-deep .el-input__inner,::v-deep .ele-table-tool,::v-deep .ele-table-tool-default{
+  background-color: #192a56 !important;
+}
+
 </style>

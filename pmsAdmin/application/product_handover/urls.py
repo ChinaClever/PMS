@@ -23,21 +23,19 @@
 
 from django.urls import path
 
-from application.mac import views
+from application.product_handover import views
 
-# 模块路由
+# 部门模块路由
 urlpatterns = [
     # 查询分页数据
-    path('list', views.MacListView.as_view()),
+    path('list', views.Product_handoverListView.as_view()),
     # 查询数据
-    path('detail/<int:mac_id>', views.MacDetailView.as_view()),
+    path('detail/<int:product_handover_id>', views.Product_handoverDetailView.as_view()),
     # 添加数据
-    path('add', views.MacAddView.as_view()),
+    path('add', views.Product_handoverAddView.as_view()),
     # 更新数据
-    path('update', views.MacUpdateView.as_view()),
+    path('update', views.Product_handoverUpdateView.as_view()),
     # 删除数据
-    path('delete/<str:mac_id>', views.MacDeleteView.as_view()),
-    # 测试请求
-    path('test',views.test),
+    path('delete/<str:product_handover_id>', views.Product_handoverDeleteView.as_view()),
 
 ]

@@ -1,6 +1,22 @@
 <template>
   <div class="ele-body">
     <el-card shadow="never">
+      
+      <el-dialog
+        title="导入文件"
+        :visible.sync="showImport"
+        width="30%">
+        <!-- 这里放置上传文件的表单 -->
+        <el-upload
+          class="upload-demo"
+          action="http://localhost:8000/safety/upload"
+          accept=".xls,.xlsx"     
+          :on-success="importFile"
+          :show-file-list="false">
+          
+          <el-button size="small" type="primary">点击上传</el-button>
+        </el-upload>
+      </el-dialog>
       <!-- 搜索表单 -->
       <el-form
         :model="where"
@@ -15,7 +31,7 @@
                 clearable
                 v-model="where.keyword"
                 @clear="reload"
-                placeholder="请输入工单号"/>
+                placeholder="请输入单号"/>
             </el-form-item>
           </el-col>
 
@@ -75,7 +91,7 @@
             @click="removeBatch"
             v-if="permission.includes('sys:safety:dall')">删除
           </el-button>
-          
+
            <!-- 导出按钮 -->
            <el-button
             size="small"
@@ -83,6 +99,14 @@
             icon="el-icon-download"
             class="ele-btn-icon"
             @click="exportToExcel">导出
+          </el-button>
+
+          
+          <el-button
+            @click="showImport = true"
+            icon="el-icon-upload2"
+            class="ele-btn-icon"
+            size="small">导入
           </el-button>
           <!-- <el-button
             @click="showImport=true"
@@ -177,7 +201,7 @@ export default {
         },
         {
           prop: 'work_order',
-          label: '工单号',
+          label: '单号',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
@@ -213,13 +237,6 @@ export default {
         {
           prop: 'Ir',
           label: '绝缘电阻',
-          showOverflowTooltip: true,
-          minWidth: 200,
-          align: 'center',
-        },
-        {
-          prop: 'Dcw',
-          label: '直流耐压',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
@@ -356,6 +373,17 @@ export default {
     };
   },
   methods: {
+      // 显示导入弹窗
+  showImportDialog() {
+    this.showImport = true;
+  },
+
+  // 导入文件处理
+  importFile() {
+        this.reload();
+        this.showImport=false
+      },
+
     /* 刷新表格 */
     reload() {
       console.log(this.selection)

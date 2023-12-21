@@ -29,13 +29,13 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 from constant.constants import PAGE_LIMIT
-from application.burning import forms
-from application.burning.models import burning
+from application.product_handover import forms
+from application.product_handover.models import product_handover
 from utils import R, regular
 
 
 # 查询客户数据列表
-def BurningList(request):
+def Product_handoverList(request):
     # 页码
     page = int(request.GET.get('page', 1))
     # 每页数
@@ -45,7 +45,7 @@ def BurningList(request):
     else:
         limit = 65535000;
     # 分页查询
-    query = burning.objects.filter(is_delete=False)
+    query = product_handover.objects.filter(is_delete=False)
     # 角色名称模糊筛选
     keyword = request.GET.get('keyword')
     if keyword:
@@ -78,20 +78,15 @@ def BurningList(request):
         for item in role_list:
             data = {
                 'id': item.id,
+                'time':str(item.time.strftime('%Y-%m-%d ')) if item.time else None,
                 'work_order':item.work_order,
                 'name': item.name,
                 'code': item.code,
-                'version': item.version,
-                'require': item.require ,
-                'order_time': str(item.order_time.strftime('%Y-%m-%d ')) if item.order_time else None,
+                'remark': item.remark,
                 'delivery_time': str(item.delivery_time.strftime('%Y-%m-%d ')) if item.delivery_time else None,
                 'quantity': item.quantity,
-                'remark': item.remark,
-                'rcerder': item.rcerder,
-                'burning_quantity':item.burning_quantity,
-                'start_time': str(item.start_time.strftime('%Y-%m-%d')),
-                'finish_time': str(item.finish_time.strftime('%Y-%m-%d')),
-                'work_hours': item.work_hours,
+                'control_version': item.control_version,
+                'execute_version': item.execute_version,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d ')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d ')) if item.update_time else None,
             }
@@ -102,36 +97,31 @@ def BurningList(request):
 
 
 # 根据ID获取详情
-def BurningDetail(burning_id):
+def Product_handoverDetail(product_handover_id):
     # 根据ID查询客户
-    user = burning.objects.filter(is_delete=False, id=burning_id).first()
+    user = product_handover.objects.filter(is_delete=False, id=product_handover_id).first()
     # 查询结果判空
     if not user:
         return None
     # 声明结构体
     data = {
         'id': user.id,
+        'time': str(user.time.strftime('%Y-%m-%d ')) if user.time else None,
         'work_order': user.work_order,
         'name': user.name,
         'code': user.code,
-        'version': user.version,
-        'require': user.require,
-        'order_time': str(user.order_time.strftime('%Y-%m-%d ')) if user.order_time else None,
+        'remark': user.remark,
         'delivery_time': str(user.delivery_time.strftime('%Y-%m-%d ')) if user.delivery_time else None,
         'quantity': user.quantity,
-        'remark': user.remark,
-        'rcerder': user.rcerder,
-        'burning_quantity': user.burning_quantity,
-        'start_time': str(user.start_time.strftime('%Y-%m-%d')) if user.start_time else None,
-        'finish_time': str(user.finish_time.strftime('%Y-%m-%d')) if user.finish_time else None,
-        'work_hours': user.work_hours,
+        'control_version':user.control_version,
+        'execute_version': user.execute_version,
     }
     # 返回结果
     return data
 
 
 # 添加客户
-def BurningAdd(request):
+def Product_handoverAdd(request):
     try:
         # 接收请求参数
         json_data = request.body.decode()
@@ -143,55 +133,43 @@ def BurningAdd(request):
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
-    # 表单验证
-    form = forms.BurningForm(dict_data)
-    if form.is_valid():
-        # 工单号
-        work_order = form.cleaned_data.get('work_order')
-        # 客户名称
-        name = form.cleaned_data.get('name')
-        # 规格型号
-        code = form.cleaned_data.get('code')
-        # 版本号
-        version = form.cleaned_data.get('version')
-        # 程序要求
-        require = form.cleaned_data.get('require')
-        # 订单日期
-        order_time = form.cleaned_data.get('order_time')
-        # 交货日期
-        delivery_time = form.cleaned_data.get('delivery_time')
-        # 数量
-        quantity = form.cleaned_data.get('quantity')
-        # 备注
-        remark = form.cleaned_data.get('remark')
-        # rxerder
-        rcerder = form.cleaned_data.get('rcerder')
-        if order_time > delivery_time:
-            return R.failed("交货日期不能小于订单日期")
-        # 创建数据
-        burning.objects.create(
-            work_order=work_order,
-            name=name,
-            code= code,
-            version=version,
-            require=require,
-            order_time=order_time,
-            delivery_time=delivery_time,
-            quantity=quantity,
-            remark= remark,
-            rcerder= rcerder,
-        )
-        # 返回结果
-        return R.ok(msg="创建成功")
-    else:
-        # 获取错误信息
-        err_msg = regular.get_err(form)
-        # 返回错误信息
-        return R.failed(err_msg)
+    # 日期
+    time = dict_data.get('time')
+    # 工单号
+    work_order = dict_data.get('work_order')
+    # 客户名称
+    name = dict_data.get('name')
+    # 规格型号
+    code = dict_data.get('code')
+    # 安数
+    remark = dict_data.get('remark')
+    # 交货日期
+    delivery_time = dict_data.get('delivery_time')
+    # 数量
+    quantity = dict_data.get('quantity')
+    # 主控板版本号
+    control_version = dict_data.get('control_version')
+    # 执行板版本号
+    execute_version = dict_data.get('execute_version')
+    # 创建数据
+    product_handover.objects.create(
+        time=time,
+        work_order=work_order,
+        name=name,
+        code= code,
+        remark=remark,
+        delivery_time=delivery_time,
+        quantity=quantity,
+        control_version= control_version,
+        execute_version= execute_version,
+    )
+    # 返回结果
+    return R.ok(msg="创建成功")
+
 
 
 # 更新客户
-def BurningUpdate(request):
+def Product_handoverUpdate(request):
     try:
         # 接收请求参数
         json_data = request.body.decode()
@@ -201,59 +179,53 @@ def BurningUpdate(request):
         # 数据类型转换
         dict_data = json.loads(json_data)
         # 客户ID
-        burning_id = dict_data.get('id')
+        product_handover_id = dict_data.get('id')
         # 客户ID判空
-        if not burning_id or int(burning_id) <= 0:
+        if not product_handover_id or int(product_handover_id) <= 0:
             return R.failed("客户ID不能为空")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
-    # 表单验证
-    form = forms.BurningForm(dict_data)
-    if form.is_valid():
-        work_order = form.cleaned_data.get('work_order')
-        # 客户名称
-        name = form.cleaned_data.get('name')
-        # 规格型号
-        code = form.cleaned_data.get('code')
-        # 版本号
-        version = form.cleaned_data.get('version')
-        # 程序要求
-        require = form.cleaned_data.get('require')
-        # 订单要求
-        order_time = form.cleaned_data.get('order_time')
-        # 交货日期
-        delivery_time = form.cleaned_data.get('delivery_time')
-        # 数量
-        quantity = form.cleaned_data.get('quantity')
-        # 备注
-        remark = form.cleaned_data.get('remark')
-       
-        rcerder = form.cleaned_data.get('rcerder')
-    else:
-        # 获取错误信息
-        err_msg = regular.get_err(form)
-        # 返回错误信息
-        return R.failed(err_msg)
+    # 日期
+    time = dict_data.get('time')
+    time = datetime.strptime(time, '%Y-%m-%d')
+
+
+    # 单号
+    work_order = dict_data.get('work_order')
+    # 客户名称
+    name = dict_data.get('name')
+    # 规格型号
+    code = dict_data.get('code')
+    # 安数
+    remark = dict_data.get('remark')
+    # 交货日期
+    delivery_time = dict_data.get('delivery_time')
+    delivery_time = datetime.strptime(delivery_time, '%Y-%m-%d')
+    # 数量
+    quantity = dict_data.get('quantity')
+    # 主控板版本号
+    control_version = dict_data.get('control_version')
+   # 执行板版本号
+    execute_version = dict_data.get('execute_version')
 
     # 根据ID查询客户
-    user = burning.objects.only('id').filter(id=burning_id, is_delete=False).first()
+    user = product_handover.objects.only('id').filter(id=product_handover_id, is_delete=False).first()
     # 查询结果判断
     if not user:
         return R.failed("客户不存在")
 
     current_time = datetime.now()
     # 对象赋值
+    user.time = time
     user.work_order = work_order
     user.name = name
     user.code = code
-    user.version = version
-    user.require = require
-    user.order_time = order_time
+    user.remark = remark
     user.delivery_time = delivery_time
     user. quantity =  quantity
-    user.remark = remark
-    user.rcerder = rcerder
+    user.control_version = control_version
+    user.execute_version = execute_version
     user.update_time = current_time
 
     # 更新数据
@@ -263,19 +235,19 @@ def BurningUpdate(request):
 
 
 # 删除客户
-def BurningDelete(burning_id):
+def Product_handoverDelete(product_handover_id):
     # 记录ID为空判断
-    if not burning_id:
+    if not product_handover_id:
         return R.failed("记录ID不存在")
     # 分裂字符串
-    list = burning_id.split(',')
+    list = product_handover_id.split(',')
     # 计数器
     count = 0
     # 遍历数据源
     if len(list) > 0:
         for id in list:
             # 根据ID查询记录
-            user = burning.objects.only('id').filter(id=int(id), is_delete=False).first()
+            user = product_handover.objects.only('id').filter(id=int(id), is_delete=False).first()
             # 查询结果判空
             if not user:
                 return R.failed("不存在")

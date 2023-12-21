@@ -115,7 +115,7 @@ def MacDetail(mac_id):
     return data
 
 mac_suffix = 0
-# 添加客户
+# 添加
 def MacAdd(request):
     try:
         # 接收请求参数
@@ -128,6 +128,7 @@ def MacAdd(request):
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
+
     # 表单验证
     form = forms.MacForm(dict_data)
     if form.is_valid():
@@ -146,6 +147,7 @@ def MacAdd(request):
             return R.failed('mac地址不能重复')
         # 创建数据
         else:
+            global mac_suffix  # 声明为全局变量
             quantity = dict_data.get('quantity')
             if quantity:
                if mac_address:
@@ -169,7 +171,6 @@ def MacAdd(request):
 
                else:
                    for i in range(int(quantity)):
-                       global mac_suffix  # 声明为全局变量
                        objs = mac.objects.all()
                        if objs:
                            last_row = mac.objects.filter(is_delete=0).latest('id')
@@ -200,12 +201,29 @@ def MacAdd(request):
                        # 增加 MAC 地址后缀
                        mac_suffix += 1
             else:
+                objs = mac.objects.all()
+                if objs:
+                    last_row = mac.objects.filter(is_delete=0).latest('id')
+                    original_mac = last_row.mac_address
+                    # 将原始 MAC 地址转换为十进制整数，并增加1
+                    new_mac_int = (int(original_mac.replace(':', ''), 16) + 1) % (256 ** 6)
+                    # 将新的值转换为十六进制字符串，并保持12位长度
+                    new_mac_str = hex(new_mac_int)[2:].zfill(12)
+                    # 在每两位字符之间加上冒号并生成新的 MAC 地址
+                    new_mac = ':'.join([new_mac_str[i:i + 2] for i in range(0, len(new_mac_str), 2)])
+                    # 连接每个部分并生成新的 MAC 地址
+                    mac_id = new_mac
+                else:
+                    # 将 MAC 地址后缀转换为十六进制字符串
+                    mac_hex = hex(mac_suffix)[2:].zfill(12)
+                    # 拼接 MAC 地址
+                    mac_id = f"{mac_hex[0:2]}:{mac_hex[2:4]}:{mac_hex[4:6]}:{mac_hex[6:8]}:{mac_hex[8:10]}:{mac_hex[10:12]}"
                 mac.objects.create(
                     work_order=work_order,
                     name=name,
                     code= code,
                     serial_id=serial_id,
-                    mac_address=mac_address,
+                    mac_address=mac_id,
                 )
             # 返回结果
             return R.ok(msg="创建成功")

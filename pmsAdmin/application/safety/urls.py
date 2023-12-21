@@ -37,6 +37,8 @@ urlpatterns = [
     path('update', views.SafetyUpdateView.as_view()),
     # 删除数据
     path('delete/<str:safety_id>', views.SafetyDeleteView.as_view()),
+    #  导入功能
+    path('upload',views.upload),
 
 
 ]

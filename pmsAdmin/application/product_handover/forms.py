@@ -21,23 +21,58 @@
 # | 法律所允许的合法合规的软件产品研发，详细声明内容请阅读《框架免责声明》附件；
 # +----------------------------------------------------------------------
 
-from django.urls import path
+from django import forms
+# 客户表单验证
+from application.product_handover import models
 
-from application.mac import views
 
-# 模块路由
-urlpatterns = [
-    # 查询分页数据
-    path('list', views.MacListView.as_view()),
-    # 查询数据
-    path('detail/<int:mac_id>', views.MacDetailView.as_view()),
-    # 添加数据
-    path('add', views.MacAddView.as_view()),
-    # 更新数据
-    path('update', views.MacUpdateView.as_view()),
-    # 删除数据
-    path('delete/<str:mac_id>', views.MacDeleteView.as_view()),
-    # 测试请求
-    path('test',views.test),
+class Product_handoverForm(forms.ModelForm):
+    # 日期
+    time = forms.DateTimeField(
+        # max_length=18,
+        error_messages={
+            'required': '订单日期不能为空',
+            'max_length': '订单日期长度不得超过18个字符'
+        }
+    )
+    # 客户名称
+    work_order = forms.CharField(
+        required=True,
+        max_length=255,
+        error_messages={
+            'required': '工单号不能为空',
+            'max_length': '工单号不得超过255个字符'
+        }
+    )
+    name = forms.CharField(
+        required=True,
+        max_length=255,
+        error_messages={
+            'required': '客户名称不能为空',
+            'max_length': '客户名称长度不得超过255个字符'
+        }
+    )
+    # 规格型号
+    code = forms.CharField(
+        required=True,
+        max_length=255,
+        error_messages={
+            'required': '规格型号不能为空',
+            'max_length': '规格型号长度不得超过255个字符'
+        }
+    )
+    code = forms.CharField(
+        required=True,
+        max_length=255,
+        error_messages={
+            'required': '规格型号不能为空',
+            'max_length': '规格型号长度不得超过255个字符'
+        }
+    )
 
-]
+    class Meta:
+        # 绑定模型
+        model = models.product_handover
+        # 指定部分字段验证
+        fields = ['work_order','name', 'code',
+                  ]

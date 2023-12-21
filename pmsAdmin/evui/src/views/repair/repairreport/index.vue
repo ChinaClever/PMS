@@ -8,54 +8,58 @@
           class="ele-form-search"
           @keyup.enter.native="reload"
           @submit.native.prevent>
-          <el-row :gutter="10">
-            <el-col :span="5">
-              <el-form-item label="单号:">
-                <el-input
-                  clearable
-                  v-model="where.work_order"
-                  @clear="this.reload"
-                  placeholder="请输入单号"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="5">
-              <el-form-item label="产品名称:">
-                <el-input
-                  clearable
-                  v-model="where.name"
-                  @clear="this.reload"
-                  placeholder="请输入产品名称"/>
-              </el-form-item>
-            </el-col>
-            <el-col :lg="6" :md="12" >
-              <div class="ele-form-actions">
-                <el-button
-                  type="primary"
-                  icon="el-icon-search"
-                  class="ele-btn-icon"
-                  @click="reload">查询
-                </el-button>
-                <el-button @click="reset">重置</el-button>
+          <el-row :gutter="25">
+            <el-col :lg="6" :md="12">
+              <div class="ele-text-left">
+                <el-form-item label="单号:">
+                  <el-input
+                    clearable
+                    v-model="where.work_order"
+                    @clear="this.reload"
+                    placeholder="请输入单号"/>
+                </el-form-item>
               </div>
             </el-col>
-          </el-row>
-          <el-row :gutter="10">
             <el-col :lg="6" :md="12">
-              <el-form-item label="日期范围:">
-              <el-date-picker
-                v-model="selectDateRange"
-                type="daterange"
-                align="right"
-                unlink-panels
-                range-separator="至"
-                start-placeholder="订单日期开始日期"
-                end-placeholder="订单日期结束日期"
-                format="yyyy 年 MM 月 dd 日"
-                value-format="yyyy-MM-dd"
-                :picker-options="pickerOptions"
-                @change="dateRangeHandleSelect">
-              </el-date-picker>
-              </el-form-item>
+              <div class="ele-text-left">
+                <el-form-item label="产品名称:">
+                  <el-input
+                    clearable
+                    v-model="where.name"
+                    @clear="this.reload"
+                    placeholder="请输入产品名称"/>
+                </el-form-item>
+              </div>
+            </el-col>
+            <el-col :lg="12" :md="24">
+              <div class="container">
+                <div class="time-picker">
+                  <el-form-item label="日期范围:">
+                      <el-date-picker
+                      v-model="selectDateRange"
+                      type="daterange"
+                      align="right"
+                      unlink-panels
+                      range-separator="至"
+                      start-placeholder="订单日期开始日期"
+                      end-placeholder="订单日期结束日期"
+                      format="yyyy 年 MM 月 dd 日"
+                      value-format="yyyy-MM-dd"
+                      :picker-options="pickerOptions"
+                      @change="dateRangeHandleSelect">
+                    </el-date-picker>
+                  </el-form-item>
+                </div>
+                <div class="ele-text-center">
+                    <el-button
+                      type="primary"
+                      icon="el-icon-search"
+                      class="ele-btn-icon"
+                      @click="reload">查询
+                    </el-button>
+                    <el-button @click="reset">重置</el-button>
+                </div>
+              </div>
             </el-col>
           </el-row>
         </el-form>
@@ -410,7 +414,7 @@
           // 添加
           this.current = null;
           this.showEdit = true;
-   
+
         } else {
           // 编辑
           this.loading = true;
@@ -472,9 +476,9 @@
       async exportToExcel() {
        // 创建 Excel 文件
       const workbook = XLSX.utils.book_new();
-      //去除不需要的字段，这里我不希望显示id，所以id不返回          
+      //去除不需要的字段，这里我不希望显示id，所以id不返回
       let temp = this.selection;
-      
+
       if(this.selection.length == 0){
         await this.$http.get(this.url,{ params : {...this.where} }).then((res) => {
           if (res.data.code === 0) {
@@ -486,7 +490,7 @@
         }).catch((e) => {
           this.$message.error(e.message);
         });
-      } 
+      }
 
 
       // eslint-disable-next-line
@@ -530,7 +534,7 @@
 
       saveAs(blob, newFileName);
       this.selection = temp;
-      
+
       },
 
     }
@@ -538,4 +542,12 @@
   </script>
 
   <style scoped>
+  .container{
+    display: flex;
+    align-items: flex-start;
+  }
+  .time-picker{
+    flex: 1;
+  }
+
   </style>

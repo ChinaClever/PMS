@@ -59,6 +59,8 @@ class Softwarerelease(BaseModel):
     documentation_position = models.CharField(null=True, max_length=255, verbose_name="程序和文档公盘位置", help_text="程序和文档公盘位置")
     # 用户使用手册和协议公盘位置
     User_Manual_position = models.CharField(null=True, max_length=255, verbose_name="用户使用手册和协议公盘位置", help_text="用户使用手册和协议公盘位置")
+    # 附件
+    attachment = models.CharField(null=True, max_length=1000, verbose_name="附件", help_text="附件")
     class Meta:
         # 数据表名
         db_table = TABLE_PREFIX + "softwarerelease"

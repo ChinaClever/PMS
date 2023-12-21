@@ -101,6 +101,11 @@ def ShipmentReportList(request):
                 'attachment': item.attachment if item.attachment else None,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d')) if item.create_time else None,
+                'burning_duration_days': item.burning_duration_days,
+                'debug_duration_days': item.debug_duration_days,
+                'inspect_duration_days': item.inspect_duration_days,
+                'repair_duration_days': item.repair_duration_days,
+                'priority': item.priority
             }
             items_total += item.product_count
             result.append(data)
@@ -131,7 +136,11 @@ def ShipmentReportDetail(shipment_id):
         'remark': shipment.remark if shipment.remark else None,
         'product_module': shipment.product_module,
         'attachment': shipment.attachment if shipment.attachment else None,
-
+        'burning_duration_days': shipment.burning_duration_days,
+        'debug_duration_days': shipment.debug_duration_days,
+        'inspect_duration_days': shipment.inspect_duration_days,
+        'repair_duration_days': shipment.repair_duration_days,
+        'priority': shipment.priority
     }
     # 返回结果
     return data
@@ -150,6 +159,12 @@ def ShipmentReportAdd(request):
     SO_RQ_id = request.POST.get('SO_RQ_id')
     remark = request.POST.get('remark')
     product_module = request.POST.get('product_module')
+    priority = request.POST.get('priority')
+    burning_duration_days = request.POST.get('burning_duration_days')
+    debug_duration_days = request.POST.get('debug_duration_days')
+    inspect_duration_days = request.POST.get('inspect_duration_days')
+    repair_duration_days = request.POST.get('repair_duration_days')
+
     # 根据work_order查询 不能有相同工单号
     isWorkOrderExist = Shipment.objects.only('id').filter(work_order=work_order, is_delete=False).first()
     if isWorkOrderExist:
@@ -194,7 +209,12 @@ def ShipmentReportAdd(request):
         product_module=product_module,
         remark=remark if remark else None,
         attachment = attachmentListToString if files else None,
-        create_user=uid(request)
+        create_user=uid(request),
+        priority = priority,
+        burning_duration_days = burning_duration_days,
+        debug_duration_days = debug_duration_days,
+        inspect_duration_days = inspect_duration_days,
+        repair_duration_days = repair_duration_days
         )
 
     product = Product.objects.filter(product_code=product_code, is_delete=False).first()
@@ -268,6 +288,11 @@ def ShipmentReportUpdate(request):
     SO_RQ_id = request.POST.get('SO_RQ_id')
     remark = request.POST.get('remark')
     product_module = request.POST.get('product_module')
+    priority = request.POST.get('priority')
+    burning_duration_days = request.POST.get('burning_duration_days')
+    debug_duration_days = request.POST.get('debug_duration_days')
+    inspect_duration_days = request.POST.get('inspect_duration_days')
+    repair_duration_days = request.POST.get('repair_duration_days')
 
     # 日期格式转化
     if update_delivery_date == "null":
@@ -327,6 +352,11 @@ def ShipmentReportUpdate(request):
     shipment.attachment = attachmentListToString
     shipment.update_user = uid(request)
     shipment.update_time = datetime.now()
+    shipment.priority = priority
+    shipment.burning_duration_days = burning_duration_days
+    shipment.debug_duration_days = debug_duration_days
+    shipment.inspect_duration_days = inspect_duration_days
+    shipment.repair_duration_days = repair_duration_days
     shipment.save()
 
     isProductExist = Product.objects.filter(is_delete=False, product_code=product_code).first()
@@ -451,6 +481,11 @@ def SelectShipmentDetailByWorkOrder(work_order):
         'remark': shipment.remark if shipment.remark else None,
         'product_module': shipment.product_module,
         'attachment': shipment.attachment if shipment.attachment else None,
+        'burning_duration_days': shipment.burning_duration_days,
+        'debug_duration_days': shipment.debug_duration_days,
+        'inspect_duration_days': shipment.inspect_duration_days,
+        'repair_duration_days': shipment.repair_duration_days,
+        'priority': shipment.priority
     }
     # 返回结果
     return data

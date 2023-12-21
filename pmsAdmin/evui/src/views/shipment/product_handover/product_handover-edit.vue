@@ -12,8 +12,19 @@
       :model="form"
       :rules="rules"
       label-width="82px">
-      
-          <el-form-item
+
+      <el-form-item
+        label="日期:"
+        prop="time">
+        <el-date-picker
+              type="date"
+              class="ele-fluid"
+              v-model="form.time"
+              value-format="yyyy-MM-dd"
+              placeholder="请选择日期"/>
+      </el-form-item>
+
+      <el-form-item
             label="单号:"
             prop="work_order">
             <el-autocomplete
@@ -26,8 +37,8 @@
             placeholder="请输入单号"
             style="width: 277px;"
           ></el-autocomplete>  
-          </el-form-item>
-       
+      </el-form-item>
+
       <el-form-item
         label="客户名称:"
         prop="name">
@@ -37,44 +48,69 @@
           placeholder="请输入客户名称"
           clearable/>
       </el-form-item>
+
       <el-form-item
-        label="产品类型:"
+        label="规格型号:"
         prop="code">
         <el-input
           :maxlength="255"
           v-model="form.code"
-          placeholder="请输入产品类型"
+          placeholder="请输入规格型号"
           clearable/>
       </el-form-item>
+
       <el-form-item
-        label="序列号:"
-        prop="serial_id">
+        label="安数:"
+        prop="remark">
         <el-input
           :maxlength="255"
-          v-model="form.serial_id"
-          placeholder="请输入序列号"
+          v-model="form.remark"
+          placeholder="请输入安数"
           clearable/>
       </el-form-item>
+      
+      <el-form-item
+        label="交期:"
+        prop="delivery_time">
+        <el-date-picker
+              type="date"
+              class="ele-fluid"
+              v-model="form.delivery_time"
+              value-format="yyyy-MM-dd"
+              placeholder="请选择交期"/>
+      </el-form-item>
+      
       <el-form-item
         label="数量:"
-        prop="quantity"
-        v-if="mk">
+        prop="quantity">
         <el-input
-          :maxlength="255"
+          :maxlength="20"
           v-model="form.quantity"
           placeholder="请输入数量"
           clearable/>
       </el-form-item>
+      
       <el-form-item
-        label="mac地址:"
-        prop="mac_address">
+        label="主控板版本号:"
+        label-width="120px"
+        prop="control_version">
         <el-input
           :maxlength="255"
-          v-model="form.mac_address"
-          placeholder="请输入mac地址(例如00:00:00:00:00:02)"
+          v-model="form.control_version"
+          placeholder="请输入主控板版本号注"
           clearable/>
       </el-form-item>
-      
+
+      <el-form-item
+        label="执行板版本号:"
+        label-width="120px"
+        prop="execute_version">
+        <el-input
+          :maxlength="255"
+          v-model="form.execute_version"
+          placeholder="请输入执行板版本号"
+          clearable/>
+      </el-form-item>
     </el-form>
     <div slot="footer">
       <el-button @click="updateVisible(false)">取消</el-button>
@@ -89,7 +125,7 @@
 
 <script>
 export default {
-  name: 'MacEdit',
+  name: 'Product_handoverEdit',
   props: {
     // 弹窗是否打开
     visible: Boolean,
@@ -102,29 +138,23 @@ export default {
       form: Object.assign({status: 1, name: '',code : ''}, this.data),
       // 表单验证规则
       rules: {
-        // work_order: [
-        //   {required: true, message: '请输入单号', trigger: 'blur'}
-        // ],
-        // name: [
-        //   {required: true, message: '请输入客户名称', trigger: 'blur'}
-        // ],
-        // code: [
-        //   {required: true, message: '请输入产品型号', trigger: 'blur'}
-        // ],
-        // serial_id: [
-        //   {required: true, message: '请输入序列号', trigger: 'blur'}
-        // ],
-        mac_address: [
-        { 
-    required: false, 
-    message: '请输入mac地址', 
-    trigger: 'blur' 
-  },
-  {
-    pattern: /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/, 
-    message: 'MAC地址格式不正确', 
-    trigger: 'blur'
-  }
+        time: [
+          {required: true, message: '请输入日期', trigger: 'blur'}
+        ],
+        work_order: [
+          {required: true, message: '请输入单号', trigger: 'blur'}
+        ],
+        name: [
+          {required: true, message: '请输入客户名称', trigger: 'blur'}
+        ],
+        code: [
+          {required: true, message: '请输入规格型号', trigger: 'blur'}
+        ],
+        remark:[
+           {required: true, message: '请输入安数', trigger: 'blur'}
+        ],
+        delivery_time: [
+          {required: true, message: '请输入交期', trigger: 'blur'},
         ],
         quantity: [
           { required: true, message: '请输入数量', trigger: 'blur' },
@@ -140,32 +170,31 @@ export default {
             trigger: 'blur'
           }
         ],
+        control_version: [
+          {required: true, message: '请输入主控板版本号', trigger: 'blur'}
+        ],
+        execute_version: [
+          {required: true, message: '请输入执行板版本号', trigger: 'blur'}
+        ],
       },
       // 提交状态
       loading: false,
       // 是否是修改
-      isUpdate: false,
-
-      mk:false
+      isUpdate: false
     };
   },
   watch: {
     data() {
       if (this.data && this.data.id) {
-        this.form = Object.assign({ name: '',code : ''}, this.data);
-        this.mk = false;
+        this.form = Object.assign({}, this.data);
         this.isUpdate = true;
-      }else if(this.data && this.data.mk){
-        this.form = { name: '',code : ''};
-        this.mk = true;
-      }else {
-        this.mk = false;
-        this.form = { name: '',code : ''};
+      } else {
+        this.form = {};
         this.isUpdate = false;
       }
-    },
-    
+    }
   },
+  
   methods: {
     loadAll() {
       this.$http.get('/shipmentreport/work_order/list').then((res) => {
@@ -186,11 +215,6 @@ export default {
         cb(results);
       }, 300 * Math.random());
     },
-    createStateFilter(queryString) {
-        return (state) => {
-          return (state.value.toLowerCase().includes(queryString.toLowerCase()));
-        };
-      },
     handleSelect(item) {
       this.form.work_order = item.value
       this.$refs.form.validateField('work_order', () => {});
@@ -209,6 +233,11 @@ export default {
       this.form.name = ''
       this.form.code  = ''
     },
+    createStateFilter(queryString) {
+        return (state) => {
+          return (state.value.toLowerCase().includes(queryString.toLowerCase()));
+        };
+      },
     handleEnterKey(event){
       console.log("进入")
       console.log(event)
@@ -230,19 +259,15 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.loading = true;
-          this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/mac/update' : '/mac/add', this.form).then(res => {
+          this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/product_handover/update' : '/product_handover/add', this.form).then(res => {
             this.loading = false;
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
-              if(this.mk){
-                this.$emit('child-event', this.form.quantity);
-              }
               if (!this.isUpdate) {
                 this.form = {name: '',code : ''};
               }
               this.updateVisible(false);
               this.$emit('done');
-              
             } else {
               this.$message.error(res.data.msg);
             }
@@ -258,10 +283,11 @@ export default {
     /* 更新visible */
     updateVisible(value) {
       this.$emit('update:visible', value);
-    }
+    },
+    
   },
   mounted() {
-      this.loadAll();
+    this.loadAll();
   }
 }
 </script>
