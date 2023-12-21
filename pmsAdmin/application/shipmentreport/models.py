@@ -28,13 +28,28 @@ class Shipment(BaseModel):
     # 备注
     remark = models.CharField(null=True, max_length=255, verbose_name="备注", help_text="备注")
     # 成品or模块
-    product_module_CHOICES = (
+    product_module_choices = (
         (1, '成品'),
         (2, '模块')
     )
-    product_module = models.IntegerField(null=False, choices=product_module_CHOICES, verbose_name="成品_模块：1-成品 2-模块", help_text="成品_模块：1-成品 2-模块")
+    product_module = models.IntegerField(choices=product_module_choices, verbose_name="成品_模块：1-成品 2-模块", help_text="成品_模块：1-成品 2-模块")
     # 附件
     attachment = models.CharField(null=True, max_length=1000, verbose_name="附件", help_text="附件")
+    # 优先级
+    priority_choices = (
+        (1, '低'),
+        (2, '中'),
+        (3, '高')
+    )
+    priority = models.IntegerField(choices=priority_choices, verbose_name="优先级：1-低 2-中 3-高", help_text="优先级：1-低 2-中 3-高")
+    # 烧录所需天数
+    burning_duration_days = models.IntegerField(default=0, verbose_name="烧录所需天数", help_text="烧录所需天数")
+    # 调试所需天数
+    debug_duration_days = models.IntegerField(default=0, verbose_name="调试所需天数", help_text="调试所需天数")
+    # 质检所需天数
+    inspect_duration_days = models.IntegerField(default=0, verbose_name="质检所需天数", help_text="质检所需天数")
+    # 维修所需天数
+    repair_duration_days = models.IntegerField(default=0, verbose_name="维修所需天数", help_text="维修所需天数")
 
     class Meta:
         db_table = TABLE_PREFIX + 'shipmentreport'
