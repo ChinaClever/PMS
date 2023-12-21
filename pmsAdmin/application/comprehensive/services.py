@@ -18,22 +18,22 @@ def DetailAll(request):
     page = int(request.GET.get('page', 1))
     # 每页数
     limit = int(request.GET.get('limit', PAGE_LIMIT))
-    shipmentReportS = Shipment.objects.filter(is_delete=False)
-    if not shipmentReportS:
-        return None
+    query = Shipment.objects.filter(is_delete=False)
+    if not query:
+        return R.failed("数据不存在")
     data = set()
     # 排序
     sort = request.GET.get('sort')
     order = request.GET.get('order')
     if sort and order:
-        shipmentReportS = shipmentReportS.order_by(f'-{sort}' if order == 'desc' else sort)
+        query = query.order_by(f'-{sort}' if order == 'desc' else sort)
     else:
-        shipmentReportS = shipmentReportS.order_by("-id")
+        query = query.order_by("-priority","-id")
     # 分页设置
-    paginator = Paginator(shipmentReportS, limit)
+    paginator = Paginator(query, limit)
     # 记录总数
     count = paginator.count
-    # 分页查询
+    # # 分页查询
     try:
         shipmentReportS = paginator.page(page)
     except PageNotAnInteger:
@@ -99,6 +99,10 @@ def DetailAll(request):
                 'debug_quantity':debugReport, #调试数量
                 'burning_quantity':burningReport,  #烧录数量
                 'repair_quantity':repairReport,  #维修数量
+                'inspect_duration_days': shipmentReport.inspect_duration_days,  ## 质检所需天数
+                'debug_duration_days': shipmentReport.debug_duration_days,  # 调试所需天数
+                'burning_duration_days': shipmentReport.burning_duration_days,  # 烧录所需天数
+                'repair_duration_days':shipmentReport.repair_duration_days # 维修所需天数
             }
             data.add(tuple(Alldata.items()))
     SendData = [dict(item) for item in data]
@@ -117,7 +121,7 @@ def getShipmentData(request):
     #按照范围时间来选择
     shipmentReportS = Shipment.objects.filter(is_delete=False, delivery_date__range=(start_date, end_date))
     if not shipmentReportS:
-        return R.failed("产品数据不存在")
+        return R.failed("数据不存在")
     data = set()
     if len(shipmentReportS) > 0 or len(shipmentReportS) < 20:
         for shipmentReport in shipmentReportS:
