@@ -17,60 +17,60 @@
         :validate-on-rule-change="false">
         <el-row :gutter="6">
         <el-col :span="12">
-        <el-form-item
-          label="单号:"
-          prop="work_order">
-          <el-input
-            v-model="form.work_order"
-            placeholder="请输入单号"
-            @keyup.enter.native="handleEnterKey"
-            clearable>
-            <el-tooltip slot="prefix" effect="dark" placement="top">
-              <i class="el-icon-question"></i>
-              <div slot="content">
-                智能填入步骤：<br>
-                1. 点击单号输入框<br>
-                2. 输入法切换至英文大写<br>
-                3. 使用扫码枪扫码<br>
-              </div>
-            </el-tooltip>
-          </el-input>
-        </el-form-item>
+          <el-form-item
+            label="单号:"
+            prop="work_order">
+            <el-input
+              v-model="form.work_order"
+              placeholder="请输入单号"
+              @keyup.enter.native="handleEnterKey"
+              clearable>
+              <el-tooltip slot="prefix" effect="dark" placement="top">
+                <i class="el-icon-question"></i>
+                <div slot="content">
+                  智能填入步骤：<br>
+                  1. 点击单号输入框<br>
+                  2. 输入法切换至英文大写<br>
+                  3. 使用扫码枪扫码<br>
+                </div>
+              </el-tooltip>
+            </el-input>
+          </el-form-item>
         </el-col>
         <el-col :span="12">
-        <el-form-item
-          label="客户名称:"
-          prop="client_name">
-          <el-input
-            v-model="form.client_name"
-            placeholder="请输入客户名称"
-            clearable/>
-        </el-form-item>
+          <el-form-item
+            label="客户名称:"
+            prop="client_name">
+            <el-input
+              v-model="form.client_name"
+              placeholder="请输入客户名称"
+              clearable/>
+          </el-form-item>
         </el-col>
         </el-row>
         <el-row :gutter="6">
         <el-col :span="12">
-        <el-form-item
-          label="成品编码:"
-          prop="product_code">
-          <el-input
-            v-model="form.product_code"
-            placeholder="请输入成品编码"
-            clearable
-            />
-        </el-form-item>
-      </el-col>
+          <el-form-item
+            label="成品编码:"
+            prop="product_code">
+            <el-input
+              v-model="form.product_code"
+              placeholder="请输入成品编码"
+              clearable
+              />
+          </el-form-item>
+        </el-col>
         <el-col :span="12">
-        <el-form-item label="产品名称:" prop="product_name">
-        <el-autocomplete
-          v-model="form.product_name"
-          :fetch-suggestions="querySearchAsync"
-          placeholder="请输入产品名称"
-          clearable
-          @select="handleSelect"
-          style="width: 277px;"
-        ></el-autocomplete>
-        </el-form-item>
+          <el-form-item label="产品名称:" prop="product_name">
+            <el-autocomplete
+              v-model="form.product_name"
+              :fetch-suggestions="querySearchAsync"
+              placeholder="请输入产品名称"
+              clearable
+              @select="handleSelect"
+              style="width: 277px;"
+            ></el-autocomplete>
+          </el-form-item>
         </el-col>
         </el-row>
 

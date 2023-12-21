@@ -142,7 +142,7 @@ class ProductNameUpdateView(PermissionRequired, View):
 
 @method_decorator(check_login, name="delete")
 class ProductNameDeleteView(PermissionRequired, View):
-    permission_required = ('sys:shipmentreport:delete',)
+    permission_required = ('sys:productname:delete',)
     def delete(self, request, product_id):
         if DEBUG:
             return R.failed("演示环境，暂无操作权限")

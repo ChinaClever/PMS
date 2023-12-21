@@ -9,7 +9,7 @@ class Shipment(BaseModel):
     client_name = models.CharField(max_length=255, verbose_name="客户名称", help_text="客户名称")
     # 成品编码
     product_code = models.CharField(max_length=255, verbose_name="成品编码", help_text="成品编码")
-    # 产品名称（下拉框 数据大写）
+    # 产品名称
     product_name = models.CharField(max_length=255, verbose_name="产品名称", help_text="产品名称")
     # 规格型号
     shape = models.CharField(max_length=255, verbose_name="规格型号", help_text="规格型号")
