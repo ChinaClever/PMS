@@ -5,6 +5,7 @@
           ref="table"
           :datasource="url"
           :columns="columns"
+          :row-style="getRowsStyle"
           border class="custom-table"
           :cell-style="cellStyle"
           :header-cell-style="headerCellStyle"
@@ -65,6 +66,13 @@ export default {
       // 表格列配置
       columns: [
           {
+            columnKey: 'selection',
+            type: 'selection',
+            width: 45,
+            align: 'center',
+            fixed: "left"
+          },
+          {
             prop: 'work_order_id',
             label: '工单号',
             showOverflowTooltip: true,
@@ -97,6 +105,13 @@ export default {
             label: '开始日期',
             showOverflowTooltip: true,
             minWidth: 120,
+            align: 'center',
+          },
+          {
+            prop: 'product_count',
+            label: '订单数量',
+            showOverflowTooltip: true,
+            minWidth: 60,
             align: 'center',
           },
           {
@@ -139,11 +154,17 @@ export default {
         ],
       //交付数量
       DeliveryData:[],
+      //警告天数获取
+      WarningData:[],
+      //状态
+      status:null,
 
     };
   },
   mounted() {
     this.getAllData();
+    this.getWarningData();
+    this.getDaysStyle();
   },
   methods: {
     getAllData(){
@@ -163,13 +184,56 @@ export default {
           this.$message.error(e.message);
         })
     },
-    //改变表格某一列或者某一个单元格文本颜色
-    cellStyle() {
-      // 定义样式变量
-      let cellStyle;
-      cellStyle = 'color:white;background-color:#192a56';
-      return cellStyle;
+    getWarningData(){
+      this.WarningData = [];
+      this.$http.get('/comprehensive/DetailAll').then(res => {
+        if (res.data.code === 0) {
+          this.WarningData = res.data.data;
+          } else {
+            this.$message.error(res.data.msg || '获取工单号对应的数据失败');
+          }
+        }).catch(e => {
+          this.$message.error(e.message);
+        })
     },
+    // //改变表格某一列或者某一个单元格文本颜色
+    // cellStyle({row, column}) {
+    //
+    //   const dataAndDays = [
+    //     {days:this.WarningData.inspect_duration_days},//质检所需天数
+    //     {days:this.WarningData.debug_duration_days},//调试所需天数
+    //     {days:this.WarningData.burning_duration_days},//烧录所需天数
+    //     {days:this.WarningData.repair_duration_days},//维修所需天数
+    //   ]
+    //   dataAndDays.forEach(item=>{
+    //     const dueDate = new Date();
+    //     dueDate.setDate(dueDate.getDate()+ item.days)
+    //     if(dueDate >= this.WarningData.deliveryDate){  //现在的时间加上排期表单上所需要的时间大于交货的日期，说明时间不够了
+    //       this.status = 1;
+    //     }
+    //     else {
+    //       this.status = 0;
+    //     }
+    //     // 定义样式变量
+    //     let cellStyle;
+    //     switch (this.status){
+    //       case 0:
+    //         cellStyle = 'color:#70DB92;background-color:#192a56';
+    //         break;
+    //
+    //       case 1:
+    //         cellStyle = 'color:red;background-color:#192a56';
+    //         break;
+    //
+    //       default:
+    //         cellStyle = '';
+    //     }
+    //   })
+    //
+    //
+    //
+    //   return cellStyle;
+    // },
     headerCellStyle() {
       return {
         backgroundColor: '#192a56',
