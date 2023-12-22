@@ -161,3 +161,4 @@ cython_debug/
 *.xz
 pmsAdmin/uwsgi.pid
 *.xlsx
+pmsAdmin/evui/.env.development

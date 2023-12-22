@@ -24,7 +24,7 @@
             @clear="handleClear"
             @keyup.enter.native="handleEnterKey"
             placeholder="请输入单号"
-            style="width: 277px;"
+            style="width: 337px;"
           ></el-autocomplete>  
           </el-form-item>
        

@@ -66,19 +66,19 @@
     </div>
     </div>
   </template>
-  
+
   <script>
   import EleChart from 'ele-admin/packages/ele-chart';
   import { mapGetters } from "vuex";
-  
-  
+
+
   export default {
     name: 'RepairDashboard',
     components: {EleChart},
-  
+
     computed: {
       ...mapGetters(["permission"]),
-  
+
           // 柱状图配置
       saleChartOption() {
         return {
@@ -142,7 +142,7 @@
             {
               name: '维修数量总和',
               type: 'bar',
-              data: this.saleroomData.map(d => d.repair_total),  
+              data: this.saleroomData.map(d => d.repair_total),
               showBackground: true,
               barWidth: 50,
               // backgroundStyle: {
@@ -170,7 +170,7 @@
             prop: 'name',
             label: '产品名称',
             showOverflowTooltip: true,
-            
+
             minWidth: 100,
             align: 'center',
           },
@@ -279,7 +279,7 @@
         this.loading = false;
         if (res.data.code === 0) {
             this.saleroomData = res.data.data
-            
+
         } else {
             this.$message.error(res.data.msg);
         }
@@ -300,7 +300,7 @@
           this.where.endTime = null
           this.reload()
         }
-  
+
       },
       reload() {
 
@@ -313,7 +313,7 @@
         this.loading = false;
         if (res.data.code === 0) {
             this.saleroomData = res.data.data
-            
+
         } else {
             this.$message.error(res.data.msg);
         }
@@ -349,7 +349,7 @@
     }
   }
   </script>
-  
+
   <style scoped>
   /* 小标题 */
   .demo-monitor-title {

@@ -272,7 +272,7 @@
         form: Object.assign({product_code: '', product_name:'', shape:'', product_module:''}, this.data),
         // 表单验证规则
         rules: {
-            work_order: [
+          work_order: [
             {required: true, message: '请输入单号', trigger: 'blur'},
             { validator: (rule, value, callback) => this.checkWorkOrderId(rule, value, callback), trigger: 'blur' }
           ],

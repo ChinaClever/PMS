@@ -1,9 +1,9 @@
 <!-- 职级编辑弹窗 -->
 <template>
   <el-dialog
-    :title="isUpdate?'修改客户':'添加客户'"
+    :title="isUpdate?'修改烧录报表':'添加烧录报表'"
     :visible="visible"
-    width="460px"
+    width="800px"
     :destroy-on-close="true"
     :lock-scroll="false"
     @update:visible="updateVisible">
@@ -11,30 +11,39 @@
       ref="form"
       :model="form"
       :rules="rules"
-      label-width="82px">
+      label-width="100px">
+      <el-row :gutter="10">
+      <el-col :span="12">
       <el-form-item
-            label="单号:"
-            prop="work_order">
-            <el-autocomplete
-            v-model="form.work_order"
-            clearable
-            :fetch-suggestions="querySearchAsync"
-            @select="handleSelect"
-            @clear="handleClear"
-            @keyup.enter.native="handleEnterKey"
-            placeholder="请输入单号"
-            style="width: 277px;"
-          ></el-autocomplete>  
-          </el-form-item>
-      <el-form-item
+        label="单号:"
+        prop="work_order">
+          <el-autocomplete
+          v-model="form.work_order"
+          :fetch-suggestions="querySearchAsync"
+          @select="handleSelect"
+          @clear="handleClear"
+          @keyup.enter.native="handleEnterKey"
+          placeholder="请输入单号"
+          clearable
+          style="width: 277px;"
+        ></el-autocomplete>  
+      </el-form-item>
+    </el-col>
+    
+      <el-col :span="12">
+        <el-form-item
         label="客户名称:"
         prop="name">
         <el-input
-          :maxlength="255"
           v-model="form.name"
           placeholder="请输入客户名称"
           clearable/>
       </el-form-item>
+      </el-col>
+    </el-row>
+    
+    <el-row :gutter="10">
+    <el-col :span="12">    
       <el-form-item
         label="规格型号:"
         prop="code">
@@ -44,24 +53,23 @@
           placeholder="请输入规格型号"
           clearable/>
       </el-form-item>
+    </el-col>
+
+    <el-col :span="12">
       <el-form-item
-        label="版本号:"
-        prop="version">
+        label="订单数量:"
+        prop="quantity">
         <el-input
-          :maxlength="255"
-          v-model="form.version"
-          placeholder="请输入版本号"
+          :maxlength="20"
+          v-model="form.quantity"
+          placeholder="请输入订单数量"
           clearable/>
       </el-form-item>
-      <el-form-item
-        label="程序要求:"
-        prop="require">
-        <el-input
-          :maxlength="255"
-          v-model="form.require"
-          placeholder="请输入程序要求"
-          clearable/>
-      </el-form-item>
+    </el-col>
+    </el-row> 
+
+    <el-row :gutter="6">
+    <el-col :span="12">  
       <el-form-item
         label="订单日期:"
         prop="order_time">
@@ -72,6 +80,9 @@
               value-format="yyyy-MM-dd"
               placeholder="请选择订单日期"/>
       </el-form-item>
+    </el-col>
+
+    <el-col :span="12">
       <el-form-item
         label="交货日期:"
         prop="delivery_time">
@@ -82,16 +93,79 @@
               value-format="yyyy-MM-dd"
               placeholder="请选择交货日期"/>
       </el-form-item>
-      
+    </el-col>
+    </el-row>
+
       <el-form-item
-        label="数量:"
-        prop="quantity">
+        label="* 软件版本号:"
+        prop="version">
         <el-input
-          :maxlength="20"
-          v-model="form.quantity"
-          placeholder="请输入数量"
+          :maxlength="255"
+          v-model="form.version"
+          placeholder="请输入软件版本号"
           clearable/>
       </el-form-item>
+      <el-form-item
+        label="* 程序要求:"
+        prop="require">
+        <el-input
+          :maxlength="255"
+          v-model="form.require"
+          placeholder="请输入程序要求"
+          clearable/>
+      </el-form-item>
+
+    <el-row :gutter="6">
+    <el-col :span="12">
+      <el-form-item label="开始时间:"
+      prop="start_time">
+            <el-date-picker
+              class="ele-fluid"
+              type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              v-model="form.start_time"
+              placeholder="请选择开始时间"/>
+          </el-form-item>
+    </el-col>
+
+    <el-col :span="12">
+      <el-form-item label="完成时间:"
+      prop="finish_time">
+            <el-date-picker
+              class="ele-fluid"
+              type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              v-model="form.finish_time"
+              placeholder="请选择完成时间"/>
+          </el-form-item>
+    </el-col>
+    </el-row>
+
+    <el-row :gutter="6">
+    <el-col :span="12">
+      <el-form-item label="所用工时:" prop="work_hours">
+      <el-input-number
+        :min="0"
+        v-model="form.work_hours"
+        placeholder="请输入所用工时"
+        controls-position="right"
+        class="ele-fluid ele-text-left"/>
+      </el-form-item>
+    </el-col>
+    
+    <el-col :span="12">
+      <el-form-item
+        label="烧录数量:"
+        prop="burning_quantity">
+        <el-input
+          :maxlength="20"
+          v-model="form.burning_quantity"
+          placeholder="请输入烧录数量"
+          clearable/>
+      </el-form-item>
+    </el-col>
+    </el-row>
+
       <el-form-item
         label="备注:"
         prop="remark">
@@ -102,7 +176,7 @@
           clearable/>
       </el-form-item>
       <el-form-item
-        label="rcerder:"
+        label="* rcerder:"
         prop="rcerder">
         <el-input
           :maxlength="255"
@@ -111,6 +185,7 @@
           clearable/>
       </el-form-item>
     </el-form>
+  
     <div slot="footer">
       <el-button @click="updateVisible(false)">取消</el-button>
       <el-button
@@ -146,14 +221,9 @@ export default {
         code: [
           {required: true, message: '请输入规格型号', trigger: 'blur'}
         ],
-        version: [
-          {required: true, message: '请输入版本号', trigger: 'blur'}
-        ],
-        require: [
-          {required: true, message: '请输入程序要求', trigger: 'blur'}
-        ],
+        
         quantity: [
-          { required: true, message: '请输入数量', trigger: 'blur' },
+          { required: true, message: '请输入订单数量', trigger: 'blur' },
           {
             validator: (rule, value, callback) => {
               const intValue = Number(value);
@@ -166,8 +236,31 @@ export default {
             trigger: 'blur'
           }
         ],
+        burning_quantity: [
+          { required: true, message: '请输入烧录数量', trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              const intValue = Number(value);
+              if (!Number.isInteger(intValue) || intValue <= 0) {
+                callback(new Error('数量必须为大于0的整数'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
+        ],
+        start_time: [
+          {required: true, message: '请输入开始时间', trigger: 'blur'}
+        ],
+        finish_time: [
+          {required: true, message: '请输入完成时间', trigger: 'blur'}
+        ],
         order_time: [
           {required: true, message: '请输入订单日期', trigger: 'blur'}
+        ],
+        work_hours: [
+          {required: true, message: '请输入工时', trigger: 'blur'}
         ],
         delivery_time: [
           {required: true, message: '请输入交货日期', trigger: 'blur'},
@@ -187,9 +280,7 @@ export default {
             trigger: 'change'
           }
         ],
-        rcerder: [
-          {required: true, message: '请输入rcerder', trigger: 'blur'}
-        ],
+        
       },
       // 提交状态
       loading: false,
@@ -239,6 +330,9 @@ export default {
         if (res.data.code === 0 && res.data.data != null) {
           this.form.name = shipmentData.product_name
           this.form.code  = shipmentData.shape
+          this.form.quantity  = shipmentData.product_count
+          this.form.order_time  = shipmentData.order_date
+          this.form.delivery_time  = shipmentData.delivery_date
      
         } 
       })
@@ -246,6 +340,9 @@ export default {
     handleClear(){
       this.form.name = ''
       this.form.code  = ''
+      this.form.quantity  = ''
+      this.form.order_time  = ''
+      this.form.delivery_time  =  ''
     },
     createStateFilter(queryString) {
         return (state) => {
@@ -264,6 +361,9 @@ export default {
         if (res.data.code === 0 && res.data.data != null) {
           this.form.name = shipmentData.client_name
           this.form.code  = shipmentData.shape
+          this.form.quantity  = shipmentData.product_count
+          this.form.order_time  = shipmentData.order_date
+          this.form.delivery_time  = shipmentData.delivery_date
          
         } 
       })
@@ -307,4 +407,9 @@ export default {
 </script>
 
 <style scoped>
+.el-row {
+  margin-bottom: 16px;
+
+}
+
 </style>
