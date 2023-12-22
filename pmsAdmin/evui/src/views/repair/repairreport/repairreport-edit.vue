@@ -161,7 +161,8 @@ export default {
           {required: true, message: '请输入产品名称', trigger: 'blur'}
         ],
         work_order:[
-          {required: true, message: '请输入单号', trigger: 'blur'}
+          {required: true, message: '请输入单号', trigger: 'blur'},
+          {validator: (rule, value, callback) => this.checkWorkOrderIsNull(rule, value, callback)},
         ],
         bad_number:[
           {
@@ -210,16 +211,7 @@ export default {
             trigger: 'blur'
           }
         ],
-        work_order:[
-          {
-            validator: (rule, value, callback) => {
-              const intValue = value;
-              if(value=''){
-                this.disabled=false;
-              }
-            }
-          }
-        ]
+
 
       },
       // 提交状态
@@ -405,9 +397,9 @@ export default {
               this.bad_phenomenonlist = this.loadbad_phenomenonlist(shipmentData.product_name);
               this.analysislist = this.loadanalysislist(shipmentData.product_name);
               this.solutionlist = this.loadsolutionlist(shipmentData.product_name);
+              this.disabled=true
             } 
           })
-          this.disabled=true
       },
 
       handleClear(){
@@ -427,10 +419,18 @@ export default {
           this.bad_phenomenonlist = this.loadbad_phenomenonlist(shipmentData.product_name);
           this.analysislist = this.loadanalysislist(shipmentData.product_name);
           this.solutionlist = this.loadsolutionlist(shipmentData.product_name);
-
+          this.disabled=true
         }
       })
       this.disabled=true
+    },
+        // 监听workorder为空时解除其他输入框禁用
+    checkWorkOrderIsNull(rule, value, callback){
+      if (value == '') {
+        this.disabled = false;
+        this.form.name='';
+      }
+      callback();
     },
 
   },
