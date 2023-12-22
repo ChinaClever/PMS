@@ -21,7 +21,7 @@ def DetailAll(request):
     query = Shipment.objects.filter(is_delete=False)
     if not query:
         return R.failed("数据不存在")
-    data = set()
+
     # 排序
     sort = request.GET.get('sort')
     order = request.GET.get('order')
@@ -45,6 +45,8 @@ def DetailAll(request):
     except InvalidPage:
         # 如果请求的页数不存在, 重定向页面
         return R.failed('找不到页面的内容')
+
+    data = []
 
     if len(shipmentReportS) > 0:
         for shipmentReport in shipmentReportS:
@@ -104,10 +106,11 @@ def DetailAll(request):
                 'burning_duration_days': shipmentReport.burning_duration_days,  # 烧录所需天数
                 'repair_duration_days':shipmentReport.repair_duration_days # 维修所需天数
             }
-            data.add(tuple(Alldata.items()))
-    SendData = [dict(item) for item in data]
-    # print(f"根据工单查询所需要的数据{SendData}")
-    return R.ok(data=SendData, count=count)
+            data.append(Alldata)
+    #         data.add(tuple(Alldata.items()))
+    # SendData = [dict(item) for item in data]
+    # print(f"根据工单查询所需要的数据{data}")
+    return R.ok(data=data, count=count)
 
 # 获取出货表的数据
 def getShipmentData(request):
@@ -122,13 +125,14 @@ def getShipmentData(request):
     shipmentReportS = Shipment.objects.filter(is_delete=False, delivery_date__range=(start_date, end_date))
     if not shipmentReportS:
         return R.failed("数据不存在")
-    data = set()
+    data = []
     if len(shipmentReportS) > 0 or len(shipmentReportS) < 20:
         for shipmentReport in shipmentReportS:
             Alldata = {
                 'name': shipmentReport.client_name,#客户名字
                 'product_count': shipmentReport.product_count, #数量
             }
-            data.add(tuple(Alldata.items()))
-    SendData = [dict(item) for item in data]
-    return R.ok(data=SendData)
+            data.append(Alldata)
+    #         data.add(tuple(Alldata.items()))
+    # SendData = [dict(item) for item in data]
+    return R.ok(data=data)
