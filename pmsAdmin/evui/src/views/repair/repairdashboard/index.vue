@@ -44,14 +44,14 @@
           :where="where"
           :datasource="url"
           :columns="columns"
-          
+
           border class="custom-table"
           :cell-style="cellStyle"
           :header-cell-style="headerCellStyle"
           height="calc(100vh - 415px)">
         </ele-pro-table>
       </el-card>
-  
+
       <el-card shadow="never" body-style="padding: 0;">
         <el-row>
             <el-col :lg="28" :md="26">
@@ -68,19 +68,19 @@
     </div>
     </div>
   </template>
-  
+
   <script>
   import EleChart from 'ele-admin/packages/ele-chart';
   import { mapGetters } from "vuex";
-  
-  
+
+
   export default {
     name: 'RepairDashboard',
     components: {EleChart},
-  
+
     computed: {
       ...mapGetters(["permission"]),
-  
+
           // 柱状图配置
       saleChartOption() {
         return {
@@ -137,7 +137,7 @@
             {
               name: '维修数量总和',
               type: 'bar',
-              data: this.saleroomData.map(d => d.repair_total),  
+              data: this.saleroomData.map(d => d.repair_total),
               showBackground: true,
               barWidth: 50,
               // backgroundStyle: {
@@ -165,7 +165,7 @@
             prop: 'name',
             label: '产品名称',
             showOverflowTooltip: true,
-            
+
             minWidth: 100,
             align: 'center',
           },
@@ -274,7 +274,7 @@
         this.loading = false;
         if (res.data.code === 0) {
             this.saleroomData = res.data.data
-            
+
         } else {
             this.$message.error(res.data.msg);
         }
@@ -295,7 +295,7 @@
           this.where.endTime = null
           this.reload()
         }
-  
+
       },
 
 
@@ -311,7 +311,7 @@
         this.loading = false;
         if (res.data.code === 0) {
             this.saleroomData = res.data.data
-            
+
         } else {
             this.$message.error(res.data.msg);
         }
@@ -326,7 +326,7 @@
         this.selectDateRange = '';
         this.reload();
       },
-       //改变表格某一列或者某一个单元格文本颜色 
+       //改变表格某一列或者某一个单元格文本颜色
     cellStyle() {
       // 定义样式变量
       let cellStyle;
@@ -348,7 +348,7 @@
     }
   }
   </script>
-  
+
   <style scoped>
   /* 小标题 */
   .demo-monitor-title {
@@ -374,7 +374,7 @@
   overflow: auto;
   display: flex;
   flex-direction: column;
-  
+
 }
 ::v-deep .ele-body{
   background-color: #072e7d !important; /* 设置最外面的背景颜色 */
