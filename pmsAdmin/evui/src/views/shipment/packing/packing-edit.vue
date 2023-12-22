@@ -59,15 +59,11 @@
         </el-col>
         <el-col :span="12" :pull="1">
           <el-form-item label="产品名称:" prop="product_name">
-            <el-autocomplete
-              :disabled="disabled"
-              v-model="form.product_name"
-              :fetch-suggestions="querySearchAsync"
-              placeholder="请输入产品名称"
-              clearable
-              @select="handleSelect"
-              style="width: 297px;"
-            ></el-autocomplete>
+              <el-input
+                :disabled="disabled"
+                v-model="form.product_name"
+                placeholder="请输入产品名称"
+                clearable/>
           </el-form-item>
         </el-col>
         </el-row>
@@ -94,12 +90,12 @@
           </el-form-item>
        </el-col>
         <el-col :span="12" :pull="1">
-          <el-form-item label="数量:" prop="product_count">
+          <el-form-item label="总数量:" prop="product_count">
           <el-input-number
             :disabled="disabled"
             :min="0"
             v-model="form.product_count"
-            placeholder="请输入数量"
+            placeholder="请输入总数量"
             controls-position="right"
             class="ele-fluid ele-text-left"/>
         </el-form-item>
@@ -352,10 +348,10 @@
                 this.form.order_date = shipmentData.order_date
                 this.form.shape  = shipmentData.shape
                 this.form.delivery_date = shipmentData.delivery_date
-                this.form.remark = shipmentData.remark 
-            } 
+                this.form.remark = shipmentData.remark
+                this.disabled = true;
+              } 
             });
-        this.disabled = true;
       },
 
       handleClear(){
@@ -381,9 +377,11 @@
             this.form.shape  = shipmentData.shape
             this.form.delivery_date = shipmentData.delivery_date
             this.form.remark = shipmentData.remark 
+
+            this.disabled = true;
             } 
           })
-          this.disabled = true;
+   
       },
 
       // 监听workorder为空时解除其他输入框禁用

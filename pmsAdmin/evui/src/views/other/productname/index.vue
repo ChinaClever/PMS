@@ -47,7 +47,7 @@
               icon="el-icon-plus"
               class="ele-btn-icon"
               @click="openEdit(null)"
-              v-if="permission.includes('sys:weldingreport:add')">添加
+              v-if="permission.includes('sys:productname:add')">添加
             </el-button>
             <el-button
               size="small"
@@ -55,7 +55,7 @@
               icon="el-icon-delete"
               class="ele-btn-icon"
               @click="removeBatch"
-              v-if="permission.includes('sys:weldingreport:dall')">删除
+              v-if="permission.includes('sys:productname:dall')">删除
             </el-button>
 
           </template>
@@ -66,7 +66,7 @@
               :underline="false"
               icon="el-icon-edit"
               @click="openEdit(row)"
-              v-if="permission.includes('sys:weldingreport:update')">修改
+              v-if="permission.includes('sys:productname:update')">修改
             </el-link>
             <el-popconfirm
               class="ele-action"
@@ -77,7 +77,7 @@
                 slot="reference"
                 :underline="false"
                 icon="el-icon-delete"
-                v-if="permission.includes('sys:weldingreport:delete')">删除
+                v-if="permission.includes('sys:productname:delete')">删除
               </el-link>
             </el-popconfirm>
           </template>

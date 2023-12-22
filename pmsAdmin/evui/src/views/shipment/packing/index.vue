@@ -48,7 +48,7 @@
               icon="el-icon-plus"
               class="ele-btn-icon"
               @click="openEdit(null)"
-              v-if="permission.includes('sys:weldingreport:add')">添加
+              v-if="permission.includes('sys:packing:add')">添加
             </el-button>
             <el-button
               size="small"
@@ -56,9 +56,16 @@
               icon="el-icon-delete"
               class="ele-btn-icon"
               @click="removeBatch"
-              v-if="permission.includes('sys:weldingreport:dall')">删除
+              v-if="permission.includes('sys:packing:dall')">删除
             </el-button>
-
+            <el-button
+              size="small"
+              type="success"
+              icon="el-icon-download"
+              class="ele-btn-icon"
+              @click="exportToExcel"
+              v-if="permission.includes('sys:packing:export')">导出
+            </el-button>
           </template>
           <!-- 操作列 -->
           <template slot="action" slot-scope="{row}">
@@ -67,7 +74,7 @@
               :underline="false"
               icon="el-icon-edit"
               @click="openEdit(row)"
-              v-if="permission.includes('sys:weldingreport:update')">修改
+              v-if="permission.includes('sys:packing:update')">修改
             </el-link>
             <el-popconfirm
               class="ele-action"
@@ -101,6 +108,8 @@
   <script>
   import { mapGetters } from "vuex";
   import PackingEdit from './packing-edit';
+  import XLSX from 'xlsx';
+  import { saveAs } from 'file-saver';
 
   export default {
     name: 'ShipmentPacking',
@@ -335,6 +344,76 @@
       // 清除搜索框
       clearSearchHandle(){
         this.$refs.table.reload({page: 1, where: this.where});
+      },
+      // 数据导出
+      async exportToExcel() {
+        // 创建 Excel 文件
+        const workbook = XLSX.utils.book_new();     
+        let temp = this.selection;
+        if(this.selection.length == 0){
+          await this.$http.get(this.url,{ params : {...this.where} }).then((res) => {
+            if (res.data.code === 0) {
+              // eslint-disable-next-line
+              this.selection = res.data.data;
+            } else {
+              this.$message.error(res.data.msg);
+            }
+          }).catch((e) => {
+            this.$message.error(e.message);
+          });
+        } 
+        // eslint-disable-next-line
+        this.selection = this.selection.map(({ id, ...rest }) => rest);
+
+        this.selection = this.selection.map(obj => {
+          if (obj.product_module === 2) {
+            return { ...obj, product_module: '模块' };
+          } else if (obj.product_module === 1) {
+            return { ...obj, product_module: '成品' };
+          }
+          return obj;
+        });
+
+        // 获取字段名称（中文）
+        const header = this.columns
+          .slice(1, -1) // 排除排除第一列和最后两列,这里我排除的是我的id列和操作列
+          .map(column => column.label);
+
+        // 获取要导出的数据（排除第一列和最后两列）
+        const data = this.selection.map(row =>
+          this.columns
+            .slice(1, -1) 
+            .map(column => row[column.prop])
+        );
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        // 将字段名称添加到 Excel 文件中
+        XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: 'A1' });
+
+        // 将数据添加到 Excel 文件中
+        XLSX.utils.sheet_add_aoa(worksheet, data, { origin: 'A2' });
+
+        // 将工作表添加到工作簿中
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+        // 保存 Excel 文件
+        const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+        // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
+        const fileName = '打包记录表.xlsx';
+        
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const date = String(currentDate.getDate()).padStart(2, '0');
+        const hours = String(currentDate.getHours()).padStart(2, '0');
+        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+        const formattedDate = `${year}年${month}月${date}日${hours}时${minutes}分${seconds}秒`;
+        const newFileName = `${fileName.split('.')[0]}_${formattedDate}.${fileName.split('.')[1]}`;
+
+        saveAs(blob, newFileName); 
+        this.selection = temp;
       },
 
     }
