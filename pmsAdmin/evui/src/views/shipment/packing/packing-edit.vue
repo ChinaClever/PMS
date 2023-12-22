@@ -206,7 +206,8 @@
         // 表单验证规则
         rules: {
           packing_finish_time: [
-            {required: true, message: '请选择打包完成时间', trigger: 'blur'}
+            {required: true, message: '请选择打包完成时间', trigger: 'blur'},
+            // { validator: (rule, value, callback) => this.checkWorkOrderId(rule, value, callback), trigger: 'blur' }
           ],
           work_hours: [
             {required: true, message: '请输入工时', trigger: 'blur'}
@@ -214,7 +215,36 @@
           packing_count: [
             {required: true, message: '请输入打包数量', trigger: 'blur'}
           ],
-        
+          work_order: [
+            {required: true, message: '请输入单号', trigger: 'blur'}
+          ],
+          client_name: [
+            {required: true, message: '请选择客户名称', trigger: 'blur'}
+          ],
+          product_code: [
+            {required: true, message: '请输入成品编码', trigger: 'blur'}
+          ],
+          product_name: [
+            {required: true, message: '请输入产品名称', trigger: 'blur'}
+          ],
+          shape: [
+            {required: true, message: '请输入规格型号', trigger: 'blur'}
+          ],
+          product_count: [
+            {required: true, message: '请输入数量', trigger: 'blur'}
+          ],
+          order_date: [
+            {required: true, message: '请选择订单日期', trigger: 'blur'}
+          ],
+          delivery_date: [
+            {required: true, message: '请选择交货日期', trigger: 'blur'},
+          ],
+          SO_RQ_id: [
+            {required: true, message: '请选择SO/RQ号', trigger: 'blur'}
+          ],
+          product_module: [
+            {required: true, message: '请选择成品/模块', trigger: 'blur'}
+          ],
         },
         // 提交状态
         loading: false,
@@ -234,7 +264,6 @@
           this.isUpdate = false;
         }
       }
-      //监听workorder为空时解除禁用
     },
     methods: {
       /* 保存编辑 */
@@ -343,6 +372,12 @@
           })
           this.disabled = true;
       },
+
+      //监听workorder为空时解除其他输入框禁用
+      // checkWorkOrderId(rule, value, callback){
+      //   if (va)
+      //     callback();
+      // },
     },
     mounted() {
       this.loadAll();
