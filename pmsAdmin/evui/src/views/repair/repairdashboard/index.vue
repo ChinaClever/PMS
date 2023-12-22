@@ -45,8 +45,7 @@
           :datasource="url"
           :columns="columns"
           border class="custom-table"
-          :cell-style="cellStyle"
-          :header-cell-style="headerCellStyle">
+          height="calc(100vh - 415px)">
         </ele-pro-table>
       </el-card>
   
@@ -58,7 +57,6 @@
               </div>
               <ele-chart
                 ref="saleChart"
-
                 border class="custom-chart"
                 :option="saleChartOption"/>
 
@@ -304,15 +302,12 @@
         }
   
       },
-
-
       reload() {
 
         this.$refs.table.reload({page: 1, where: this.where});
         const condition = {
           startTime: this.where.startTime ,
           endTime: this.where.endTime,
-
         };
         this.$http.get('/repairreport/listOf',{params:condition}).then((res) => {
         this.loading = false;
@@ -327,7 +322,6 @@
         this.$message.error(e.message);
         });
       },
-
       reset() {
         this.where = {};
         this.selectDateRange = '';
@@ -347,9 +341,6 @@
     //     color: 'white',
     //   };
     // },
-
-
-
     },
     activated() {
       ['saleChart', ].forEach((name) => {
@@ -387,7 +378,6 @@
     overflow: auto;
     display: flex;
     flex-direction: column;
-  
 }
 ::v-deep .ele-body{
   background-color: #072e7d !important; /* 设置最外面的背景颜色 */
@@ -462,4 +452,4 @@
 ::v-deep  .el-input__inner{
   background-color:#e9eaf0  !important; /* 按键 */
 }
-  </style>
+</style>

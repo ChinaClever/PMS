@@ -53,6 +53,7 @@
               v-model="form.name"
               :fetch-suggestions="querySearch4"
               placeholder="请输入产品名称"
+              :disabled="disabled"
               @select="handleSelect"
             ></el-autocomplete>
           </el-form-item>
@@ -209,6 +210,16 @@ export default {
             trigger: 'blur'
           }
         ],
+        work_order:[
+          {
+            validator: (rule, value, callback) => {
+              const intValue = value;
+              if(value=''){
+                this.disabled=false;
+              }
+            }
+          }
+        ]
 
       },
       // 提交状态
@@ -226,6 +237,7 @@ export default {
       analysislist:[],
       solutionlist:[],
       namelist:[],
+      disabled:false
     };
     
   },
@@ -395,10 +407,12 @@ export default {
               this.solutionlist = this.loadsolutionlist(shipmentData.product_name);
             } 
           })
+          this.disabled=true
       },
 
       handleClear(){
         this.form.name = ''
+        this.disabled=false
       },
       handleEnterKey(event){
       console.log("进入")
@@ -416,6 +430,7 @@ export default {
 
         }
       })
+      this.disabled=true
     },
 
   },
