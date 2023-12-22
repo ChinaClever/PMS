@@ -89,8 +89,8 @@ def BurningList(request):
                 'remark': item.remark,
                 'rcerder': item.rcerder,
                 'burning_quantity':item.burning_quantity,
-                'start_time': str(item.start_time.strftime('%Y-%m-%d')),
-                'finish_time': str(item.finish_time.strftime('%Y-%m-%d')),
+                'start_time': item.start_time.strftime('%Y-%m-%d %H:%M:%S') if item.start_time else None,
+                'finish_time': item.finish_time.strftime('%Y-%m-%d %H:%M:%S') if item.finish_time else None,
                 'work_hours': item.work_hours,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d ')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d ')) if item.update_time else None,
@@ -122,8 +122,8 @@ def BurningDetail(burning_id):
         'remark': user.remark,
         'rcerder': user.rcerder,
         'burning_quantity': user.burning_quantity,
-        'start_time': str(user.start_time.strftime('%Y-%m-%d')) if user.start_time else None,
-        'finish_time': str(user.finish_time.strftime('%Y-%m-%d')) if user.finish_time else None,
+        'start_time': user.start_time.strftime('%Y-%m-%d %H:%M:%S') if user.start_time else None,
+        'finish_time': user.finish_time.strftime('%Y-%m-%d %H:%M:%S') if user.finish_time else None,
         'work_hours': user.work_hours,
     }
     # 返回结果
@@ -166,8 +166,14 @@ def BurningAdd(request):
         remark = form.cleaned_data.get('remark')
         # rxerder
         rcerder = form.cleaned_data.get('rcerder')
-        if order_time > delivery_time:
-            return R.failed("交货日期不能小于订单日期")
+        # 烧录数量
+        burning_quantity= form.cleaned_data.get('burning_quantity')
+        # 开始时间
+        start_time= form.cleaned_data.get('start_time')
+        # 完成时间
+        finish_time= form.cleaned_data.get('finish_time')
+        # 工时
+        work_hours=form.cleaned_data.get('work_hours')
         # 创建数据
         burning.objects.create(
             work_order=work_order,
@@ -180,6 +186,10 @@ def BurningAdd(request):
             quantity=quantity,
             remark= remark,
             rcerder= rcerder,
+            burning_quantity=burning_quantity,
+            start_time=start_time,
+            finish_time=finish_time,
+            work_hours=work_hours,
         )
         # 返回结果
         return R.ok(msg="创建成功")
@@ -228,8 +238,16 @@ def BurningUpdate(request):
         quantity = form.cleaned_data.get('quantity')
         # 备注
         remark = form.cleaned_data.get('remark')
-       
+       # rcerder
         rcerder = form.cleaned_data.get('rcerder')
+        # 烧录数量
+        burning_quantity = form.cleaned_data.get('burning_quantity')
+        # 开始时间
+        start_time = form.cleaned_data.get('start_time')
+        # 完成时间
+        finish_time = form.cleaned_data.get('finish_time')
+        # 工时
+        work_hours = form.cleaned_data.get('work_hours')
     else:
         # 获取错误信息
         err_msg = regular.get_err(form)
@@ -255,6 +273,10 @@ def BurningUpdate(request):
     user.remark = remark
     user.rcerder = rcerder
     user.update_time = current_time
+    user.burning_quantity = burning_quantity
+    user.start_time = start_time
+    user.finish_time = finish_time
+    user.work_hours = work_hours
 
     # 更新数据
     user.save()
