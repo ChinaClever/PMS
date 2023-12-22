@@ -427,7 +427,7 @@ export default {
     /* 获取中国地图数据并注册地图 */
     getChinaMapData() {
       const json = require('@/assets/china.geo.json');
-      console.log(json)
+      // console.log(json)
       EleChart.registerMap('china', json);
       this.chinaMapData = json;
     },
