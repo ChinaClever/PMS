@@ -3,7 +3,7 @@
    <el-dialog
       :title="isUpdate?'修改打包记录':'添加打包记录'"
       :visible="visible"
-      width="800px"
+      width="900px"
       top="5vh"
       :destroy-on-close="true"
       :lock-scroll="false"
@@ -13,26 +13,26 @@
         enctype="multipart/form-data"
         :model="form"
         :rules="rules"
-        label-width="86px"
+        label-width="130px"
         :validate-on-rule-change="false">
         <el-row :gutter="6">
-        <el-col :span="12">
+        <el-col :span="12" :pull="1">
           <el-form-item
           label="单号:"
           prop="work_order">
             <el-autocomplete
-            v-model="form.work_order"
-            :fetch-suggestions="querySearchAsync"
-            @select="handleSelect"
-            @clear="handleClear"
-            @keyup.enter.native="handleEnterKey"
-            placeholder="请输入单号"
-            clearable
-            style="width: 277px;"
-          ></el-autocomplete>  
-        </el-form-item>
+              v-model="form.work_order"
+              :fetch-suggestions="querySearchAsync"
+              @select="handleSelect"
+              @clear="handleClear"
+              @keyup.enter.native="handleEnterKey"
+              placeholder="请输入单号"
+              clearable
+              style="width: 297px;"
+            ></el-autocomplete>  
+          </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="12" :pull="1">
           <el-form-item
             label="客户名称:"
             prop="client_name">
@@ -45,19 +45,19 @@
         </el-col>
         </el-row>
         <el-row :gutter="6">
-        <el-col :span="12">
+        <el-col :span="12" :pull="1">
           <el-form-item
             label="成品编码:"
             prop="product_code">
             <el-input
-            :disabled="disabled"
+              :disabled="disabled"
               v-model="form.product_code"
               placeholder="请输入成品编码"
               clearable
               />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="12" :pull="1">
           <el-form-item label="产品名称:" prop="product_name">
             <el-autocomplete
               :disabled="disabled"
@@ -66,21 +66,24 @@
               placeholder="请输入产品名称"
               clearable
               @select="handleSelect"
-              style="width: 277px;"
+              style="width: 297px;"
             ></el-autocomplete>
           </el-form-item>
         </el-col>
         </el-row>
-
-        <el-form-item label="规格型号:" prop="shape">
-          <el-input
-            :disabled="disabled"
-            v-model="form.shape"
-            placeholder="请输入规格型号"
-            clearable/>
-        </el-form-item>
         <el-row :gutter="6">
-        <el-col :span="12">
+          <el-col :span="24" :pull="1">
+            <el-form-item label="规格型号:" prop="shape">
+              <el-input
+                :disabled="disabled"
+                v-model="form.shape"
+                placeholder="请输入规格型号"
+                clearable/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="6">
+        <el-col :span="12" :pull="1">
           <el-form-item label="成品/模块:" prop="product_module">
             <el-radio-group
              :disabled="disabled"
@@ -90,7 +93,7 @@
             </el-radio-group>
           </el-form-item>
        </el-col>
-        <el-col :span="12">
+        <el-col :span="12" :pull="1">
           <el-form-item label="数量:" prop="product_count">
           <el-input-number
             :disabled="disabled"
@@ -104,42 +107,42 @@
       </el-col>
         </el-row>
         <el-row :gutter="6">
-        <el-col :span="12">
-        <el-form-item label="订单日期:" prop="order_date">
-            <el-date-picker
-             :disabled="disabled"
-              type="date"
-              class="ele-fluid"
-              v-model="form.order_date"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择订单日期"/>
-        </el-form-item>
-        </el-col>
-        <el-col :span="12">
-        <el-form-item label="交货日期:" prop="delivery_date">
-            <el-date-picker
-              type="date"
-              class="ele-fluid"
-              v-model="form.delivery_date"
-              value-format="yyyy-MM-dd"
-              :disabled="disabled"
-              placeholder="请选择交货日期"/>
-        </el-form-item>
-      </el-col>
+          <el-col :span="12" :pull="1">
+            <el-form-item label="订单日期:" prop="order_date">
+                <el-date-picker
+                :disabled="disabled"
+                  type="date"
+                  class="ele-fluid"
+                  v-model="form.order_date"
+                  value-format="yyyy-MM-dd"
+                  placeholder="请选择订单日期"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" :pull="1">
+            <el-form-item label="交货日期:" prop="delivery_date">
+                <el-date-picker
+                  type="date"
+                  class="ele-fluid"
+                  v-model="form.delivery_date"
+                  value-format="yyyy-MM-dd"
+                  :disabled="disabled"
+                  placeholder="请选择交货日期"/>
+            </el-form-item>
+          </el-col>
         </el-row>
       <el-row :gutter="6">
-
-      <el-col :span="12">
-       <el-form-item label="SO/RQ号:" prop="SO_RQ_id">
-          <el-input
-            :disabled="disabled"
-            v-model="form.SO_RQ_id"
-            placeholder="请输入SO/RQ号"
-            clearable/>
-        </el-form-item>
-      </el-col>
-        </el-row>
-       
+        <el-col :span="12" :pull="1">
+          <el-form-item label="SO/RQ号:" prop="SO_RQ_id">
+            <el-input
+              :disabled="disabled"
+              v-model="form.SO_RQ_id"
+              placeholder="请输入SO/RQ号"
+              clearable/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="6">
+        <el-col :span="24" :pull="1">
           <el-form-item label="备注:" prop="remark">
             <el-input
               :disabled="disabled"
@@ -150,34 +153,43 @@
               v-model="form.remark"
               placeholder="请输入备注"/>
           </el-form-item>
-
-          <el-form-item label="打包完成日期:" prop="packing_finish_time">
+        </el-col>
+      </el-row>
+      <el-row :gutter="6">
+        <el-col :span="24" :pull="1">
+          <el-form-item label="打包完成时间:" prop="packing_finish_time">
             <el-date-picker
               type="datetime"
               class="ele-fluid"
               v-model="form.packing_finish_time"
               value-format="yyyy-MM-dd HH:mm:ss"
-              placeholder="请选择打包完成日期"/>
+              placeholder="请选择打包完成时间"/>
           </el-form-item>
-          
+        </el-col>
+      </el-row>
+      <el-row :gutter="6">
+        <el-col :span="12" :pull="1">
           <el-form-item label="工时:" prop="work_hours">
-          <el-input-number
-            :min="0"
-            v-model="form.work_hours"
-            placeholder="请输入所用工时"
-            controls-position="right"
-            class="ele-fluid ele-text-left"/>
-        </el-form-item>
-
-        <el-form-item label="数量:" prop="packing_count">
-          <el-input-number
-            :min="0"
-            v-model="form.packing_count"
-            placeholder="请输入打包数量"
-            controls-position="right"
-            class="ele-fluid ele-text-left"/>
-        </el-form-item>
-      </el-form>
+            <el-input-number
+              :min="0"
+              v-model="form.work_hours"
+              placeholder="请输入所用工时"
+              controls-position="right"
+              class="ele-fluid ele-text-left"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12" :pull="1">
+          <el-form-item label="数量:" prop="packing_count">
+            <el-input-number
+              :min="0"
+              v-model="form.packing_count"
+              placeholder="请输入打包数量"
+              controls-position="right"
+              class="ele-fluid ele-text-left"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
     
       <div slot="footer">
         <el-button @click="updateVisible(false)">取消</el-button>
@@ -206,8 +218,7 @@
         // 表单验证规则
         rules: {
           packing_finish_time: [
-            {required: true, message: '请选择打包完成时间', trigger: 'blur'},
-            // { validator: (rule, value, callback) => this.checkWorkOrderId(rule, value, callback), trigger: 'blur' }
+            {required: true, message: '请选择打包完成时间', trigger: 'blur'}
           ],
           work_hours: [
             {required: true, message: '请输入工时', trigger: 'blur'}
@@ -216,7 +227,9 @@
             {required: true, message: '请输入打包数量', trigger: 'blur'}
           ],
           work_order: [
+            {validator: (rule, value, callback) => this.checkWorkOrderIsNull(rule, value, callback), trigger: 'blur' },
             {required: true, message: '请输入单号', trigger: 'blur'}
+          
           ],
           client_name: [
             {required: true, message: '请选择客户名称', trigger: 'blur'}
@@ -373,11 +386,14 @@
           this.disabled = true;
       },
 
-      //监听workorder为空时解除其他输入框禁用
-      // checkWorkOrderId(rule, value, callback){
-      //   if (va)
-      //     callback();
-      // },
+      // 监听workorder为空时解除其他输入框禁用
+      checkWorkOrderIsNull(rule, value, callback){
+        if (value == '') {
+          this.disabled = false;
+          this.form = {};
+        }
+        callback();
+      },
     },
     mounted() {
       this.loadAll();
@@ -388,7 +404,7 @@
   <style scoped>
   .el-row {
     margin-bottom: 16px;
-
   }
+
   </style>
 

@@ -14,6 +14,7 @@
                 <el-input
                   clearable
                   v-model="where.keyword"
+                  @clear="clearSearchHandle"
                   placeholder="单号、客户名称或产品名称"/>
               </el-form-item>
             </el-col>
@@ -331,6 +332,11 @@
         }).catch(() => {
         });
       },
+      // 清除搜索框
+      clearSearchHandle(){
+        this.$refs.table.reload({page: 1, where: this.where});
+      },
+
     }
   }
   </script>
