@@ -14,7 +14,8 @@
                 <el-input
                   clearable
                   v-model="where.keyword"
-                  placeholder="单号、客户名称、规格型号或产品名称"/>
+                  placeholder="单号、客户名称、规格型号或产品名称"
+                  @clear="clearSearchHandle"/>
               </el-form-item>
             </el-col>
 
@@ -156,8 +157,48 @@
             prop: 'work_order',
             label: '单号',
             showOverflowTooltip: true,
-            minWidth: 160,
+            minWidth: 200,
             align: 'center',
+          },
+          {
+            prop: 'start_time',
+            label: '焊接开始时间',
+            showOverflowTooltip: true,
+            minWidth: 200,
+            align: 'center',
+            sortable: 'custom',
+            order: '', 
+            sortableMethod: ()=> {
+            this.where.order = this.order;
+            this.reload();
+            } 
+          },
+          {
+            prop: 'finish_time',
+            label: '焊接完成时间',
+            showOverflowTooltip: true,
+            minWidth: 200,
+            align: 'center',
+            sortable: 'custom',
+            order: '', 
+            sortableMethod: ()=> {
+            this.where.order = this.order;
+            this.reload();
+            }
+          },
+          {
+            prop: 'work_hours',
+            label: '工时',
+            showOverflowTooltip: true,
+            minWidth: 80,
+            align: 'center',
+          },
+          {
+            prop: 'welding_count',
+            label: '焊接数量',
+            width: 80,
+            align: 'center',
+            showOverflowTooltip: true,
           },
           {
             prop: 'order_time',
@@ -176,14 +217,14 @@
             prop: 'client_name',
             label: '客户名称',
             showOverflowTooltip: true,
-            minWidth: 120,
+            minWidth: 200,
             align: 'center',
           },
           {
             prop: 'product_name',
             label: '产品名称',
             showOverflowTooltip: true,
-            minWidth: 120,
+            minWidth: 200,
             align: 'center',
           },
           {
@@ -196,57 +237,18 @@
           {
             prop: 'product_count',
             label: '产品数量',
-            width: 120,
+            width: 80,
             align: 'center',
             showOverflowTooltip: true,
           },
           {
             prop: 'submit_time',
-            label: '交期',
+            label: '交货日期',
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
             sortable: 'custom',
             order: '', 
-            sortableMethod: ()=> {
-            this.where.order = this.order;
-            this.reload();
-            }
-          },
-          {
-            prop: 'start_time',
-            label: '开始日期',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-            sortable: 'custom',
-            order: '', 
-            sortableMethod: ()=> {
-            this.where.order = this.order;
-            this.reload();
-            } 
-          },
-          {
-            prop: 'finish_time',
-            label: '完成日期',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-            sortable: 'custom',
-            order: '', 
-            sortableMethod: ()=> {
-            this.where.order = this.order;
-            this.reload();
-            }
-          },
-          {
-            prop: 'work_hours',
-            label: '工时',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-            sortable: 'custom',
-            order: '',
             sortableMethod: ()=> {
             this.where.order = this.order;
             this.reload();
@@ -422,79 +424,83 @@
         }).catch(() => {
         });
       },
+      // 清除搜索框
+      clearSearchHandle(){
+        this.$refs.table.reload({page: 1, where: this.where});
+      },
 
+      //导出数据到excel
       async exportToExcel() {
-       // 创建 Excel 文件
-      const workbook = XLSX.utils.book_new();
-      //去除不需要的字段，这里我不希望显示id，所以id不返回
-      let temp = this.selection;
-      if(this.selection.length == 0){
-        await this.$http.get(this.url,{ params : {...this.where} }).then((res) => {
-          if (res.data.code === 0) {
-            // eslint-disable-next-line
-            this.selection = res.data.data;
-          } else {
-            this.$message.error(res.data.msg);
+        const workbook = XLSX.utils.book_new();
+        //去除不需要的字段，这里我不希望显示id，所以id不返回
+        let temp = this.selection;
+        if(this.selection.length == 0){
+          await this.$http.get(this.url,{ params : {...this.where} }).then((res) => {
+            if (res.data.code === 0) {
+              // eslint-disable-next-line
+              this.selection = res.data.data;
+            } else {
+              this.$message.error(res.data.msg);
+            }
+          }).catch((e) => {
+            this.$message.error(e.message);
+          });
+        } 
+        // eslint-disable-next-line
+        this.selection = this.selection.map(({ id, ...rest }) => rest);
+
+        //可以将对应字段的数字经过判断转为对应的中文
+        this.selection = this.selection.map(obj => {
+          if (obj.product_module === 2) {
+            return { ...obj, product_module: '模块' };
+          } else if (obj.product_module === 1) {
+            return { ...obj, product_module: '成品' };
           }
-        }).catch((e) => {
-          this.$message.error(e.message);
+          return obj;
         });
-      } 
-      // eslint-disable-next-line
-      this.selection = this.selection.map(({ id, ...rest }) => rest);
+        
 
-      //可以将对应字段的数字经过判断转为对应的中文
-      this.selection = this.selection.map(obj => {
-        if (obj.product_module === 2) {
-          return { ...obj, product_module: '模块' };
-        } else if (obj.product_module === 1) {
-          return { ...obj, product_module: '成品' };
-        }
-        return obj;
-      });
-      
-
-      // 获取字段名称（中文）
-      const header = this.columns
-        .slice(1, -1) 
-        .map(column => column.label);
+        // 获取字段名称（中文）
+        const header = this.columns
+          .slice(1, -1) 
+          .map(column => column.label);
 
 
-      // 获取要导出的数据（排除第一列和最后一列）
-      const data = this.selection.map(row =>
-        this.columns
-          .slice(1, -1) // 排除第一列和最后一列
-          .map(column => row[column.prop])
-      );
-      const worksheet = XLSX.utils.json_to_sheet(data);
-      // 将字段名称添加到 Excel 文件中
-      XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: 'A1' });
+        // 获取要导出的数据（排除第一列和最后一列）
+        const data = this.selection.map(row =>
+          this.columns
+            .slice(1, -1) // 排除第一列和最后一列
+            .map(column => row[column.prop])
+        );
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        // 将字段名称添加到 Excel 文件中
+        XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: 'A1' });
 
-      // 将数据添加到 Excel 文件中
-      XLSX.utils.sheet_add_aoa(worksheet, data, { origin: 'A2' });
+        // 将数据添加到 Excel 文件中
+        XLSX.utils.sheet_add_aoa(worksheet, data, { origin: 'A2' });
 
-      // 将工作表添加到工作簿中
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        // 将工作表添加到工作簿中
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
-      // 保存 Excel 文件
-      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-      // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
-      const fileName = '焊接报表.xlsx';
-      
-      const currentDate = new Date();
-      const year = currentDate.getFullYear();
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-      const date = String(currentDate.getDate()).padStart(2, '0');
-      const hours = String(currentDate.getHours()).padStart(2, '0');
-      const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-      const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+        // 保存 Excel 文件
+        const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+        // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
+        const fileName = '焊接报表.xlsx';
+        
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const date = String(currentDate.getDate()).padStart(2, '0');
+        const hours = String(currentDate.getHours()).padStart(2, '0');
+        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
 
-      const formattedDate = `${year}年${month}月${date}日${hours}时${minutes}分${seconds}秒`;
-      const newFileName = `${fileName.split('.')[0]}_${formattedDate}.${fileName.split('.')[1]}`;
+        const formattedDate = `${year}年${month}月${date}日${hours}时${minutes}分${seconds}秒`;
+        const newFileName = `${fileName.split('.')[0]}_${formattedDate}.${fileName.split('.')[1]}`;
 
-      saveAs(blob, newFileName);
-      this.selection = temp;
+        saveAs(blob, newFileName);
+        this.selection = temp;
       },  
     }
   }

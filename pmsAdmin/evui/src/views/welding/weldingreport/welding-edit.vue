@@ -3,7 +3,7 @@
     <el-dialog
       :title="isUpdate?'修改焊接报表':'添加焊接报表'"
       :visible="visible"
-      width="800px"
+      width="900px"
       :destroy-on-close="true"
       :lock-scroll="false"
       @update:visible="updateVisible">
@@ -18,14 +18,15 @@
           label="单号:"
           prop="work_order">
             <el-autocomplete
-            v-model="form.work_order"
-            :fetch-suggestions="querySearchAsync"
-            @select="handleSelect"
-            @clear="handleClear"
-            @keyup.enter.native="handleEnterKey"
-            placeholder="请输入单号"
-            clearable
-            style="width: 277px;"
+              :disabled="isUpdate"
+              v-model="form.work_order"
+              :fetch-suggestions="querySearchAsync"
+              @select="handleSelect"
+              @clear="handleClear"
+              @keyup.enter.native="handleEnterKey"
+              placeholder="请输入单号"
+              clearable
+              style="width: 327px;"
           ></el-autocomplete>  
         </el-form-item>
       </el-col>
@@ -34,6 +35,7 @@
           label="客户名称:"
           prop="client_name">
           <el-input
+            :disabled="disabled"
             v-model="form.client_name"
             placeholder="请输入客户名称"
             clearable/>
@@ -43,20 +45,23 @@
         <el-row :gutter="6">
         <el-col :span="12">
           <el-form-item
-          label="产品名称:"
-          prop="product_name">
-          <el-input
-            v-model="form.product_name"
-            placeholder="请输入产品名称"
-            clearable/>
-        </el-form-item>
+            label="产品名称:"
+            prop="product_name">
+            <el-input
+              :disabled="disabled"
+              v-model="form.product_name"
+              placeholder="请输入产品名称"
+              clearable/>
+          </el-form-item>
       </el-col>
         <el-col :span="12">
-          <el-form-item label="数量:" prop="product_count">
+          <el-form-item label="总数量:" prop="product_count">
           <el-input-number
+            :disabled="disabled"
             :min="0"
+            :step="50"
             v-model="form.product_count"
-            placeholder="请输入产品数量"
+            placeholder="请输入总数量"
             controls-position="right"
             class="ele-fluid ele-text-left"/>
         </el-form-item>
@@ -66,6 +71,7 @@
           label="规格型号:"
           prop="shape">
           <el-input
+            :disabled="disabled"
             v-model="form.shape"
             placeholder="请输入规格型号"
             clearable/>
@@ -74,6 +80,7 @@
         <el-col :span="12">
         <el-form-item label="下单日期:" prop="order_time">
             <el-date-picker
+              :disabled="disabled"
               type="date"
               class="ele-fluid"
               v-model="form.order_time"
@@ -82,50 +89,62 @@
           </el-form-item>
       </el-col>
         <el-col :span="12">
-        <el-form-item label="交期:" prop="submit_time">
+        <el-form-item label="交货日期:" prop="submit_time">
             <el-date-picker
+              :disabled="disabled"
               type="date"
               class="ele-fluid"
               v-model="form.submit_time"
               value-format="yyyy-MM-dd"
-              placeholder="请选择交期"/>
+              placeholder="请选择交货日期"/>
           </el-form-item>
       </el-col>
         </el-row>
         <el-row :gutter="6">
         <el-col :span="12">
-         <el-form-item label="开始日期:" prop="start_time">
+         <el-form-item label="开始时间:" prop="start_time">
             <el-date-picker
-              type="date"
+              type="datetime"
               class="ele-fluid"
               v-model="form.start_time"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择开始日期"/>
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="请选择开始时间"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-        <el-form-item label="完成日期:" prop="finish_time">
+        <el-form-item label="完成时间:" prop="finish_time">
             <el-date-picker
-              type="date"
+              type="datetime"
               class="ele-fluid"
               v-model="form.finish_time"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择完成日期"/>
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="请选择完成时间"/>
           </el-form-item>
         </el-col>
         </el-row>
-        <el-row :gutter="6">
+      <el-row :gutter="6">
         <el-col :span="12">
-           <el-form-item label="所用工时:" prop="work_hours">
-          <el-input-number
-            :min="0"
-            v-model="form.work_hours"
-            placeholder="请输入所用工时"
-            controls-position="right"
-            class="ele-fluid ele-text-left"/>
-        </el-form-item>
+          <el-form-item label="所用工时:" prop="work_hours">
+            <el-input-number
+              :min="0"
+              v-model="form.work_hours"
+              placeholder="请输入所用工时"
+              controls-position="right"
+              class="ele-fluid ele-text-left"/>
+          </el-form-item>
         </el-col>
-        </el-row>
+        <el-col :span="12">
+          <el-form-item label="焊接数量:" prop="welding_count">
+            <el-input-number
+              :min="0"
+              :step="50"
+              v-model="form.welding_count"
+              placeholder="请输入焊接数量"
+              controls-position="right"
+              class="ele-fluid ele-text-left"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
         <el-form-item label="具体说明:" prop="instruction">
             <el-input
               :rows="3"
@@ -176,42 +195,48 @@
         form: Object.assign({}, this.data),
         // 表单验证规则
         rules: {
-          work_order: [
-          {required: true, message: '请输入单号', trigger: 'blur'}
+          work_order: [ 
+          {validator: (rule, value, callback) => this.checkWorkOrderIsNull(rule, value, callback) },
+          {required: true, message: '请输入单号'}
         ],
           order_time: [
-          {required: true, message: '请输入下单时间', trigger: 'blur'}
+          {required: true, message: '请输入下单时间'}
         ],
           client_name: [
-          {required: true, message: '请输入客户名称', trigger: 'blur'}
+          {required: true, message: '请输入客户名称'}
         ],
           shape: [
-          {required: true, message: '请输入规格型号', trigger: 'blur'}
+          {required: true, message: '请输入规格型号'}
         ],
           product_name: [
-          {required: true, message: '请输入产品名称', trigger: 'blur'}
+          {required: true, message: '请输入产品名称'}
         ],
           work_hours: [
-          {required: true, message: '请输入工时', trigger: 'blur'}
+          {required: true, message: '请输入工时'}
         ],
           product_count: [
-          {required: true, message: '请输入产品数量', trigger: 'blur'}
+          {required: true, message: '请输入总数量'}
         ],
           submit_time: [
-          {required: true, message: '请输入交期', trigger: 'blur'}
+          {required: true, message: '请输入交期'}
         ],
           start_time: [
-          {required: true, message: '请输入开始时间', trigger: 'blur'}
+          {required: true, message: '请输入开始时间'}
         ],
           finish_time: [
-          {required: true, message: '请输入完成时间', trigger: 'blur'},
-          { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
+          {required: true, message: '请输入完成时间'},
+          { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback)}
+        ],
+          welding_count: [
+          {required: true, message: '请输入焊接数量'}
         ],
         },
         // 提交状态
         loading: false,
         // 是否是修改
-        isUpdate: false
+        isUpdate: false,
+        // 是否禁用输入框
+        disabled: false,
       };
     },
     watch: {
@@ -219,11 +244,20 @@
         if (this.data && this.data.id) {
           this.form = Object.assign({}, this.data);
           this.isUpdate = true;
+          this.disabled = true;
         } else {
-          this.form = {};
+          this.form = {
+            product_name : '',
+            client_name : '',
+            product_count : '',
+            order_time : '',
+            shape : '',
+            submit_time : '',
+            product_module : ''
+          };
           this.isUpdate = false;
         }
-      }
+      },
     },
     methods: {
       /* 保存编辑 */
@@ -243,6 +277,7 @@
               } else {
                 this.$message.error(res.data.msg);
               }
+              this.disabled = false;
             }).catch(e => {
               this.loading = false;
               this.$message.error(e.message);
@@ -310,37 +345,68 @@
              this.form.order_time = shipmentData.order_date
              this.form.shape  = shipmentData.shape
              this.form.submit_time = shipmentData.delivery_date
-            } 
+             this.disabled = true;
+              } 
             })
       },
 
       handleClear(){
-        this.form.product_name = ''
-        this.form.client_name = ''
-        this.form.product_count = ''
-        this.form.order_time = ''
-        this.form.shape  = ''
-        this.form.submit_time = ''
-        this.form.product_module = ''
+        this.form = {
+          product_name : '',
+          client_name : '',
+          product_count : '',
+          order_time : '',
+          shape : '',
+          submit_time : '',
+          product_module : '',
+          start_time : '',
+          finish_time : '',
+          work_hours:'',
+          welding_count:''
+        };
+        this.disabled = false;
       },
 
       handleEnterKey(event){
-      this.form.work_order = event.target.value.split("+")[0];
-      this.$refs.form.validateField('work_order', () => {});
-      // 根据选择的单号查其他数据自动填入
-      this.$http.get('/shipmentreport/detail/' + event.target.value.split("+")[0]).then((res) => {
+        this.form.work_order = event.target.value.split("+")[0];
+        this.$refs.form.validateField('work_order', () => {});
+        // 根据选择的单号查其他数据自动填入
+        this.$http.get('/shipmentreport/detail/' + event.target.value.split("+")[0]).then((res) => {
         this.loading = false;
         const shipmentData = res.data.data;
-        if (res.data.code === 0 && res.data.data != null) {
-          this.form.product_name = shipmentData.product_name
-             this.form.client_name = shipmentData.client_name
-             this.form.product_count = shipmentData.product_count
-             this.form.order_time = shipmentData.order_date
-             this.form.shape  = shipmentData.shape
-             this.form.submit_time = shipmentData.delivery_date
-        } 
-      })
+          if (res.data.code === 0 && res.data.data != null) {
+            this.form.product_name = shipmentData.product_name
+            this.form.client_name = shipmentData.client_name
+            this.form.product_count = shipmentData.product_count
+            this.form.order_time = shipmentData.order_date
+            this.form.shape  = shipmentData.shape
+            this.form.submit_time = shipmentData.delivery_date
+
+            this.disabled = true;
+          } 
+        })
     },
+    // 监听workorder为空时解除其他输入框禁用
+    checkWorkOrderIsNull(rule, value, callback){
+        if (value == '') {
+          this.form = {
+            product_name : '',
+            client_name : '',
+            product_count : '',
+            order_time : '',
+            shape : '',
+            submit_time : '',
+            product_module : '',
+            start_time:'',
+            finish_time:'',
+            work_hours:'',
+            welding_count:''
+          };
+          this.disabled = false;
+        }
+        callback();
+        console.log(4)
+      },
 
     },
     mounted() {
