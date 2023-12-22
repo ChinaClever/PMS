@@ -55,7 +55,7 @@ class BurningForm(forms.ModelForm):
     )
     # 版本号
     version = forms.CharField(
-        required=True,
+        required=False,
         max_length=255,
         error_messages={
             'required': '版本号不能为空',
@@ -103,7 +103,7 @@ class BurningForm(forms.ModelForm):
     )
     # rcerder
     rcerder = forms.CharField(
-        required=True,
+        required=False,
         max_length=255,
         error_messages={
             'required': '备注不能为空',

@@ -1,8 +1,9 @@
+<!-- 职级编辑弹窗 -->
 <template>
   <el-dialog
     :title="isUpdate?'修改数据':'添加数据'"
     :visible="visible"
-    width="860px"
+    width="800px"
     :destroy-on-close="true"
     :lock-scroll="false"
     @update:visible="updateVisible">
@@ -11,6 +12,8 @@
       :model="form"
       :rules="rules"
       label-width="132px">
+      <el-row :gutter="10">
+      <el-col :span="12">
       <el-form-item
         label="程序名称:"
         prop="name">
@@ -20,6 +23,9 @@
           placeholder="请输入程序名称"
           clearable/>
       </el-form-item>
+      </el-col>
+
+      <el-col :span="12">
       <el-form-item
         label="使用产品:"
         prop="products">
@@ -29,6 +35,11 @@
           placeholder="请输入使用产品"
           clearable/>
       </el-form-item>
+      </el-col>
+      </el-row>
+
+      <el-row :gutter="10">
+      <el-col :span="12">
       <el-form-item
         label="历史版本:"
         prop="history_version">
@@ -38,6 +49,9 @@
           placeholder="请输入历史版本"
           clearable/>
       </el-form-item>
+      </el-col>
+
+      <el-col :span="12">
       <el-form-item
         label="当前版本:"
         prop="version">
@@ -47,6 +61,9 @@
           placeholder="请输入程序要求"
           clearable/>
       </el-form-item>
+      </el-col>
+      </el-row>
+
       <el-form-item
         label="修改日期:"
         prop="modify_time">
@@ -57,6 +74,9 @@
               value-format="yyyy-MM-dd"
               placeholder="请选择修改日期"/>
       </el-form-item>
+
+      <el-row :gutter="10">
+      <el-col :span="12">
       <el-form-item
       label="版本说明:"
         prop="version_explain">
@@ -70,6 +90,9 @@
         </template>
       </el-input>
       </el-form-item>
+      </el-col>
+      
+      <el-col :span="12">
       <el-form-item
         label="此次更新:"
         prop="updata">
@@ -82,16 +105,12 @@
           </el-select>
         </template>
       </el-input>
-        <!-- <el-select
-          clearable
-          v-model="form.updata"
-          placeholder="请选择此次更新"
-          class="ele-fluid">
-          <el-option label="立刻更新（所有在途订单需升级)" value="立刻更新（所有在途订单需升级)"/>
-          <el-option label="正常更新（新订单需升级)" value="正常更新（新订单需升级)"/>
-          <el-option label="临时更新（针对某一订单升级）" value="临时更新（针对某一订单升级）"/>
-        </el-select> -->
       </el-form-item>
+      </el-col>
+      </el-row>
+
+      <el-row :gutter="10">
+      <el-col :span="12">
       <el-form-item
         label="烧录方法:"
         prop="burn_method">
@@ -104,14 +123,9 @@
         </template>
       </el-input>
       </el-form-item>
-      <!-- <el-form-item
-        label="升级方法:"
-        prop="upgrade_method">
-        <el-radio-group v-model="form.upgrade_method">
-          <el-radio label="未变更，与前一版本相同"></el-radio>
-          <el-radio label="已变更，见附件"></el-radio>
-        </el-radio-group> 
-      </el-form-item> -->
+      </el-col>
+      
+      <el-col :span="12">
       <el-form-item label="升级方法:">
         <el-input v-model="form.upgrade_method" placeholder="请选择或输入升级方法" class="ele-fluid">
         <template #prepend>
@@ -122,6 +136,11 @@
         </template>
       </el-input>
       </el-form-item>
+      </el-col>
+      </el-row>
+      
+      <el-row :gutter="10">
+      <el-col :span="12">
       <el-form-item label="校准方法:">
       <el-input v-model="form.calibration_method" placeholder="请选择或输入校准方法" class="ele-fluid">
         <template #prepend>
@@ -131,7 +150,10 @@
           </el-select>
         </template>
       </el-input>
-    </el-form-item>
+      </el-form-item>
+      </el-col>
+
+      <el-col :span="12">
       <el-form-item
         label="用户手册:">
         <el-input v-model="form.User_Manual" placeholder="请选择或输入用户手册" class="ele-fluid">
@@ -143,6 +165,9 @@
         </template>
       </el-input>
       </el-form-item>
+      </el-col>
+      </el-row>
+
       <el-form-item
         label="升级原因:"
         prop="upgrade_cause">
@@ -319,4 +344,8 @@ export default {
 </script>
 
 <style scoped>
+.el-row {
+  margin-bottom: 16px;
+
+}
 </style>

@@ -85,21 +85,6 @@
             @click="exportToExcel">导出
           </el-button>
 
-         
-          <!-- <el-button
-            @click="showImport=true"
-            icon="el-icon-upload2"
-            class="ele-btn-icon"
-            size="small">导入
-          </el-button>
-          <el-button
-            size="small"
-            type="success"
-            icon="el-icon-download"
-            class="ele-btn-icon"
-            @click="exportExcel"
-            v-if="permission.includes('sys:burning:export')">导出
-          </el-button> -->
         </template>
         <!-- 操作列 -->
         <template slot="action" slot-scope="{row}">
@@ -198,6 +183,48 @@ export default {
           align: 'center',
         },
         {
+          prop: 'burning_quantity',
+          label: '烧录数量',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'start_time',
+          label: '开始时间',
+          sortable:'custom',
+          order:'',
+          sortableMethod:()=>{
+            //排序逻辑
+            this.where.order = this.order
+            this.reload();
+          },
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'finish_time',
+          label: '完成时间',
+          sortable:'custom',
+          order:'',
+          sortableMethod:()=>{
+            //排序逻辑
+            this.where.order = this.order
+            this.reload();
+          },
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
+          prop: 'work_hours',
+          label: '工时',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
           prop: 'version',
           label: '版本号',
           showOverflowTooltip: true,
@@ -248,7 +275,7 @@ export default {
         },
         {
           prop: 'quantity',
-          label: '数量',
+          label: '订单数量',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',

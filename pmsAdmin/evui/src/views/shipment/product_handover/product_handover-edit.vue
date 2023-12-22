@@ -3,7 +3,7 @@
   <el-dialog
     :title="isUpdate?'修改客户':'添加客户'"
     :visible="visible"
-    width="460px"
+    width="560px"
     :destroy-on-close="true"
     :lock-scroll="false"
     @update:visible="updateVisible">
@@ -35,7 +35,7 @@
             @clear="handleClear"
             @keyup.enter.native="handleEnterKey"
             placeholder="请输入单号"
-            style="width: 277px;"
+            style="width: 437px;"
           ></el-autocomplete>  
       </el-form-item>
 
