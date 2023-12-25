@@ -22,12 +22,13 @@
 # +----------------------------------------------------------------------
 
 import json
+import os
+import uuid
 import logging
 from datetime import datetime
 
 from django.core.paginator import Paginator
 from constant.constants import PAGE_LIMIT
-from application.softwarerelease import forms
 from application.softwarerelease.models import Softwarerelease
 from utils import R, regular
 
@@ -75,20 +76,21 @@ def SoftwarereleaseList(request):
         for item in role_list:
             data = {
                 'id': item.id,
-                'name': item.name,
-                'products': item.products,
-                'history_version': item.history_version,
-                'version': item.version ,
+                'name': item.name if item.name else None,
+                'products': item.products if item.products else None,
+                'history_version': item.history_version if item.history_version else None,
+                'version': item.version  if item.version else None,
                 'modify_time': str(item.modify_time.strftime('%Y-%m-%d ')) if item.modify_time else None,
-                'version_explain': item.version_explain,
-                'updata': item.updata,
-                'burn_method' : item.burn_method,
-                'upgrade_method': item.upgrade_method,
-                'calibration_method': item.calibration_method,
-                'User_Manual': item.User_Manual,
-                'upgrade_cause': item.upgrade_cause,
-                'documentation_position' : item.documentation_position,
-                'User_Manual_position' : item.User_Manual_position,
+                'version_explain': item.version_explain if item.version_explain else None,
+                'updata': item.updata if item.updata else None,
+                'burn_method' : item.burn_method if item.burn_method else None,
+                'upgrade_method': item.upgrade_method if item.upgrade_method else None,
+                'calibration_method': item.calibration_method if item.calibration_method else None,
+                'User_Manual': item.User_Manual if item.User_Manual else None,
+                'upgrade_cause': item.upgrade_cause if item.upgrade_cause else None,
+                'documentation_position' : item.documentation_position if item.documentation_position else None,
+                'User_Manual_position' : item.User_Manual_position if item.User_Manual_position else None,
+                'attachment': item.attachment if item.attachment else None,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d ')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d ')) if item.update_time else None,
             }
@@ -108,20 +110,21 @@ def SoftwarereleaseDetail(softwarerelease_id):
     # 声明结构体
     data = {
         'id': user.id,
-                'name': user.name,
-                'products': user.products,
-                'history_version': user.history_version,
-                'version': user.version ,
+                'name': user.name if user.name else None,
+                'products': user.products if user.products else None,
+                'history_version': user.history_version if user.history_version else None,
+                'version': user.version if user.version else None,
                 'modify_time': str(user.modify_time.strftime('%Y-%m-%d ')) if user.modify_time else None,
-                'version_explain': user.version_explain,
-                'updata': user.updata,
-                'burn_method' : user.burn_method,
-                'upgrade_method': user.upgrade_method,
-                'calibration_method': user.calibration_method,
-                'User_Manual': user.User_Manual,
-                'upgrade_cause': user.upgrade_cause,
-                'documentation_position' : user.documentation_position,
-                'User_Manual_position' : user.User_Manual_position,
+                'version_explain': user.version_explain if user.version_explain else None,
+                'updata': user.updata if user.updata else None,
+                'burn_method' : user.burn_method if user.burn_method else None,
+                'upgrade_method': user.upgrade_method if user.upgrade_method else None,
+                'calibration_method': user.calibration_method if user.calibration_method else None,
+                'User_Manual': user.User_Manual if user.User_Manual else None,
+                'upgrade_cause': user.upgrade_cause if user.upgrade_cause else None,
+                'documentation_position' : user.documentation_position if user.documentation_position else None,
+                'User_Manual_position' : user.User_Manual_position if user.User_Manual_position else None,
+                'attachment':'attachment' if user.attachment else None,
     }
     # 返回结果
     return data
@@ -129,128 +132,189 @@ def SoftwarereleaseDetail(softwarerelease_id):
 
 # 添加客户
 def SoftwarereleaseAdd(request):
-    try:
-        # 接收请求参数
-        json_data = request.body.decode()
-        # 参数为空判断
-        if not json_data:
-            return R.failed("参数不能为空")
-        # 数据类型转换
-        dict_data = json.loads(json_data)
-    except Exception as e:
-        logging.info("错误信息：\n{}", format(e))
-        return R.failed("参数错误")
-    # 表单验证
-    form = forms.SoftwarereleaseForm(dict_data)
-    if form.is_valid():
-        # 程序名称
-        name = form.cleaned_data.get('name')
-        # 使用产品
-        products = form.cleaned_data.get('products')
-        # 历史版本
-        history_version = form.cleaned_data.get('history_version')
-        # 当前版本
-        version = form.cleaned_data.get('version')
-        # 修改日期
-        modify_time =  form.cleaned_data.get('modify_time')
-        # 版本说明
-        version_explain = form.cleaned_data.get('version_explain')
-        # 此次更新
-        updata = form.cleaned_data.get('updata')
-        # 烧录方法
-        burn_method = form.cleaned_data.get('burn_method')
-        # 升级方法
-        upgrade_method = form.cleaned_data.get('upgrade_method')
-        # 校准方法
-        calibration_method  = form.cleaned_data.get('calibration_method')
-        # 用户手册
-        User_Manual = form.cleaned_data.get('User_Manual')
-        # 升级原因
-        upgrade_cause = form.cleaned_data.get('upgrade_cause')
-        # 程序和文档公盘位置
-        documentation_position = form.cleaned_data.get('documentation_position')
-        # 用户使用手册和协议公盘位置
-        User_Manual_position = form.cleaned_data.get('User_Manual_position')
-        # 创建数据
-        Softwarerelease.objects.create(
-            name=name,
-            products= products,
-            history_version=history_version,
-            version=version,
-            modify_time=modify_time,
-            version_explain=version_explain,
-            updata=updata,
-            burn_method=burn_method,
-            upgrade_method=upgrade_method,
-            calibration_method=calibration_method,
-            User_Manual=User_Manual,
-            upgrade_cause=upgrade_cause,
-            documentation_position=documentation_position,
-            User_Manual_position= User_Manual_position
-        )
-        # 返回结果
-        return R.ok(msg="创建成功")
-    else:
-        # 获取错误信息
-        err_msg = regular.get_err(form)
-        # 返回错误信息
-        return R.failed(err_msg)
+
+    # 程序名称
+    name = request.POST.get('name')
+    # 使用产品
+    products = request.POST.get('products')
+    # 历史版本
+    history_version = request.POST.get('history_version')
+    # 当前版本
+    version = request.POST.get('version')
+    # 修改日期
+    modify_time =  request.POST.get('modify_time')
+
+    # 版本说明
+    version_explain = request.POST.get('version_explain')
+    # 此次更新
+    updata = request.POST.get('updata')
+    # 烧录方法
+    burn_method = request.POST.get('burn_method')
+    # 升级方法
+    upgrade_method = request.POST.get('upgrade_method')
+    # 校准方法
+    calibration_method  = request.POST.get('calibration_method')
+    # 用户手册
+    User_Manual = request.POST.get('User_Manual')
+    # 升级原因
+    upgrade_cause = request.POST.get('upgrade_cause')
+    # 程序和文档公盘位置
+    documentation_position = request.POST.get('documentation_position')
+    # 用户使用手册和协议公盘位置
+    User_Manual_position = request.POST.get('User_Manual_position')
+
+
+    FileSavePath = "public/uploads/softwarerelease"
+    files = request.FILES.getlist('files')
+    # 存储文件路径和名称的列表字符串
+    attachmentListToString = []
+    if files:
+        # 存储文件路径和名称的列表
+        attachment_list = []
+        for file in files:
+            # 生成唯一的文件名
+            unique_filename = str(uuid.uuid4()) + '_' + file.name
+            # 构建文件的完整保存路径
+            save_path = os.path.join(FileSavePath, unique_filename)
+            # 数据库存的去掉"public/" 方便前端调用
+            save_path1 = save_path.replace("public/", "")
+            # 确保目标文件夹存在
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            # 将文件保存到服务器
+            with open(save_path, 'wb') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+            # 将文件路径和名称添加到列表中
+            attachment_list.append(save_path1)
+            # 将文件路径和名称列表转换为字符串，使用逗号分隔
+        attachmentListToString = ','.join(attachment_list)
+        print(attachmentListToString)
+
+    # 创建数据
+    Softwarerelease.objects.create(
+        name=name,
+        products= products,
+        history_version=history_version,
+        version=version,
+        modify_time=modify_time,
+        version_explain=version_explain,
+        updata=updata,
+        burn_method=burn_method,
+        upgrade_method=upgrade_method,
+        calibration_method=calibration_method,
+        User_Manual=User_Manual,
+        upgrade_cause=upgrade_cause,
+        documentation_position=documentation_position,
+        User_Manual_position= User_Manual_position,
+        attachment = attachmentListToString if files else None,
+    )
+    # 返回结果
+    return R.ok(msg="创建成功")
+
 
 
 # 更新客户
 def SoftwarereleaseUpdate(request):
-    try:
-        # 接收请求参数
-        json_data = request.body.decode()
-        # 参数为空判断
-        if not json_data:
-            return R.failed("参数不能为空")
-        # 数据类型转换
-        dict_data = json.loads(json_data)
-        # 客户ID
-        softwarerelease_id = dict_data.get('id')
-        # 客户ID判空
-        if not softwarerelease_id or int(softwarerelease_id) <= 0:
-            return R.failed("客户ID不能为空")
-    except Exception as e:
-        logging.info("错误信息：\n{}", format(e))
-        return R.failed("参数错误")
-    # 表单验证
-    form = forms.SoftwarereleaseForm(dict_data)
-    if form.is_valid():
-        # 程序名称
-        name = form.cleaned_data.get('name')
-        # 使用产品
-        products = form.cleaned_data.get('products')
-        # 历史版本
-        history_version = form.cleaned_data.get('history_version')
-        # 当前版本
-        version = form.cleaned_data.get('version')
-        # 修改日期
-        modify_time = form.cleaned_data.get('modify_time')
-        # 版本说明
-        version_explain = form.cleaned_data.get('version_explain')
-        # 此次更新
-        updata = form.cleaned_data.get('updata')
-        # 烧录方法
-        burn_method = form.cleaned_data.get('burn_method')
-        # 升级方法
-        upgrade_method = form.cleaned_data.get('upgrade_method')
-        # 校准方法
-        calibration_method = form.cleaned_data.get('calibration_method')
-        # 用户手册
-        User_Manual = form.cleaned_data.get('User_Manual')
-        # 升级原因
-        upgrade_cause = form.cleaned_data.get('upgrade_cause')
-        # 程序和文档公盘位置
-        documentation_position = form.cleaned_data.get('documentation_position')
-        # 用户使用手册和协议公盘位置
-        User_Manual_position = form.cleaned_data.get('User_Manual_position')
+    # ID
+    softwarerelease_id = request.POST.get('id')
+    # ID判空
+    if not softwarerelease_id or int(softwarerelease_id) <= 0:
+        return R.failed("ID不能为空")
+    # 根据ID查询
+    softwarerelease = Softwarerelease.objects.only('id').filter(id=softwarerelease_id, is_delete=False).first()
+    # 查询结果判断
+    if not softwarerelease:
+        return R.failed("数据不存在,请重试！")
+    FileSavePath = "public/uploads/softwarerelease"
+    files = request.FILES.getlist('files')
+    # 存储文件路径和名称的列表
+    attachment_list = []
+    if files:
+        for file in files:
+            # 生成唯一的文件名
+            unique_filename = str(uuid.uuid4()) + '_' + file.name
+            # 构建文件的完整保存路径
+            save_path = os.path.join(FileSavePath, unique_filename)
+            # 数据库存的去掉"public/" 方便前端调用
+            save_path1 = save_path.replace("public/", "")
+            # 确保目标文件夹存在
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            # 将文件保存到服务器
+            with open(save_path, 'wb') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+            # 将文件路径和名称添加到列表中
+            attachment_list.append(save_path1)
+
+    # 程序名称
+    name = request.POST.get('name')
+    # 使用产品
+    products = request.POST.get('products')
+    # 历史版本
+    history_version = request.POST.get('history_version')
+    # 当前版本
+    version = request.POST.get('version')
+    # 修改日期
+    modify_time = request.POST.get('modify_time')
+    modify_time = datetime.strptime(modify_time, '%Y-%m-%d')
+    # 版本说明
+    version_explain = request.POST.get('version_explain')
+    # 此次更新
+    updata = request.POST.get('updata')
+    # 烧录方法
+    burn_method = request.POST.get('burn_method')
+    # 升级方法
+    upgrade_method = request.POST.get('upgrade_method')
+    # 校准方法
+    calibration_method = request.POST.get('calibration_method')
+    # 用户手册
+    User_Manual = request.POST.get('User_Manual')
+    # 升级原因
+    upgrade_cause = request.POST.get('upgrade_cause')
+    # 程序和文档公盘位置
+    documentation_position = request.POST.get('documentation_position')
+    # 用户使用手册和协议公盘位置
+    User_Manual_position = request.POST.get('User_Manual_position')
+
+
+    # 日期格式转化
+    if modify_time == "null":
+        modify_time = ""
+
+    # 删除文件
+    deleteFileList = request.POST.get('deleteFileList')
+    # 使用逗号分割字符串，得到文件路径列表
+    file_paths = softwarerelease.attachment.split(',') if softwarerelease.attachment else []
+
+    if deleteFileList:
+
+        for index, file_name in enumerate(file_paths):
+            # 存在deleteFileList列表中 表示要删除
+            if file_name in deleteFileList:
+                delete_file_path = 'public/' + file_paths[index]
+                try:
+                    os.remove(delete_file_path)
+                    print(delete_file_path + "文件删除成功")
+                except OSError as e:
+                    print(f"文件删除失败: {e}")
+            # 不用删除的添加进attachment_list 后续加入数据库
+            else:
+                attachment_list.append(file_paths[index])
+    # 没有删除文件的时候 原本的路径全添加进attachment_list
     else:
-        # 获取错误信息
-        err_msg = regular.get_err(form)
-        # 返回错误信息
-        return R.failed(err_msg)
+        attachment_list += file_paths
+
+    if attachment_list:
+        # 将文件路径和名称列表转换为一个字符串，使用逗号分隔
+        attachmentListToString = ','.join(attachment_list)
+        # 没有attachment_list 有deleteFileList表示删除全部
+    elif deleteFileList:
+        attachmentListToString = ''
+    else:
+        # 没有attachment_list和deleteFileList表示没有对附件操作
+        attachmentListToString = softwarerelease.attachment
+
+
 
     # 根据ID查询客户
     user = Softwarerelease.objects.only('id').filter(id=softwarerelease_id, is_delete=False).first()
@@ -274,6 +338,7 @@ def SoftwarereleaseUpdate(request):
     user.documentation_position = documentation_position
     user.User_Manual_position = User_Manual_position
     user.update_time = current_time
+    user.attachment = attachmentListToString
 
     # 更新数据
     user.save()

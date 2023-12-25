@@ -133,11 +133,12 @@ def upload(request):
         for j in row_data:
             a.append(j)
         a = [elem if not pd.isnull(elem) else None for elem in a]
+        for i in a:
+            print(type(i))
         # 创建数据库对象
         obj = safety(work_order=a[0], softwareType=a[1], productType=a[2], productSN=a[3], Gnd=a[4],Ir=a[5],Dcw=a[6],Acw=a[7],result=a[8],softwareVersion=a[9],companyName=a[10],protocolVersion=a[11],testStartTime=a[12],testEndTime=a[13],testTime=a[14],create_time=a[15],update_time=a[16])
         # 保存对象到数据库
         obj.save()
-        print(a)
         a = []
     return HttpResponse('测试')
 
