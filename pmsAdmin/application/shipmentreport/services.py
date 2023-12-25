@@ -3,6 +3,8 @@ import os
 import uuid
 from datetime import datetime
 
+import numpy as np
+import pandas as pd
 from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage, EmptyPage
 from django.db import transaction
 from django.db.models import Q
@@ -482,6 +484,42 @@ def SelectShipmentDetailByWorkOrder(work_order):
     }
     # 返回结果
     return data
+
+# 导入数据
+def ShipmentReportImportFile(request):
+    workOrderExistedList = []
+    item = []  # 存储信息
+    file = request.FILES['file']
+    # 使用 pandas 读取文件数据
+    df = pd.read_excel(file)
+    # 获取行数
+    num_rows = df.shape[0]
+    for i in range(num_rows):
+        # 获取每一行结果
+        row_data = df.iloc[num_rows - 1 - i]
+        for j in row_data:
+            item.append(j)
+        item = [elem if not pd.isnull(elem) else None for elem in item]
+        if item[0]=="低":
+            item[0] = np.int64(1)
+        elif item[0]=="中":
+            item[0] = np.int64(2)
+        else:
+            item[0] = np.int64(3)
+
+        # 根据work_order查询 不能有相同工单号
+        isWorkOrderExist = Shipment.objects.only('id').filter(work_order=item[1], is_delete=False).first()
+        if isWorkOrderExist:
+            workOrderExistedList.append(item[1])
+        else:
+            obj = Shipment(priority=item[0], work_order=item[1], client_name=item[2], product_code=item[3], product_name=item[4], shape=item[5], product_count=item[6],
+                         order_date=item[7], delivery_date=item[8], finish_date=item[9], SO_RQ_id=item[10], product_module=np.int64(1) if item[11]=="成品" else np.int64(2),
+                         remark=item[12], burning_duration_days=item[13], debug_duration_days=item[14], inspect_duration_days=item[15])
+            obj.save()
+        item = []
+    if workOrderExistedList != []:
+        return R.failed(msg="导入失败",data=workOrderExistedList)
+    return R.ok(msg="导入成功")
 
 # -----------------------产品名称模块-----------------------------------
 #####################################################################
