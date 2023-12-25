@@ -17,8 +17,6 @@ class Shipment(BaseModel):
     order_date = models.DateTimeField(auto_now_add=False, verbose_name="订单日期", max_length=11)
     # 交货日期
     delivery_date  = models.DateTimeField(auto_now_add=False, verbose_name="交货日期", max_length=11)
-    # 更改交期
-    update_delivery_date = models.DateTimeField(null=True, auto_now_add=False, verbose_name="更改交货日期", max_length=11)
     # 完成日期
     finish_date = models.DateTimeField(null=True, auto_now_add=False, verbose_name="完成日期", max_length=11)
     # 数量

@@ -143,7 +143,6 @@
                 class="ele-fluid"
                 v-model="form.delivery_date"
                 value-format="yyyy-MM-dd"
-                :disabled="isUpdate"
                 placeholder="请选择交货日期"/>
           </el-form-item>
           </el-col>
@@ -159,16 +158,6 @@
           </el-col>
         </el-row>
         <el-row :gutter="6">
-        <el-col :span="12" v-if="isUpdate">
-          <el-form-item label="更改日期:" prop="update_delivery_date">
-              <el-date-picker
-                type="date"
-                class="ele-fluid"
-                v-model="form.update_delivery_date"
-                value-format="yyyy-MM-dd"
-                placeholder="请选择更改日期"/>
-            </el-form-item>
-        </el-col>
     </el-row>
     <el-row><el-divider content-position="center" style="color: #000;">完成各模块所需天数</el-divider></el-row>
     <el-row>
@@ -275,7 +264,7 @@
         rules: {
           work_order: [
             {required: true, message: '请输入单号', trigger: 'blur'},
-            { validator: (rule, value, callback) => this.checkWorkOrderId(rule, value, callback), trigger: 'blur' }
+            { validator: (rule, value, callback) => this.checkWorkOrderId(rule, value, callback)}
           ],
           client_name: [
             {required: true, message: '请选择客户名称', trigger: 'blur'}
@@ -297,13 +286,10 @@
           ],
           delivery_date: [
             {required: true, message: '请选择交货日期', trigger: 'blur'},
-            { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
-          ],
-          update_delivery_date: [
-            { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
+            { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback)}
           ],
           finish_date: [
-            { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
+            { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback)}
           ],
           SO_RQ_id: [
             {required: true, message: '请选择SO/RQ号', trigger: 'blur'}
@@ -316,19 +302,19 @@
           ],
           burning_duration_days: [
             {required: true, message: '输入烧录所需天数', trigger: 'blur'},
-            { validator: this.validateDurationDays, trigger: 'blur' }
+            { validator: this.validateDurationDays }
           ],
           debug_duration_days: [
             {required: true, message: '输入调试所需天数', trigger: 'blur'},
-            { validator: this.validateDurationDays, trigger: 'blur' }
+            { validator: this.validateDurationDays }
           ],
           inspect_duration_days: [
             {required: true, message: '输入质检所需天数', trigger: 'blur'},
-            { validator: this.validateDurationDays, trigger: 'blur' }
+            { validator: this.validateDurationDays}
           ],
           repair_duration_days: [
             {required: true, message: '输入维修所需天数', trigger: 'blur'},
-            { validator: this.validateDurationDays, trigger: 'blur' }
+            { validator: this.validateDurationDays}
           ],
         },
         // 提交状态

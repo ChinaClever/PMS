@@ -92,7 +92,6 @@ def ShipmentReportList(request):
                 'shape': item.shape,
                 'order_date': str(item.order_date.strftime('%Y-%m-%d')),
                 'delivery_date': str(item.delivery_date.strftime('%Y-%m-%d')),
-                'update_delivery_date': str(item.update_delivery_date.strftime('%Y-%m-%d')) if item.update_delivery_date else None,
                 'finish_date': str(item.finish_date.strftime('%Y-%m-%d')) if item.finish_date else None,
                 'product_count': item.product_count,
                 'SO_RQ_id': item.SO_RQ_id if item.SO_RQ_id else None,
@@ -129,7 +128,6 @@ def ShipmentReportDetail(shipment_id):
         'shape': shipment.shape,
         'order_date': str(shipment.order_date.strftime('%Y-%m-%d')),
         'delivery_date': str(shipment.delivery_date.strftime('%Y-%m-%d')),
-        'update_delivery_date': str(shipment.update_delivery_date.strftime('%Y-%m-%d')) if shipment.update_delivery_date else None,
         'finish_date': str(shipment.finish_date.strftime('%Y-%m-%d')) if shipment.finish_date else None,
         'product_count': shipment.product_count,
         'SO_RQ_id': shipment.SO_RQ_id,
@@ -282,7 +280,6 @@ def ShipmentReportUpdate(request):
     shape = request.POST.get('shape')
     order_date = request.POST.get('order_date')
     delivery_date = request.POST.get('delivery_date')
-    update_delivery_date = request.POST.get('update_delivery_date')
     finish_date = request.POST.get('finish_date')
     product_count = request.POST.get('product_count')
     SO_RQ_id = request.POST.get('SO_RQ_id')
@@ -295,8 +292,6 @@ def ShipmentReportUpdate(request):
     repair_duration_days = request.POST.get('repair_duration_days')
 
     # 日期格式转化
-    if update_delivery_date == "null":
-        update_delivery_date = ""
     if finish_date == "null":
         finish_date = ""
 
@@ -344,7 +339,6 @@ def ShipmentReportUpdate(request):
     shipment.order_date = order_date
     shipment.delivery_date = delivery_date
     shipment.finish_date = finish_date if finish_date else None
-    shipment.update_delivery_date = update_delivery_date if update_delivery_date else None
     shipment.product_count = product_count
     shipment.SO_RQ_id = SO_RQ_id
     shipment.remark = remark if remark else None
@@ -474,7 +468,6 @@ def SelectShipmentDetailByWorkOrder(work_order):
         'shape': shipment.shape,
         'order_date': str(shipment.order_date.strftime('%Y-%m-%d')),
         'delivery_date': str(shipment.delivery_date.strftime('%Y-%m-%d')),
-        'update_delivery_date': str(shipment.update_delivery_date.strftime('%Y-%m-%d')) if shipment.update_delivery_date else None,
         'finish_date': str(shipment.finish_date.strftime('%Y-%m-%d')) if shipment.finish_date else None,
         'product_count': shipment.product_count,
         'SO_RQ_id': shipment.SO_RQ_id,
