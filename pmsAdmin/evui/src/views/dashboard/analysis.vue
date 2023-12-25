@@ -230,8 +230,8 @@ export default {
         this.endDate = this.formatDate(new Date(year, 11, 31));
       }
       else {
-        this.startDate = this.formatDate(new Date(this.makeUpModel));
-        this.endDate = new Date(this.makeUpModel);
+        this.startDate = this.formatDate(new Date(this.numberModel));
+        this.endDate = new Date(this.numberModel);
         this.endDate.setMonth(this.endDate.getMonth()+1)
         this.endDate = this.formatDate(this.endDate)
       }
