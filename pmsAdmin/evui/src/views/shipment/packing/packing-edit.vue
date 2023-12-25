@@ -18,9 +18,10 @@
         <el-row :gutter="6">
         <el-col :span="12" :pull="1">
           <el-form-item
-          label="单号:"
+          label="单号:" 
           prop="work_order">
             <el-autocomplete
+              :disabled="isUpdate"
               v-model="form.work_order"
               :fetch-suggestions="querySearchAsync"
               @select="handleSelect"
@@ -59,15 +60,11 @@
         </el-col>
         <el-col :span="12" :pull="1">
           <el-form-item label="产品名称:" prop="product_name">
-            <el-autocomplete
-              :disabled="disabled"
-              v-model="form.product_name"
-              :fetch-suggestions="querySearchAsync"
-              placeholder="请输入产品名称"
-              clearable
-              @select="handleSelect"
-              style="width: 297px;"
-            ></el-autocomplete>
+              <el-input
+                :disabled="disabled"
+                v-model="form.product_name"
+                placeholder="请输入产品名称"
+                clearable/>
           </el-form-item>
         </el-col>
         </el-row>
@@ -94,12 +91,13 @@
           </el-form-item>
        </el-col>
         <el-col :span="12" :pull="1">
-          <el-form-item label="数量:" prop="product_count">
+          <el-form-item label="总数量:" prop="product_count">
           <el-input-number
             :disabled="disabled"
+            :step="50"
             :min="0"
             v-model="form.product_count"
-            placeholder="请输入数量"
+            placeholder="请输入总数量"
             controls-position="right"
             class="ele-fluid ele-text-left"/>
         </el-form-item>
@@ -179,9 +177,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="12" :pull="1">
-          <el-form-item label="数量:" prop="packing_count">
+          <el-form-item label="打包数量:" prop="packing_count">
             <el-input-number
               :min="0"
+              :step="50"
               v-model="form.packing_count"
               placeholder="请输入打包数量"
               controls-position="right"
@@ -221,15 +220,16 @@
             {required: true, message: '请选择打包完成时间', trigger: 'blur'}
           ],
           work_hours: [
-            {required: true, message: '请输入工时', trigger: 'blur'}
+            {required: true, message: '请输入工时', trigger: 'blur'},
+            {validator: (rule, value, callback) => this.checkNumber(rule, value, callback)},
           ],
           packing_count: [
-            {required: true, message: '请输入打包数量', trigger: 'blur'}
+            {required: true, message: '请输入打包数量', trigger: 'blur'},
+            {validator: (rule, value, callback) => this.checkNumber(rule, value, callback)},
           ],
           work_order: [
-            {validator: (rule, value, callback) => this.checkWorkOrderIsNull(rule, value, callback), trigger: 'blur' },
-            {required: true, message: '请输入单号', trigger: 'blur'}
-          
+            {validator: (rule, value, callback) => this.checkWorkOrderIsNull(rule, value, callback)},
+            {required: true, message: '请输入单号', trigger: 'blur'}   
           ],
           client_name: [
             {required: true, message: '请选择客户名称', trigger: 'blur'}
@@ -244,7 +244,8 @@
             {required: true, message: '请输入规格型号', trigger: 'blur'}
           ],
           product_count: [
-            {required: true, message: '请输入数量', trigger: 'blur'}
+            {required: true, message: '请输入总数量', trigger: 'blur'},
+            {validator: (rule, value, callback) => this.checkNumber(rule, value, callback)},
           ],
           order_date: [
             {required: true, message: '请选择订单日期', trigger: 'blur'}
@@ -272,9 +273,15 @@
         if (this.data && this.data.id) {
           this.form = Object.assign({}, this.data);
           this.isUpdate = true;
+          this.disabled = true;
         } else {
           this.form = {};
           this.isUpdate = false;
+        }
+      },
+      visible(){
+        if (this.visible == false && this.isUpdate == true){
+          this.disabled = false;
         }
       }
     },
@@ -352,10 +359,11 @@
                 this.form.order_date = shipmentData.order_date
                 this.form.shape  = shipmentData.shape
                 this.form.delivery_date = shipmentData.delivery_date
-                this.form.remark = shipmentData.remark 
-            } 
+                this.form.remark = shipmentData.remark
+
+                this.disabled = true;
+              } 
             });
-        this.disabled = true;
       },
 
       handleClear(){
@@ -381,9 +389,11 @@
             this.form.shape  = shipmentData.shape
             this.form.delivery_date = shipmentData.delivery_date
             this.form.remark = shipmentData.remark 
+
+            this.disabled = true;
             } 
           })
-          this.disabled = true;
+   
       },
 
       // 监听workorder为空时解除其他输入框禁用
@@ -394,6 +404,14 @@
         }
         callback();
       },
+      // 检查数量不能为0
+      checkNumber(rule, value, callback){
+        if(value == 0){
+          callback(new Error('不能为0'));
+        }else{
+          callback();
+        }
+      }
     },
     mounted() {
       this.loadAll();

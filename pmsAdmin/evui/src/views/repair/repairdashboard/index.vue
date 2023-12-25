@@ -41,12 +41,13 @@
         <!-- 数据表格 -->
         <ele-pro-table
           ref="table"
+          :cell-style="cellStyle"
           :where="where"
           :datasource="url"
           :columns="columns"
           border class="custom-table"
-          :cell-style="cellStyle"
-          :header-cell-style="headerCellStyle">
+          height="calc(60vh - 215px)">
+          
         </ele-pro-table>
       </el-card>
   
@@ -58,7 +59,6 @@
               </div>
               <ele-chart
                 ref="saleChart"
-
                 border class="custom-chart"
                 :option="saleChartOption"/>
 
@@ -93,7 +93,7 @@
           },
           xAxis: [
             {
-              name: '产品名称',
+
               type: 'category',
               data: this.saleroomData.map(d => d.name),
               axisLabel: {
@@ -242,7 +242,7 @@
                 start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
                 picker.$emit('pick', [start, end]);
               }
-            },{
+            },{   
               text: '最近半年',
               onClick(picker) {
                 const end = new Date();
@@ -304,15 +304,12 @@
         }
 
       },
-
-
       reload() {
 
         this.$refs.table.reload({page: 1, where: this.where});
         const condition = {
           startTime: this.where.startTime ,
           endTime: this.where.endTime,
-
         };
         this.$http.get('/repairreport/listOf',{params:condition}).then((res) => {
         this.loading = false;
@@ -327,19 +324,21 @@
         this.$message.error(e.message);
         });
       },
-
       reset() {
         this.where = {};
         this.selectDateRange = '';
         this.reload();
       },
-       //改变表格某一列或者某一个单元格文本颜色 
-    // cellStyle() {
-    //   // 定义样式变量
-    //   let cellStyle;
-    //   cellStyle = 'color:white;background-color:#072e7d';
-    //   return cellStyle;
-    // },
+       //改变表格偶数行颜色 
+       cellStyle({ rowIndex }) {//一定要注意rowIndex是一个数组要用花括号包裹起来，不能没有
+      if (rowIndex % 2 === 0) {
+        return {
+          backgroundColor: '#123782',
+          color: 'white',
+        };
+      }
+      return {};
+    },
     // //改变表头颜色
     // headerCellStyle() {
     //   return {
@@ -347,9 +346,6 @@
     //     color: 'white',
     //   };
     // },
-
-
-
     },
     activated() {
       ['saleChart', ].forEach((name) => {
@@ -362,10 +358,11 @@
   <style scoped>
   /* 小标题 */
   .demo-monitor-title {
-    padding: 0px;
-    margin: 0 0 0 0;
-    font-size: 15px; /* 设置字体大小为 24 像素 */
+    padding: 0 0;
+    margin: 0 0 20px 0;
+    font-size: 24px; /* 设置字体大小为 24 像素 */
     height: 20px;
+    color:white;
     display: flex;
     justify-content: center; /* 水平居中对齐 */
     align-items: center; /* 垂直居中对齐 */
@@ -382,12 +379,11 @@
     padding: 0 0;
     margin: 0 0 0 0;
     background-color: #072e7d !important; /* 设置表格的背景颜色 */
-    height: 50vh;
+    /* height: 50vh;
     flex: 1;
     overflow: auto;
     display: flex;
-    flex-direction: column;
-  
+    flex-direction: column; */
 }
 ::v-deep .ele-body{
   background-color: #072e7d !important; /* 设置最外面的背景颜色 */
@@ -402,7 +398,7 @@
 ::v-deep .el-table td {
   background-color:#072e7d;  /* 背景透明*/
   border: 0px;
-  color: #93dcfe;  /* 修改字体颜色*/
+  color: white;  /* 修改字体颜色*/
   font-size: 10px;
   height: 5px;
 
@@ -462,4 +458,4 @@
 ::v-deep  .el-input__inner{
   background-color:#e9eaf0  !important; /* 按键 */
 }
-  </style>
+</style>

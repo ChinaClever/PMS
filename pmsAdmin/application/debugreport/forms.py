@@ -60,15 +60,13 @@ class DebugForm(forms.ModelForm):
         }
     )
     # 开始日期
-    start_time = forms.DateField(
-        input_formats=['%Y-%m-%d'],
+    start_time = forms.DateTimeField(
         error_messages={
             'required': '开始日期不能为空',
         }
     )
     # 完成日期
-    finish_time = forms.DateField(
-        input_formats=['%Y-%m-%d'],
+    finish_time = forms.DateTimeField(
         error_messages={
             'required': '完成日期不能为空',
         }
@@ -89,7 +87,7 @@ class DebugForm(forms.ModelForm):
             'max_length': '备注长度不得超过255个字符',
         }
     )
-
+    # 产品/模块
     product_module = forms.IntegerField(
         required=True,
         error_messages={
@@ -97,10 +95,19 @@ class DebugForm(forms.ModelForm):
         }
     )
 
+    # 调试数量
+    debug_count = forms.IntegerField(
+        min_value=0,
+        error_messages={
+            'required': '数量不能为空',
+            'min_value': '数量不得小于0',
+        }
+    )
     class Meta:
         # 绑定模型
         model = models.Debug
         # 指定部分字段验证
-        fields = ['order_time', 'client_name', 'shape', 'product_name', 'product_count', 'submit_time', 'start_time', 'finish_time', 'work_hours',
-                  'instruction', 'remark', 'work_order']
+        fields = ['order_time', 'client_name', 'shape', 'product_name', 'product_count',
+                  'submit_time', 'start_time', 'finish_time', 'work_hours',
+                  'instruction', 'remark', 'work_order', 'debug_count']
 

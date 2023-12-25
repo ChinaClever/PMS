@@ -18,6 +18,7 @@
             label="单号:"
             prop="work_order">
             <el-autocomplete
+            :disabled="isUpdate"
             v-model="form.work_order"
             clearable
             :fetch-suggestions="querySearchAsync"
@@ -53,6 +54,7 @@
               v-model="form.name"
               :fetch-suggestions="querySearch4"
               placeholder="请输入产品名称"
+              :disabled="disabled"
               @select="handleSelect"
             ></el-autocomplete>
           </el-form-item>
@@ -160,7 +162,8 @@ export default {
           {required: true, message: '请输入产品名称', trigger: 'blur'}
         ],
         work_order:[
-          {required: true, message: '请输入单号', trigger: 'blur'}
+          {required: true, message: '请输入单号', trigger: 'blur'},
+          {validator: (rule, value, callback) => this.checkWorkOrderIsNull(rule, value, callback)},
         ],
         bad_number:[
           {
@@ -200,7 +203,7 @@ export default {
             validator: (rule, value, callback) => {
               const intValue = Number(value);
               if (!Number.isInteger(intValue) || intValue < 0) {
-                callback(new Error('数量必须为大于0的整数'));
+                callback(new Error('数量必须为非负的整数'));
               } else {
                 callback();
               }
@@ -209,6 +212,7 @@ export default {
             trigger: 'blur'
           }
         ],
+
 
       },
       // 提交状态
@@ -226,6 +230,7 @@ export default {
       analysislist:[],
       solutionlist:[],
       namelist:[],
+      disabled:false
     };
     
   },
@@ -233,12 +238,15 @@ export default {
     data() {
       if (this.data && this.data.id) {
         this.form = Object.assign({}, this.data);
-        this.isUpdate = true;      
+        this.isUpdate = true;  
+        this.disabled=true;    
       } else {
-        this.form = {};
+        this.form = {repair_time:new Date().toISOString()};
         this.isUpdate = false;
+        this.disabled = false;
       }
-    }     
+    },
+      
   },
   computed: {
     ...mapGetters(["permission"])
@@ -269,6 +277,7 @@ export default {
               if (!this.isUpdate) {
                 this.form = {name:'',repair_time:new Date().toISOString()};
               }
+              this.disabled=false
               this.updateVisible(false);
               this.$emit('done');
             } else {
@@ -393,12 +402,17 @@ export default {
               this.bad_phenomenonlist = this.loadbad_phenomenonlist(shipmentData.product_name);
               this.analysislist = this.loadanalysislist(shipmentData.product_name);
               this.solutionlist = this.loadsolutionlist(shipmentData.product_name);
+              this.disabled=true
             } 
           })
       },
 
       handleClear(){
-        this.form.name = ''
+        // this.form={
+        //   name:''
+        // }
+        this.form.name='';
+        this.disabled=false
       },
       handleEnterKey(event){
       console.log("进入")
@@ -413,9 +427,21 @@ export default {
           this.bad_phenomenonlist = this.loadbad_phenomenonlist(shipmentData.product_name);
           this.analysislist = this.loadanalysislist(shipmentData.product_name);
           this.solutionlist = this.loadsolutionlist(shipmentData.product_name);
-
+          this.disabled=true
         }
       })
+      this.disabled=true
+    },
+        // 监听workorder为空时解除其他输入框禁用
+    checkWorkOrderIsNull(rule, value, callback){
+      if (value == '') {
+        this.disabled = false;
+        // this.form={
+        //   name:''
+        // }
+        this.form.name=''
+      }
+      callback();
     },
 
   },

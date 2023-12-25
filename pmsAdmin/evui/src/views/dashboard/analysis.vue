@@ -230,8 +230,8 @@ export default {
         this.endDate = this.formatDate(new Date(year, 11, 31));
       }
       else {
-        this.startDate = this.formatDate(new Date(this.makeUpModel));
-        this.endDate = new Date(this.makeUpModel);
+        this.startDate = this.formatDate(new Date(this.numberModel));
+        this.endDate = new Date(this.numberModel);
         this.endDate.setMonth(this.endDate.getMonth()+1)
         this.endDate = this.formatDate(this.endDate)
       }
@@ -270,7 +270,7 @@ export default {
 
 <style scoped>
 .body{
-  background-color: #0000ff;
+  background-color: #072e7d;
 }
 
 .demo-monitor-tool ::v-deep .el-tabs__nav-wrap:after {
@@ -309,5 +309,8 @@ export default {
 }
 .card-month{
     text-align: right;
+}
+::v-deep  .el-card__body{
+  background-color: #072e7d !important; /* 设置的背景颜色 */
 }
 </style>

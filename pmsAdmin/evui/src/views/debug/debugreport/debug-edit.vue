@@ -3,7 +3,7 @@
     <el-dialog
       :title="isUpdate?'修改调试报表':'添加调试报表'"
       :visible="visible"
-      width="800px"
+      width="900px"
       :destroy-on-close="true"
       :lock-scroll="false"
       @update:visible="updateVisible">
@@ -12,13 +12,13 @@
         :model="form"
         :rules="rules"
         label-width="100px">
-
         <el-row :gutter="6">
         <el-col :span="12">
         <el-form-item
           label="单号:"
           prop="work_order">
             <el-autocomplete
+            :disabled="isUpdate"
             v-model="form.work_order"
             clearable
             :fetch-suggestions="querySearchAsync"
@@ -26,7 +26,7 @@
             @clear="handleClear"
             @keyup.enter.native="handleEnterKey"
             placeholder="请输入单号"
-            style="width: 277px;"
+            style="width: 327px;"
           ></el-autocomplete>  
         </el-form-item>
       </el-col>
@@ -35,7 +35,7 @@
           label="客户名称:"
           prop="client_name">
           <el-input
-            :maxlength="20"
+            :disabled="disabled"
             v-model="form.client_name"
             placeholder="请输入客户名称"
             clearable/>
@@ -48,16 +48,18 @@
           label="产品名称:"
           prop="product_name">
           <el-input
-            :maxlength="20"
+            :disabled="disabled"
             v-model="form.product_name"
             placeholder="请输入产品名称"
             clearable/>
         </el-form-item>
       </el-col>
         <el-col :span="12">
-          <el-form-item label="数量:" prop="product_count">
+          <el-form-item label="总数量:" prop="product_count">
           <el-input-number
+            :disabled="disabled"
             :min="0"
+            :step="50"
             v-model="form.product_count"
             placeholder="请输入产品数量"
             controls-position="right"
@@ -69,7 +71,7 @@
           label="规格型号:"
           prop="shape">
           <el-input
-            :maxlength="20"
+            :disabled="disabled"
             v-model="form.shape"
             placeholder="请输入规格型号"
             clearable/>
@@ -78,6 +80,7 @@
         <el-col :span="12">
         <el-form-item label="下单日期:" prop="order_time">
             <el-date-picker
+              :disabled="disabled"
               type="date"
               class="ele-fluid"
               v-model="form.order_time"
@@ -88,6 +91,7 @@
         <el-col :span="12">
         <el-form-item label="交期:" prop="submit_time">
             <el-date-picker
+              :disabled="disabled"
               type="date"
               class="ele-fluid"
               v-model="form.submit_time"
@@ -97,37 +101,40 @@
       </el-col>
         </el-row>
         <el-row :gutter="6">
-        <el-col :span="12">
-         <el-form-item label="开始日期:" prop="start_time">
-            <el-date-picker
-              type="date"
-              class="ele-fluid"
-              v-model="form.start_time"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择开始日期"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-        <el-form-item label="完成日期:" prop="finish_time">
-            <el-date-picker
-              type="date"
-              class="ele-fluid"
-              v-model="form.finish_time"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择完成日期"/>
-          </el-form-item>
-        </el-col>
-        </el-row>
-        <el-row :gutter="6">
-        <el-col :span="12">
+          <el-col :span="12">
           <el-form-item label="成品/模块:" prop="product_module">
             <el-radio-group
+              :disabled="disabled"
               v-model="form.product_module" >
               <el-radio :label="1">成品</el-radio>
               <el-radio :label="2">模块</el-radio>
             </el-radio-group>
           </el-form-item>
-      </el-col>
+        </el-col>
+        </el-row>
+        <el-row :gutter="6">
+       <el-col :span="12">
+         <el-form-item label="开始时间:" prop="start_time">
+            <el-date-picker
+              type="datetime"
+              class="ele-fluid"
+              v-model="form.start_time"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="请选择开始时间"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+        <el-form-item label="完成时间:" prop="finish_time">
+            <el-date-picker
+              type="datetime"
+              class="ele-fluid"
+              v-model="form.finish_time"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="请选择完成时间"/>
+          </el-form-item>
+        </el-col>
+        </el-row>
+        <el-row :gutter="6">
         <el-col :span="12">
          <el-form-item label="所用工时:" prop="work_hours">
           <el-input-number
@@ -138,13 +145,24 @@
             class="ele-fluid ele-text-left"/>
         </el-form-item>
         </el-col>
+          <el-col :span="12">
+            <el-form-item label="调试数量:" prop="debug_count">
+              <el-input-number
+                :min="0"
+                :step="50"
+                v-model="form.debug_count"
+                placeholder="请输入调试数量"
+                controls-position="right"
+                class="ele-fluid ele-text-left"/>
+            </el-form-item>
+          </el-col>
         </el-row>
-        <el-form-item label="具体说明:" prop="instruction">
+          <el-form-item label="具体说明:" prop="instruction">
             <el-input
               :rows="3"
               clearable
               type="textarea"
-              :maxlength="200"
+              :maxlength="400"
               v-model="form.instruction"
               placeholder="请输入具体说明"/>
           </el-form-item>
@@ -154,7 +172,7 @@
               clearable
               :rows="3"
               type="textarea"
-              :maxlength="200"
+              :maxlength="400"
               v-model="form.remark"
               placeholder="请输入备注"/>
           </el-form-item>
@@ -185,55 +203,57 @@
         state: '',
         timeout:  null,
         // 表单数据
-        form: Object.assign({
-          // client_name: '', 
-          // order_time: '',
-          // submit_time: '',
-          // product_name: '', 
-          // shape: '', 
-          // product_module: ''
-        }, this.data),
+        form: Object.assign({}, this.data),
         // 表单验证规则
         rules: {
-          work_order: [
-          {required: true, message: '请输入单号', trigger: 'blur'}
-        ],
-          order_time: [
-          {required: true, message: '请输入下单时间', trigger: 'blur'}
-        ],
-          client_name: [
-          {required: true, message: '请输入客户名称', trigger: 'blur'}
-        ],
-          shape: [
-          {required: true, message: '请输入规格型号', trigger: 'blur'}
-        ],
-          product_name: [
-          {required: true, message: '请输入产品名称', trigger: 'blur'}
-        ],
-          product_count: [
-          {required: true, message: '请输入产品数量', trigger: 'blur'}
-        ],
-          submit_time: [
-          {required: true, message: '请输入交期', trigger: 'blur'}
-        ],
-          start_time: [
-          {required: true, message: '请输入开始时间', trigger: 'blur'}
-        ],
-          finish_time: [
-          {required: true, message: '请输入完成时间', trigger: 'blur'},
-          { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
-        ],
-          work_hours: [
-          {required: true, message: '请选择工时', trigger: 'blur'},
-        ],
-          product_module: [
-          {required: true, message: '请选择成品/模块', trigger: 'blur'},
-        ],
+            work_order: [
+            {validator: (rule, value, callback) => this.checkWorkOrderIsNull(rule, value, callback) },
+            {required: true, message: '请输入单号', trigger: 'blur'}
+          ],
+            order_time: [
+            {required: true, message: '请输入下单时间', trigger: 'blur'}
+          ],
+            client_name: [
+            {required: true, message: '请输入客户名称', trigger: 'blur'}
+          ],
+            shape: [
+            {required: true, message: '请输入规格型号', trigger: 'blur'}
+          ],
+            product_name: [
+            {required: true, message: '请输入产品名称', trigger: 'blur'}
+          ],
+            product_count: [
+            {required: true, message: '请输入产品总数量', trigger: 'blur'},
+            {validator: (rule, value, callback) => this.checkNumber(rule, value, callback)},
+          ],
+            submit_time: [
+            {required: true, message: '请输入交期', trigger: 'blur'}
+          ],
+            start_time: [
+            {required: true, message: '请输入开始时间', trigger: 'blur'}
+          ],
+            finish_time: [
+            {required: true, message: '请输入完成时间', trigger: 'blur'},
+            { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback), trigger: 'blur' }
+          ],
+            work_hours: [
+            {required: true, message: '请选择工时', trigger: 'blur'},
+            {validator: (rule, value, callback) => this.checkNumber(rule, value, callback)},
+          ],
+            product_module: [
+            {required: true, message: '请选择成品/模块', trigger: 'blur'},
+          ],
+          debug_count: [
+            {required: true, message: '请输入调试数量', trigger: 'blur'},
+            {validator: (rule, value, callback) => this.checkNumber(rule, value, callback)},
+          ],
         },
         // 提交状态
         loading: false,
         // 是否是修改
-        isUpdate: false
+        isUpdate: false,
+        // 是否禁用输入框
+        disabled: false,
       };
     },
     watch: {
@@ -241,9 +261,15 @@
         if (this.data && this.data.id) {
           this.form = Object.assign({}, this.data);
           this.isUpdate = true;
+          this.disabled = true;
         } else {
           this.form = {};
           this.isUpdate = false;
+        }
+      },
+      visible(){
+        if (this.visible == false && this.isUpdate == true){
+          this.disabled = false;
         }
       }
     },
@@ -265,6 +291,7 @@
               } else {
                 this.$message.error(res.data.msg);
               }
+              this.disabled = false;
             }).catch(e => {
               this.loading = false;
               this.$message.error(e.message);
@@ -334,23 +361,17 @@
              this.form.shape  = shipmentData.shape
              this.form.submit_time = shipmentData.delivery_date
              this.form.product_module = shipmentData.product_module
+             this.disabled = true;
             } 
             })
       },
 
       handleClear(){
-        this.form.product_name = ''
-        this.form.client_name = ''
-        this.form.product_count = ''
-        this.form.order_time = ''
-        this.form.shape  = ''
-        this.form.submit_time = ''
-        this.form.product_module = ''
+        this.form = {};
+        this.disabled = false;
       },
 
       handleEnterKey(event){
-      console.log("进入")
-      console.log(event)
       this.form.work_order = event.target.value.split("+")[0];
       this.$refs.form.validateField('work_order', () => {});
       // 根据选择的单号查其他数据自动填入
@@ -365,10 +386,29 @@
              this.form.shape  = shipmentData.shape
              this.form.submit_time = shipmentData.delivery_date
              this.form.product_module = shipmentData.product_module
-        } 
-      })
-    },
 
+            this.disabled = true;
+          } 
+        })
+      },
+
+      // 监听workorder为空时解除其他输入框禁用
+      checkWorkOrderIsNull(rule, value, callback){
+        if (value == '') {
+          this.form = {};
+          this.disabled = false;
+        }
+        callback();
+      },
+
+      // 检查数量不能为0
+      checkNumber(rule, value, callback){
+        if(value == 0){
+          callback(new Error('不能为0'));
+        }else{
+          callback();
+        }
+      }
 
     },
     mounted() {

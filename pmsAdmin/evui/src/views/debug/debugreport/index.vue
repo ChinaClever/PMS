@@ -14,7 +14,8 @@
                 <el-input
                   clearable
                   v-model="where.keyword"
-                  placeholder="单号、客户名称、规格型号或客户名称"/>
+                  placeholder="单号、客户名称、规格型号或客户名称"
+                  @clear="clearSearchHandle"/>
               </el-form-item>
             </el-col>
             
@@ -109,14 +110,6 @@
               </el-link>
             </el-popconfirm>
           </template>
-          <!-- 状态列 -->
-          <template slot="status" slot-scope="{row}">
-            <el-switch
-              v-model="row.status"
-              @change="editStatus(row)"
-              :active-value="1"
-              :inactive-value="2"/>
-          </template>
           <!-- 成品模块列 -->
           <template slot="product_module" slot-scope="{row}">
             <el-tag v-if="row.product_module === 1" type="success" size="medium">成品</el-tag>
@@ -163,8 +156,48 @@
             prop: 'work_order',
             label: '单号',
             showOverflowTooltip: true,
-            minWidth: 160,
+            minWidth: 200,
             align: 'center',
+          },
+          {
+            prop: 'start_time',
+            label: '调试开始时间',
+            showOverflowTooltip: true,
+            minWidth: 200,
+            align: 'center', 
+            sortable: 'custom',
+            order: '', 
+            sortableMethod: ()=> {
+            this.where.order = this.order;
+            this.reload();
+            } 
+          },
+          {
+            prop: 'finish_time',
+            label: '调试完成时间',
+            showOverflowTooltip: true,
+            minWidth: 200,
+            align: 'center',
+            sortable: 'custom',
+            order: '', 
+            sortableMethod: ()=> {
+            this.where.order = this.order;
+            this.reload();
+            }
+          },
+          {
+            prop: 'work_hours',
+            label: '工时',
+            showOverflowTooltip: true,
+            minWidth: 80,
+            align: 'center',
+          },
+          {
+            prop: 'debug_count',
+            label: '调试数量',
+            width: 80,
+            align: 'center',
+            showOverflowTooltip: true,
           },
           {
             prop: 'order_time',
@@ -183,14 +216,14 @@
             prop: 'client_name',
             label: '客户名称',
             showOverflowTooltip: true,
-            minWidth: 120,
+            minWidth: 200,
             align: 'center',
           },
           {
             prop: 'product_name',
             label: '产品名称',
             showOverflowTooltip: true,
-            minWidth: 120,
+            minWidth: 200,
             align: 'center',
           },
           {
@@ -203,13 +236,13 @@
           {
             prop: 'product_count',
             label: '产品数量',
-            width: 120,
+            width: 80,
             align: 'center',
             showOverflowTooltip: true,
           },
           {
             prop: 'submit_time',
-            label: '交期',
+            label: '交货日期',
             showOverflowTooltip: true,
             minWidth: 120,
             align: 'center',
@@ -219,39 +252,6 @@
             this.where.order = this.order;
             this.reload();
             }
-          },
-          {
-            prop: 'start_time',
-            label: '开始日期',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center', 
-            sortable: 'custom',
-            order: '', 
-            sortableMethod: ()=> {
-            this.where.order = this.order;
-            this.reload();
-            } 
-          },
-          {
-            prop: 'finish_time',
-            label: '完成日期',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-            sortable: 'custom',
-            order: '', 
-            sortableMethod: ()=> {
-            this.where.order = this.order;
-            this.reload();
-            }
-          },
-          {
-            prop: 'work_hours',
-            label: '工时',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
           },
           {
             prop: 'instruction',
@@ -430,9 +430,14 @@
         }).catch(() => {
         });
       },
-      
+
+      // 清除搜索框
+      clearSearchHandle(){
+        this.$refs.table.reload({page: 1, where: this.where});
+      },
+
+      //导出数据到excel
       async exportToExcel() {
-       // 创建 Excel 文件
       const workbook = XLSX.utils.book_new();
       //去除不需要的字段，这里我不希望显示id，所以id不返回
       let temp = this.selection;
