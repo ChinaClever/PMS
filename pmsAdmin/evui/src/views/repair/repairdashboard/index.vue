@@ -46,7 +46,7 @@
           :datasource="url"
           :columns="columns"
           border class="custom-table"
-          height="calc(100vh - 415px)">
+          height="calc(60vh - 215px)">
           
         </ele-pro-table>
       </el-card>
@@ -93,7 +93,7 @@
           },
           xAxis: [
             {
-              name: '产品名称',
+
               type: 'category',
               data: this.saleroomData.map(d => d.name),
               axisLabel: {
@@ -242,7 +242,7 @@
                 start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
                 picker.$emit('pick', [start, end]);
               }
-            },{
+            },{   
               text: '最近半年',
               onClick(picker) {
                 const end = new Date();
@@ -360,7 +360,7 @@
   .demo-monitor-title {
     padding: 0 0;
     margin: 0 0 20px 0;
-    font-size: 30px; /* 设置字体大小为 24 像素 */
+    font-size: 24px; /* 设置字体大小为 24 像素 */
     height: 20px;
     color:white;
     display: flex;
@@ -379,11 +379,11 @@
     padding: 0 0;
     margin: 0 0 0 0;
     background-color: #072e7d !important; /* 设置表格的背景颜色 */
-    height: 50vh;
+    /* height: 50vh;
     flex: 1;
     overflow: auto;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; */
 }
 ::v-deep .ele-body{
   background-color: #072e7d !important; /* 设置最外面的背景颜色 */

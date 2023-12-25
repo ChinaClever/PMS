@@ -176,6 +176,7 @@ export default {
       } else {
         this.form = {};
         this.isUpdate = false;
+        this.disabled = false;
       }
     }
   },
