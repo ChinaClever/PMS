@@ -1,14 +1,25 @@
 <template>
   <div class="ele-text-center">
     <el-card class="custom-table">
+
       <ele-pro-table
           ref="table"
           :datasource="url"
           :columns="columns"
           border class="custom-table"
-          :header-cell-style="headerCellStyle"
           :cell-style="cellStyle"
           height="calc(110vh - 215px)">
+         <template slot="toolbar">
+        <el-tooltip content="提示:交付日期邻近,还未进行生产或生产数量不足">
+          <span class="custom-tooltip-red"></span>
+        </el-tooltip>
+        <el-tooltip content="提示:交付日期邻近,生产数量完毕">
+          <span class="custom-tooltip-green"></span>
+        </el-tooltip>
+        <el-tooltip content="提示:未邻近交付日期,正常显示">
+          <span class="custom-tooltip-white"></span>
+        </el-tooltip>
+        </template>
       </ele-pro-table>
     </el-card>
     <el-card class="custom-table" body-style="padding: 0;" align="center">
@@ -18,7 +29,7 @@
         </div>
         <ele-chart
         ref="saleChart"
-        style="height: 285px;"
+        border class="custom-chart"
         :option="deliveryChartOption"/>
       </el-col>
     </el-card>
@@ -150,12 +161,18 @@ export default {
         xAxis: [
           {
             type: 'category',
-            data: this.DeliveryData.map(d => d.name)
+            data: this.DeliveryData.map(d => d.name),
+            axisLabel: {
+            color: 'white' // 设置 x 轴标签的颜色为白色
+            },
           }
         ],
         yAxis: [
           {
-            type: 'value'
+            type: 'value',
+            axisLabel: {
+              color: 'white' // 设置 y 轴标签的颜色为白色
+            },
           }
         ],
         series: [
@@ -200,7 +217,7 @@ export default {
         })
     },
     // //改变表格某一列或者某一个单元格文本颜色
-    cellStyle({row,column}) {
+    cellStyle({row,column,rowIndex}) {
         //质检数量
         if(column.property === 'inspect_quantity' && row.deliveryDate && row.inspect_duration_days)
         {
@@ -212,35 +229,39 @@ export default {
           {
             if(row.product_count === row.inspect_quantity)
             {
-              return 'color:green'
+              return {
+                backgroundColor: '#123782',
+                color: 'green',
+              };
             }
-            return 'color:red'
-          }
-          else
-          {
-            return 'color:green'
+            return {
+              backgroundColor: '#123782',
+              color: 'red',
+            };
           }
         }
         //维修数量
-        if(column.property === 'repair_quantity' && row.deliveryDate && row.repair_duration_days)
-        {
-          const completionTime = new Date(row.deliveryDate); //交付时间
-          const repair_duration_days = row.repair_duration_days;
-          const nowDate = new Date()
-          const dueDate = new Date(nowDate.getTime() + repair_duration_days*24*60*60*1000)
-          if(dueDate > completionTime)
-          {
-            if(row.product_count === row.repair_quantity)
-            {
-              return 'color:green'
-            }
-            return 'color:red'
-          }
-          else
-          {
-            return 'color:green'
-          }
-        }
+        // if(column.property === 'repair_quantity' && row.deliveryDate && row.repair_duration_days)
+        // {
+        //   const completionTime = new Date(row.deliveryDate); //交付时间
+        //   const repair_duration_days = row.repair_duration_days;
+        //   const nowDate = new Date()
+        //   const dueDate = new Date(nowDate.getTime() + repair_duration_days*24*60*60*1000)
+        //   if(dueDate > completionTime)
+        //   {
+        //     if(row.product_count === row.repair_quantity)
+        //     {
+        //       return {
+        //         backgroundColor: '#123782',
+        //         color: 'green',
+        //       };
+        //     }
+        //     return {
+        //       backgroundColor: '#123782',
+        //       color: 'red',
+        //     };
+        //   }
+        // }
         //烧录数量
         if(column.property === 'burning_quantity' && row.deliveryDate && row.burning_duration_days)
         {
@@ -252,13 +273,15 @@ export default {
           {
             if(row.product_count === row.burning_quantity)
             {
-              return 'color:green'
+              return {
+                backgroundColor: '#123782',
+                color: 'green',
+              };
             }
-              return 'color:red'
-          }
-          else
-          {
-              return 'color:green'
+            return {
+              backgroundColor: '#123782',
+              color: 'red',
+            };
           }
         }
         //调试数量
@@ -272,27 +295,24 @@ export default {
           {
             if(row.product_count === row.debug_quantity)
             {
-              return 'color:green'
+              return {
+                backgroundColor: '#123782',
+                color: 'green',
+              };
             }
-            return 'color:red'
+            return {
+              backgroundColor: '#123782',
+              color: 'red',
+            };
           }
-          else
-          {
-            return 'color:green'
-          }
-
         }
-        return {
-          backgroundColor: '#192a56',
-          color: 'white',
+        if (rowIndex % 2 === 0) {
+          return {
+            backgroundColor: '#123782',
+            color: 'white',
+          };
         }
-    },
-
-    headerCellStyle() {
-      return {
-        backgroundColor: '#192a56',
-        color: 'white',
-      };
+        return {};
     },
 
     activated() {
@@ -313,43 +333,122 @@ export default {
   display: flex;
   justify-content: center; /* 水平居中对齐 */
   align-items: center; /* 垂直居中对齐 */
-  background-color: #192a56 !important; /* 设置表格的背景颜色 */
-
+  //background-color: #192a56 !important; /* 设置表格的背景颜色 */
+}
+.custom-chart{
+  height: 30vh;
+  justify-content: center; /* 在水平方向上居中对齐 */
 }
 .custom-table {
-    padding: 0 0;
-    margin: 0 0 0 0;
-  background-color: #192a56 !important; /* 设置表格的背景颜色 */
+  padding: 0 0;
+  margin: 0 0 0 0;
+  background-color: #072e7d !important; /* 设置表格的背景颜色 */
+  //height: 50vh;
+  //flex: 1;
+  //overflow: auto;
+  //display: flex;
+  //flex-direction: column;
+}
+
+::v-deep .ele-body{
+  background-color: #072e7d !important; /* 设置最外面的背景颜色 */
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* 或者适当的高度 */
 }
 /* 表格内背景颜色 */
 ::v-deep .el-table th,
 ::v-deep .el-table tr,
 ::v-deep .el-table td {
-  background-color: #192a56;
+  background-color:#072e7d;  /* 背景透明*/
+  border: 0px;
+  color: white;  /* 修改字体颜色*/
+  font-size: 10px;
+  height: 5px;
+}
+/* 去掉最下面的那一条线*/
+.el-table::before {
+  height: 0px;
+}
+/* 修改表头样式-加边框*/
+::v-deep .el-table__header-wrapper {
+  border: 0px;
+  /* box-sizing: border-box;*/
+}
+
+/*修改高亮当前行颜色*/
+::v-deep .el-table tbody tr:hover > td {
+  background: #4a4c4e !important;
+}
+/*滚动条样式*/
+::v-deep .el-table__body-wrapper::-webkit-scrollbar-track {
+  background-color: #063570;
+}
+
+::v-deep .el-table__body-wrapper::-webkit-scrollbar {
+  width: 10px;
+  opacity: 0.5;
+}
+
+::v-deep .el-table__body-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 15px;
+  background-color: #0257aa;
+}
+
+::v-deep  .el-pagination__total,::v-deep  .el-pagination__jump{
+  color: white !important; /* 设置最下面的文字颜色 */
 }
 ::v-deep .el-table {
   background-color: transparent !important;
 }
 ::v-deep .el-table__row {
-  background-color: #192a56 !important;
+  background-color: #072e7d !important;
 }
 ::v-deep .ele-text-center,::v-deep .number.active {
-  background-color: #192a56 !important;
-}
-::v-deep .el-input__inner,::v-deep .ele-table-tool,::v-deep .ele-table-tool-default{
-  background-color: #192a56 !important;
+  background-color: #072e7d !important;
 }
 
-@keyframes blink-animation {
-  0%{
-    background-color:red;
-  }
-  50%{
-    background-color: transparent;
-  }
-  100%{
-    background-color: red;
-  }
+::v-deep .el-input__inner,::v-deep .ele-table-tool,::v-deep .ele-table-tool-default{
+  background-color: #072e7d !important;
+}
+
+::v-deep .el-card__body{
+  background-color: #072e7d !important; /* 设置表格的背景颜色 */
+}
+
+::v-deep  .ele-tool-item, ::v-deep .ele-action, ::v-deep  .el-icon-_nav{
+  color: white !important; /* 右上方四个按钮 */
+}
+
+.custom-tooltip-red{
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  background-color: red;
+  color: white;
+  text-align: center;
+  line-height: 20px;
+  cursor: pointer;
+}
+.custom-tooltip-green{
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  background-color: green;
+  color: white;
+  text-align: center;
+  line-height: 20px;
+  cursor: pointer;
+}
+.custom-tooltip-white{
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  background-color: white;
+  color: white;
+  text-align: center;
+  line-height: 20px;
+  cursor: pointer;
 }
 
 
