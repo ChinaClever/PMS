@@ -98,7 +98,7 @@ def DetailAll(request):
             data.append(Alldata)
     #         data.add(tuple(Alldata.items()))
     # SendData = [dict(item) for item in data]
-    print(f"根据工单查询所需要的数据{data}")
+    # print(f"根据工单查询所需要的数据{data}")
     return R.ok(data=data, count=count)
 
 # 获取出货表的数据
