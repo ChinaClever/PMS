@@ -203,7 +203,7 @@ export default {
             validator: (rule, value, callback) => {
               const intValue = Number(value);
               if (!Number.isInteger(intValue) || intValue < 0) {
-                callback(new Error('数量必须为大于0的整数'));
+                callback(new Error('数量必须为非负的整数'));
               } else {
                 callback();
               }
@@ -241,7 +241,7 @@ export default {
         this.isUpdate = true;  
         this.disabled=true;    
       } else {
-        this.form = {};
+        this.form = {repair_time:new Date().toISOString()};
         this.isUpdate = false;
         this.disabled = false;
       }
@@ -408,9 +408,10 @@ export default {
       },
 
       handleClear(){
-        this.form={
-          name:''
-        }
+        // this.form={
+        //   name:''
+        // }
+        this.form.name='';
         this.disabled=false
       },
       handleEnterKey(event){
@@ -435,9 +436,10 @@ export default {
     checkWorkOrderIsNull(rule, value, callback){
       if (value == '') {
         this.disabled = false;
-        this.form={
-          name:''
-        }
+        // this.form={
+        //   name:''
+        // }
+        this.form.name=''
       }
       callback();
     },

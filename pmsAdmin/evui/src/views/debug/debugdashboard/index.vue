@@ -49,7 +49,7 @@
         </ele-pro-table>
       </el-card>
   
-      <el-card shadow="never" body-style="padding: 0;">
+      <el-card shadow="never" body-style="padding: 0;" align="center">
       <el-row>
           <el-col :lg="48" :md="46">
             <div class="demo-monitor-title">

@@ -253,11 +253,14 @@ export default {
       },
 
       handleClear(){
-        this.form={
-          product_name:'',
-          customer: '',
-          product_type :''
-        }
+        // this.form={
+        //   product_name:'',
+        //   customer: '',
+        //   product_type :''
+        // }
+        this.form.product_name = ''
+        this.form.customer = ''
+        this.form.product_type  = ''
         this.disabled=false;
 
       },
@@ -279,11 +282,14 @@ export default {
     checkWorkOrderIsNull(rule, value, callback){
       if (value == '') {
         this.disabled = false
-        this.form={
-          product_name:'',
-          customer: '',
-          product_type :''
-        }
+        // this.form={
+        //   product_name:'',
+        //   customer: '',
+        //   product_type :''
+        // }
+        this.form.product_name = ''
+        this.form.customer = ''
+        this.form.product_type  = ''
       }
       callback();
     },
