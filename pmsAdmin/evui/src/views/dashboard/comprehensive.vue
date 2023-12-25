@@ -6,7 +6,7 @@
           :datasource="url"
           :columns="columns"
           border class="custom-table"
-         :header-cell-style="headerCellStyle"
+          :header-cell-style="headerCellStyle"
           :cell-style="cellStyle"
           height="calc(110vh - 215px)">
       </ele-pro-table>
@@ -118,22 +118,22 @@ export default {
           {
             prop: 'inspect_duration_days',
             label: '质检天数',
-            show:true,
+            show:false,
           },
           {
             prop: 'debug_duration_days',
             label: '调试天数',
-            show:true,
+            show:false,
           },
           {
             prop: 'burning_duration_days',
             label: '烧录天数',
-            show:true,
+            show:false,
           },
           {
             prop: 'repair_duration_days',
             label: '维修天数',
-            show:true,
+            show:false,
           },
 
         ],
@@ -171,7 +171,7 @@ export default {
     this.getAllData();
   },
   methods: {
-        //转换时间成数据库内的格式
+    //转换时间成数据库内的格式
     formatDate(date) {
       if (date != null){
         return date.toLocaleString('zh-CN',{
@@ -201,10 +201,8 @@ export default {
     },
     // //改变表格某一列或者某一个单元格文本颜色
     cellStyle({row,column}) {
-
-        if(column.property === 'inspect_quantity' &&
-          row.deliveryDate &&
-          row.inspect_duration_days)
+        //质检数量
+        if(column.property === 'inspect_quantity' && row.deliveryDate && row.inspect_duration_days)
         {
           const completionTime = new Date(row.deliveryDate); //交付时间
           const inspect_duration_days = row.inspect_duration_days;
@@ -223,9 +221,8 @@ export default {
             return 'color:green'
           }
         }
-        if(column.property === 'repair_quantity' &&
-          row.deliveryDate &&
-          row.repair_duration_days)
+        //维修数量
+        if(column.property === 'repair_quantity' && row.deliveryDate && row.repair_duration_days)
         {
           const completionTime = new Date(row.deliveryDate); //交付时间
           const repair_duration_days = row.repair_duration_days;
@@ -244,9 +241,8 @@ export default {
             return 'color:green'
           }
         }
-        if(column.property === 'burning_quantity' &&
-          row.deliveryDate &&
-          row.burning_duration_days)
+        //烧录数量
+        if(column.property === 'burning_quantity' && row.deliveryDate && row.burning_duration_days)
         {
           const completionTime = new Date(row.deliveryDate); //交付时间
           const burning_duration_days = row.burning_duration_days;
@@ -265,9 +261,8 @@ export default {
               return 'color:green'
           }
         }
-        if(column.property === 'debug_quantity' &&
-          row.deliveryDate &&
-          row.debug_duration_days)
+        //调试数量
+        if(column.property === 'debug_quantity' && row.deliveryDate && row.debug_duration_days)
         {
           const completionTime = new Date(row.deliveryDate); //交付时间
           const debug_duration_days = row.debug_duration_days;
@@ -292,21 +287,21 @@ export default {
           color: 'white',
         }
     },
+
     headerCellStyle() {
       return {
         backgroundColor: '#192a56',
         color: 'white',
       };
     },
-  },
 
-  activated() {
-  ['saleChart', ].forEach((name) => {
-    this.$refs[name].resize();
-  });
+    activated() {
+      ['saleChart', ].forEach((name) => {
+        this.$refs[name].resize();
+      });
+    }
   }
 }
-
 </script>
 
 <style scoped>
@@ -356,6 +351,8 @@ export default {
     background-color: red;
   }
 }
+
+
 
 
 </style>

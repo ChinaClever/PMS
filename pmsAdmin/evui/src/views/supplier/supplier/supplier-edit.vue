@@ -17,6 +17,7 @@
           prop="work_order">
           <el-autocomplete
           v-model="form.work_order"
+          :disabled="isUpdate"
           clearable
           :fetch-suggestions="querySearchAsync"
           @select="handleSelect1"
@@ -171,6 +172,7 @@ export default {
       if (this.data && this.data.id) {
         this.form = Object.assign({}, this.data);
         this.isUpdate = true;
+        this.disabled=true;
       } else {
         this.form = {};
         this.isUpdate = false;
@@ -190,6 +192,7 @@ export default {
               if (!this.isUpdate) {
                 this.form = {};
               }
+              this.disabled=false
               this.updateVisible(false);
               this.$emit('done');
             } else {
@@ -249,9 +252,11 @@ export default {
       },
 
       handleClear(){
-        this.form.product_name = ''
-        this.form.customer = ''
-        this.form.product_type  = ''
+        this.form={
+          product_name:'',
+          customer: '',
+          product_type :''
+        }
         this.disabled=false;
 
       },
@@ -273,9 +278,11 @@ export default {
     checkWorkOrderIsNull(rule, value, callback){
       if (value == '') {
         this.disabled = false
-        this.form.product_name=''
-        this.form.customer = ''
-        this.form.product_type  = ''
+        this.form={
+          product_name:'',
+          customer: '',
+          product_type :''
+        }
       }
       callback();
     },

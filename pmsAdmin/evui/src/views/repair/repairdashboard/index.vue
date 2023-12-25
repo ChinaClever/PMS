@@ -41,11 +41,13 @@
         <!-- 数据表格 -->
         <ele-pro-table
           ref="table"
+          :cell-style="cellStyle"
           :where="where"
           :datasource="url"
           :columns="columns"
           border class="custom-table"
           height="calc(100vh - 415px)">
+          
         </ele-pro-table>
       </el-card>
   
@@ -327,13 +329,16 @@
         this.selectDateRange = '';
         this.reload();
       },
-       //改变表格某一列或者某一个单元格文本颜色 
-    // cellStyle() {
-    //   // 定义样式变量
-    //   let cellStyle;
-    //   cellStyle = 'color:white;background-color:#072e7d';
-    //   return cellStyle;
-    // },
+       //改变表格偶数行颜色 
+       cellStyle({ rowIndex }) {//一定要注意rowIndex是一个数组要用花括号包裹起来，不能没有
+      if (rowIndex % 2 === 0) {
+        return {
+          backgroundColor: '#123782',
+          color: 'white',
+        };
+      }
+      return {};
+    },
     // //改变表头颜色
     // headerCellStyle() {
     //   return {
@@ -353,10 +358,11 @@
   <style scoped>
   /* 小标题 */
   .demo-monitor-title {
-    padding: 0px;
-    margin: 0 0 0 0;
-    font-size: 15px; /* 设置字体大小为 24 像素 */
+    padding: 0 0;
+    margin: 0 0 20px 0;
+    font-size: 30px; /* 设置字体大小为 24 像素 */
     height: 20px;
+    color:white;
     display: flex;
     justify-content: center; /* 水平居中对齐 */
     align-items: center; /* 垂直居中对齐 */
@@ -392,7 +398,7 @@
 ::v-deep .el-table td {
   background-color:#072e7d;  /* 背景透明*/
   border: 0px;
-  color: #93dcfe;  /* 修改字体颜色*/
+  color: white;  /* 修改字体颜色*/
   font-size: 10px;
   height: 5px;
 
