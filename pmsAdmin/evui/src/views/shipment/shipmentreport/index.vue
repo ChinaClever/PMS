@@ -284,19 +284,6 @@
             }
           },
           {
-            prop: 'update_delivery_date',
-            label: '更改交期',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            align: 'center',
-            sortable: 'custom',
-            order: '', 
-            sortableMethod: ()=> {
-            this.where.order = this.order;
-            this.reload();
-            }
-          },
-          {
             prop: 'finish_date',
             label: '完成日期',
             showOverflowTooltip: true,

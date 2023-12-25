@@ -47,7 +47,6 @@ class Migration(migrations.Migration):
                 ('shape', models.CharField(help_text='规格型号', max_length=255, verbose_name='规格型号')),
                 ('order_date', models.DateTimeField(max_length=11, verbose_name='订单日期')),
                 ('delivery_date', models.DateTimeField(max_length=11, verbose_name='交货日期')),
-                ('update_delivery_date', models.DateTimeField(max_length=11, null=True, verbose_name='更改交货日期')),
                 ('finish_date', models.DateTimeField(max_length=11, null=True, verbose_name='完成日期')),
                 ('product_count', models.IntegerField(default=0, help_text='数量', verbose_name='数量')),
                 ('SO_RQ_id', models.CharField(help_text='SO_RQ号', max_length=255, verbose_name='SO_RQ号')),
