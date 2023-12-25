@@ -98,6 +98,12 @@ class ProductListView(PermissionRequired, View):
         return R.ok(data=data)
 
 
+class uploadFileView(View):
+    def post(self, request):
+        result = services.ShipmentReportImportFile(request)
+        return result
+
+
 
 # -----------------------产品名称模块-----------------------------------
 #####################################################################

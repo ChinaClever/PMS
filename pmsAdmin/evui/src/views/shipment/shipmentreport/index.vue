@@ -77,13 +77,13 @@
                   @click="removeBatch"
                   v-if="permission.includes('sys:shipmentreport:dall')">删除
                 </el-button>
-                <!-- <el-button
+                <el-button
                   @click="showImport=true"
                   icon="el-icon-upload2"
                   class="ele-btn-icon"
                   size="small"
                   type="warning">导入
-                </el-button> -->
+                </el-button>
                 <el-button
                   size="small"
                   type="success"

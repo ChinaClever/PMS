@@ -19,6 +19,8 @@ urlpatterns = [
     path('product/detail/<str:product_code>', views.ProductDetailView.as_view()),
     # 获取所有产品名(不重复)
     path('product/list', views.ProductListView.as_view()),
+    #  导入功能
+    path('importfile', views.uploadFileView.as_view()),
 
 
     # 获取所有产品名称表的数据
