@@ -77,25 +77,13 @@ def DetailAll(request):
             if repair_bad_number == None:
                 repair_bad_number = 0
 
-            deliveryDate = shipmentReport.delivery_date.strftime("%Y-%m-%d")
-            if deliveryDate == None:
-                deliveryDate = 'None'
-
-            startDate = shipmentReport.order_date.strftime("%Y-%m-%d")
-            if startDate == None:
-                startDate = 'None'
-
-            endDate = shipmentReport.finish_date.strftime("%Y-%m-%d")
-            if endDate == None:
-                endDate = 'None'
-
             Alldata = {
                 'work_order_id': workId,
                 'name': shipmentReport.client_name,
                 'model': shipmentReport.shape,
-                'deliveryDate': deliveryDate,
-                'startDate': startDate,
-                'endDate': endDate,
+                'deliveryDate': str(shipmentReport.delivery_date.strftime('%Y-%m-%d')),
+                'startDate': str(shipmentReport.order_date.strftime('%Y-%m-%d')),
+                'endDate': str(shipmentReport.finish_date.strftime('%Y-%m-%d')) if shipmentReport.finish_date else None,
                 'product_count':shipmentReport.product_count,
 
                 'inspect_quantity':inspectReport, #质检数量
@@ -110,7 +98,7 @@ def DetailAll(request):
             data.append(Alldata)
     #         data.add(tuple(Alldata.items()))
     # SendData = [dict(item) for item in data]
-    # print(f"根据工单查询所需要的数据{data}")
+    print(f"根据工单查询所需要的数据{data}")
     return R.ok(data=data, count=count)
 
 # 获取出货表的数据
