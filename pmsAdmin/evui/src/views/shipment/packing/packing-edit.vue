@@ -94,6 +94,7 @@
           <el-form-item label="总数量:" prop="product_count">
           <el-input-number
             :disabled="disabled"
+            :step="50"
             :min="0"
             v-model="form.product_count"
             placeholder="请输入总数量"
@@ -179,6 +180,7 @@
           <el-form-item label="打包数量:" prop="packing_count">
             <el-input-number
               :min="0"
+              :step="50"
               v-model="form.packing_count"
               placeholder="请输入打包数量"
               controls-position="right"
@@ -218,13 +220,15 @@
             {required: true, message: '请选择打包完成时间', trigger: 'blur'}
           ],
           work_hours: [
-            {required: true, message: '请输入工时', trigger: 'blur'}
+            {required: true, message: '请输入工时', trigger: 'blur'},
+            {validator: (rule, value, callback) => this.checkNumber(rule, value, callback)},
           ],
           packing_count: [
-            {required: true, message: '请输入打包数量', trigger: 'blur'}
+            {required: true, message: '请输入打包数量', trigger: 'blur'},
+            {validator: (rule, value, callback) => this.checkNumber(rule, value, callback)},
           ],
           work_order: [
-            {validator: (rule, value, callback) => this.checkWorkOrderIsNull(rule, value, callback), trigger: 'blur' },
+            {validator: (rule, value, callback) => this.checkWorkOrderIsNull(rule, value, callback)},
             {required: true, message: '请输入单号', trigger: 'blur'}   
           ],
           client_name: [
@@ -240,7 +244,8 @@
             {required: true, message: '请输入规格型号', trigger: 'blur'}
           ],
           product_count: [
-            {required: true, message: '请输入数量', trigger: 'blur'}
+            {required: true, message: '请输入总数量', trigger: 'blur'},
+            {validator: (rule, value, callback) => this.checkNumber(rule, value, callback)},
           ],
           order_date: [
             {required: true, message: '请选择订单日期', trigger: 'blur'}
@@ -272,6 +277,11 @@
         } else {
           this.form = {};
           this.isUpdate = false;
+        }
+      },
+      visible(){
+        if (this.visible == false && this.isUpdate == true){
+          this.disabled = false;
         }
       }
     },
@@ -394,6 +404,14 @@
         }
         callback();
       },
+      // 检查数量不能为0
+      checkNumber(rule, value, callback){
+        if(value == 0){
+          callback(new Error('不能为0'));
+        }else{
+          callback();
+        }
+      }
     },
     mounted() {
       this.loadAll();

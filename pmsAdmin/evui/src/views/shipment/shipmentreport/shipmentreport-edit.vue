@@ -447,7 +447,7 @@
         this.$emit('update:visible', value);
       },
 
-       // 订单号自动填入数据
+      // 订单号自动填入数据
       checkWorkOrderId(rule, value, callback){
         const regex = /^[a-zA-Z0-9]+[+][a-zA-Z0-9]+$/;
         const regex1 = /^[a-zA-Z0-9]+$/;

@@ -73,14 +73,13 @@ def DebugList(request):
                 'product_name': item.product_name,
                 'product_count': item.product_count,
                 'submit_time': str(item.submit_time.strftime('%Y-%m-%d')),
-                'start_time': str(item.start_time.strftime('%Y-%m-%d')),
-                'finish_time': str(item.finish_time.strftime('%Y-%m-%d')),
+                'start_time': str(item.start_time.strftime('%Y-%m-%d %H:%M:%S')),
+                'finish_time': str(item.finish_time.strftime('%Y-%m-%d %H:%M:%S')),
                 'work_hours': item.work_hours,
                 'instruction': item.instruction,
                 'remark': item.remark,
                 'product_module': item.product_module,
-                'create_time': str(item.create_time.strftime('%Y-%m-%d')) if item.create_time else None,
-                'update_time': str(item.update_time.strftime('%Y-%m-%d')) if item.create_time else None,
+                'debug_count': item.debug_count,
             }
             result.append(data)
     # 返回结果
@@ -104,14 +103,13 @@ def DebugDetail(debug_id):
         'product_name': debug.product_name,
         'product_count': debug.product_count,
         'submit_time': str(debug.submit_time.strftime('%Y-%m-%d')),
-        'start_time': str(debug.start_time.strftime('%Y-%m-%d')),
-        'finish_time': str(debug.finish_time.strftime('%Y-%m-%d')),
+        'start_time': str(debug.start_time.strftime('%Y-%m-%d %H:%M:%S')),
+        'finish_time': str(debug.finish_time.strftime('%Y-%m-%d %H:%M:%S')),
         'work_hours': debug.work_hours,
         'instruction': debug.instruction,
         'remark': debug.remark,
         'product_module': debug.product_module,
-        'create_time': str(debug.create_time.strftime('%Y-%m-%d')),
-        'update_time': str(debug.update_time.strftime('%Y-%m-%d')),
+        'debug_count': debug.debug_count,
     }
     # 返回结果
     return data
@@ -156,6 +154,9 @@ def DebugAdd(request):
         instruction = form.cleaned_data.get('instruction')
         # 备注
         remark = form.cleaned_data.get('remark')
+        # 调试数量
+        debug_count = form.cleaned_data.get('debug_count')
+        # 产品/模块
         product_module = form.cleaned_data.get('product_module')
         # 创建数据
         Debug.objects.create(
@@ -171,6 +172,7 @@ def DebugAdd(request):
             work_hours=work_hours,
             instruction=instruction if instruction else None,
             remark=remark if remark else None,
+            debug_count=debug_count,
             product_module=product_module,
             create_user=uid(request)
         )
@@ -229,6 +231,8 @@ def DebugUpdate(request):
         remark = form.cleaned_data.get('remark')
         # 成品/模块
         product_module = form.cleaned_data.get('product_module')
+        # 调试数量
+        debug_count = form.cleaned_data.get('debug_count')
     else:
         # 获取错误信息
         err_msg = regular.get_err(form)
@@ -253,7 +257,9 @@ def DebugUpdate(request):
     debug.work_hours = work_hours
     debug.instruction = instruction
     debug.remark = remark
+    debug.debug_count = debug_count
     debug.product_module = product_module
+    debug.update_time = datetime.now()
     debug.update_user = uid(request)
     # 更新数据
     debug.save()

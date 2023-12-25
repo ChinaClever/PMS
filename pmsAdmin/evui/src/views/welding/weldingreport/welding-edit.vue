@@ -197,38 +197,41 @@
         rules: {
           work_order: [ 
           {validator: (rule, value, callback) => this.checkWorkOrderIsNull(rule, value, callback) },
-          {required: true, message: '请输入单号'}
+          {required: true, message: '请输入单号', trigger: 'blur'}
         ],
           order_time: [
-          {required: true, message: '请输入下单时间'}
+          {required: true, message: '请输入下单时间', trigger: 'blur'}
         ],
           client_name: [
-          {required: true, message: '请输入客户名称'}
+          {required: true, message: '请输入客户名称', trigger: 'blur'}
         ],
           shape: [
-          {required: true, message: '请输入规格型号'}
+          {required: true, message: '请输入规格型号', trigger: 'blur'}
         ],
           product_name: [
-          {required: true, message: '请输入产品名称'}
+          {required: true, message: '请输入产品名称', trigger: 'blur'}
         ],
           work_hours: [
-          {required: true, message: '请输入工时'}
+          {required: true, message: '请输入工时', trigger: 'blur'},
+          {validator: (rule, value, callback) => this.checkNumber(rule, value, callback)},
         ],
           product_count: [
-          {required: true, message: '请输入总数量'}
+          {required: true, message: '请输入总数量', trigger: 'blur'},
+          {validator: (rule, value, callback) => this.checkNumber(rule, value, callback)},
         ],
           submit_time: [
-          {required: true, message: '请输入交期'}
+          {required: true, message: '请输入交期', trigger: 'blur'}
         ],
           start_time: [
-          {required: true, message: '请输入开始时间'}
+          {required: true, message: '请输入开始时间', trigger: 'blur'}
         ],
           finish_time: [
-          {required: true, message: '请输入完成时间'},
+          {required: true, message: '请输入完成时间', trigger: 'blur'},
           { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback)}
         ],
           welding_count: [
-          {required: true, message: '请输入焊接数量'}
+          {required: true, message: '请输入焊接数量', trigger: 'blur'},
+          {validator: (rule, value, callback) => this.checkNumber(rule, value, callback)},
         ],
         },
         // 提交状态
@@ -246,18 +249,15 @@
           this.isUpdate = true;
           this.disabled = true;
         } else {
-          this.form = {
-            product_name : '',
-            client_name : '',
-            product_count : '',
-            order_time : '',
-            shape : '',
-            submit_time : '',
-            product_module : ''
-          };
+          this.form = {};
           this.isUpdate = false;
         }
       },
+      visible(){
+        if (this.visible == false && this.isUpdate == true){
+          this.disabled = false;
+        }
+      }
     },
     methods: {
       /* 保存编辑 */
@@ -351,19 +351,7 @@
       },
 
       handleClear(){
-        this.form = {
-          product_name : '',
-          client_name : '',
-          product_count : '',
-          order_time : '',
-          shape : '',
-          submit_time : '',
-          product_module : '',
-          start_time : '',
-          finish_time : '',
-          work_hours:'',
-          welding_count:''
-        };
+        this.form = {};
         this.disabled = false;
       },
 
@@ -390,23 +378,31 @@
     checkWorkOrderIsNull(rule, value, callback){
         if (value == '') {
           this.form = {
-            product_name : '',
-            client_name : '',
-            product_count : '',
-            order_time : '',
-            shape : '',
-            submit_time : '',
-            product_module : '',
-            start_time:'',
-            finish_time:'',
-            work_hours:'',
-            welding_count:''
+            // product_name : '',
+            // client_name : '',
+            // product_count : '',
+            // order_time : '',
+            // shape : '',
+            // submit_time : '',
+            // product_module : '',
+            // start_time:'',
+            // finish_time:'',
+            // work_hours:'',
+            // welding_count:''
           };
           this.disabled = false;
         }
         callback();
-        console.log(4)
       },
+
+      // 检查数量不能为0
+      checkNumber(rule, value, callback){
+        if(value == 0){
+          callback(new Error('不能为0'));
+        }else{
+          callback();
+        }
+      }
 
     },
     mounted() {

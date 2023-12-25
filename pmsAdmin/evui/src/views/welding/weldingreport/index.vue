@@ -110,14 +110,6 @@
               </el-link>
             </el-popconfirm>
           </template>
-          <!-- 状态列 -->
-          <template slot="status" slot-scope="{row}">
-            <el-switch
-              v-model="row.status"
-              @change="editStatus(row)"
-              :active-value="1"
-              :inactive-value="2"/>
-          </template>
         </ele-pro-table>
       </el-card>
       <!-- 编辑弹窗 -->
