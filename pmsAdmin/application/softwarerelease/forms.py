@@ -29,7 +29,7 @@ from application.softwarerelease import models
 class SoftwarereleaseForm(forms.ModelForm):
     # 程序名称
     name = forms.CharField(
-        required=True,
+        required=False,
         max_length=255,
         error_messages={
             'required': '程序名称不能为空',
@@ -38,7 +38,7 @@ class SoftwarereleaseForm(forms.ModelForm):
     )
     # 使用产品
     products = forms.CharField(
-        required=True,
+        required=False,
         max_length=255,
         error_messages={
             'required': '使用产品不能为空',
@@ -47,7 +47,7 @@ class SoftwarereleaseForm(forms.ModelForm):
     )
     # 历史版本
     history_version = forms.CharField(
-        required=True,
+        required=False,
         max_length=255,
         error_messages={
             'required': '历史版本不能为空',
@@ -56,7 +56,7 @@ class SoftwarereleaseForm(forms.ModelForm):
     )
     # 当前版本
     version = forms.CharField(
-        required=True,
+        required=False,
         max_length=255,
         error_messages={
             'required': '当前版本不能为空',
@@ -65,14 +65,14 @@ class SoftwarereleaseForm(forms.ModelForm):
     )
     # 修改日期
     modify_time = forms.DateTimeField(
-        # max_length=18,
+        required=False,
         error_messages={
             'required': '修改日期不能为空',
         }
     )
     # 版本说明
     version_explain = forms.CharField(
-        required=True,
+        required=False,
         max_length=255,
         error_messages={
             'required': '版本说明不能为空',
@@ -81,7 +81,7 @@ class SoftwarereleaseForm(forms.ModelForm):
     )
     # 此次更新
     updata = forms.CharField(
-        required=True,
+        required=False,
         max_length=255,
         error_messages={
             'required': '此次更新不能为空',
@@ -90,7 +90,7 @@ class SoftwarereleaseForm(forms.ModelForm):
     )
     # 烧录方法
     burn_method = forms.CharField(
-        required=True,
+        required=False,
         max_length=255,
         error_messages={
             'required': '烧录方法不能为空',
@@ -99,7 +99,7 @@ class SoftwarereleaseForm(forms.ModelForm):
     )
     # 升级方法
     upgrade_method = forms.CharField(
-        required=True,
+        required=False,
         max_length=255,
         error_messages={
             'required': '升级方法不能为空',
@@ -108,7 +108,7 @@ class SoftwarereleaseForm(forms.ModelForm):
     )
     # 校准方法
     calibration_method = forms.CharField(
-        required=True,
+        required=False,
         max_length=255,
         error_messages={
             'required': '校准方法不能为空',
@@ -117,7 +117,7 @@ class SoftwarereleaseForm(forms.ModelForm):
     )
     # 用户手册
     User_Manual = forms.CharField(
-        required=True,
+        required=False,
         max_length=255,
         error_messages={
             'required': '用户手册不能为空',
@@ -126,7 +126,7 @@ class SoftwarereleaseForm(forms.ModelForm):
     )
     # 升级原因
     upgrade_cause = forms.CharField(
-        required=True,
+        required=False,
         max_length=255,
         error_messages={
             'required': '升级原因不能为空',
@@ -141,10 +141,13 @@ class SoftwarereleaseForm(forms.ModelForm):
     User_Manual_position =forms.CharField(
         required= False,
     )
+    attachment = forms.FileField(
+        required=False,
+    )
 
     class Meta:
         # 绑定模型
         model = models.Softwarerelease
         # 指定部分字段验证
-        fields = ['name', 'products', 'history_version', 'version', 'modify_time', 'version_explain', 'updata', 'burn_method', 'upgrade_method','calibration_method','User_Manual','upgrade_cause','documentation_position','User_Manual_position'
+        fields = ['name', 'products', 'history_version', 'version', 'modify_time', 'version_explain', 'updata', 'burn_method', 'upgrade_method','calibration_method','User_Manual','upgrade_cause','documentation_position','User_Manual_position','attachment'
                   ]

@@ -177,6 +177,9 @@
           placeholder="请输入升级原因"
           clearable/>
       </el-form-item>
+
+      <el-row :gutter="10">
+      <el-col :span="12">
       <el-form-item
         label="程序和文档公盘位置:"
         label-width="120px"
@@ -189,6 +192,9 @@
           placeholder="请输入程序和文档公盘位置"
           clearable/> 
       </el-form-item>
+      </el-col>
+
+      <el-col :span="12">
       <el-form-item
         label="用户使用手册和协议公盘位置:"
         prop="User_Manual_position">
@@ -200,24 +206,30 @@
           placeholder="请输入用户使用手册和协议公盘位置"
           clearable/>
       </el-form-item>
+      </el-col>
+      </el-row>
+
+      
       <el-form-item label="附件:" prop="attachment">
-            <el-upload
-              class="upload-demo"
-              ref="upload"
-              :auto-upload="false"
-              :file-list="fileList"
-              :on-change="onChange"
-              :on-remove="onRemove"
-              :on-exceed="handleExceed"
-              :limit="5"
-              action=""
-              multiple
-              drag>
-              <i class="el-icon-upload"></i>
-              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              <div class="el-upload__tip" slot="tip">支持多文件上传,最多5个,单个文件大小不能超过100MB</div>
-            </el-upload>
-          </el-form-item>
+        <el-upload
+          class="upload-demo"
+          ref="upload"
+          :auto-upload="false"
+          :file-list="fileList"
+          :on-change="onChange"
+          :on-remove="onRemove"
+          :on-exceed="handleExceed"
+          :limit="5"
+          action=""
+          multiple
+          drag
+          >
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          <div class="el-upload__tip" slot="tip">支持多文件上传,最多5个,单个文件大小不能超过100MB</div>
+        </el-upload>
+      </el-form-item>
+
 
     </el-form>
     <div slot="footer">
@@ -242,52 +254,54 @@ export default {
   },
   data() {
     return {
-      fileList: [],
-      selectedFilePath: '', // 添加这一行用于存储当前选择的文件路径
+    fileList: [],
     radio1: '公司标准',
     // 表单数据
     form: Object.assign({status: 1, other_explain: ''}, this.data),
       // 表单验证规则
       rules: {
-        name: [
-          {required: true, message: '请输入程序名称', trigger: 'blur'}
-        ],
-        products: [
-          {required: true, message: '请输入使用产品', trigger: 'blur'}
-        ],
-        history_version: [
-          {required: true, message: '请输入历史版本', trigger: 'blur'}
-        ],
-        version: [
-          {required: true, message: '请输入当前版本', trigger: 'blur'}
-        ],
+        // name: [
+        //   {required: true, message: '请输入程序名称', trigger: 'blur'}
+        // ],
+        // products: [
+        //   {required: true, message: '请输入使用产品', trigger: 'blur'}
+        // ],
+        // history_version: [
+        //   {required: true, message: '请输入历史版本', trigger: 'blur'}
+        // ],
+        // version: [
+        //   {required: true, message: '请输入当前版本', trigger: 'blur'}
+        // ],
        
-        modify_time: [
-          {required: true, message: '请输入修改日期', trigger: 'blur'}
-        ],
-        version_explain: [
-          {required: true, message: '请输入版本说明', trigger: 'blur'}
-        ],
-        updata: [
-          {required: true, message: '请输入此次更新', trigger: 'blur'}
-        ],
-        burn_method: [
-          {required: true, message: '请输入烧录方法', trigger: 'blur'}
-        ],
-        upgrade_method: [
-          {required: true, message: '请输入升级方法', trigger: 'blur'}
-        ],
-        calibration_method :[
-          {required: true, message: '请输入校准方法', trigger: 'blur'}
-        ],
-        User_Manual:[
-          {required: true, message: '请输入用户手册', trigger: 'blur'}
-        ],
-         upgrade_cause:[
-          {required: true, message: '请输入升级原因', trigger: 'blur'}
-        ],
+        // modify_time: [
+        //   {required: true, message: '请输入修改日期', trigger: 'blur'}
+        // ],
+        // version_explain: [
+        //   {required: true, message: '请输入版本说明', trigger: 'blur'}
+        // ],
+        // updata: [
+        //   {required: true, message: '请输入此次更新', trigger: 'blur'}
+        // ],
+        // burn_method: [
+        //   {required: true, message: '请输入烧录方法', trigger: 'blur'}
+        // ],
+        // upgrade_method: [
+        //   {required: true, message: '请输入升级方法', trigger: 'blur'}
+        // ],
+        // calibration_method :[
+        //   {required: true, message: '请输入校准方法', trigger: 'blur'}
+        // ],
+        // User_Manual:[
+        //   {required: true, message: '请输入用户手册', trigger: 'blur'}
+        // ],
+        //  upgrade_cause:[
+        //   {required: true, message: '请输入升级原因', trigger: 'blur'}
+        // ],
         
       },
+      
+  
+      
       // 提交状态
       loading: false,
       // 是否是修改
@@ -297,24 +311,70 @@ export default {
   watch: {
     data() {
       if (this.data && this.data.id) {
-        this.form = Object.assign({}, this.data);
-        this.isUpdate = true;
-      } else {
-        this.form = {};
-        this.isUpdate = false;
-      }
+          this.form = Object.assign({}, this.data);
+          this.fileList = [];
+          // 遍历文件名列表，为每个文件名创建一个文件对象
+          if  (this.data.attachmentList != null){
+            this.data.attachmentList.forEach((attachment, index) => {
+            const file = {
+              name: this.data.fileNameList[index],
+              uid: attachment, 
+              status: 'success', 
+              url: '' 
+              };
+              this.fileList.push(file); 
+            });
+          }
+          // 优先级对应 
+          this.isUpdate = true;
+        } else { 
+          this.isUpdate = false;
+        }
+      },
+      visible(){
+        if (this.visible == false){
+          this.fileList = [];
+          this.deleteFileList = [];
+        }
     }
   },
   methods: {
-    
+  
   /* 保存编辑 */
   save() {
     this.$refs['form'].validate((valid) => {
       if (valid) {
+        // 创建 formData 对象  加入需要删除的文件
+        const formData = new FormData()
+            if (this.deleteFileList != null){
+              formData.append('deleteFileList',this.deleteFileList)
+            }
+        // 文件上传
+        if (this.fileList.length != 0) {         
+              this.fileList.forEach((file) => {
+                if (file.status === 'success') {
+                  // 文件已上传成功，不再重新上传
+                  return;
+                }
+              formData.append('files', file.raw)
+            }
+          )}
+        // 获取表单对象的键
+        const keys = Object.keys(this.form);
+          // 不写的话保存空的备份会显示null
+          if (this.form.remark == null){
+            this.form.remark = ''
+          }
+          // 遍历键，并将数据添加到新的 FormData 对象中
+          keys.forEach(key => {
+            if (Object.hasOwnProperty.call(this.form, key)) {
+              formData.append(key, this.form[key]);
+            }
+          });
 
         // 发送请求进行保存操作
         this.loading = true;
-        this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/softwarerelease/update' : '/softwarerelease/add', this.form).then(res => {
+        this.$http[this.isUpdate ? 'post' : 'post'](this.isUpdate ? '/softwarerelease/update' : '/softwarerelease/add', formData).then(res => {
           this.loading = false;
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -323,6 +383,8 @@ export default {
             }
             this.updateVisible(false);
             this.$emit('done');
+            //清空fileList
+            this.fileList = []
           } else {
             this.$message.error(res.data.msg);
           }
@@ -338,7 +400,40 @@ export default {
   /* 更新visible */
   updateVisible(value) {
     this.$emit('update:visible', value);
-  }
+  },
+  // 文件自定义上传
+  onChange(file, fileList) {
+        if (file.size === 0) {
+            this.$message.error('上传文件不存在').duration(3000);
+            this.fileList = fileList.filter(item => item.uid !== file.uid)
+            return
+          }
+        
+          // 获取文件大小（单位：字节）
+          const fileSize = file.size; 
+          // 将文件大小转换为MB
+          const fileSizeMB = Math.round(fileSize / (1024 * 1024));
+          // 验证文件大小是否超过100MB
+          if (fileSizeMB > 100) {
+            this.$message.error('文件大小不能超过100MB').duration(3000);
+            this.fileList = fileList.filter(item => item.uid !== file.uid)
+            return
+          }
+
+        this.fileList = fileList
+        },
+
+  // 文件移除
+  onRemove(file, fileList) {
+    this.fileList = fileList.filter(item => item.uid !== file.uid)
+    this.deleteFileList.push(file.uid)
+  },
+  // 文件上传超过数量
+  handleExceed(files, fileList) {
+    this.$message.warning(`当前限制上传 5 个文件，已选择了 ${fileList.length} 个文件`);
+  },
+
+  
 }
 }
 </script>

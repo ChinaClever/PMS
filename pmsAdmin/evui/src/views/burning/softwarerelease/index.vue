@@ -56,6 +56,7 @@
         :datasource="url"
         :columns="columns"
         :selection.sync="selection"
+        :parseData="parseData"
         height="calc(100vh - 315px)">
         <!-- 表头工具栏 -->
         <template slot="toolbar">
@@ -83,20 +84,14 @@
             class="ele-btn-icon"
             @click="exportToExcel">导出
           </el-button>
-          <!-- <el-button
-            @click="showImport=true"
-            icon="el-icon-upload2"
-            class="ele-btn-icon"
-            size="small">导入
-          </el-button>
-          <el-button
-            size="small"
-            type="success"
-            icon="el-icon-download"
-            class="ele-btn-icon"
-            @click="exportExcel"
-            v-if="permission.includes('sys:softwarerelease:export')">导出
-          </el-button> -->
+             
+        </template>
+        <!-- 附件列 -->
+        <template slot="attachment" slot-scope="{row}">
+          <el-link v-for="(attachment, index) in row.fileNameList" :key="index"
+          @click=" downloadFile(`${preUrl}/${encodeURIComponent(row.attachmentList[index])}`, attachment)" >
+            {{ attachment }}
+          </el-link>
         </template>
         <!-- 操作列 -->
         <template slot="action" slot-scope="{row}">
@@ -154,6 +149,7 @@ export default {
   },
   data() {
     return {
+      preUrl:process.env.VUE_APP_API_BASE_URL,
       // 表格数据接口
       url: '/softwarerelease/list',
       // 表格列配置
@@ -311,6 +307,14 @@ export default {
           }
         },
         {
+            columnKey: 'attachment',
+            label: '附件',
+            width: 150,
+            align: 'center',
+            resizable: false,
+            slot: 'attachment',
+          },
+        {
           columnKey: 'action',
           label: '操作',
           width: 150,
@@ -346,6 +350,36 @@ export default {
     };
   },
   methods: {
+    parseData(val) {
+      // console.log(val,'返回val=====');
+      // 总数量
+      this.items_total = val.items_total
+
+      if (val.data.length != null){
+        // 遍历每条数据 有附件的再处理
+        for (var i = 0; i < val.data.length; i++) {
+          if (val.data[i].attachment != null){
+            // 分成多个文件
+            var attachmentList = val.data[i].attachment.split(",");
+            var fileNameList = []
+            // 文件路径提取出文件名
+            for (var j = 0; j < attachmentList.length; j++){   
+              var filePath = attachmentList[j];
+              var fileNameTemp = filePath.substring(filePath.lastIndexOf("/") + 1);
+              var fileName = fileNameTemp.substring(fileNameTemp.indexOf("_") + 1);
+              fileNameList.push(fileName)
+            }
+
+            val.data[i].attachmentList = attachmentList
+            val.data[i].fileNameList = fileNameList
+            // console.log(fileNameList);
+          }
+          
+        }
+      }
+      return val
+      },
+
     /* 刷新表格 */
     reload() {
       this.$refs.table.reload({page: 1, where: this.where});
@@ -382,7 +416,7 @@ export default {
         this.$http.get('/softwarerelease/detail/' + row.id).then((res) => {
           this.loading = false;
           if (res.data.code === 0) {
-            this.current = Object.assign({}, res.data.data);
+            this.current = Object.assign({fileNameList: row.fileNameList, attachmentList:row.attachmentList}, res.data.data);
             this.showEdit = true;
           } else {
             this.$message.error(res.data.msg);
@@ -527,6 +561,16 @@ export default {
       saveAs(blob, newFileName);
       this.selection = temp;
     },
+    // 附件下载
+    downloadFile(fileUrl, fileName){
+        console.log(fileUrl)
+        this.$http.get(fileUrl, { responseType: 'blob' }).then(response => {
+          saveAs(response.data, fileName);
+        })
+        .catch(error => {
+          console.error(fileName+'文件下载失败', error);
+        });
+      },
   }
 }
 </script>
