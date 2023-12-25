@@ -18,6 +18,7 @@
             label="单号:"
             prop="work_order">
             <el-autocomplete
+            :disabled="isUpdate"
             v-model="form.work_order"
             clearable
             :fetch-suggestions="querySearchAsync"
@@ -237,7 +238,8 @@ export default {
     data() {
       if (this.data && this.data.id) {
         this.form = Object.assign({}, this.data);
-        this.isUpdate = true;      
+        this.isUpdate = true;  
+        this.disabled=true;    
       } else {
         this.form = {};
         this.isUpdate = false;
@@ -273,6 +275,7 @@ export default {
               if (!this.isUpdate) {
                 this.form = {name:'',repair_time:new Date().toISOString()};
               }
+              this.disabled=false
               this.updateVisible(false);
               this.$emit('done');
             } else {
@@ -403,7 +406,9 @@ export default {
       },
 
       handleClear(){
-        this.form.name = ''
+        this.form={
+          name:''
+        }
         this.disabled=false
       },
       handleEnterKey(event){
@@ -428,7 +433,9 @@ export default {
     checkWorkOrderIsNull(rule, value, callback){
       if (value == '') {
         this.disabled = false;
-        this.form.name='';
+        this.form={
+          name:''
+        }
       }
       callback();
     },
