@@ -72,13 +72,12 @@ def WeldingList(request):
                 'product_name': item.product_name,
                 'product_count': item.product_count,
                 'submit_time': str(item.submit_time.strftime('%Y-%m-%d')),
-                'start_time': str(item.start_time.strftime('%Y-%m-%d')),
-                'finish_time': str(item.finish_time.strftime('%Y-%m-%d')),
+                'start_time': str(item.start_time.strftime('%Y-%m-%d %H:%M:%S')),
+                'finish_time': str(item.finish_time.strftime('%Y-%m-%d %H:%M:%S')),
                 'work_hours': item.work_hours,
                 'instruction': item.instruction,
                 'remark': item.remark,
-                'create_time': str(item.create_time.strftime('%Y-%m-%d')) if item.create_time else None,
-                'update_time': str(item.update_time.strftime('%Y-%m-%d')) if item.create_time else None,
+                'welding_count': item.welding_count,
             }
             result.append(data)
     # 返回结果
@@ -102,11 +101,12 @@ def WeldingDetail(welding_id):
         'product_name': welding.product_name,
         'product_count': welding.product_count,
         'submit_time': str(welding.submit_time.strftime('%Y-%m-%d')),
-        'start_time': str(welding.start_time.strftime('%Y-%m-%d')),
-        'finish_time': str(welding.finish_time.strftime('%Y-%m-%d')),
+        'start_time': str(welding.start_time.strftime('%Y-%m-%d %H:%M:%S')),
+        'finish_time': str(welding.finish_time.strftime('%Y-%m-%d %H:%M:%S')),
         'work_hours': welding.work_hours,
         'instruction': welding.instruction,
         'remark': welding.remark,
+        'welding_count': welding.welding_count,
     }
     # 返回结果
     return data
@@ -147,6 +147,8 @@ def WeldingAdd(request):
         finish_time = form.cleaned_data.get('finish_time')
         # 所用工时
         work_hours = form.cleaned_data.get('work_hours')
+        # 焊接数量
+        welding_count = form.cleaned_data.get('welding_count')
         # 具体说明
         instruction = form.cleaned_data.get('instruction')
         # 备注
@@ -163,6 +165,7 @@ def WeldingAdd(request):
             start_time=start_time,
             finish_time=finish_time,
             work_hours=work_hours,
+            welding_count=welding_count,
             instruction=instruction if instruction else None,
             remark=remark if remark else None,
             create_user=uid(request)
@@ -216,6 +219,8 @@ def WeldingUpdate(request):
         finish_time = form.cleaned_data.get('finish_time')
         # 所用工时
         work_hours = form.cleaned_data.get('work_hours')
+        # 焊接数量
+        welding_count = form.cleaned_data.get('welding_count')
         # 具体说明
         instruction = form.cleaned_data.get('instruction')
         # 备注
@@ -242,6 +247,7 @@ def WeldingUpdate(request):
     welding.start_time = start_time
     welding.finish_time = finish_time
     welding.work_hours = work_hours
+    welding.welding_count = welding_count
     welding.instruction = instruction
     welding.remark = remark
     welding.update_time = datetime.now()

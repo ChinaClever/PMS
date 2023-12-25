@@ -18,9 +18,10 @@
         <el-row :gutter="6">
         <el-col :span="12" :pull="1">
           <el-form-item
-          label="单号:"
+          label="单号:" 
           prop="work_order">
             <el-autocomplete
+              :disabled="isUpdate"
               v-model="form.work_order"
               :fetch-suggestions="querySearchAsync"
               @select="handleSelect"
@@ -175,7 +176,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12" :pull="1">
-          <el-form-item label="数量:" prop="packing_count">
+          <el-form-item label="打包数量:" prop="packing_count">
             <el-input-number
               :min="0"
               v-model="form.packing_count"
@@ -224,8 +225,7 @@
           ],
           work_order: [
             {validator: (rule, value, callback) => this.checkWorkOrderIsNull(rule, value, callback), trigger: 'blur' },
-            {required: true, message: '请输入单号', trigger: 'blur'}
-          
+            {required: true, message: '请输入单号', trigger: 'blur'}   
           ],
           client_name: [
             {required: true, message: '请选择客户名称', trigger: 'blur'}
@@ -268,6 +268,7 @@
         if (this.data && this.data.id) {
           this.form = Object.assign({}, this.data);
           this.isUpdate = true;
+          this.disabled = true;
         } else {
           this.form = {};
           this.isUpdate = false;
@@ -349,6 +350,7 @@
                 this.form.shape  = shipmentData.shape
                 this.form.delivery_date = shipmentData.delivery_date
                 this.form.remark = shipmentData.remark
+
                 this.disabled = true;
               } 
             });

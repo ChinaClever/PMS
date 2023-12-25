@@ -7,8 +7,8 @@
           :columns="columns"
           border class="custom-table"
           :header-cell-style="headerCellStyle"
+          :cell-style="cellStyle"
           height="calc(110vh - 215px)">
-<!--          :cell-style="cellStyle"-->
       </ele-pro-table>
     </el-card>
     <el-card class="custom-table" body-style="padding: 0;" align="center">
@@ -31,32 +31,6 @@ import EleChart from 'ele-admin/packages/ele-chart';
 export default {
   name: 'DashboardComprehensive',
   components: {EleChart},
-  computed: {
-    deliveryChartOption(){
-      return {
-        tooltip: {
-          trigger: 'axis'
-        },
-        xAxis: [
-          {
-            type: 'category',
-            data: this.DeliveryData.map(d => d.name)
-          }
-        ],
-        yAxis: [
-          {
-            type: 'value'
-          }
-        ],
-        series: [
-          {
-            type: 'bar',
-            data: this.DeliveryData.map(d => d.product_count)
-          }
-        ]
-      };
-    }
-  },
   data() {
     return {
       loading: true,  // 加载状态
@@ -112,26 +86,6 @@ export default {
             showOverflowTooltip: true,
             minWidth: 60,
             align: 'center',
-            render:(h, params)=>{
-              const row = params.row;
-              const deliveryDate = new Date(row.deliveryDate)
-              const currentDate = new Date();
-              const burnInDate = new Date(currentDate.getTime() + (row.burning_duration_days * 24 * 60 * 60 * 1000));
-              let cellClass = '';
-              if(burnInDate > deliveryDate)
-              {
-                cellClass = 'color:red;background-color:#192a56';
-              }else{
-                cellClass = 'color:green;background-color:#192a56';
-              }
-              return h('span',{
-                class: cellClass,
-                domProps:{
-                  innerHTML:row.burning_quantity
-                }
-              })
-            }
-
           },
           {
             prop: 'debug_quantity',
@@ -139,25 +93,6 @@ export default {
             showOverflowTooltip: true,
             minWidth: 60,
             align: 'center',
-            render:(h, params)=>{
-              const row = params.row;
-              const deliveryDate = new Date(row.deliveryDate)
-              const currentDate = new Date();
-              const debugInDate = new Date(currentDate.getTime() + (row.debug_duration_days * 24 * 60 * 60 * 1000));
-              let cellClass = '';
-              if(debugInDate > deliveryDate)
-              {
-                cellClass = 'cell-red';
-              }else{
-                cellClass = 'cell-green';
-              }
-              return h('span',{
-                class: cellClass,
-                domProps:{
-                  innerHTML:row.debug_quantity
-                }
-              })
-            }
           },
           {
             prop: 'inspect_quantity',
@@ -180,25 +115,63 @@ export default {
             minWidth: 120,
             align: 'center',
           },
+          {
+            prop: 'inspect_duration_days',
+            label: '质检天数',
+            show:false,
+          },
+          {
+            prop: 'debug_duration_days',
+            label: '调试天数',
+            show:false,
+          },
+          {
+            prop: 'burning_duration_days',
+            label: '烧录天数',
+            show:false,
+          },
+          {
+            prop: 'repair_duration_days',
+            label: '维修天数',
+            show:false,
+          },
 
         ],
       //交付数量
       DeliveryData:[],
-      //警告天数获取
-      WarningData:[],
-      //状态
-      // status:null,
-      // inspect_duration_days:[],
-      // deliveryDateDay:[],
-
     };
+  },
+  computed: {
+    deliveryChartOption(){
+      return {
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: this.DeliveryData.map(d => d.name)
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            type: 'bar',
+            data: this.DeliveryData.map(d => d.product_count)
+          }
+        ]
+      };
+    },
   },
   mounted() {
     this.getAllData();
-    this.getWarningData();
   },
   methods: {
-        //转换时间成数据库内的格式
+    //转换时间成数据库内的格式
     formatDate(date) {
       if (date != null){
         return date.toLocaleString('zh-CN',{
@@ -226,77 +199,109 @@ export default {
           this.$message.error(e.message);
         })
     },
-    getWarningData(){
-      this.WarningData = [];
-      this.$http.get('/comprehensive/DetailAll').then(res => {
-        if (res.data.code === 0) {
-          this.WarningData = res.data.data;
-          // const nowDate = new Date();
-          // const nowDate1 = new Date(nowDate.getFullYear(), nowDate.getMonth(), 1)
-          //
-          // //交货日期
-          // this.deliveryDateDay = this.WarningData.map(d => d.deliveryDate)
-          // console.log(this.deliveryDateDay)
-          // //质检所需天数
-          // this.inspect_duration_days = this.WarningData.map(d => d.inspect_duration_days)
-          //
-          // this.inspect_duration_days.forEach((daysToAdd, index) => {
-          //   const futureDate = new Date(nowDate1.getTime() + daysToAdd*24*60*60*1000);
-          //   const date2 = this.deliveryDateDay[index]
-          //   if(futureDate >= date2){
-          //     console.log("现在日期+天数>=交货日期")
-          //     this.status = 1;
-          //   }
-          //   else {
-          //     console.log("现在日期+天数<交货日期")
-          //     this.status = 0;
-          //   }
-          // });
-          } else {
-            this.$message.error(res.data.msg || '获取工单号对应的数据失败');
+    // //改变表格某一列或者某一个单元格文本颜色
+    cellStyle({row,column}) {
+        //质检数量
+        if(column.property === 'inspect_quantity' && row.deliveryDate && row.inspect_duration_days)
+        {
+          const completionTime = new Date(row.deliveryDate); //交付时间
+          const inspect_duration_days = row.inspect_duration_days;
+          const nowDate = new Date()
+          const dueDate = new Date(nowDate.getTime() + inspect_duration_days*24*60*60*1000)
+          if(dueDate > completionTime)
+          {
+            if(row.product_count === row.inspect_quantity)
+            {
+              return 'color:green'
+            }
+            return 'color:red'
           }
-        }).catch(e => {
-          this.$message.error(e.message);
-        })
+          else
+          {
+            return 'color:green'
+          }
+        }
+        //维修数量
+        if(column.property === 'repair_quantity' && row.deliveryDate && row.repair_duration_days)
+        {
+          const completionTime = new Date(row.deliveryDate); //交付时间
+          const repair_duration_days = row.repair_duration_days;
+          const nowDate = new Date()
+          const dueDate = new Date(nowDate.getTime() + repair_duration_days*24*60*60*1000)
+          if(dueDate > completionTime)
+          {
+            if(row.product_count === row.repair_quantity)
+            {
+              return 'color:green'
+            }
+            return 'color:red'
+          }
+          else
+          {
+            return 'color:green'
+          }
+        }
+        //烧录数量
+        if(column.property === 'burning_quantity' && row.deliveryDate && row.burning_duration_days)
+        {
+          const completionTime = new Date(row.deliveryDate); //交付时间
+          const burning_duration_days = row.burning_duration_days;
+          const nowDate = new Date()
+          const dueDate = new Date(nowDate.getTime() + burning_duration_days*24*60*60*1000)
+          if(dueDate > completionTime)
+          {
+            if(row.product_count === row.burning_quantity)
+            {
+              return 'color:green'
+            }
+              return 'color:red'
+          }
+          else
+          {
+              return 'color:green'
+          }
+        }
+        //调试数量
+        if(column.property === 'debug_quantity' && row.deliveryDate && row.debug_duration_days)
+        {
+          const completionTime = new Date(row.deliveryDate); //交付时间
+          const debug_duration_days = row.debug_duration_days;
+          const nowDate = new Date()
+          const dueDate = new Date(nowDate.getTime() + debug_duration_days*24*60*60*1000)
+          if(dueDate > completionTime)
+          {
+            if(row.product_count === row.debug_quantity)
+            {
+              return 'color:green'
+            }
+            return 'color:red'
+          }
+          else
+          {
+            return 'color:green'
+          }
+
+        }
+        return {
+          backgroundColor: '#192a56',
+          color: 'white',
+        }
     },
-    // // //改变表格某一列或者某一个单元格文本颜色
-    // cellStyle({column}) {
-    //     // 定义样式变量
-    //     let cellStyle;
-    //     console.log(this.status)
-    //
-    //     switch (0){
-    //       case 0:
-    //         cellStyle = 'color:white;background-color:#192a56';
-    //         break;
-    //
-    //       case 1:
-    //         cellStyle = 'color:red;background-color:#192a56';
-    //         break;
-    //
-    //       default:
-    //         cellStyle = '';
-    //     }
-    //     if(column.label === '质检数量'){
-    //       return cellStyle;
-    //     }
-    //
-    // },
+
     headerCellStyle() {
       return {
         backgroundColor: '#192a56',
         color: 'white',
       };
     },
-  },
 
-  activated() {
-  ['saleChart', ].forEach((name) => {
-    this.$refs[name].resize();
-  });
+    activated() {
+      ['saleChart', ].forEach((name) => {
+        this.$refs[name].resize();
+      });
+    }
   }
 }
-
 </script>
 
 <style scoped>
@@ -334,12 +339,20 @@ export default {
 ::v-deep .el-input__inner,::v-deep .ele-table-tool,::v-deep .ele-table-tool-default{
   background-color: #192a56 !important;
 }
-.cell-red{
-  background-color: red;
-  color: white;
+
+@keyframes blink-animation {
+  0%{
+    background-color:red;
+  }
+  50%{
+    background-color: transparent;
+  }
+  100%{
+    background-color: red;
+  }
 }
-.cell-green{
-  background-color: green;
-}
+
+
+
 
 </style>

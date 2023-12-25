@@ -23,19 +23,20 @@ class Welding(BaseModel):
     product_name = models.CharField(max_length=255, verbose_name="产品名称", help_text="产品名称")
     # 数量
     product_count = models.IntegerField(default=0, verbose_name="数量", help_text="数量")
-    # 交期
+    # 交货日期
     submit_time = models.DateTimeField(auto_now_add=False, verbose_name="交期", max_length=11)
+    # 具体说明
+    instruction = models.CharField(null=True, max_length=255, verbose_name="具体说明", help_text="具体说明")
+    # 备注
+    remark = models.CharField(null=True, max_length=255, verbose_name="备注", help_text="备注")
     # 开始日期
     start_time = models.DateTimeField(auto_now_add=False, verbose_name="开始日期", max_length=11)
     # 完成日期
     finish_time = models.DateTimeField(auto_now_add=False, verbose_name="开始日期", max_length=11)
     # 所用工时
     work_hours = models.IntegerField(null=True, default=0, verbose_name="所用工时", help_text="所用工时")
-    # 具体说明
-    instruction = models.CharField(null=True, max_length=255, verbose_name="具体说明", help_text="具体说明")
-    # 备注
-    remark = models.CharField(null=True, max_length=255, verbose_name="备注", help_text="备注")
-
+    # 焊接数量
+    welding_count = models.IntegerField(default=0, verbose_name="焊接数量", help_text="焊接数量")
     class Meta:
         # 数据表名
         db_table = TABLE_PREFIX + "weldingreport"

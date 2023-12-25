@@ -106,6 +106,7 @@
           <el-form-item label="数量:" prop="product_count">
           <el-input-number
             :min="0"
+            :step="50"
             v-model="form.product_count"
             placeholder="请输入数量"
             controls-position="right"
@@ -366,7 +367,6 @@
               this.fileList.push(file); 
             });
           }
-          // 优先级对应
           
           this.isUpdate = true;
         } else {
@@ -460,9 +460,9 @@
             this.$http.get('/shipmentreport/product/detail/' + this.form.product_code).then((res) => {
             this.loading = false;
             if (res.data.code === 0 && res.data.data != null) {
-             this.form.product_name = res.data.data.product_name
-             this.form.shape  = res.data.data.shape
-             this.form.product_module = res.data.data.product_module
+              this.form.product_name = res.data.data.product_name
+              this.form.shape  = res.data.data.shape
+              this.form.product_module = res.data.data.product_module
             } 
             })
             callback();
