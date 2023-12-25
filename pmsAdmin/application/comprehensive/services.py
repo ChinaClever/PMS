@@ -67,40 +67,29 @@ def DetailAll(request):
 
             # 烧录报表的数量
             burningReport = (burning.objects.filter(is_delete=False, work_order=workId)
-                             .aggregate(burningReport=Sum('quantity')))['burningReport']
+                             .aggregate(burningReport=Sum('burning_quantity')))['burningReport']
             if burningReport == None:
                 burningReport = 0
 
             # 维修报表的数量
-            repairReport = (Dict.objects.filter(is_delete=False, work_order=workId)
+            repair_bad_number = (Dict.objects.filter(is_delete=False, work_order=workId)
                             .aggregate(repairReport=Sum('bad_number')))['repairReport']
-            if repairReport == None:
-                repairReport = 0
-            deliveryDate = shipmentReport.delivery_date.strftime("%Y-%m-%d")
-            if deliveryDate == None:
-                deliveryDate = 'None'
-
-            startDate = shipmentReport.order_date.strftime("%Y-%m-%d")
-            if startDate == None:
-                startDate = 'None'
-
-            endDate = shipmentReport.finish_date.strftime("%Y-%m-%d")
-            if endDate == None:
-                endDate = 'None'
+            if repair_bad_number == None:
+                repair_bad_number = 0
 
             Alldata = {
                 'work_order_id': workId,
                 'name': shipmentReport.client_name,
                 'model': shipmentReport.shape,
-                'deliveryDate': deliveryDate,
-                'startDate': startDate,
-                'endDate': endDate,
+                'deliveryDate': str(shipmentReport.delivery_date.strftime('%Y-%m-%d')),
+                'startDate': str(shipmentReport.order_date.strftime('%Y-%m-%d')),
+                'endDate': str(shipmentReport.finish_date.strftime('%Y-%m-%d')) if shipmentReport.finish_date else None,
                 'product_count':shipmentReport.product_count,
 
                 'inspect_quantity':inspectReport, #质检数量
                 'debug_quantity':debugReport, #调试数量
                 'burning_quantity':burningReport,  #烧录数量
-                'repair_quantity':repairReport,  #维修数量
+                'repair_quantity':repair_bad_number,  #维修数量
                 'inspect_duration_days': shipmentReport.inspect_duration_days,  ## 质检所需天数
                 'debug_duration_days': shipmentReport.debug_duration_days,  # 调试所需天数
                 'burning_duration_days': shipmentReport.burning_duration_days,  # 烧录所需天数
