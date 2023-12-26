@@ -93,7 +93,6 @@ def DetailAll(request):
                 'inspect_duration_days': shipmentReport.inspect_duration_days,  ## 质检所需天数
                 'debug_duration_days': shipmentReport.debug_duration_days,  # 调试所需天数
                 'burning_duration_days': shipmentReport.burning_duration_days,  # 烧录所需天数
-                'repair_duration_days':shipmentReport.repair_duration_days # 维修所需天数
             }
             data.append(Alldata)
     #         data.add(tuple(Alldata.items()))
