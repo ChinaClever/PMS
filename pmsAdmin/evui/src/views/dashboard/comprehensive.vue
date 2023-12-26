@@ -141,12 +141,6 @@ export default {
             label: '烧录天数',
             show:false,
           },
-          {
-            prop: 'repair_duration_days',
-            label: '维修天数',
-            show:false,
-          },
-
         ],
       //交付数量
       DeliveryData:[],
