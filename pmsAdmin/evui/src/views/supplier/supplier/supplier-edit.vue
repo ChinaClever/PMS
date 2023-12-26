@@ -258,6 +258,7 @@ export default {
         //   customer: '',
         //   product_type :''
         // }
+        this.form.work_order=''
         this.form.product_name = ''
         this.form.customer = ''
         this.form.product_type  = ''
@@ -287,6 +288,7 @@ export default {
         //   customer: '',
         //   product_type :''
         // }
+        this.form.work_order = ''
         this.form.product_name = ''
         this.form.customer = ''
         this.form.product_type  = ''

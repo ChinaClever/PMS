@@ -412,6 +412,7 @@ export default {
         //   name:''
         // }
         this.form.name='';
+        this.form.work_order = ''
         this.disabled=false
       },
       handleEnterKey(event){
@@ -440,6 +441,7 @@ export default {
         //   name:''
         // }
         this.form.name=''
+        this.form.work_order = ''
       }
       callback();
     },
