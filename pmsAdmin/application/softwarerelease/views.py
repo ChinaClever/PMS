@@ -82,13 +82,13 @@ class SoftwarereleaseAddView(PermissionRequired, View):
 
 
 # 更新
-@method_decorator(check_login, name='put')
+@method_decorator(check_login, name='post')
 class SoftwarereleaseUpdateView(PermissionRequired, View):
     # 方法权限标识
     permission_required = ('sys:softwarerelease:update',)
 
     # 接收PUT请求
-    def put(self, request):
+    def post(self, request):
         if DEBUG:
             return R.failed("演示环境，暂无操作权限")
         # 调用更新方法
