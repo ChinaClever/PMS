@@ -19,7 +19,7 @@
               </el-form-item>
             </el-col>
 
-            <el-col :lg="12" :md="24">
+            <el-col :lg="9" :md="24">
               <div class="container">
                 <div class="time-picker">
                   <el-date-picker
