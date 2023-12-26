@@ -46,8 +46,6 @@ class Shipment(BaseModel):
     debug_duration_days = models.IntegerField(default=0, verbose_name="调试所需天数", help_text="调试所需天数")
     # 质检所需天数
     inspect_duration_days = models.IntegerField(default=0, verbose_name="质检所需天数", help_text="质检所需天数")
-    # 维修所需天数
-    repair_duration_days = models.IntegerField(default=0, verbose_name="维修所需天数", help_text="维修所需天数")
 
     class Meta:
         db_table = TABLE_PREFIX + 'shipmentreport'

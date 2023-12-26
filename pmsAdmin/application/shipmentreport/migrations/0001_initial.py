@@ -57,7 +57,6 @@ class Migration(migrations.Migration):
                 ('burning_duration_days', models.IntegerField(default=0, help_text='烧录所需天数', verbose_name='烧录所需天数')),
                 ('debug_duration_days', models.IntegerField(default=0, help_text='调试所需天数', verbose_name='调试所需天数')),
                 ('inspect_duration_days', models.IntegerField(default=0, help_text='质检所需天数', verbose_name='质检所需天数')),
-                ('repair_duration_days', models.IntegerField(default=0, help_text='维修所需天数', verbose_name='维修所需天数')),
             ],
             options={
                 'verbose_name': '排期表单表',

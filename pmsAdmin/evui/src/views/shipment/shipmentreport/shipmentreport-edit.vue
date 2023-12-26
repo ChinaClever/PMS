@@ -68,7 +68,7 @@
               placeholder="请输入产品名称"
               clearable
               @select="handleSelect"
-              style="width: 277px;"
+              style="width: 291px;"
             ></el-autocomplete>
           </el-form-item>
         </el-col>
@@ -161,7 +161,7 @@
     </el-row>
     <el-row><el-divider content-position="center" style="color: #000;">完成各模块所需天数</el-divider></el-row>
     <el-row>
-      <el-col :span="6">
+      <el-col :span="8">
         <el-form-item label="烧录：" prop="burning_duration_days">
           <el-input-number
             :min="1"
@@ -170,7 +170,7 @@
             class="ele-fluid ele-text-left"/>
         </el-form-item>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="8">
         <el-form-item label="调试:" prop="debug_duration_days">
           <el-input-number
             :min="1"
@@ -179,20 +179,11 @@
             class="ele-fluid ele-text-left"/>
         </el-form-item>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="8">
         <el-form-item label="质检:" prop="inspect_duration_days">
           <el-input-number
             :min="1"
             v-model="form.inspect_duration_days"
-            controls-position="right"
-            class="ele-fluid ele-text-left"/>
-        </el-form-item>
-      </el-col>
-      <el-col :span="6">
-        <el-form-item label="维修:" prop="repair_duration_days">
-          <el-input-number
-            :min="1"
-            v-model="form.repair_duration_days"
             controls-position="right"
             class="ele-fluid ele-text-left"/>
         </el-form-item>
@@ -259,7 +250,7 @@
         state: '',
         timeout:  null,
         // 表单数据
-        form: Object.assign({product_code: '', product_name:'', shape:'', product_module:''}, this.data),
+        form: Object.assign({product_code: '', product_name:'', shape:'', product_module:1, priority: 2}, this.data),
         // 表单验证规则
         rules: {
           work_order: [
@@ -312,10 +303,6 @@
             {required: true, message: '输入质检所需天数', trigger: 'blur'},
             { validator: this.validateDurationDays}
           ],
-          repair_duration_days: [
-            {required: true, message: '输入维修所需天数', trigger: 'blur'},
-            { validator: this.validateDurationDays}
-          ],
         },
         // 提交状态
         loading: false,
@@ -356,7 +343,7 @@
           
           this.isUpdate = true;
         } else {
-          this.form = {product_code: '', product_name:'', shape:'', product_module:''};
+          this.form = {product_code: '', product_name:'', shape:'',  product_module:1, priority: 2};
           this.isUpdate = false;
         }
       },
@@ -437,7 +424,7 @@
       checkWorkOrderId(rule, value, callback){
         const regex = /^[a-zA-Z0-9]+[+][a-zA-Z0-9]+$/;
         const regex1 = /^[a-zA-Z0-9]+$/;
-        if (value.includes("+")) {
+        if (value != '' && value.includes("+")) {
           if (regex.test(value)) {
             const parts = value.split("+");
             this.form.work_order = parts[0];

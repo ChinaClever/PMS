@@ -105,7 +105,6 @@ def ShipmentReportList(request):
                 'burning_duration_days': item.burning_duration_days,
                 'debug_duration_days': item.debug_duration_days,
                 'inspect_duration_days': item.inspect_duration_days,
-                'repair_duration_days': item.repair_duration_days,
                 'priority': item.priority
             }
             items_total += item.product_count
@@ -139,7 +138,6 @@ def ShipmentReportDetail(shipment_id):
         'burning_duration_days': shipment.burning_duration_days,
         'debug_duration_days': shipment.debug_duration_days,
         'inspect_duration_days': shipment.inspect_duration_days,
-        'repair_duration_days': shipment.repair_duration_days,
         'priority': shipment.priority
     }
     # 返回结果
@@ -163,7 +161,6 @@ def ShipmentReportAdd(request):
     burning_duration_days = request.POST.get('burning_duration_days')
     debug_duration_days = request.POST.get('debug_duration_days')
     inspect_duration_days = request.POST.get('inspect_duration_days')
-    repair_duration_days = request.POST.get('repair_duration_days')
 
     # 根据work_order查询 不能有相同工单号
     isWorkOrderExist = Shipment.objects.only('id').filter(work_order=work_order, is_delete=False).first()
@@ -214,7 +211,6 @@ def ShipmentReportAdd(request):
         burning_duration_days = burning_duration_days,
         debug_duration_days = debug_duration_days,
         inspect_duration_days = inspect_duration_days,
-        repair_duration_days = repair_duration_days
         )
 
     product = Product.objects.filter(product_code=product_code, is_delete=False).first()
@@ -291,7 +287,6 @@ def ShipmentReportUpdate(request):
     burning_duration_days = request.POST.get('burning_duration_days')
     debug_duration_days = request.POST.get('debug_duration_days')
     inspect_duration_days = request.POST.get('inspect_duration_days')
-    repair_duration_days = request.POST.get('repair_duration_days')
 
     # 日期格式转化
     if finish_date == "null":
@@ -352,7 +347,6 @@ def ShipmentReportUpdate(request):
     shipment.burning_duration_days = burning_duration_days
     shipment.debug_duration_days = debug_duration_days
     shipment.inspect_duration_days = inspect_duration_days
-    shipment.repair_duration_days = repair_duration_days
     shipment.save()
 
     isProductExist = Product.objects.filter(is_delete=False, product_code=product_code).first()
@@ -479,7 +473,6 @@ def SelectShipmentDetailByWorkOrder(work_order):
         'burning_duration_days': shipment.burning_duration_days,
         'debug_duration_days': shipment.debug_duration_days,
         'inspect_duration_days': shipment.inspect_duration_days,
-        'repair_duration_days': shipment.repair_duration_days,
         'priority': shipment.priority
     }
     # 返回结果
