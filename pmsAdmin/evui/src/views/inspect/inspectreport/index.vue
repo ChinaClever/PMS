@@ -31,35 +31,36 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row :gutter="10">
-          <el-col :lg="12" :md="12" >
-            <el-form-item label="日期:">
-              <el-date-picker
-                v-model="selectDateRange"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                format="yyyy 年 MM 月 dd 日"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                :picker-options="pickerOptions"
-                @change="dateRangeHandleSelect"
-                >
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :lg="6" :md="12" :offset="5">
-            <div class="ele-form-actions">
-              <el-button
-                type="primary"
-                icon="el-icon-search"
-                class="ele-btn-icon"
-                @click="reload">查询
-              </el-button>
-              <el-button @click="reset">重置</el-button>
-            </div>
-          </el-col>
+          <el-col :lg="12" :md="24">
+              <div class="container">
+                <div class="time-picker">
+                  <el-form-item label="日期范围:">
+                      <el-date-picker
+                      v-model="selectDateRange"
+                      type="daterange"
+                      align="right"
+                      unlink-panels
+                      range-separator="至"
+                      start-placeholder="订单日期开始日期"
+                      end-placeholder="订单日期结束日期"
+                      format="yyyy 年 MM 月 dd 日"
+                      value-format="yyyy-MM-dd"
+                      :picker-options="pickerOptions"
+                      @change="dateRangeHandleSelect">
+                    </el-date-picker>
+                  </el-form-item>
+                </div>
+                <div class="ele-text-center">
+                    <el-button
+                      type="primary"
+                      icon="el-icon-search"
+                      class="ele-btn-icon"
+                      @click="reload">查询
+                    </el-button>
+                    <el-button @click="reset">重置</el-button>
+                </div>
+              </div>
+            </el-col>
         </el-row>
       </el-form>
       <!-- 数据表格 -->
@@ -607,4 +608,11 @@ export default {
 </script>
 
 <style scoped>
+  .container{
+    display: flex;
+    align-items: flex-start;
+  }
+  .time-picker{
+    flex: 1;
+  }
 </style>
