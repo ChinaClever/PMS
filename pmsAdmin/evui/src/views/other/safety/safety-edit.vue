@@ -128,11 +128,10 @@
       <el-form-item
         label="结果:"
         prop="result">
-        <el-input
-          :maxlength="255"
-          v-model="form.result"
-          placeholder="请输入结果"
-          clearable/>
+        <el-select v-model="form.result" placeholder="请选择结果" style="width: 273px;">
+            <el-option label="通过" value="通过"/>
+            <el-option label="失败" value="失败"/>
+          </el-select>
       </el-form-item>
       </el-col>
       
