@@ -74,7 +74,7 @@ def SafetyList(request):
                 'softwareType': item.softwareType,
                 'productType': item.productType,
                 'productSN':item.productSN,
-                'Gnd':item.Gnd,
+                'Gnd':item.Gnd ,
                 'Ir':item.Ir,
                 'Dcw':item.Dcw if item.Dcw is not None else '',
                 'Acw':item.Acw if item.Acw is not None else '',
@@ -150,6 +150,10 @@ def SafetyAdd(request):
     Dcw = dict_data.get('Dcw')
     Acw = dict_data.get('Acw')
     result = dict_data.get('result')
+    if result == '1':
+        result = '通过'
+    else:
+        result = '失败'
     softwareVersion = dict_data.get('softwareVersion')
     companyName = dict_data.get('companyName')
     protocolVersion = dict_data.get('protocolVersion')
