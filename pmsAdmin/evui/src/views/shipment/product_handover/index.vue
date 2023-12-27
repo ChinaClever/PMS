@@ -19,7 +19,9 @@
             </el-form-item>
           </el-col>
           
-          <el-col :lg="6" :md="12">
+          <el-col :lg="9" :md="24">
+            <div class="container">
+              <div class="time-picker">
               <el-date-picker
                 v-model="selectDateRange"
                 type="daterange"
@@ -34,9 +36,8 @@
                 :picker-options="pickerOptions"
                 @change="dateRangeHandleSelect">
               </el-date-picker>
-            </el-col>
+            </div>
 
-          <el-col :lg="6" :md="12" :offset="3" :pull="3">
             <div class="ele-form-actions">
               <el-button
                 type="primary"
@@ -45,6 +46,7 @@
                 @click="reload">查询
               </el-button>
               <el-button @click="reset">重置</el-button>
+            </div>
             </div>
           </el-col>
         </el-row>
@@ -512,4 +514,11 @@ export default {
 </script>
 
 <style scoped>
+.container{
+    display: flex;
+    align-items: flex-start;
+  }
+  .time-picker{
+    flex: 1;
+  }
 </style>

@@ -17,6 +17,7 @@
             label="单号:"
             prop="work_order">
             <el-autocomplete
+            :disabled="isUpdate"
             v-model="form.work_order"
             clearable
             :fetch-suggestions="querySearchAsync"
@@ -32,6 +33,7 @@
         label="客户名称:"
         prop="name">
         <el-input
+          :disabled="disabled"
           :maxlength="255"
           v-model="form.name"
           placeholder="请输入客户名称"
@@ -41,6 +43,7 @@
         label="产品类型:"
         prop="code">
         <el-input
+          :disabled="disabled"
           :maxlength="255"
           v-model="form.code"
           placeholder="请输入产品类型"
@@ -50,7 +53,7 @@
         label="序列号:"
         prop="serial_id">
         <el-input
-          :maxlength="255"
+        :maxlength="255"
           v-model="form.serial_id"
           placeholder="请输入序列号"
           clearable/>
@@ -60,7 +63,8 @@
         prop="quantity"
         v-if="mk">
         <el-input
-          :maxlength="255"
+        :disabled="disabled"  
+        :maxlength="255"
           v-model="form.quantity"
           placeholder="请输入数量"
           clearable/>
@@ -69,7 +73,7 @@
         label="mac地址:"
         prop="mac_address">
         <el-input
-          :maxlength="255"
+        :maxlength="255"
           v-model="form.mac_address"
           placeholder="请输入mac地址(例如00:00:00:00:00:02)"
           clearable/>
@@ -145,6 +149,8 @@ export default {
       loading: false,
       // 是否是修改
       isUpdate: false,
+      // 是否禁用输入框
+      disabled: false,
 
       mk:false
     };
@@ -155,6 +161,7 @@ export default {
         this.form = Object.assign({ name: '',code : ''}, this.data);
         this.mk = false;
         this.isUpdate = true;
+        this.disabled = true;
       }else if(this.data && this.data.mk){
         this.form = { name: '',code : ''};
         this.mk = true;
@@ -164,6 +171,11 @@ export default {
         this.isUpdate = false;
       }
     },
+    visible(){
+        if (this.visible == false && this.isUpdate == true){
+          this.disabled = false;
+        }
+      }
     
   },
   methods: {
@@ -201,6 +213,7 @@ export default {
         if (res.data.code === 0 && res.data.data != null) {
           this.form.name = shipmentData.product_name
           this.form.code  = shipmentData.shape
+          this.disabled = true;
      
         } 
       })
@@ -208,6 +221,7 @@ export default {
     handleClear(){
       this.form.name = ''
       this.form.code  = ''
+      this.disabled = false;
     },
     handleEnterKey(event){
       console.log("进入")
@@ -221,10 +235,30 @@ export default {
         if (res.data.code === 0 && res.data.data != null) {
           this.form.name = shipmentData.client_name
           this.form.code  = shipmentData.shape
-         
+          this.disabled = true;
         } 
       })
     },
+    // 监听workorder为空时解除其他输入框禁用
+    checkWorkOrderIsNull(rule, value, callback){
+        if (value == '') {
+          this.form = {
+            // product_name : '',
+            // client_name : '',
+            // product_count : '',
+            // order_time : '',
+            // shape : '',
+            // submit_time : '',
+            // product_module : '',
+            // start_time:'',
+            // finish_time:'',
+            // work_hours:'',
+            // welding_count:''
+          };
+          this.disabled = false;
+        }
+        callback();
+      },
     /* 保存编辑 */
     save() {
       this.$refs['form'].validate((valid) => {
@@ -246,6 +280,7 @@ export default {
             } else {
               this.$message.error(res.data.msg);
             }
+            this.disabled = false;
           }).catch(e => {
             this.loading = false;
             this.$message.error(e.message);

@@ -12,8 +12,8 @@
           action="http://localhost:8000/safety/upload"
           accept=".xls,.xlsx"     
           :on-success="importFile"
+          :on-error="handleUploadError" 
           :show-file-list="false">
-          
           <el-button size="small" type="primary">点击上传</el-button>
         </el-upload>
       </el-dialog>
@@ -35,7 +35,9 @@
             </el-form-item>
           </el-col>
 
-          <el-col :lg="6" :md="12">
+          <el-col :lg="9" :md="24">
+            <div class="container">
+              <div class="time-picker">
               <el-date-picker
                 v-model="selectDateRange"
                 type="daterange"
@@ -50,18 +52,18 @@
                 :picker-options="pickerOptions"
                 @change="dateRangeHandleSelect">
               </el-date-picker>
-            </el-col>
-
-          <el-col :lg="6" :md="12" :offset="3" :pull="3">
-            <div class="ele-form-actions">
-              <el-button
-                type="primary"
-                icon="el-icon-search"
-                class="ele-btn-icon"
-                @click="reload">查询
-              </el-button>
-              <el-button @click="reset">重置</el-button>
             </div>
+
+            <div class="ele-text-center">
+                <el-button
+                  type="primary"
+                  icon="el-icon-search"
+                  class="ele-btn-icon"
+                  @click="reload">查询
+                </el-button>
+                <el-button @click="reset">重置</el-button>
+            </div>
+          </div>
           </el-col>
         </el-row>
       </el-form>
@@ -73,6 +75,12 @@
         :columns="columns"
         :selection.sync="selection"
         height="calc(100vh - 315px)">
+
+         <!-- 结果列 -->
+         <template slot="result" slot-scope="{row}">
+          <el-tag v-if="row.result === '通过'" type="success" size="small">通过</el-tag>
+          <el-tag v-if="row.result === '失败'" type="danger" size="small">失败</el-tag>
+        </template>
         <!-- 表头工具栏 -->
         <template slot="toolbar">
           <el-button
@@ -245,6 +253,7 @@ export default {
         {
           prop: 'result',
           label: '结果',
+          slot: 'result',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
@@ -366,11 +375,19 @@ export default {
   },
 
   // 导入文件处理
-  importFile() {
+  importFile(response) {
+    console.log(response)
+    if (response.code === -1) {
+            this.$message.error(response.msg);
+          }
         this.reload();
         this.showImport=false
       },
-
+  handleUploadError(err) {  
+    console.log(err)
+    // console.log(this.$message.error(res.msg))
+    // this.$message.error(res.msg);  // 打印错误信息
+  },  
     /* 刷新表格 */
     reload() {
       console.log(this.selection)
@@ -559,5 +576,13 @@ export default {
 }
 </script>
 
+
 <style scoped>
+.container{
+    display: flex;
+    align-items: flex-start;
+  }
+  .time-picker{
+    flex: 1;
+  }
 </style>
