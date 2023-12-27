@@ -19,7 +19,7 @@ class Debugdata(BaseModel):
                                  help_text="结果：1-通过 2-失败")
     # 软件版本
     softwareVersion = models.CharField(null=True, max_length=255, verbose_name="软件版本", help_text="软件版本")
-
+    # 单号
     work_order = models.CharField(null=False, max_length=255, verbose_name="工单号", help_text="工单号")
     # 公司名
     companyName = models.CharField(null=True, max_length=255, verbose_name="公司名", help_text="公司名")
@@ -31,6 +31,8 @@ class Debugdata(BaseModel):
     testEndTime = models.DateTimeField(null=True, auto_now_add=False, verbose_name="测试结束时间", max_length=11)
     # 测试时间
     testTime = models.CharField(null=True, max_length=255, verbose_name="测试时间", help_text="测试时间")
+    # PCB码
+    PCB_Code = models.CharField(max_length=255, verbose_name="PCB码", help_text="PCB码")
 
     class Meta:
         # 数据表名
