@@ -62,7 +62,7 @@
       // 导入文件处理
       importFile(response) {
         if (response.data){
-          this.$alert("单号"+response.data+"导入失败", response.msg, {
+          this.$alert("单号"+response.data+"导入失败，原因可能是单号已存在或交货日期早于订单日期。", response.msg, {
             confirmButtonText: '确定',
           });
         }else{
