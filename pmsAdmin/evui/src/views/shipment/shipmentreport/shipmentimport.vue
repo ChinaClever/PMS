@@ -11,7 +11,7 @@
           <el-steps direction="vertical">
             <el-step title="步骤 1  下载排期表单Excel模板" status="process" icon="el-icon-download"> 
               <template slot="description">
-                <!-- @click="downloadExcel" -->
+                <br>
                 <el-button class="ele-btn-icon" @click="downloadExcel">下载</el-button>
               </template>
             </el-step>
@@ -24,6 +24,7 @@
                   accept=".xls,.xlsx"     
                   :on-success="importFile"
                   :show-file-list="false">
+                  <br>
                   <el-button size="small" type="primary">点击上传</el-button>
                 </el-upload>
               </template>
