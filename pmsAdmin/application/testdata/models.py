@@ -29,8 +29,11 @@ class Testdata(BaseModel):
     testEndTime = models.DateTimeField(auto_now_add=False, verbose_name="测试结束时间", max_length=11)
     # 测试时间
     testTime = models.CharField(max_length=150, verbose_name="测试时间", help_text="测试时间")
-
+    # 工单号
     work_order = models.CharField(null=False, max_length=255, verbose_name="工单号", help_text="工单号")
+    # 成品SN
+    goods_SN = models.CharField(max_length=255, verbose_name="成品SN", help_text="成品SN")
+
     class Meta:
         # 数据表名
         db_table = settings.TABLE_PREFIX + "testdata"
