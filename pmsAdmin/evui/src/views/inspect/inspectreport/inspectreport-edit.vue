@@ -19,6 +19,7 @@
             prop="work_order">
             <el-autocomplete
             v-model="form.work_order"
+            :disabled="isUpdate"
             clearable
             :fetch-suggestions="querySearchAsync"
             @select="handleSelect"
@@ -66,6 +67,7 @@
             <el-input
               :maxlength="20"
               v-model="form.item_number"
+              :disabled="disabled"
               placeholder="请输入产品型号"
               clearable/>
           </el-form-item>
@@ -75,6 +77,7 @@
           <el-input
             :maxlength="20"
             v-model="form.product_name"
+            :disabled="disabled"
             placeholder="请输入产品名称"
             clearable/>
         </el-form-item>
@@ -82,7 +85,8 @@
         <el-col :sm="12">
           <el-form-item label="成品/模块:" prop="product_module">
             <el-radio-group
-              v-model="form.product_module" >
+              v-model="form.product_module" 
+              :disabled="disabled">
               <el-radio :label="1">成品</el-radio>
               <el-radio :label="2">模块</el-radio>
             </el-radio-group>
@@ -190,6 +194,7 @@ export default {
       rules: {
         work_order:[
           {required: true, message: '请输入单号', trigger: 'blur'},
+          {validator:(rule,value,callback)=> this.checkWorkOrderIsNull(rule, value, callback)}
         ],
         start_time:[
           {
@@ -314,6 +319,7 @@ export default {
       loading: false,
       // 是否是修改
       isUpdate: false,
+      disabled:false
     };
   },
   watch: {
@@ -321,12 +327,14 @@ export default {
       if (this.data && this.data.id) {
         this.form = Object.assign({}, this.data);
         this.isUpdate = true;
+        this.disabled=true;
       } else {
         this.form = {
           product_name : '',
           item_number: '',
           product_module:'',};
         this.isUpdate = false;
+        this.disabled = false;
       }
     }
   },
@@ -349,6 +357,7 @@ export default {
                   item_number: '',
                   product_module:'',};
               }
+              this.disabled=false
               this.updateVisible(false);
               this.$emit('done');
             } else {
@@ -410,13 +419,16 @@ export default {
           this.form.product_name = shipmentData.product_name
           this.form.item_number  = shipmentData.shape
           this.form.product_module = shipmentData.product_module
+          this.disabled=true;
         } 
       })
     },
     handleClear(){
+      this.form.work_order=''
       this.form.product_name = ''
       this.form.item_number  = ''
       this.form.product_module = ''
+      this.disabled=false;
     },
     handleEnterKey(event){
       console.log("进入")
@@ -431,6 +443,7 @@ export default {
           this.form.product_name = shipmentData.product_name
           this.form.item_number  = shipmentData.shape
           this.form.product_module = shipmentData.product_module
+          this.disabled=true;
         } 
       })
     },
@@ -451,6 +464,16 @@ export default {
         const dateTimeString = `${currentDateString} ${timeString}`;
         this.form.end_time = dateTimeString;
       }
+    },
+    checkWorkOrderIsNull(rule, value, callback){
+      if (value == '') {
+        this.form.work_order=''
+        this.form.product_name = ''
+        this.form.item_number  = ''
+        this.form.product_module = ''
+        this.disabled=false;
+      }
+      callback();
     },
   },
   mounted() {

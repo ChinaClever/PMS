@@ -277,10 +277,10 @@
           ],
           delivery_date: [
             {required: true, message: '请选择交货日期', trigger: 'blur'},
-            { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback)}
+            { validator: (rule, value, callback) => this.checkTime(rule, value, callback)}
           ],
           finish_date: [
-            { validator: (rule, value, callback) => this.checkFinishTime(rule, value, callback)}
+            { validator: (rule, value, callback) => this.checkTime(rule, value, callback)}
           ],
           SO_RQ_id: [
             {required: true, message: '请选择SO/RQ号', trigger: 'blur'}
@@ -452,7 +452,7 @@
       },
 
        // 检测填入日期是否晚于订单日期
-      checkFinishTime(rule, value, callback) {
+       checkTime(rule, value, callback) {
         const orderDate = this.form.order_date;
         const thisDate = value;
         if (!orderDate || !thisDate) {
@@ -560,5 +560,6 @@
   .el-row {
     margin-bottom: 16px;
   }
+  
   </style>
 

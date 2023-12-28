@@ -8,6 +8,8 @@ import pandas as pd
 from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage, EmptyPage
 from django.db import transaction
 from django.db.models import Q
+from django.utils.timezone import now
+
 from application.shipmentreport.models import Shipment
 from application.shipmentreport.models import Product
 from constant.constants import PAGE_LIMIT
@@ -480,7 +482,7 @@ def SelectShipmentDetailByWorkOrder(work_order):
 
 # 导入数据
 def ShipmentReportImportFile(request):
-    workOrderExistedList = []
+    failedList = []
     item = []  # 存储信息
     file = request.FILES['file']
     # 使用 pandas 读取文件数据
@@ -503,15 +505,22 @@ def ShipmentReportImportFile(request):
         # 根据work_order查询 不能有相同工单号
         isWorkOrderExist = Shipment.objects.only('id').filter(work_order=item[1], is_delete=False).first()
         if isWorkOrderExist:
-            workOrderExistedList.append(item[1])
+            failedList.append(item[1])
+            continue
+        # 交期不能早于订单日期
+        elif item[8] < item[7] :
+            failedList.append(item[1])
+            continue
         else:
-            obj = Shipment(priority=item[0], work_order=item[1], client_name=item[2], product_code=item[3], product_name=item[4], shape=item[5], product_count=item[6],
-                         order_date=item[7], delivery_date=item[8], finish_date=item[9], SO_RQ_id=item[10], product_module=np.int64(1) if item[11]=="成品" else np.int64(2),
-                         remark=item[12], burning_duration_days=item[13], debug_duration_days=item[14], inspect_duration_days=item[15])
+            obj = Shipment(priority=item[0], work_order=item[1], client_name=item[2], product_code=item[3],
+                           product_name=item[4], shape=item[5], product_count=item[6], order_date=item[7],
+                           delivery_date=item[8], finish_date=item[9] if item[9] else None, SO_RQ_id=item[10],
+                           product_module=np.int64(1) if item[11]=="成品" else np.int64(2), remark=item[12],
+                           burning_duration_days=item[13], debug_duration_days=item[14], inspect_duration_days=item[15])
             obj.save()
         item = []
-    if workOrderExistedList != []:
-        return R.failed(msg="导入失败",data=workOrderExistedList)
+    if failedList != []:
+        return R.failed(msg="导入失败",data=failedList)
     return R.ok(msg="导入成功")
 
 # -----------------------产品名称模块-----------------------------------
