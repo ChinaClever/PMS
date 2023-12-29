@@ -171,6 +171,13 @@ export default {
           align: 'center',
         },
         {
+          prop: 'PCB_code',
+          label: 'PCB编码',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        },
+        {
           prop: 'name',
           label: '客户名称',
           showOverflowTooltip: true,
