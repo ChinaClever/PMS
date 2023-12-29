@@ -11,7 +11,7 @@
       ref="form"
       :model="form"
       :rules="rules"
-      label-width="82px">
+      label-width="90px">
       <el-row :gutter="15" >
         <el-col :span="10">
           <el-form-item
@@ -45,6 +45,15 @@
               format="yyyy-MM-dd"
               placeholder="选择日期时间"
             ></el-date-picker>
+          </el-form-item>
+          <el-form-item
+            label="PCB编码:"
+            prop="PCB_code">
+            <el-input
+              :maxlength="20"
+              v-model="form.PCB_code"
+              placeholder="请输入PCB编码"
+              clearable/>
           </el-form-item>
         </el-col>
         <el-col :span="10">
@@ -211,6 +220,9 @@ export default {
             required: true,
             trigger: 'blur'
           }
+        ],
+        PCB_code:[
+          {required: true, message: '请输入PCB编码', trigger: 'blur'}
         ],
 
 

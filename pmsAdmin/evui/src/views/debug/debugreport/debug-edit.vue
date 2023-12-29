@@ -4,6 +4,7 @@
       :title="isUpdate?'修改调试报表':'添加调试报表'"
       :visible="visible"
       width="900px"
+      top="5vh"
       :destroy-on-close="true"
       :lock-scroll="false"
       @update:visible="updateVisible">
@@ -245,7 +246,7 @@
           ],
           debug_count: [
             {required: true, message: '请输入调试数量', trigger: 'blur'},
-            {validator: (rule, value, callback) => this.checkNumber(rule, value, callback)},
+            {validator: (rule, value, callback) => this.checkNum(rule, value, callback)},
           ],
         },
         // 提交状态
@@ -404,6 +405,17 @@
       // 检查数量不能为0
       checkNumber(rule, value, callback){
         if(value == 0){
+          callback(new Error('不能为0'));
+        }else{
+          callback();
+        }
+      },
+
+      // 调试数量少于等于总数量
+      checkNum(rule, value, callback){ 
+        if( value > this.form.product_count){
+          callback(new Error('调试数量不能大于总数量'));
+        }else if(value == 0){
           callback(new Error('不能为0'));
         }else{
           callback();

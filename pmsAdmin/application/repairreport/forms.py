@@ -86,6 +86,13 @@ class DictForm(forms.ModelForm):
             'required': '维修数量不能为空',
         }
     )
+    PCB_code = forms.CharField(
+        max_length=150,
+        error_messages={
+            'required': 'PCB编码不能为空',
+            'max_length': 'PCB编码不得超过150个字符',
+        }
+    )
     bad_phenomenon = forms.CharField(
         required=False,
         max_length=150,
@@ -131,4 +138,4 @@ class DictForm(forms.ModelForm):
         model = models.Dict
         # 指定部分字段验证
         #fields = ['name', 'code', 'sort', 'note']
-        fields = ['name','work_order','bad_number','repair_number','bad_phenomenon','analysis','solution','notes','repair_time','work_hours']
+        fields = ['name','work_order','bad_number','repair_number','PCB_code','bad_phenomenon','analysis','solution','notes','repair_time','work_hours']
