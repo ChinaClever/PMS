@@ -65,8 +65,8 @@
       <el-form-item
         label="安数:"
         prop="remark">
-        <el-input
-          :maxlength="255"
+        <el-input  
+        :maxlength="255"
           v-model="form.remark"
           placeholder="请输入安数"
           clearable/>
@@ -76,6 +76,7 @@
         label="交期:"
         prop="delivery_time">
         <el-date-picker
+              :disabled="disabled"  
               type="date"
               class="ele-fluid"
               v-model="form.delivery_time"
@@ -138,7 +139,7 @@ export default {
   data() {
     return {
       // 表单数据
-      form: Object.assign({status: 1, name: '',code : ''}, this.data),
+      form: Object.assign({status: 1, name: '',code : '',delivery_time : '',remark: ''}, this.data),
       // 表单验证规则
       rules: {
         time: [
@@ -237,6 +238,11 @@ export default {
         if (res.data.code === 0 && res.data.data != null) {
           this.form.name = shipmentData.product_name
           this.form.code  = shipmentData.shape
+          this.form.delivery_time = shipmentData.delivery_date
+          
+          const regex = /\s[\S]+A/;  
+          const match = shipmentData.shape.match(regex);  
+          this.form.remark = match[0]
           this.disabled = true;
         } 
       })
@@ -244,6 +250,8 @@ export default {
     handleClear(){
       this.form.name = ''
       this.form.code  = ''
+      this.form.delivery_time = ''
+      this.form.remark = ''
       this.disabled = false;
     },
     createStateFilter(queryString) {
@@ -263,6 +271,10 @@ export default {
         if (res.data.code === 0 && res.data.data != null) {
           this.form.name = shipmentData.client_name
           this.form.code  = shipmentData.shape
+          this.form.delivery_time = shipmentData.delivery_date
+          const regex = /\s[\S]+A/;  
+          const match = shipmentData.shape.match(regex);  
+          this.form.remark = match[0]
           this.disabled = true;
         } 
       })
@@ -297,7 +309,7 @@ export default {
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
               if (!this.isUpdate) {
-                this.form = {name: '',code : ''};
+                this.form = {name: '',code : '',delivery_time: ''};
               }
               this.updateVisible(false);
               this.$emit('done');

@@ -33,6 +33,8 @@ from config.env import TABLE_PREFIX
 class Dict(BaseModel):
 
     work_order = models.CharField(null=True,max_length=150,verbose_name="工单号",help_text="工单号")
+    PCB_code = models.CharField(null=False, max_length=150, verbose_name="PCB编码", help_text="PCB编码")
+    part_code = models.CharField(null=False, max_length=150, verbose_name="物料编码", help_text="物料编码")
     customer = models.CharField(null=True, max_length=150, verbose_name="客户", help_text="客户")
     product_name = models.CharField(null=True, max_length=150, verbose_name="产品", help_text="产品")
     product_type = models.CharField(null=True, max_length=150, verbose_name="产品类型", help_text="产品类型")
