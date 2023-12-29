@@ -237,18 +237,39 @@ export default {
       form: Object.assign({status: 1, name: '',code : ''}, this.data),
       // 表单验证规则
       rules: {
-        // work_order: [
-        //   {required: true, message: '请输入单号', trigger: 'blur'}
-        // ],
-        // name: [
-        //   {required: true, message: '请输入客户名称', trigger: 'blur'}
-        // ],
-        // code: [
-        //   {required: true, message: '请输入产品型号', trigger: 'blur'}
-        // ],
-        // serial_id: [
-        //   {required: true, message: '请输入序列号', trigger: 'blur'}
-        // ],
+        work_order: [
+          {required: true, message: '请输入单号', trigger: 'blur'}
+        ],
+        softwareType: [
+          {required: true, message: '请输入软件类型', trigger: 'blur'}
+        ],
+        productType: [
+          {required: true, message: '请输入产品型号', trigger: 'blur'}
+        ],
+        Ir: [
+          {required: true, message: '请输入绝缘电阻', trigger: 'blur'}
+        ],
+        result: [
+          {required: true, message: '请选择结果', trigger: 'blur'}
+        ],
+        softwareVersion: [
+          {required: true, message: '请输入软件版本', trigger: 'blur'}
+        ],
+        companyName: [
+          {required: true, message: '请输入公司名称', trigger: 'blur'}
+        ],
+        protocolVersion: [
+          {required: true, message: '请输入协议版本', trigger: 'blur'}
+        ],
+        testStartTime: [
+          {required: true, message: '请输入测试开始时间', trigger: 'blur'}
+        ],
+        testEndTime: [
+          {required: true, message: '请输入测试结束时间', trigger: 'blur'}
+        ],
+        testTime: [
+          {required: true, message: '请输入测试时间', trigger: 'blur'}
+        ],
        
       },
       // 提交状态

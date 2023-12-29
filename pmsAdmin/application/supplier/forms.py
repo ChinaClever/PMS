@@ -63,24 +63,28 @@ class DictForm(forms.ModelForm):
         }
     )'''
     work_order = forms.CharField(
+        required=False,
         max_length=150,
         error_messages={
             'max_length': '工单号不得超过150个字符',
         }
     )
     customer = forms.CharField(
+        required=False,
         max_length=150,
         error_messages={
             'max_length': '客户长度不得超过150个字符',
         }
     )
     product_name = forms.CharField(
+        required=False,
         max_length=150,
         error_messages={
             'max_length': '产品长度不得超过150个字符',
         }
     )
     product_type= forms.CharField(
+        required=False,
         max_length=150,
         error_messages={
             'max_length': '产品类型长度不得超过150个字符',
@@ -96,15 +100,18 @@ class DictForm(forms.ModelForm):
     parts = forms.CharField(
         max_length=150,
         error_messages={
+            'required': '物料不能为空',
             'max_length': '物料长度不得超过150个字符',
         }
     )
     product_number = forms.IntegerField(
 
         error_messages={
+            'required': '产品数量不能为空',
         }
     )
     notes = forms.CharField(
+        required=False,
         max_length=150,
         error_messages={
             'max_length': '备注长度不得超过150个字符',

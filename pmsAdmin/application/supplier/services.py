@@ -146,9 +146,9 @@ def DictAdd(request):
             return R.failed("参数不能为空")
         # 数据类型转换
         dict_data = json.loads(json_data)
-        goods = Dict.objects.filter(work_order=dict_data.get('work_order')).first()
-        if goods:
-            return R.failed("工单号已存在")
+        # goods = Dict.objects.filter(work_order=dict_data.get('work_order')).first()
+        # if goods:
+        #     return R.failed("工单号已存在")
 
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
