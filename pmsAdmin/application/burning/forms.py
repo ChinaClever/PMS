@@ -36,6 +36,15 @@ class BurningForm(forms.ModelForm):
             'max_length': '工单号不得超过255个字符'
         }
     )
+    # 客户名称
+    PCB_code = forms.CharField(
+        required=True,
+        max_length=255,
+        error_messages={
+            'required': 'PCB编码不能为空',
+            'max_length': 'PCB编码不得超过255个字符'
+        }
+    )
     name = forms.CharField(
         required=True,
         max_length=255,
@@ -140,5 +149,5 @@ class BurningForm(forms.ModelForm):
         # 绑定模型
         model = models.burning
         # 指定部分字段验证
-        fields = ['work_order','name', 'code', 'version', 'require', 'order_time', 'delivery_time', 'quantity', 'remark', 'rcerder','burning_quantity','start_time','finish_time','work_hours',
+        fields = ['work_order','PCB_code','name', 'code', 'version', 'require', 'order_time', 'delivery_time', 'quantity', 'remark', 'rcerder','burning_quantity','start_time','finish_time','work_hours',
                   ]
