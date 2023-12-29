@@ -101,7 +101,19 @@
       </el-form-item>
     </el-col>
     </el-row>
+      
+     <el-form-item
+        label="PCB编码:"
+        prop="PCB_code">
+        <el-input
+          :maxlength="255"
+          v-model="form.PCB_code"
+          placeholder="请输入PCB编码"
+          clearable/>
+      </el-form-item>
 
+    <el-row :gutter="6">
+    <el-col :span="12">
       <el-form-item
         label="* 软件版本号:"
         prop="version">
@@ -111,6 +123,9 @@
           placeholder="请输入软件版本号"
           clearable/>
       </el-form-item>
+    </el-col>
+
+    <el-col :span="12">
       <el-form-item
         label="* 程序要求:"
         prop="require">
@@ -120,6 +135,8 @@
           placeholder="请输入程序要求"
           clearable/>
       </el-form-item>
+    </el-col>
+    </el-row>
 
     <el-row :gutter="6">
     <el-col :span="12">
@@ -220,6 +237,9 @@ export default {
       rules: {
         work_order: [
           {required: true, message: '请输入单号', trigger: 'blur'}
+        ],
+        PCB_code: [
+          {required: true, message: '请输入PCB编码', trigger: 'blur'}
         ],
         name: [
           {required: true, message: '请输入客户名称', trigger: 'blur'}

@@ -42,18 +42,25 @@
           height="calc(100vh - 315px)">
           <!-- 测试步骤列 -->
         <template slot="testStep" slot-scope="{row}">
-          <el-collapse>
-            <el-collapse-item  title="测试步骤">
-              <div v-for="step in row.testStep" :key="step.no">
-                <div>序号：{{ step.no }}</div>
-                <div>名称：{{ step.name }}</div>
-                <div>结果：<el-tag v-if="step.result === 1" type="success" size="small">通过</el-tag>
-                          <el-tag v-if="step.result === 0" type="danger" size="small">失败</el-tag>
-                </div>
-                <br>
-              </div>  
-            </el-collapse-item>
-          </el-collapse>
+          <el-popover
+            placement="bottom"
+            width="500"
+            trigger="click">
+            <el-table 
+              :data="row.testStep" 
+              stripe
+              :max-height="300">
+              <el-table-column width="80" property="no" label="序号"></el-table-column>
+              <el-table-column width="340" property="name" label="名称"></el-table-column>
+              <el-table-column width="80" property="result" label="结果">
+                 <template slot-scope="scope">
+                  <el-tag v-if="scope.row.result === 1" type="success" size="small">通过</el-tag>
+                  <el-tag v-if="scope.row.result === 0" type="danger" size="small">失败</el-tag>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-button slot="reference">查看详情</el-button>
+          </el-popover>
         </template>
           <!-- 结果列 -->
         <template slot="result" slot-scope="{row}">
