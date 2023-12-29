@@ -243,6 +243,13 @@
             showOverflowTooltip: true,
           },
           {
+            prop: 'PCB_code',
+            label: 'PCB编码',
+            width: 70,
+            align: 'center',
+            showOverflowTooltip: true,
+          },
+          {
             prop: 'bad_phenomenon',
             label: '不良现象',
             width: 150,

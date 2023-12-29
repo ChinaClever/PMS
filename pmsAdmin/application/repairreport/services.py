@@ -96,6 +96,7 @@ def DictList(request):#查询设置，从前端返回order_id字段，再到数�
                 'work_order': item.work_order,
                 'bad_number': item.bad_number,
                 'repair_number': item.repair_number,
+                'PCB_code': item.PCB_code,
                 'bad_phenomenon': item.bad_phenomenon,
                 'analysis': item.analysis,
                 'solution': item.solution,
@@ -129,6 +130,7 @@ def DictDetail(dict_id):
         'work_order': dict.work_order,
         'bad_number': dict.bad_number,
         'repair_number': dict.repair_number,
+        'PCB_code': dict.PCB_code,
         'bad_phenomenon': dict.bad_phenomenon,
         'analysis': dict.analysis,
         'solution': dict.solution,
@@ -173,6 +175,7 @@ def DictAdd(request):
         work_order = form.cleaned_data.get('work_order')
         bad_number = form.cleaned_data.get('bad_number')
         repair_number = form.cleaned_data.get('repair_number')
+        PCB_code = form.cleaned_data.get('PCB_Code')
         bad_phenomenon = form.cleaned_data.get('bad_phenomenon')
         analysis = form.cleaned_data.get('analysis')
         solution = form.cleaned_data.get('solution')
@@ -190,6 +193,7 @@ def DictAdd(request):
             work_order=work_order,
             bad_number=bad_number,
             repair_number=repair_number,
+            PCB_code=PCB_code,
             bad_phenomenon=bad_phenomenon,
             analysis=analysis,
             solution=solution,
@@ -240,6 +244,7 @@ def DictUpdate(request):
         work_order = form.cleaned_data.get('work_order')
         bad_number = form.cleaned_data.get('bad_number')
         repair_number = form.cleaned_data.get('repair_number')
+        PCB_code = form.cleaned_data.get('PCB_code')
         bad_phenomenon = form.cleaned_data.get('bad_phenomenon')
         analysis = form.cleaned_data.get('analysis')
         solution = form.cleaned_data.get('solution')
@@ -268,6 +273,7 @@ def DictUpdate(request):
     dict.work_order=work_order
     dict.bad_number = bad_number
     dict.repair_number = repair_number
+    dict.PCB_code = PCB_code
     dict.bad_phenomenon = bad_phenomenon
     dict.analysis = analysis
     dict.solution = solution

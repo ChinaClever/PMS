@@ -36,6 +36,7 @@ class Dict(BaseModel):
     work_order = models.CharField(null=False, max_length=150, verbose_name="工单号", help_text="工单号")
     bad_number = models.IntegerField(null=False,verbose_name="不良数量", help_text="不良数量")
     repair_number = models.IntegerField(null=False, verbose_name="维修数量", help_text="维修数量")
+    PCB_code = models.CharField(null=False, max_length=150, verbose_name="PCB编码", help_text="PCB编码")
     bad_phenomenon = models.CharField(null=True, max_length=150, verbose_name="不良现象", help_text="不良现象")
     analysis = models.CharField(null=True, max_length=150, verbose_name="原因分析", help_text="原因分析")
     solution = models.CharField(null=True, max_length=150, verbose_name="解决方法", help_text="解决方法")
