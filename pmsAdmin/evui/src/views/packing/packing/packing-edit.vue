@@ -225,7 +225,7 @@
           ],
           packing_count: [
             {required: true, message: '请输入打包数量', trigger: 'blur'},
-            {validator: (rule, value, callback) => this.checkNumber(rule, value, callback)},
+            {validator: (rule, value, callback) => this.checkNum(rule, value, callback)},
           ],
           work_order: [
             {validator: (rule, value, callback) => this.checkWorkOrderIsNull(rule, value, callback)},
@@ -408,6 +408,17 @@
       // 检查数量不能为0
       checkNumber(rule, value, callback){
         if(value == 0){
+          callback(new Error('不能为0'));
+        }else{
+          callback();
+        }
+      },
+
+       // 打包数量少于等于总数量
+       checkNum(rule, value, callback){ 
+        if( value > this.form.product_count){
+          callback(new Error('打包数量不能大于总数量'));
+        }else if(value == 0){
           callback(new Error('不能为0'));
         }else{
           callback();
