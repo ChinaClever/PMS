@@ -79,6 +79,7 @@ def BurningList(request):
             data = {
                 'id': item.id,
                 'work_order':item.work_order,
+                'PCB_code': item.PCB_code,
                 'name': item.name,
                 'code': item.code,
                 'version': item.version,
@@ -112,6 +113,7 @@ def BurningDetail(burning_id):
     data = {
         'id': user.id,
         'work_order': user.work_order,
+        'PCB_code': user.PCB_code,
         'name': user.name,
         'code': user.code,
         'version': user.version,
@@ -148,6 +150,8 @@ def BurningAdd(request):
     if form.is_valid():
         # 工单号
         work_order = form.cleaned_data.get('work_order')
+        # pcb编码
+        PCB_code = form.cleaned_data.get('PCB_code')
         # 客户名称
         name = form.cleaned_data.get('name')
         # 规格型号
@@ -177,6 +181,7 @@ def BurningAdd(request):
         # 创建数据
         burning.objects.create(
             work_order=work_order,
+            PCB_code=PCB_code,
             name=name,
             code= code,
             version=version,
@@ -222,6 +227,7 @@ def BurningUpdate(request):
     form = forms.BurningForm(dict_data)
     if form.is_valid():
         work_order = form.cleaned_data.get('work_order')
+        PCB_code = form.cleaned_data.get('PCB_code')
         # 客户名称
         name = form.cleaned_data.get('name')
         # 规格型号
@@ -263,6 +269,7 @@ def BurningUpdate(request):
     current_time = datetime.now()
     # 对象赋值
     user.work_order = work_order
+    user.PCB_code = PCB_code
     user.name = name
     user.code = code
     user.version = version
