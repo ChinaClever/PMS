@@ -42,6 +42,8 @@ class Dict(BaseModel):
     parts = models.CharField(null=False, max_length=150, verbose_name="部件", help_text="部件")
     product_number = models.IntegerField(null=False, verbose_name="数量", help_text="数量")
     notes = models.CharField(null=True, max_length=150, verbose_name="备注", help_text="备注")
+    PCB_code = models.CharField(null=False, max_length=255, verbose_name="PCB编码", help_text="PCB编码")
+    part_code = models.CharField(null=True, max_length=150, verbose_name="物料编码", help_text="物料编码")
     # 字典名称
     #name = models.CharField(null=False, max_length=150, verbose_name="字典名称", help_text="字典名称")
     # 字典编码
