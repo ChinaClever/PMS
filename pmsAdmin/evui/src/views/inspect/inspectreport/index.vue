@@ -15,7 +15,7 @@
                 clearable
                 v-model="where.keyword"
                 @clear="handleClear"
-                placeholder="请输入填写人或产品型号或单号"/>
+                placeholder="请输入产品型号或单号"/>
             </el-form-item>
           </el-col>
           <el-col :lg="6" :md="12" :xs="11">

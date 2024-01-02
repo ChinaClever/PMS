@@ -220,10 +220,8 @@ export default {
             validator: (rule, value, callback) => {
                 // 获取订单日期的值
                 const startTime = new Date(this.form.start_time);
-                console.log(startTime);
                 // 获取交货日期的值
                 const endTime = new Date(value);
-                console.log(endTime);
                 // 比较日期
                 if (endTime <= startTime) {
                   callback(new Error('结束时间必须大于开始时间'));
@@ -431,8 +429,6 @@ export default {
       this.disabled=false;
     },
     handleEnterKey(event){
-      console.log("进入")
-      console.log(event)
       this.form.work_order = event.target.value.split("+")[0];
       this.$refs.form.validateField('work_order', () => {});
       // 根据选择的单号查其他数据自动填入
