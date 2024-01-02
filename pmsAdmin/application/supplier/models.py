@@ -33,8 +33,6 @@ from config.env import TABLE_PREFIX
 class Dict(BaseModel):
 
     work_order = models.CharField(null=True,max_length=150,verbose_name="工单号",help_text="工单号")
-    PCB_code = models.CharField(null=False, max_length=150, verbose_name="PCB编码", help_text="PCB编码")
-    part_code = models.CharField(null=False, max_length=150, verbose_name="物料编码", help_text="物料编码")
     customer = models.CharField(null=True, max_length=150, verbose_name="客户", help_text="客户")
     product_name = models.CharField(null=True, max_length=150, verbose_name="产品", help_text="产品")
     product_type = models.CharField(null=True, max_length=150, verbose_name="产品类型", help_text="产品类型")
@@ -44,14 +42,6 @@ class Dict(BaseModel):
     notes = models.CharField(null=True, max_length=150, verbose_name="备注", help_text="备注")
     PCB_code = models.CharField(null=False, max_length=255, verbose_name="PCB编码", help_text="PCB编码")
     part_code = models.CharField(null=True, max_length=150, verbose_name="物料编码", help_text="物料编码")
-    # 字典名称
-    #name = models.CharField(null=False, max_length=150, verbose_name="字典名称", help_text="字典名称")
-    # 字典编码
-    #code = models.CharField(null=False, max_length=150, verbose_name="字典编码", help_text="字典编码")
-    # 字典排序
-    #sort = models.IntegerField(default=0, verbose_name="字典排序", help_text="字典排序")
-    # 字典备注
-    #note = models.CharField(null=True, max_length=255, verbose_name="字典备注", help_text="字典备注")
 
     class Meta:
         # 数据表名

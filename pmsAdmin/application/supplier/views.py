@@ -112,3 +112,17 @@ class DictDeleteView(PermissionRequired, View):
         result = services.DictDelete(dict_id)
         # 返回结果
         return result
+
+
+@method_decorator(check_login, name="post")
+class SupplierBatchAddView(PermissionRequired, View):
+    # 方法权限标识
+    permission_required = ("sys:supplier:add",)
+    # 接收POST请求
+    def post(self, request):
+        if DEBUG:
+            return R.failed("演示环境，暂无操作权限")
+        # 调用添加字典服务方法
+        result = services.SupplierBatchAdd(request)
+        # 返回结果
+        return result
