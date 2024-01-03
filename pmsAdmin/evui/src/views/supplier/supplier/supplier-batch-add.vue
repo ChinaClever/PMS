@@ -7,6 +7,8 @@
         :rules="rules"
         label-width="140px"
         label-position="top">
+        <hr>
+<br>
       <el-row :gutter="20">
         <el-col :span="6">
           <el-form-item
@@ -57,17 +59,28 @@
           </el-form-item>
         </el-col>
       </el-row>
+<hr>
+<br>
       <el-row>
+       <el-col :span="6">
         <el-form-item
             label="PCB编码:"
             prop="PCB_code">
             <el-input
-            id="PCB_code_inputId"
-            v-model="form.PCB_code"
-            placeholder="请输入PCB编码"
-            @keyup.enter.native="handlePCBCodeEnterKey"
-            clearable/>
+              id="PCB_code_inputId"
+              v-model="form.PCB_code"
+              placeholder="请输入PCB编码"
+              @keyup.enter.native="handlePCBCodeEnterKey"
+              clearable/>
         </el-form-item>
+       </el-col>
+       <el-col :span="6" :push="4">
+        <el-statistic title="已绑定的PCB个数" style="font-size: 28px;">
+            <template slot="formatter">
+              {{count_PCB}}
+            </template>
+        </el-statistic>
+       </el-col>
       </el-row>
         <br>
      <el-row>
@@ -140,7 +153,7 @@ export default {
       // 表单验证规则
       rules: {
         work_order: [
-        {validator: (rule, value, callback) => this.checkWorkOrderIsNull(rule, value, callback)},
+          {validator: (rule, value, callback) => this.checkWorkOrderIsNull(rule, value, callback)},
           {required: false, message: '请输入单号', trigger: 'blur'},
         ],
         customer: [
@@ -153,17 +166,18 @@ export default {
           {required: false, message: '请输入产品类型', trigger: 'blur'}
         ],
         PCB_code: [
+          {validator: (rule, value, callback) => this.checkPCBCodeIsValid(rule, value, callback), trigger: 'change'},
           {required: true, message: '请输入PCB编码', trigger: 'blur'}
         ],
-        part_code: [
-          {required: true, message: '请输入物料编码', trigger: 'blur'}
-        ],
-        supplier: [
-          {required: true, message: '请输入供应商', trigger: 'blur'}
-        ],
-        parts: [
-          {required: true, message: '请输入物料', trigger: 'blur'}
-        ],
+        // part_code: [
+        //   {required: true, message: '请输入物料编码', trigger: 'blur'}
+        // ],
+        // supplier: [
+        //   {required: true, message: '请输入供应商', trigger: 'blur'}
+        // ],
+        // parts: [
+        //   {required: true, message: '请输入物料', trigger: 'blur'}
+        // ],
         product_number: [
           {required: true, message: '请输入数量', trigger: 'blur'}
         ],
@@ -179,6 +193,10 @@ export default {
       dataTableIndex: 0,
       // 暂存PCB码
       PCB_code_temp: '',
+      // 暂存物料编码 用于检验重复扫码
+      part_code_temp: [],
+      //已绑定的PCB个数
+      count_PCB: 0,
     };
   },
 
@@ -198,20 +216,21 @@ export default {
           this.$http['post']('/supplier/batch/add', this.form).then(res => {
             this.loading = false;
             if (res.data.code === 0) {
-              this.$message.success(res.data.msg);
+              this.$message.success({ message: res.data.msg, duration: 3000 });
               // 页面数据重置
               this.dataTable = [{ part_code: '', supplier: '' , parts: '' }];
               this.form.PCB_code = this.PCB_code_temp
               this.dataTableIndex = 0;
+              this.part_code_temp = [];
               const input = document.getElementById(`part_code_inputId_${this.dataTableIndex}`);
               input.focus();
 
             } else {
-              this.$message.error(res.data.msg);
+              this.$message.error({ message: res.data.msg, duration: 3000 });
             }
           }).catch(e => {
             this.loading = false;
-            this.$message.error(e.message);
+             this.$message.error({ message: e.message, duration: 3000 });
           });
         } else {
           return false;
@@ -305,16 +324,33 @@ export default {
     },
 
     // PCB_code输入框检测到回车触发
-    handlePCBCodeEnterKey(event){
-      const isPCB_code = event.target.value.startsWith("PCB");
-      if(isPCB_code){
-        // 焦点设在第一行物料编码输入框
-        const input = document.getElementById(`part_code_inputId_${this.dataTableIndex}`);
-        input.focus();
-      }
+    handlePCBCodeEnterKey(){
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          // 焦点设在第一行物料编码输入框
+          const input = document.getElementById(`part_code_inputId_${this.dataTableIndex}`);
+          input.focus();
+        }else{
+          this.form.PCB_code = '';
+        }
+      });
+  
     },
 
-    // part_code输入框检测到回车触发
+    // 验证PCB_code是否合法
+    checkPCBCodeIsValid(rule, value, callback){
+      const isPCB_code = value.startsWith("PCB");
+      if(isPCB_code){
+        //不能重复
+        
+        callback();
+      }else{
+        callback(new Error('PCB编码格式错误,需以PCB开头')); 
+      }
+      
+    },
+
+    // 物料编码输入框检测到回车触发
     handlePartCodeEnterKey(event){
       const isPCB_code = event.target.value.startsWith("PCB");
       if(!isPCB_code){
@@ -322,20 +358,32 @@ export default {
         const regex = /^[^+]*\+[^+]*\+[^+]*$/;
         const hasTwoPlus = regex.test(event.target.value);
         if(hasTwoPlus){
-          const parts = event.target.value.split("+");
-          this.dataTable[this.dataTableIndex].part_code = parts[0];
-          this.dataTable[this.dataTableIndex].supplier = parts[1];
-          this.dataTable[this.dataTableIndex].parts = parts[2];
-          // 焦点设在下一行物料编码输入框
-          this.dataTableIndex += 1;
-          this.dataTable.push({ part_code: '', supplier: '', parts: '' });       
-          const self = this; // 保存this.dataTableIndex的引用
-          setTimeout(function() {
-            const nextInput = document.getElementById(`part_code_inputId_${self.dataTableIndex}`);
-            if(nextInput){
-              nextInput.focus();
-            }
-          }, 100); // 添加100毫秒的延迟
+          // 验证没重复扫码
+          if (!this.part_code_temp.includes(event.target.value)) {
+            const parts = event.target.value.split("+");
+            this.dataTable[this.dataTableIndex].part_code = parts[0];
+            this.dataTable[this.dataTableIndex].supplier = parts[1];
+            this.dataTable[this.dataTableIndex].parts = parts[2];
+            this.part_code_temp.push(event.target.value)
+            // 焦点设在下一行物料编码输入框
+            this.dataTableIndex += 1;
+            this.dataTable.push({ part_code: '', supplier: '', parts: '' });       
+            const self = this; // 保存this.dataTableIndex的引用
+            setTimeout(function() {
+              const nextInput = document.getElementById(`part_code_inputId_${self.dataTableIndex}`);
+              if(nextInput){
+                nextInput.focus();
+              }
+            }, 100); // 添加100毫秒的延迟
+          }else{
+            this.dataTable.pop();
+            this.dataTable.push({ part_code: '', supplier: '', parts: '' });  
+            this.$message.error({ message: "重复扫码", duration: 3000,});
+          }
+        }else{
+          this.dataTable.pop();
+          this.dataTable.push({ part_code: '', supplier: '', parts: '' });  
+          this.$message.error({ message: "物料编码格式错误", duration: 3000});
         }
       }else{
         // 扫到PCB码触发提交
@@ -344,7 +392,6 @@ export default {
         this.save();
       }
     },
-
 
   },
 
@@ -357,13 +404,13 @@ export default {
 </script>
 
 <style scoped>
+/* 全局样式 */
 ::v-deep .cell{
   font-size: 24px !important;
   color: #606266 !important;
   font-style: normal !important;
   line-height: 30px !important;
 }
-
 
 .mainDiv {
   position: fixed;
@@ -379,7 +426,6 @@ export default {
   margin-bottom: 5%;
 }
 
-/* 调整输入框大小的样式类 */
 ::v-deep .el-input__inner{
   width: 380px !important;
   height: 54px !important;
@@ -394,6 +440,15 @@ export default {
 
 ::v-deep .el-form-item__error{
   font-size: 18px;
+}
+
+::v-deep ul.el-scrollbar__view.el-autocomplete-suggestion__list li {
+  font-size: 20px !important;
+}
+
+
+::v-deep .error-message {
+  font-size: 24px !important;
 }
 
 </style>
