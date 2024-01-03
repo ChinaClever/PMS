@@ -396,7 +396,7 @@
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
                 if (!this.isUpdate) {
-                  this.form = {};
+                  this.form = {product_module:1, priority: 2};
                 }
                 this.updateVisible(false);
                 this.$emit('done');

@@ -37,4 +37,6 @@ urlpatterns = [
     path('update', views.DictUpdateView.as_view()),
     # 删除字典
     path('delete/<str:dict_id>', views.DictDeleteView.as_view()),
+
+    path('batch/add', views.SupplierBatchAddView.as_view()),
 ]

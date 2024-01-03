@@ -306,3 +306,40 @@ def DictDelete(dict_id):
             count += 1
     # 返回结果
     return R.ok(msg="本次共删除{0}条数据".format(count))
+
+
+def SupplierBatchAdd(request):
+    # 接收请求参数
+    json_data = request.body.decode()
+    # 参数为空判断
+    if not json_data:
+        return R.failed("参数不能为空")
+        # 数据类型转换
+    dict_data = json.loads(json_data)
+
+    work_order = dict_data.get('work_order')
+    customer = dict_data.get('customer')
+    product_name = dict_data.get('product_name')
+    product_type = dict_data.get('product_type')
+    supplier = dict_data.get('supplier')
+    parts = dict_data.get('parts')
+    product_number = dict_data.get('product_number')
+    notes = dict_data.get('notes')
+    PCB_code = dict_data.get('PCB_code')
+    part_code = dict_data.get('part_code')
+
+    Dict.objects.create(
+        work_order=work_order,
+        customer = customer,
+        product_name = product_name,
+        product_type = product_type,
+        supplier = supplier,
+        parts = parts,
+        product_number = product_number,
+        notes =notes,
+        PCB_code = PCB_code,
+        part_code = part_code,
+    )
+
+    # 返回结果
+    return R.ok(msg="添加数据成功！")

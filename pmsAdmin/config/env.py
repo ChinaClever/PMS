@@ -30,7 +30,7 @@ TABLE_PREFIX = "django_"
 
 # 全局变量
 # 图片地址
-IMAGE_URL = "http://0.0.0.0:8000"
+IMAGE_URL = "http://192.168.1.12:8000"
 # 附件存储目录
 ATTACHMENT_PATH = "/home/zhan/work/PMS/pmsAdmin/public/uploads"
 IMAGE_PATH = '{}/images'.format(ATTACHMENT_PATH)

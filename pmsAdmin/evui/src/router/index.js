@@ -18,6 +18,11 @@ const routes = [
     component: () => import('@/views/login/login'),
     meta: {title: '登录'}
   },
+  {
+    path: '/supplier/batchadd',
+    component: () => import('@/views/supplier/supplier/supplier-batch-add'),
+    meta: {title: '物料绑定'}
+  },
   // {
   //   path: '/forget',
   //   component: () => import('@/views/login/forget'),

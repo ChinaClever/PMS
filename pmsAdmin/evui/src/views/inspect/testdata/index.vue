@@ -320,7 +320,6 @@
         this.$refs.table.reload({page: 1, where: this.where});
       },
       startTimer() {
-        console.log("开启定时任务")
         // 每隔60秒刷新数据
         this.timer = setInterval(() => {
           const elements = document.querySelectorAll('tr.animation');
@@ -352,7 +351,6 @@
         }, 5000);
       },
       stopTimer() {
-        console.log("关闭定时任务")
         // 停止定时器
         clearInterval(this.timer);
       },

@@ -62,7 +62,7 @@
             icon="el-icon-plus"
             class="ele-btn-icon"
             @click="openEdit(null)"
-            v-if="permission.includes('sys:supplier:add')">添加
+            >添加
           </el-button>
           <el-button
             size="small"
@@ -71,6 +71,14 @@
             class="ele-btn-icon"
             @click="removeBatch"
             v-if="permission.includes('sys:supplier:dall')">删除
+          </el-button>
+          <el-button
+            size="small"
+            type="primary"
+            icon="el-icon-plus"
+            class="ele-btn-icon"
+            @click="openBatchAddPage"
+            >批量添加
           </el-button>
           <!-- 导出按钮 -->
           <el-button
@@ -510,7 +518,9 @@ export default {
       this.selection = temp;
       
       },
-
+      openBatchAddPage(){
+        this.$router.push("/supplier/batchadd")
+      }
   }
 }
 </script>
