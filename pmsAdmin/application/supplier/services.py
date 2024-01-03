@@ -92,6 +92,8 @@ def DictList(request):#查询设置，从前端返回order_id字段，再到数�
                 'customer': item.customer,
                 'product_name': item.product_name,
                 'product_type': item.product_type,
+                'PCB_code': item.PCB_code,
+                'part_code': item.part_code,
                 'supplier': item.supplier,
                 'parts': item.parts,
                 'product_number': item.product_number,
@@ -127,6 +129,8 @@ def DictDetail(dict_id):
         'customer': dict.customer,
         'product_name': dict.product_name,
         'product_type': dict.product_type,
+        'PCB_code': dict.PCB_code,
+        'part_code': dict.part_code,
         'supplier': dict.supplier,
         'parts': dict.parts,
         'product_number':dict.product_number,
@@ -168,6 +172,8 @@ def DictAdd(request):
         customer = form.cleaned_data.get('customer')
         product_name = form.cleaned_data.get('product_name')
         product_type = form.cleaned_data.get('product_type')
+        PCB_code = form.cleaned_data.get('PCB_code')
+        part_code = form.cleaned_data.get('part_code')
         supplier = form.cleaned_data.get('supplier')
         parts = form.cleaned_data.get('parts')
         product_number = form.cleaned_data.get('product_number')
@@ -182,6 +188,8 @@ def DictAdd(request):
             customer=customer,
             product_name=product_name,
             product_type=product_type,
+            PCB_code=PCB_code,
+            part_code=part_code,
             supplier=supplier,
             parts=parts,
             product_number=product_number,
@@ -230,6 +238,8 @@ def DictUpdate(request):
         customer = form.cleaned_data.get('customer')
         product_name = form.cleaned_data.get('product_name')
         product_type = form.cleaned_data.get('product_type')
+        PCB_code = form.cleaned_data.get('PCB_code')
+        part_code = form.cleaned_data.get('part_code')
         supplier = form.cleaned_data.get('supplier')
         parts = form.cleaned_data.get('parts')
         product_number = form.cleaned_data.get('product_number')
@@ -256,6 +266,8 @@ def DictUpdate(request):
     dict.customer = customer
     dict.product_name = product_name
     dict.product_type = product_type
+    dict.PCB_code = PCB_code
+    dict.part_code = part_code
     dict.supplier = supplier
     dict.parts = parts
     dict.product_number= product_number

@@ -16,6 +16,7 @@
         <el-col :span="10">
           <el-form-item
             label="单号:"
+            ref="work_order"
             prop="work_order">
             <el-autocomplete
             :disabled="isUpdate"
@@ -30,6 +31,7 @@
           </el-form-item>
           <el-form-item
             label="不良数量:"
+            ref="bad_number"
             prop="bad_number">
             <el-input
               :maxlength="20"
@@ -48,6 +50,7 @@
           </el-form-item>
           <el-form-item
             label="PCB编码:"
+            ref="PCB_code"
             prop="PCB_code">
             <el-input
               :maxlength="20"
@@ -57,7 +60,9 @@
           </el-form-item>
         </el-col>
         <el-col :span="10">
-          <el-form-item label="产品名称" prop="name">
+          <el-form-item label="产品名称" 
+            ref="name"
+            prop="name">
             <el-autocomplete
               class="inline-input"
               v-model="form.name"
@@ -69,6 +74,7 @@
           </el-form-item>
           <el-form-item
             label="维修数量:"
+            ref="repair_number"
             prop="repair_number">
             <el-input
               :maxlength="20"
@@ -78,6 +84,7 @@
           </el-form-item>
           <el-form-item
             label="工时:"
+            ref="work_hours"
             prop="work_hours">
             <el-input
               :maxlength="20"
@@ -277,7 +284,7 @@ export default {
     },
     /* 保存编辑 */
     save() {
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate((valid,object) => {
         if (valid) {
           this.loading = true;
           if(this.form.repair_time){
@@ -300,6 +307,15 @@ export default {
             this.$message.error(e.message);
           });
         } else {
+          let dom = this.$refs[Object.keys(object)[0]];
+          if (Object.prototype.toString.call(dom) !== "[object Object]") {
+            dom = dom[0];
+          }
+          // 定位代码
+          dom.$el.scrollIntoView({
+            block: "center",
+            behavior: "smooth",
+          });
           return false;
         }
       });

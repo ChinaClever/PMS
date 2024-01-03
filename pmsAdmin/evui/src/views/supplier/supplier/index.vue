@@ -210,6 +210,18 @@ export default {
           minWidth: 200,
           align: 'center',
         }, {
+          prop: 'PCB_code',
+          label: 'PCB编码',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        }, {
+          prop: 'part_code',
+          label: '物料编码',
+          showOverflowTooltip: true,
+          minWidth: 200,
+          align: 'center',
+        }, {
           prop: 'supplier',
           label: '供应商',
           showOverflowTooltip: true,
