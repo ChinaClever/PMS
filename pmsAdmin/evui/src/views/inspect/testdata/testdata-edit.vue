@@ -198,7 +198,7 @@ export default {
         this.form = Object.assign({}, this.data);
         this.isUpdate = true;
       } else {
-        this.form = {};
+        this.form = {testStep : []};
         this.isUpdate = false;
       }
     }
