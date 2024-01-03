@@ -53,6 +53,7 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <br />
       <el-form-item label="需求或建议:" prop="content">
         <tinymce-editor v-model="form.content" :init="initEditor"/>
       </el-form-item>
