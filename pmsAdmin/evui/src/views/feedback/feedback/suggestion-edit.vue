@@ -91,10 +91,10 @@ export default {
       // 表单验证规则
       rules: {
         type:[
-          {required: true, trigger: 'blur'}
+          {required: true,message: '请输入类型', trigger: 'blur'}
         ],
         status:[
-          {required: true, trigger: 'blur'}
+          {required: true,message: '请选择一个状态', trigger: 'blur'}
         ],
         content: [
           {required: true, message: '请输入', trigger: 'blur'}
