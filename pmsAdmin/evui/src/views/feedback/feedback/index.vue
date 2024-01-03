@@ -130,7 +130,7 @@
           <el-popover
             placement="top-start"
             title="内容"
-            width="1000"
+            width="auto"
             trigger="click"
             :content=row.content>
             <div v-html="row.content"></div>
@@ -141,7 +141,7 @@
           <el-popover
             placement="top-start"
             title="反馈"
-            width="1000"
+            width="auto"
             trigger="click"
             :content=row.feedback>
             <div v-html="row.feedback"></div>
@@ -192,7 +192,7 @@ export default {
         {
           prop: 'commit_user',
           label: '提交者',
-          width: 70,
+          width: 100,
           align: 'center',
           showOverflowTooltip: true,
         },

@@ -132,7 +132,7 @@
           <el-popover
             placement="top-start"
             title="问题"
-            width="1000"
+            width="auto"
             trigger="click"
             :content=row.problems>
             <el-button slot="reference">点击查看</el-button>
@@ -142,7 +142,7 @@
           <el-popover
             placement="top-start"
             title="行动"
-            width="1000"
+            width="auto"
             trigger="click"
             :content=row.actions>
             <el-button slot="reference">点击查看</el-button>
