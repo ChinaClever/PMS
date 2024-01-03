@@ -175,7 +175,7 @@ def DictAdd(request):
         work_order = form.cleaned_data.get('work_order')
         bad_number = form.cleaned_data.get('bad_number')
         repair_number = form.cleaned_data.get('repair_number')
-        PCB_code = form.cleaned_data.get('PCB_Code')
+        PCB_code = form.cleaned_data.get('PCB_code')
         bad_phenomenon = form.cleaned_data.get('bad_phenomenon')
         analysis = form.cleaned_data.get('analysis')
         solution = form.cleaned_data.get('solution')
