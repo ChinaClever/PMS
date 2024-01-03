@@ -104,7 +104,7 @@
           </el-link>
           <el-popconfirm
             class="ele-action"
-            title="确定要删除此通知吗？"
+            title="确定要删除此数据吗？"
             @confirm="remove(row)">
             <el-link
               type="danger"

@@ -66,10 +66,17 @@
        label="需求或建议:"
        ref="content" 
        prop="content">
-        <tinymce-editor v-model="form.content" :init="initEditor"/>
+        <tinymce-editor 
+          v-model="form.content" 
+          :init="initEditor"/>
       </el-form-item>
-      <el-form-item label="反馈意见:" prop="feedback" v-if="isUpdate && permission.includes('sys:feedback:status')">
-        <tinymce-editor v-model="form.feedback" :init="initEditor"/>
+      <el-form-item 
+        label="反馈意见:" 
+        prop="feedback" 
+        v-if="isUpdate && permission.includes('sys:feedback:status')">
+        <tinymce-editor 
+          v-model="form.feedback" 
+          :init="initEditor"/>
         </el-form-item>
     </el-form>
     <div slot="footer">
@@ -140,7 +147,6 @@ export default {
       } else {
         this.form = {status : 1,type : 1};
         this.form.content = '';
-
         this.isUpdate = false;
       }
     }
