@@ -16,6 +16,7 @@
         <el-col :sm="12">
           <el-form-item
             label="单号:"
+            ref="work_order"
             prop="work_order">
             <el-autocomplete
             v-model="form.work_order"
@@ -36,11 +37,12 @@
             v-model="form.selectedDate"
             value-format="yyyy-MM-dd HH:mm"
             type="date"
-            placeholder="选择日期">
+            placeholder="选择日期(不填默认今天)">
           </el-date-picker>
           </el-form-item>
           <el-form-item
             label="开始时间:"
+            ref="start_time"
             prop="start_time">
             <el-time-picker
               v-model="form.start_time"
@@ -52,6 +54,7 @@
           </el-form-item>
           <el-form-item
             label="结束时间:"
+            ref="end_time"
             prop="end_time">
             <el-time-picker
               v-model="form.end_time"
@@ -63,6 +66,7 @@
           </el-form-item>
           <el-form-item
             label="产品型号:"
+            ref="item_number"
             prop="item_number">
             <el-input
               :maxlength="20"
@@ -73,6 +77,7 @@
           </el-form-item>
           <el-form-item
           label="产品名称:"
+          ref="product_name"
           prop="product_name">
           <el-input
             :maxlength="20"
@@ -83,7 +88,10 @@
         </el-form-item>
         </el-col>
         <el-col :sm="12">
-          <el-form-item label="成品/模块:" prop="product_module">
+          <el-form-item 
+            label="成品/模块:" 
+            ref="product_module"
+            prop="product_module">
             <el-radio-group
               v-model="form.product_module" 
               :disabled="disabled">
@@ -93,6 +101,7 @@
           </el-form-item>
           <el-form-item
             label="检验数量:"
+            ref="examine_an_amount"
             prop="examine_an_amount">
             <el-input
               :maxlength="20"
@@ -102,6 +111,7 @@
           </el-form-item>
           <el-form-item
             label="检验不良数量:"
+            ref="examine_a_bad_amount"
             prop="examine_a_bad_amount">
             <el-input
               :maxlength="20"
@@ -111,6 +121,7 @@
           </el-form-item>
           <el-form-item
             label="检验数量累计:"
+            ref="examine_amount_total_amount"
             prop="examine_amount_total_amount">
             <el-input
               :maxlength="20"
@@ -120,6 +131,7 @@
           </el-form-item>
           <el-form-item
             label="检验不良累计:"
+            ref="examine_bad_total_amount"
             prop="examine_bad_total_amount">
             <el-input
               :maxlength="20"
@@ -129,6 +141,7 @@
           </el-form-item>
           <el-form-item
             label="ERP目标合格率:"
+            ref="target_pass_rate"
             prop="target_pass_rate">
             <el-input
               :maxlength="20"
@@ -140,6 +153,7 @@
           
        
       </el-row>
+      <br />
       <el-form-item label="问题:" prop="problems">
                   <el-input
                     v-model="form.problems"
@@ -199,12 +213,14 @@ export default {
         start_time:[
           {
             required: true,
+            message: '请输入开始时间',
             trigger: 'blur'
           }
         ],
         product_module:[
           {
             required: true,
+            message: '请选择成品或模块',
             trigger: 'blur'
           }
         ],
@@ -214,6 +230,7 @@ export default {
         end_time:[
           {
             required: true,
+            message: '请输入结束时间',
             trigger: 'blur'
           },
           {
@@ -342,7 +359,7 @@ export default {
   methods: {
     /* 保存编辑 */
     save() {
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate((valid,object) => {
         if (valid) {
           this.loading = true;
           this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/inspectreport/update' : '/inspectreport/add', this.form).then(res => {
@@ -366,6 +383,15 @@ export default {
             this.$message.error(e.message);
           });
         } else {
+          let dom = this.$refs[Object.keys(object)[0]];
+          if (Object.prototype.toString.call(dom) !== "[object Object]") {
+            dom = dom[0];
+          }
+          // 定位代码
+          dom.$el.scrollIntoView({
+            block: "center",
+            behavior: "smooth",
+          });
           return false;
         }
       });
