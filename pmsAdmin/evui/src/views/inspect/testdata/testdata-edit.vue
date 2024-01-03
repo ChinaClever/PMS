@@ -153,7 +153,7 @@
           </el-radio-group>
         </div>
         <el-button @click="addInput">添加输入框</el-button>
-        <el-button v-if="form.testStep && form.testStep.length > 0" @click="removeInput">删除最后一个输入框</el-button>
+        <el-button v-if="form.testStep.length > 0" @click="removeInput">删除最后一个输入框</el-button>
     </el-form>
     <div slot="footer">
       <el-button @click="updateVisible(false)">取消</el-button>
