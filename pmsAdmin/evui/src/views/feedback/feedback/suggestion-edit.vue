@@ -23,7 +23,10 @@
               placeholder="请输入您的姓名"
               clearable/>
           </el-form-item>
-          <el-form-item label="类型:" prop="type">
+          <el-form-item 
+            label="类型:" 
+            ref="type"
+            prop="type">
             <el-radio-group
               v-model="form.type">
               <el-radio :label="1">问题</el-radio>
@@ -35,6 +38,7 @@
         <el-col :sm="12">
           <el-form-item
             label="优先级:"
+            ref="priority"
             prop="priority">
             <el-input
               :maxlength="20"
@@ -42,7 +46,11 @@
               placeholder="请输入优先级(1-10)"
               clearable/>
           </el-form-item>
-          <el-form-item label="状态:" prop="status" v-if="permission.includes('sys:feedback:status')">
+          <el-form-item 
+            label="状态:"
+            ref="status" 
+            prop="status" 
+            v-if="isUpdate && permission.includes('sys:feedback:status')">
             <el-radio-group
               v-model="form.status" >
               <el-radio :label="1">未查看</el-radio>
@@ -54,10 +62,13 @@
         </el-col>
       </el-row>
       <br />
-      <el-form-item label="需求或建议:" prop="content">
+      <el-form-item
+       label="需求或建议:"
+       ref="content" 
+       prop="content">
         <tinymce-editor v-model="form.content" :init="initEditor"/>
       </el-form-item>
-      <el-form-item label="反馈意见:" prop="feedback" v-if="permission.includes('sys:feedback:status')">
+      <el-form-item label="反馈意见:" prop="feedback" v-if="isUpdate && permission.includes('sys:feedback:status')">
         <tinymce-editor v-model="form.feedback" :init="initEditor"/>
         </el-form-item>
     </el-form>
@@ -127,7 +138,9 @@ export default {
         this.form = Object.assign({}, this.data);
         this.isUpdate = true;
       } else {
-        this.form = {};
+        this.form = {status : 1,type : 1};
+        this.form.content = '';
+
         this.isUpdate = false;
       }
     }
@@ -171,7 +184,7 @@ export default {
   methods: {
     /* 保存编辑 */
     save() {
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate((valid,object) => {
         if (valid) {
           this.loading = true;
           this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/suggestion/update' : '/suggestion/add', this.form).then(res => {
@@ -191,6 +204,15 @@ export default {
             this.$message.error(e.message);
           });
         } else {
+          let dom = this.$refs[Object.keys(object)[0]];
+          if (Object.prototype.toString.call(dom) !== "[object Object]") {
+            dom = dom[0];
+          }
+          // 定位代码
+          dom.$el.scrollIntoView({
+            block: "center",
+            behavior: "smooth",
+          });
           return false;
         }
       });
