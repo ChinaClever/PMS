@@ -353,8 +353,7 @@ export default {
       }
     },
     visible(){
-      if (this.data && this.data.id) {
-      } else {
+      if (!(this.data && this.data.id)) {
         this.form = {
           product_name : '',
           item_number: '',
