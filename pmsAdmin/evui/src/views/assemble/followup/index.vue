@@ -79,7 +79,7 @@
             icon="el-icon-plus"
             class="ele-btn-icon"
             @click="openEdit(null)"
-            v-if="permission.includes('sys:inspectreport:add')">添加
+            v-if="permission.includes('sys:followup:add')">添加
           </el-button>
           <el-button
             size="small"
@@ -87,7 +87,7 @@
             icon="el-icon-delete"
             class="ele-btn-icon"
             @click="removeBatch"
-            v-if="permission.includes('sys:inspectreport:dall')">删除
+            v-if="permission.includes('sys:followup:dall')">删除
           </el-button>
            <!-- 导出按钮 -->
           <el-button
@@ -105,7 +105,7 @@
             :underline="false"
             icon="el-icon-edit"
             @click="openEdit(row)"
-            v-if="permission.includes('sys:inspectreport:update')">修改
+            v-if="permission.includes('sys:followup:update')">修改
           </el-link>
           <el-popconfirm
             class="ele-action"
@@ -116,7 +116,7 @@
               slot="reference"
               :underline="false"
               icon="el-icon-delete"
-              v-if="permission.includes('sys:inspectreport:delete')">删除
+              v-if="permission.includes('sys:followup:delete')">删除
             </el-link>
           </el-popconfirm>
         </template>
@@ -148,10 +148,20 @@
             <el-button slot="reference">点击查看</el-button>
           </el-popover>
         </template>
+        <template slot="expand_3" slot-scope="{row}" v-if="row.remark">
+          <el-popover
+            placement="top-start"
+            title="备注"
+            width="auto"
+            trigger="click"
+            :content=row.actions>
+            <el-button slot="reference">点击查看</el-button>
+          </el-popover>
+        </template>
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
-    <inspectreport-edit
+    <followup-edit
       :data="current"
       :visible.sync="showEdit"
       @done="reload"/>
@@ -160,20 +170,20 @@
 
 <script>
 import { mapGetters } from "vuex";
-import InspectreportEdit from './inspectreport-edit';
+import FollowupEdit from './followup-edit';
 import XLSX from 'xlsx'
 import { saveAs } from 'file-saver';
 
 export default {
-  name: 'inspectreport',
-  components: {InspectreportEdit},
+  name: 'followup',
+  components: {FollowupEdit},
   computed: {
     ...mapGetters(["permission"]),
   },
   data() {
     return {
       // 表格数据接口
-      url: '/inspectreport/list',
+      url: '/followup/list',
       selectDateRange: '',
       // 表格列配置
       columns: [
@@ -251,54 +261,33 @@ export default {
           align: 'center',
         },
         {
-          prop: 'examine_an_amount',
-          label: '检验数量',
+          prop: 'qty_obj_hour',
+          label: 'ERP目标/拉/小时',
           width: 70,
           align: 'center',
           showOverflowTooltip: true,
         },
         {
-          prop: 'examine_a_bad_amount',
+          prop: 'qty_prod_hour',
           sortable: 'custom',
-          label: '检验不良数量',
+          label: '实际产出/拉/小时',
           width: 70,
           align: 'center',
           showOverflowTooltip: true,
         },
         {
-          prop: 'examine_amount_total_amount',
-          label: '检验数量累计',
+          prop: 'cumul_qty_obj',
+          label: 'ERP目标累计',
           width: 70,
           align: 'center',
           showOverflowTooltip: true,
         },
         {
-          prop: 'examine_bad_total_amount',
-          label: '检验不良累计',
+          prop: 'cumul_qty_prod',
+          label: '实际累计',
           width: 70,
           align: 'center',
           showOverflowTooltip: true,
-        },
-        {
-          prop: 'target_pass_rate',
-          label: 'ERP目标合格率',
-          width: 70,
-          align: 'center',
-          showOverflowTooltip: true,
-          formatter: (row, column, cellValue) => {
-            return cellValue + '%';
-          }
-        },
-        {
-          prop: 'target_actual_pass_rate',
-          sortable: 'custom',
-          label: '实际合格率',
-          width: 70,
-          align: 'center',
-          showOverflowTooltip: true,
-          formatter: (row, column, cellValue) => {
-            return cellValue + '%';
-          }
         },
         {
           prop: 'signal',
@@ -307,6 +296,20 @@ export default {
           align: 'center',
           resizable: false,
           slot: 'signal',
+        },
+        {
+          prop: 'loss_time',
+          label: '损耗工时',
+          width: 70,
+          align: 'center',
+          showOverflowTooltip: true,
+        },
+        {
+          prop: 'changeover_time',
+          label: '换线时间',
+          width: 70,
+          align: 'center',
+          showOverflowTooltip: true,
         },
         {
           prop: 'problems',
@@ -321,6 +324,13 @@ export default {
           width: 150,
           align: 'center',
           slot: 'expand_2',
+        },
+        {
+          prop: 'remark',
+          label: '备注',
+          width: 150,
+          align: 'center',
+          slot: 'expand_3',
         },
         // {
         //   prop: 'create_time',
@@ -436,7 +446,7 @@ export default {
       } else {
         // 编辑
         this.loading = true;
-        this.$http.get('/inspectreport/detail/' + row.id).then((res) => {
+        this.$http.get('/followup/detail/' + row.id).then((res) => {
           this.loading = false;
           if (res.data.code === 0) {
             this.current = Object.assign({}, res.data.data);
@@ -453,7 +463,7 @@ export default {
     /* 删除 */
     remove(row) {
       const loading = this.$loading({lock: true});
-      this.$http.delete('/inspectreport/delete/' + row.id).then(res => {
+      this.$http.delete('/followup/delete/' + row.id).then(res => {
         loading.close();
         if (res.data.code === 0) {
           this.$message.success(res.data.msg);
@@ -476,7 +486,7 @@ export default {
         type: 'warning'
       }).then(() => {
         const loading = this.$loading({lock: true});
-        this.$http.delete('/inspectreport/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
+        this.$http.delete('/followup/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -536,7 +546,6 @@ export default {
         }
         return obj;
       });
-
       this.selection = this.selection.map(obj => {
         if (obj.product_module === 2) {
           return { ...obj, product_module: '模块' };
@@ -545,7 +554,6 @@ export default {
         }
         return obj;
       });
-
       
 
       // 获取字段名称（中文）
@@ -560,8 +568,6 @@ export default {
           .slice(1, -1) // 排除第一列和最后一列
           .map(column => row[column.prop])
       );
-      console.log(this.selection)
-      console.log(data)
       const worksheet = XLSX.utils.json_to_sheet(data);
       // 将字段名称添加到 Excel 文件中
       XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: 'A1' });
@@ -576,7 +582,7 @@ export default {
       const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
       const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
       // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
-      const fileName = '质检报表.xlsx';
+      const fileName = '组装跟进表.xlsx';
       
       const currentDate = new Date();
       const year = currentDate.getFullYear();

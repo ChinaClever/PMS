@@ -120,7 +120,7 @@
             </el-link>
           </el-popconfirm>
         </template>
-        <template slot="singal" slot-scope="{row}">
+        <template slot="signal" slot-scope="{row}">
           <el-tag v-if="row.signal === 1"  effect="dark" type="danger" size="medium"></el-tag>
           <el-tag v-if="row.signal === 2"  effect="dark" type="success" size="medium"></el-tag>
         </template>
@@ -301,12 +301,12 @@ export default {
           }
         },
         {
-          prop: 'singal',
+          prop: 'signal',
           label: '信号',
           minWidth: 100,
           align: 'center',
           resizable: false,
-          slot: 'singal',
+          slot: 'signal',
         },
         {
           prop: 'problems',
@@ -572,7 +572,7 @@ export default {
       const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
       const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
       // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
-      const fileName = '质检报表.xlsx';
+      const fileName = '检验统计报表.xlsx';
       
       const currentDate = new Date();
       const year = currentDate.getFullYear();

@@ -131,6 +131,8 @@ urlpatterns = ([
     path('packing/', include('application.packing.urls')),
     # 检验统计表
     path('statistic/', include('application.statistic.urls')),
+    # 组装跟进表
+    path('followup/', include('application.followup.urls')),
 ] + static(settings.TEMP_URL, document_root=settings.STATICFILES_DIRS[2])
 + static(settings.IMAGES_URL, document_root=settings.STATICFILES_DIRS[3])
 + static(settings.UPLOADS_URL, document_root=settings.STATICFILES_DIRS[1])
