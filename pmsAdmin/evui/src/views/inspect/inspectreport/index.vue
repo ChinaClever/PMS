@@ -132,7 +132,7 @@
           <el-popover
             placement="top-start"
             title="问题"
-            width="auto"
+            width="1000"
             trigger="click"
             :content=row.problems>
             <el-button slot="reference">点击查看</el-button>
@@ -142,7 +142,7 @@
           <el-popover
             placement="top-start"
             title="行动"
-            width="auto"
+            width="1000"
             trigger="click"
             :content=row.actions>
             <el-button slot="reference">点击查看</el-button>
@@ -187,7 +187,7 @@ export default {
         {
           prop: 'work_order',
           label: '单号',
-          width: 80,
+          width: 150,
           align: 'center',
           showOverflowTooltip: true,
         },
@@ -225,7 +225,7 @@ export default {
         {
           prop: 'work_hours',
           label: '工时',
-          minWidth: 100,
+          minWidth: 70,
           align: 'center',
           resizable: false,
         },
@@ -239,7 +239,7 @@ export default {
         {
           prop: 'item_number',
           label: '产品型号',
-          width: 70,
+          width: 120,
           align: 'center',
           showOverflowTooltip: true,
         },
