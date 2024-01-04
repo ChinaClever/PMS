@@ -150,8 +150,6 @@
               clearable/>
           </el-form-item>
         </el-col>
-          
-       
       </el-row>
       <br />
       <el-form-item label="问题:" prop="problems">
@@ -348,8 +346,19 @@ export default {
           product_name : '',
           item_number: '',
           product_module:'',};
+        this.form.end_time = this.demo(this.getNowTimes());
         this.isUpdate = false;
         this.disabled = false;
+      }
+    },
+    visible(){
+      if (!(this.data && this.data.id)) {
+        this.form = {
+          product_name : '',
+          item_number: '',
+          product_module:'',
+          end_time : ''};
+        this.form.end_time = this.demo(this.getNowTimes());
       }
     }
   },
@@ -496,6 +505,45 @@ export default {
         this.disabled=false;
       }
       callback();
+    },
+    //时间四舍五入
+    demo(timeStr) {
+      timeStr = timeStr.replace(/-/g, '/')
+      var oDate = new Date(timeStr)
+      var stamp = oDate.getTime()
+      var minute = oDate.getMinutes()
+      var last = minute%10
+      if(last > 4) {
+        stamp += (10-last) * 60 * 1000
+      } else {
+        stamp -= last * 60 * 1000
+      }
+      oDate = new Date(stamp)
+
+      var t = {
+        year: this.pad_2_0(oDate.getFullYear()),
+        month: this.pad_2_0(oDate.getMonth() + 1),
+        day: this.pad_2_0(oDate.getDate()),
+        hour: this.pad_2_0(oDate.getHours()),
+        minute: this.pad_2_0(oDate.getMinutes()),
+        second: this.pad_2_0(oDate.getSeconds())
+      }
+
+      var  res = t.year + '-' + t.month + '-' + t.day + ' ' + t.hour + ':' + t.minute;
+      return res;
+    },
+    pad_2_0 (num) {
+      return num >= 10 ? num : '0' + num
+    },
+    getNowTimes(){
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+      const date = String(currentDate.getDate()).padStart(2, '0');
+      const hours = String(currentDate.getHours()).padStart(2, '0');
+      const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${date} ${hours}:${minutes}`;
+      return formattedDate;
     },
   },
   mounted() {
