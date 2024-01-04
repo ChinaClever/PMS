@@ -343,3 +343,11 @@ def SupplierBatchAdd(request):
 
     # 返回结果
     return R.ok(msg="添加数据成功！")
+
+def PCBisRepeat(PCB_code):
+    print(PCB_code)
+    dict = Dict.objects.filter(is_delete=False, PCB_code=PCB_code).first()
+    if not dict:
+        return R.ok(msg="验证通过")
+    else:
+        return R.failed("PCB编码重复")

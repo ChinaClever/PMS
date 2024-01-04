@@ -39,4 +39,6 @@ urlpatterns = [
     path('delete/<str:dict_id>', views.DictDeleteView.as_view()),
 
     path('batch/add', views.SupplierBatchAddView.as_view()),
+
+    path('PCBisRepeat/<str:PCB_code>', views.SupplierPCBisRepeatView.as_view()),
 ]

@@ -36,6 +36,9 @@ class Packing(BaseModel):
     work_hours = models.IntegerField(null=True, default=0, verbose_name="所用工时", help_text="所用工时")
     # 打包数量
     packing_count = models.IntegerField(default=0, verbose_name="打包数量", help_text="打包数量")
+    # 成品SN
+    goods_SN = models.CharField(null=True, max_length=255, verbose_name="成品SN", help_text="成品SN")
+
     class Meta:
         db_table = TABLE_PREFIX + 'packingrecord'
         verbose_name = '打包记录表'
