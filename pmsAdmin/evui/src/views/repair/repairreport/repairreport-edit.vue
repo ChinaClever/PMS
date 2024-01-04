@@ -92,7 +92,12 @@
               placeholder="请输入工时"
               clearable/>
           </el-form-item>
-          
+          <div style="margin-left: 50px;">
+            <el-switch
+              v-model="value1"
+              inactive-text="连续输入"
+            ></el-switch>
+          </div>
         </el-col>
       </el-row>
       <el-row :gutter="15" class="row-spacing" >
@@ -249,7 +254,10 @@ export default {
       analysislist:[],
       solutionlist:[],
       namelist:[],
-      disabled:false
+      //禁用
+      disabled:false,
+      //是否连续输入
+      value1: true
     };
     
   },
@@ -294,7 +302,12 @@ export default {
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
               if (!this.isUpdate) {
-                this.form = {name:'',repair_time:new Date().toISOString()};
+                if(this.value1){
+                  this.form = {name:'',repair_time:new Date().toISOString(),bad_phenomenon:this.form.bad_phenomenon,analysis:this.form.analysis,solution:this.form.solution};
+                }
+                else{
+                  this.form = {name:'',repair_time:new Date().toISOString()};
+                }
               }
               this.disabled=false
               this.updateVisible(false);
