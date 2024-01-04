@@ -197,7 +197,7 @@ export default {
         {
           prop: 'work_order',
           label: '单号',
-          width: 80,
+          width: 150,
           align: 'center',
           showOverflowTooltip: true,
         },
@@ -235,7 +235,7 @@ export default {
         {
           prop: 'work_hours',
           label: '工时',
-          minWidth: 100,
+          minWidth: 70,
           align: 'center',
           resizable: false,
         },
@@ -249,7 +249,7 @@ export default {
         {
           prop: 'item_number',
           label: '产品型号',
-          width: 70,
+          width: 120,
           align: 'center',
           showOverflowTooltip: true,
         },
