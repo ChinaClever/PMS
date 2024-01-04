@@ -126,3 +126,11 @@ class SupplierBatchAddView(PermissionRequired, View):
         result = services.SupplierBatchAdd(request)
         # 返回结果
         return result
+
+
+@method_decorator(check_login, name="dispatch")
+class SupplierPCBisRepeatView(PermissionRequired, View):
+    permission_required = ("sys:supplier:add",)
+    def get(self, request, PCB_code):
+        result = services.PCBisRepeat(PCB_code)
+        return result

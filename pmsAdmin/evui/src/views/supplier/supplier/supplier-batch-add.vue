@@ -7,8 +7,8 @@
         :rules="rules"
         label-width="140px"
         label-position="top">
-        <hr>
-<br>
+    <hr>
+    <br>
       <el-row :gutter="20">
         <el-col :span="6">
           <el-form-item
@@ -59,8 +59,8 @@
           </el-form-item>
         </el-col>
       </el-row>
-<hr>
-<br>
+    <hr>
+    <br>
       <el-row>
        <el-col :span="6">
         <el-form-item
@@ -74,10 +74,10 @@
               clearable/>
         </el-form-item>
        </el-col>
-       <el-col :span="6" :push="4">
-        <el-statistic title="已绑定的PCB个数" style="font-size: 28px;">
+       <el-col :span="4" :push="4">
+        <el-statistic title="已绑定的PCB个数" style="font-size: 28px;"  :value-style="{color:'#1890FF', fontSize:'48px'}">
             <template slot="formatter">
-              {{count_PCB}}
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{count_PCB}}
             </template>
         </el-statistic>
        </el-col>
@@ -129,7 +129,7 @@
        </el-col>
      </el-row>
      <el-form-item>
-      <el-button type="primary" @click="save" style="float: right;">提交</el-button>
+      <el-button type="primary" @click="clickSave" style="float: right;">提交</el-button>
      </el-form-item>
     </el-form>
 
@@ -156,28 +156,13 @@ export default {
           {validator: (rule, value, callback) => this.checkWorkOrderIsNull(rule, value, callback)},
           {required: false, message: '请输入单号', trigger: 'blur'},
         ],
-        customer: [
-          {required: false, message: '请输入客户', trigger: 'blur'}
-        ],
-        product_name: [
-          {required: false, message: '请输入产品', trigger: 'blur'}
-        ],
-        product_type: [
-          {required: false, message: '请输入产品类型', trigger: 'blur'}
-        ],
+      
         PCB_code: [
-          {validator: (rule, value, callback) => this.checkPCBCodeIsValid(rule, value, callback), trigger: 'change'},
-          {required: true, message: '请输入PCB编码', trigger: 'blur'}
+          {required: true, message: '请输入PCB编码', trigger: 'blur'},
+          {validator: (rule, value, callback) => this.checkPCBCodeIsValid(rule, value, callback), trigger: 'blur'},
+  
         ],
-        // part_code: [
-        //   {required: true, message: '请输入物料编码', trigger: 'blur'}
-        // ],
-        // supplier: [
-        //   {required: true, message: '请输入供应商', trigger: 'blur'}
-        // ],
-        // parts: [
-        //   {required: true, message: '请输入物料', trigger: 'blur'}
-        // ],
+        
         product_number: [
           {required: true, message: '请输入数量', trigger: 'blur'}
         ],
@@ -217,6 +202,7 @@ export default {
             this.loading = false;
             if (res.data.code === 0) {
               this.$message.success({ message: res.data.msg, duration: 3000 });
+              this.count_PCB += 1;
               // 页面数据重置
               this.dataTable = [{ part_code: '', supplier: '' , parts: '' }];
               this.form.PCB_code = this.PCB_code_temp
@@ -342,8 +328,13 @@ export default {
       const isPCB_code = value.startsWith("PCB");
       if(isPCB_code){
         //不能重复
-        
-        callback();
+        this.$http.get('/supplier/PCBisRepeat/'+value).then((res) => {
+          if (res.data.code === 0){
+            callback();
+          }else{
+            callback(new Error(res.data.msg)); 
+          }
+        }) 
       }else{
         callback(new Error('PCB编码格式错误,需以PCB开头')); 
       }
@@ -387,11 +378,23 @@ export default {
         }
       }else{
         // 扫到PCB码触发提交
-        this.dataTable.pop();
         this.PCB_code_temp = event.target.value;
-        this.save();
+        this.clickSave();
       }
     },
+
+    // 点击提交按钮触发
+    clickSave(){
+      this.dataTable.pop();
+      if ( this.dataTable.length === 0 ){
+        this.dataTable.push({ part_code: '', supplier: '', parts: '' });
+        const input = document.getElementById(`part_code_inputId_${this.dataTableIndex}`);
+        input.focus();  
+        this.$message.error({ message: "物料信息不能为空", duration: 3000});
+      }else{
+        this.save();
+      }
+    }
 
   },
 
@@ -427,7 +430,7 @@ export default {
 }
 
 ::v-deep .el-input__inner{
-  width: 380px !important;
+  width: auto !important;
   height: 54px !important;
   font-size: 24px;
   /* border: none !important;
