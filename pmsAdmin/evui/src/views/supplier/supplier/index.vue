@@ -54,6 +54,23 @@
         :columns="columns"
         :selection.sync="selection"
         height="calc(100vh - 315px)">
+        <!-- 测试步骤列 -->
+        <template slot="data" slot-scope="{row}">
+          <el-popover
+            placement="bottom"
+            width="500"
+            trigger="click">
+            <el-table 
+              :data="row.testStep" 
+              stripe
+              :max-height="300">
+              <el-table-column width="80" property="part_code" label="物料编码"></el-table-column>
+              <el-table-column width="340" property="supplier" label="供应商"></el-table-column>
+              <el-table-column width="80" property="part" label="物料"> </el-table-column>
+            </el-table>
+            <el-button slot="reference">查看详情</el-button>
+          </el-popover>
+        </template>
         <!-- 表头工具栏 -->
         <template slot="toolbar">         
           <el-button
@@ -217,7 +234,14 @@ export default {
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
-        }, {
+        },           {
+            prop: 'data',
+            label: '数据',
+            showOverflowTooltip: true,
+            minWidth: 200,
+            align: 'center',
+            slot: 'data'
+          },{
           prop: 'PCB_code',
           label: 'PCB编码',
           showOverflowTooltip: true,
