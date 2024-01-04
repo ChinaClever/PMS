@@ -150,8 +150,6 @@
               clearable/>
           </el-form-item>
         </el-col>
-          
-       
       </el-row>
       <br />
       <el-form-item label="问题:" prop="problems">
@@ -186,7 +184,7 @@
 import { mapGetters } from "vuex";
 
 export default {
-  name: 'InspectreportEdit',
+  name: 'StatisticEdit',
   props: {
     // 弹窗是否打开
     visible: Boolean,
@@ -348,6 +346,7 @@ export default {
           product_name : '',
           item_number: '',
           product_module:'',};
+        this.form.end_time = this.demo(this.getNowTimes());
         this.isUpdate = false;
         this.disabled = false;
       }
@@ -372,7 +371,7 @@ export default {
       this.$refs['form'].validate((valid,object) => {
         if (valid) {
           this.loading = true;
-          this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/inspectreport/update' : '/inspectreport/add', this.form).then(res => {
+          this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/statistic/update' : '/statistic/add', this.form).then(res => {
             this.loading = false;
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);

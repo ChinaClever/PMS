@@ -79,7 +79,7 @@
             icon="el-icon-plus"
             class="ele-btn-icon"
             @click="openEdit(null)"
-            v-if="permission.includes('sys:inspectreport:add')">添加
+            v-if="permission.includes('sys:statistic:add')">添加
           </el-button>
           <el-button
             size="small"
@@ -87,7 +87,7 @@
             icon="el-icon-delete"
             class="ele-btn-icon"
             @click="removeBatch"
-            v-if="permission.includes('sys:inspectreport:dall')">删除
+            v-if="permission.includes('sys:statistic:dall')">删除
           </el-button>
            <!-- 导出按钮 -->
           <el-button
@@ -105,7 +105,7 @@
             :underline="false"
             icon="el-icon-edit"
             @click="openEdit(row)"
-            v-if="permission.includes('sys:inspectreport:update')">修改
+            v-if="permission.includes('sys:statistic:update')">修改
           </el-link>
           <el-popconfirm
             class="ele-action"
@@ -116,7 +116,7 @@
               slot="reference"
               :underline="false"
               icon="el-icon-delete"
-              v-if="permission.includes('sys:inspectreport:delete')">删除
+              v-if="permission.includes('sys:statistic:delete')">删除
             </el-link>
           </el-popconfirm>
         </template>
@@ -151,7 +151,7 @@
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
-    <inspectreport-edit
+    <statistic-edit
       :data="current"
       :visible.sync="showEdit"
       @done="reload"/>
@@ -160,20 +160,20 @@
 
 <script>
 import { mapGetters } from "vuex";
-import InspectreportEdit from './inspectreport-edit';
+import StatisticEdit from './statistic-edit';
 import XLSX from 'xlsx'
 import { saveAs } from 'file-saver';
 
 export default {
-  name: 'inspectreport',
-  components: {InspectreportEdit},
+  name: 'statistic',
+  components: {StatisticEdit},
   computed: {
     ...mapGetters(["permission"]),
   },
   data() {
     return {
       // 表格数据接口
-      url: '/inspectreport/list',
+      url: '/statistic/list',
       selectDateRange: '',
       // 表格列配置
       columns: [
@@ -436,7 +436,7 @@ export default {
       } else {
         // 编辑
         this.loading = true;
-        this.$http.get('/inspectreport/detail/' + row.id).then((res) => {
+        this.$http.get('/statistic/detail/' + row.id).then((res) => {
           this.loading = false;
           if (res.data.code === 0) {
             this.current = Object.assign({}, res.data.data);
@@ -453,7 +453,7 @@ export default {
     /* 删除 */
     remove(row) {
       const loading = this.$loading({lock: true});
-      this.$http.delete('/inspectreport/delete/' + row.id).then(res => {
+      this.$http.delete('/statistic/delete/' + row.id).then(res => {
         loading.close();
         if (res.data.code === 0) {
           this.$message.success(res.data.msg);
@@ -476,7 +476,7 @@ export default {
         type: 'warning'
       }).then(() => {
         const loading = this.$loading({lock: true});
-        this.$http.delete('/inspectreport/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
+        this.$http.delete('/statistic/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -536,7 +536,6 @@ export default {
         }
         return obj;
       });
-
       this.selection = this.selection.map(obj => {
         if (obj.product_module === 2) {
           return { ...obj, product_module: '模块' };
@@ -545,7 +544,6 @@ export default {
         }
         return obj;
       });
-
       
 
       // 获取字段名称（中文）
@@ -560,8 +558,6 @@ export default {
           .slice(1, -1) // 排除第一列和最后一列
           .map(column => row[column.prop])
       );
-      console.log(this.selection)
-      console.log(data)
       const worksheet = XLSX.utils.json_to_sheet(data);
       // 将字段名称添加到 Excel 文件中
       XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: 'A1' });
@@ -576,7 +572,7 @@ export default {
       const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
       const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
       // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
-      const fileName = '质检报表.xlsx';
+      const fileName = '检验统计报表.xlsx';
       
       const currentDate = new Date();
       const year = currentDate.getFullYear();

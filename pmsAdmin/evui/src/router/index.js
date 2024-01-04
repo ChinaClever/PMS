@@ -23,6 +23,11 @@ const routes = [
     component: () => import('@/views/supplier/supplier/supplier-batch-add'),
     meta: {title: '物料绑定'}
   },
+  {
+    path: '/packing/batchadd',
+    component: () => import('@/views/packing/packing/packing-batch-add'),
+    meta: {title: '打包记录绑定'}
+  },
   // {
   //   path: '/forget',
   //   component: () => import('@/views/login/forget'),

@@ -21,24 +21,23 @@
 # | 法律所允许的合法合规的软件产品研发，详细声明内容请阅读《框架免责声明》附件；
 # +----------------------------------------------------------------------
 
-from django.urls import path
+from django.urls import path  # 导入路径相关配置
 
-from application.supplier import views
+from application.followup import views
 
-# 字典模块路由
+# 意见反馈模块路由
 urlpatterns = [
-    # 查询字典分页列表
-    path('list', views.DictListView.as_view()),
-    # 查询字典详情
-    path('detail/<int:dict_id>', views.DictDetailView.as_view()),
-    # 添加字典
-    path('add', views.DictAddView.as_view()),
-    # 更新字典
-    path('update', views.DictUpdateView.as_view()),
-    # 删除字典
-    path('delete/<str:dict_id>', views.DictDeleteView.as_view()),
+    # 查询质检报表分页列表
+    path('list', views.FollowupListView.as_view()),
+    # 添加质检报表
+    path('add', views.FollowupAddView.as_view()),
+    # 查询质检报表详情
+    path('detail/<int:Followup_id>', views.FollowupDetailView.as_view()),
+    # 更新质检报表
+    path('update', views.FollowupUpdateView.as_view()),
+    # 删除质检报表
+    path('delete/<str:Followup_id>', views.FollowupDeleteView.as_view()),
+    # 查询统计质检报表
+    path('listOfTotal', views.FollowupListOfTotalView.as_view()),
 
-    path('batch/add', views.SupplierBatchAddView.as_view()),
-
-    path('PCBisRepeat/<str:PCB_code>', views.SupplierPCBisRepeatView.as_view()),
 ]
