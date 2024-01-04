@@ -86,9 +86,7 @@
             placeholder="请输入产品名称"
             clearable/>
         </el-form-item>
-        </el-col>
-        <el-col :sm="12">
-          <el-form-item 
+        <el-form-item 
             label="成品/模块:" 
             ref="product_module"
             prop="product_module">
@@ -99,59 +97,69 @@
               <el-radio :label="2">模块</el-radio>
             </el-radio-group>
           </el-form-item>
+        </el-col>
+        <el-col :sm="12">
           <el-form-item
-            label="检验数量:"
-            ref="examine_an_amount"
-            prop="examine_an_amount">
+            label="ERP目标/拉/小时"
+            ref="qty_obj_hour"
+            prop="qty_obj_hour">
             <el-input
               :maxlength="20"
-              v-model="form.examine_an_amount"
-              placeholder="请输入检验数量"
+              v-model="form.qty_obj_hour"
+              placeholder="请输入ERP目标数量"
               clearable/>
           </el-form-item>
           <el-form-item
-            label="检验不良数量:"
-            ref="examine_a_bad_amount"
-            prop="examine_a_bad_amount">
+            label="实际产出/拉/小时:"
+            ref="qty_prod_hour"
+            prop="qty_prod_hour">
             <el-input
               :maxlength="20"
-              v-model="form.examine_a_bad_amount"
-              placeholder="请输入检验不良数量"
+              v-model="form.qty_prod_hour"
+              placeholder="请输入实际产出数量"
               clearable/>
           </el-form-item>
           <el-form-item
-            label="检验数量累计:"
-            ref="examine_amount_total_amount"
-            prop="examine_amount_total_amount">
+            label="ERP目标累计:"
+            ref="cumul_qty_obj"
+            prop="cumul_qty_obj">
             <el-input
               :maxlength="20"
-              v-model="form.examine_amount_total_amount"
-              placeholder="请输入检验数量累计"
+              v-model="form.cumul_qty_obj"
+              placeholder="请输入ERP目标累计"
               clearable/>
           </el-form-item>
           <el-form-item
-            label="检验不良累计:"
-            ref="examine_bad_total_amount"
-            prop="examine_bad_total_amount">
+            label="实际累计:"
+            ref="cumul_qty_prod"
+            prop="cumul_qty_prod">
             <el-input
               :maxlength="20"
-              v-model="form.examine_bad_total_amount"
-              placeholder="请输入检验不良累计"
+              v-model="form.cumul_qty_prod"
+              placeholder="请输入实际累计"
               clearable/>
           </el-form-item>
           <el-form-item
-            label="ERP目标合格率:"
-            ref="target_pass_rate"
-            prop="target_pass_rate">
+            label="损耗工时:"
+            ref="loss_time"
+            prop="loss_time">
             <el-input
               :maxlength="20"
-              v-model="form.target_pass_rate"
-              placeholder="不填默认95%"
+              v-model="form.loss_time"
+              placeholder="请输入损耗工时"
+              clearable/>
+          </el-form-item>
+          <el-form-item
+            label="换线时间:"
+            ref="changeover_time"
+            prop="changeover_time">
+            <el-input
+              :maxlength="20"
+              v-model="form.changeover_time"
+              placeholder="请输入损耗工时"
               clearable/>
           </el-form-item>
         </el-col>
-          
-       
       </el-row>
       <br />
       <el-form-item label="问题:" prop="problems">
@@ -165,6 +173,14 @@
       <el-form-item label="行动:" prop="actions">
                   <el-input
                     v-model="form.actions"
+                    :rows="3"
+                    maxlength="200"
+                    show-word-limit
+                    type="textarea"/>
+        </el-form-item>
+      <el-form-item label="备注:" prop="remark">
+                  <el-input
+                    v-model="form.remark"
                     :rows="3"
                     maxlength="200"
                     show-word-limit
@@ -186,7 +202,7 @@
 import { mapGetters } from "vuex";
 
 export default {
-  name: 'InspectreportEdit',
+  name: 'FollowupEdit',
   props: {
     // 弹窗是否打开
     visible: Boolean,
@@ -252,10 +268,10 @@ export default {
         item_number: [
           {required: true, message: '请输入产品型号', trigger: 'blur'}
         ],
-        examine_an_amount:[
+        qty_obj_hour:[
           {
             required: true, 
-            message: '请输入检验数量', 
+            message: '请输入ERP目标', 
             trigger: 'blur'
           },
           {
@@ -270,8 +286,8 @@ export default {
             trigger: 'blur'
           }
         ],
-        examine_a_bad_amount:[
-          {required: true, message: '请输入检验不良数量', trigger: 'blur'},
+        qty_prod_hour:[
+          {required: true, message: '请输入实际产出', trigger: 'blur'},
           {
             validator: (rule, value, callback) => {
               const intValue = Number(value);
@@ -284,8 +300,8 @@ export default {
             trigger: 'blur'
           }
         ],
-        examine_amount_total_amount:[
-          {required: true, message: '请输入检验数量累计', trigger: 'blur'},
+        cumul_qty_obj:[
+          {required: true, message: '请输入ERP目标累计', trigger: 'blur'},
           {
             validator: (rule, value, callback) => {
               const intValue = Number(value);
@@ -298,8 +314,8 @@ export default {
             trigger: 'blur'
           }
         ],
-        examine_bad_total_amount:[
-          {required: true, message: '请输入检验不良累计', trigger: 'blur'},
+        cumul_qty_prod:[
+          {required: true, message: '请输入实际累计', trigger: 'blur'},
           {
             validator: (rule, value, callback) => {
               const intValue = Number(value);
@@ -312,7 +328,26 @@ export default {
             trigger: 'blur'
           }
         ],
-        target_pass_rate:[
+        loss_time:[
+        {required: true, message: '请输入损耗工时', trigger: 'blur'},
+          {
+            validator: (rule, value, callback) => {
+              const intValue = Number(value);
+              if (!intValue) {
+                callback();
+                return;
+              }
+              if (!Number.isInteger(intValue) || intValue < 0) {
+                callback(new Error('数量必须为大于等于0的整数'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
+        ],
+        changeover_time:[
+        {required: true, message: '请输入换线时间', trigger: 'blur'},
           {
             validator: (rule, value, callback) => {
               const intValue = Number(value);
@@ -348,13 +383,13 @@ export default {
           product_name : '',
           item_number: '',
           product_module:'',};
+        this.form.end_time = this.demo(this.getNowTimes());
         this.isUpdate = false;
         this.disabled = false;
       }
     },
     visible(){
-      if (this.data && this.data.id) {
-      } else {
+      if (!(this.data && this.data.id)) {
         this.form = {
           product_name : '',
           item_number: '',
@@ -373,7 +408,7 @@ export default {
       this.$refs['form'].validate((valid,object) => {
         if (valid) {
           this.loading = true;
-          this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/inspectreport/update' : '/inspectreport/add', this.form).then(res => {
+          this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/followup/update' : '/followup/add', this.form).then(res => {
             this.loading = false;
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
