@@ -52,6 +52,14 @@
             </el-button>
             <el-button
               size="small"
+              type="primary"
+              icon="el-icon-plus"
+              class="ele-btn-icon"
+              @click="openBatchAddPage"
+              v-if="permission.includes('sys:packing:add')">批量添加
+            </el-button>
+            <el-button
+              size="small"
               type="danger"
               icon="el-icon-delete"
               class="ele-btn-icon"
@@ -415,6 +423,11 @@
         saveAs(blob, newFileName); 
         this.selection = temp;
       },
+
+      // 跳转批量添加界面
+      openBatchAddPage(){
+        this.$router.push("/packing/batchadd")
+      }
 
     }
   }

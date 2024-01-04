@@ -506,6 +506,8 @@ export default {
       this.selection = temp;
       
       },
+
+      // 跳转批量添加界面
       openBatchAddPage(){
         this.$router.push("/supplier/batchadd")
       }
