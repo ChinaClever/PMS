@@ -86,12 +86,25 @@ def DictList(request):#查询设置，从前端返回order_id字段，再到数�
             
             result.append(data)'''
         for item in dict_list:
+            partsArray = item.parts.split(',');
+            partCodeArray = item.part_code.split(',');
+            supplierArray = item.supplier.split(',');
+
+            myData = []#物料信息
+            for i in range(len(partsArray)):
+                myData.append({
+                    'parts': partsArray[i],
+                    'part_code': partCodeArray[i],
+                    'supplier': supplierArray[i]
+                })
+
             data = {
                 'id': item.id,
                 'work_order': item.work_order,
                 'customer': item.customer,
                 'product_name': item.product_name,
                 'product_type': item.product_type,
+                'myData': myData,
                 'PCB_code': item.PCB_code,
                 'part_code': item.part_code,
                 'supplier': item.supplier,

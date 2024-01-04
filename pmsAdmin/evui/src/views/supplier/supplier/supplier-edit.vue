@@ -58,6 +58,38 @@
           clearable/>
       </el-form-item>
       <el-form-item
+            label="PCB编码:"
+            prop="PCB_code">
+            <el-input
+              id="PCB_code_inputId"
+              v-model="form.PCB_code"
+              placeholder="请输入PCB编码"
+              @keyup.enter.native="handlePCBCodeEnterKey"
+              clearable/>
+        </el-form-item>
+      <el-row>
+      <el-table :data="dataTable" editable>
+        <el-table-column prop="part_code" label="物料编码">
+          <template slot-scope="scope">
+            <el-input 
+              :id="`part_code_inputId_` + scope.$index"
+              v-model="scope.row.part_code"
+              @keyup.enter.native="handlePartCodeEnterKey"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column prop="supplier" label="供应商">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.supplier"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column prop="parts" label="物料">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.parts"></el-input>
+          </template>
+        </el-table-column>
+      </el-table>
+     </el-row>
+      <el-form-item
         label="供应商:"
         prop="supplier">
         <el-input
@@ -146,6 +178,10 @@ export default {
         ],
         product_type: [
           {required: false, message: '请输入产品类型', trigger: 'blur'}
+        ],
+        PCB_code: [
+          {validator: (rule, value, callback) => this.checkPCBCodeIsValid(rule, value, callback), trigger: 'change'},
+          {required: true, message: '请输入PCB编码', trigger: 'blur'}
         ],
         supplier: [
           {required: true, message: '请输入供应商', trigger: 'blur'}
@@ -294,6 +330,31 @@ export default {
         this.form.product_type  = ''
       }
       callback();
+    },
+    // PCB_code输入框检测到回车触发
+    handlePCBCodeEnterKey(){
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          // 焦点设在第一行物料编码输入框
+          const input = document.getElementById(`part_code_inputId_${this.dataTableIndex}`);
+          input.focus();
+        }else{
+          this.form.PCB_code = '';
+        }
+      });
+  
+    },
+    // 验证PCB_code是否合法
+    checkPCBCodeIsValid(rule, value, callback){
+      const isPCB_code = value.startsWith("PCB");
+      if(isPCB_code){
+        //不能重复
+        
+        callback();
+      }else{
+        callback(new Error('PCB编码格式错误,需以PCB开头')); 
+      }
+      
     },
   },
   mounted() {
