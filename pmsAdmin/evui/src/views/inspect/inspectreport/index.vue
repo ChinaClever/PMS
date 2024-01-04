@@ -109,7 +109,7 @@
           </el-link>
           <el-popconfirm
             class="ele-action"
-            title="确定要删除此通知吗？"
+            title="确定要删除此数据吗？"
             @confirm="remove(row)">
             <el-link
               type="danger"
@@ -132,20 +132,20 @@
           <el-popover
             placement="top-start"
             title="问题"
-            width="1000"
+            width="auto"
             trigger="click"
             :content=row.problems>
-            <el-button slot="reference">{{ row.problems }}</el-button>
+            <el-button slot="reference">点击查看</el-button>
           </el-popover>
         </template>
         <template slot="expand_2" slot-scope="{row}" v-if="row.actions">
           <el-popover
             placement="top-start"
             title="行动"
-            width="1000"
+            width="auto"
             trigger="click"
             :content=row.actions>
-            <el-button slot="reference">{{ row.actions }}</el-button>
+            <el-button slot="reference">点击查看</el-button>
           </el-popover>
         </template>
       </ele-pro-table>
