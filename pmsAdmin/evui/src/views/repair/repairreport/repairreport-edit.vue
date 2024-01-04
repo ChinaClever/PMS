@@ -16,6 +16,7 @@
         <el-col :span="10">
           <el-form-item
             label="单号:"
+            ref="work_order"
             prop="work_order">
             <el-autocomplete
             :disabled="isUpdate"
@@ -30,6 +31,7 @@
           </el-form-item>
           <el-form-item
             label="不良数量:"
+            ref="bad_number"
             prop="bad_number">
             <el-input
               :maxlength="20"
@@ -48,6 +50,7 @@
           </el-form-item>
           <el-form-item
             label="PCB编码:"
+            ref="PCB_code"
             prop="PCB_code">
             <el-input
               :maxlength="20"
@@ -57,7 +60,9 @@
           </el-form-item>
         </el-col>
         <el-col :span="10">
-          <el-form-item label="产品名称" prop="name">
+          <el-form-item label="产品名称" 
+            ref="name"
+            prop="name">
             <el-autocomplete
               class="inline-input"
               v-model="form.name"
@@ -69,6 +74,7 @@
           </el-form-item>
           <el-form-item
             label="维修数量:"
+            ref="repair_number"
             prop="repair_number">
             <el-input
               :maxlength="20"
@@ -78,6 +84,7 @@
           </el-form-item>
           <el-form-item
             label="工时:"
+            ref="work_hours"
             prop="work_hours">
             <el-input
               :maxlength="20"
@@ -85,7 +92,12 @@
               placeholder="请输入工时"
               clearable/>
           </el-form-item>
-          
+          <div style="margin-left: 50px;">
+            <el-switch
+              v-model="value1"
+              inactive-text="连续输入"
+            ></el-switch>
+          </div>
         </el-col>
       </el-row>
       <el-row :gutter="15" class="row-spacing" >
@@ -242,7 +254,10 @@ export default {
       analysislist:[],
       solutionlist:[],
       namelist:[],
-      disabled:false
+      //禁用
+      disabled:false,
+      //是否连续输入
+      value1: true
     };
     
   },
@@ -277,7 +292,7 @@ export default {
     },
     /* 保存编辑 */
     save() {
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate((valid,object) => {
         if (valid) {
           this.loading = true;
           if(this.form.repair_time){
@@ -287,7 +302,12 @@ export default {
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
               if (!this.isUpdate) {
-                this.form = {name:'',repair_time:new Date().toISOString()};
+                if(this.value1){
+                  this.form = {name:'',repair_time:new Date().toISOString(),bad_phenomenon:this.form.bad_phenomenon,analysis:this.form.analysis,solution:this.form.solution};
+                }
+                else{
+                  this.form = {name:'',repair_time:new Date().toISOString()};
+                }
               }
               this.disabled=false
               this.updateVisible(false);
@@ -300,6 +320,15 @@ export default {
             this.$message.error(e.message);
           });
         } else {
+          let dom = this.$refs[Object.keys(object)[0]];
+          if (Object.prototype.toString.call(dom) !== "[object Object]") {
+            dom = dom[0];
+          }
+          // 定位代码
+          dom.$el.scrollIntoView({
+            block: "center",
+            behavior: "smooth",
+          });
           return false;
         }
       });
