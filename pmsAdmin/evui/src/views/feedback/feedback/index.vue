@@ -130,7 +130,7 @@
           <el-popover
             placement="top-start"
             title="内容"
-            width="auto"
+            width="1000"
             trigger="click"
             :content=row.content>
             <div v-html="row.content"></div>
@@ -141,7 +141,7 @@
           <el-popover
             placement="top-start"
             title="反馈"
-            width="auto"
+            width="1000"
             trigger="click"
             :content=row.feedback>
             <div v-html="row.feedback"></div>
