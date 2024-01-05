@@ -273,6 +273,7 @@ def TestDataUpdate(request):
         testStep = dict_data.get('testStep')
         # 根据ID查询
         testdata = Testdata.objects.only('id').filter(id=testdata_id, is_delete=False).first()
+
         # 查询结果判断
         if not testdata:
             return R.failed("数据不存在")
@@ -291,10 +292,12 @@ def TestDataUpdate(request):
         testdata.testTime = testTime
         testdata.update_user = uid(request)
         testdata.update_time = datetime.now()
+
+
         # 更新数据
         testdata.save()
         # 更新testdata_teststep表
-        TestDataTestStep.objects.filter(debugdata_id=testdata_id).delete()
+        TestDataTestStep.objects.filter(testdata_id=testdata_id).delete()
         for item in testStep:
             TestDataTestStep.objects.create(
             testdata_id=testdata.id,
@@ -306,6 +309,7 @@ def TestDataUpdate(request):
         return R.ok(msg="更新成功")
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
+        print(e)
         return R.failed("参数错误")
 
 
