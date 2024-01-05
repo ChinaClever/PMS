@@ -86,9 +86,9 @@ def DictList(request):#查询设置，从前端返回order_id字段，再到数�
             
             result.append(data)'''
         for item in dict_list:
-            partsArray = item.parts.split(',');
-            partCodeArray = item.part_code.split(',');
-            supplierArray = item.supplier.split(',');
+            partsArray = item.parts.split(',')
+            partCodeArray = item.part_code.split(',')
+            supplierArray = item.supplier.split(',')
 
             myData = []#物料信息
             for i in range(len(partsArray)):
@@ -136,12 +136,23 @@ def DictDetail(dict_id):
         'sort': dict.sort,
         'note': dict.note,
     }'''
+    partsArray = dict.parts.split(',');
+    partCodeArray = dict.part_code.split(',');
+    supplierArray = dict.supplier.split(',');
+    myData = []  # 物料信息
+    for i in range(len(partsArray)):
+        myData.append({
+            'parts': partsArray[i],
+            'part_code': partCodeArray[i],
+            'supplier': supplierArray[i]
+        })
     data = {
         'id': dict.id,
         'work_order': dict.work_order,
         'customer': dict.customer,
         'product_name': dict.product_name,
         'product_type': dict.product_type,
+        'dataTable': myData,
         'PCB_code': dict.PCB_code,
         'part_code': dict.part_code,
         'supplier': dict.supplier,

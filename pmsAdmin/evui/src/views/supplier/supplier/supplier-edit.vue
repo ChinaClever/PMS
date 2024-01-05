@@ -3,7 +3,7 @@
   <el-dialog
     :title="isUpdate?'修改':'添加'"
     :visible="visible"
-    width="460px"
+    width="600px"
     :destroy-on-close="true"
     :lock-scroll="false"
     @update:visible="updateVisible">
@@ -88,25 +88,9 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-button @click="addInput">添加输入框</el-button>
+        <el-button v-if="this.dataTable.length > 0" @click="removeInput">删除最后一个输入框</el-button>
      </el-row>
-      <el-form-item
-        label="供应商:"
-        prop="supplier">
-        <el-input
-          :maxlength="20"
-          v-model="form.supplier"
-          placeholder="请输入供应商"
-          clearable/>
-      </el-form-item>
-      <el-form-item
-        label="物料:"
-        prop="parts">
-        <el-input
-          :maxlength="20"
-          v-model="form.parts"
-          placeholder="请输入物料"
-          clearable/>
-      </el-form-item>
       <el-form-item
         label="数量:"
         prop="product_number">
@@ -153,8 +137,13 @@ export default {
       form: Object.assign({
         status: 1,
         type : 1,
-        product_name:''
+        product_name:'',
+        dataTable : [],
       }, this.data),
+      // 物料表格
+      dataTable:[
+        { part_code: '', supplier: '' , parts: '' }
+      ],
       // 表单验证规则
       rules: {
         /*name: [
@@ -200,13 +189,20 @@ export default {
       loading: false,
       // 是否是修改
       isUpdate: false,
-      disabled:false
+      disabled:false,
+      // 物料表格索引
+      dataTableIndex: 0,
+      // 暂存PCB码
+      PCB_code_temp: '',
+      // 暂存物料编码 用于检验重复扫码
+      part_code_temp: [],
     };
   },
   watch: {
     data() {
       if (this.data && this.data.id) {
         this.form = Object.assign({}, this.data);
+        this.dataTable=this.data.dataTable
         this.isUpdate = true;
         this.disabled=true;
       } else {
@@ -221,6 +217,12 @@ export default {
     save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
+          const partCodeString = this.dataTable.map(item => item.part_code).join(',');
+          const supplierString = this.dataTable.map(item => item.supplier).join(',');
+          const partsString = this.dataTable.map(item => item.parts).join(',');
+          this.form.part_code = partCodeString;
+          this.form.supplier = supplierString;
+          this.form.parts = partsString;
           this.loading = true;
           this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/supplier/update' : '/supplier/add', this.form).then(res => {
             this.loading = false;
@@ -228,6 +230,9 @@ export default {
               this.$message.success(res.data.msg);
               if (!this.isUpdate) {
                 this.form = {};
+                this.dataTable = [{ part_code: '', supplier: '' , parts: '' }];
+                this.dataTableIndex = 0;
+                this.part_code_temp = [];
               }
               this.disabled=false
               this.updateVisible(false);
@@ -285,6 +290,12 @@ export default {
              this.form.product_type  = shipmentData.shape
              this.disabled=true;
             } 
+            // 焦点在PCB输入框
+            if(this.form.PCB_code){
+              this.form.PCB_code = ''; 
+            }    
+            const input = document.getElementById('PCB_code_inputId');
+            input.focus();
           })
       },
 
@@ -301,6 +312,7 @@ export default {
         this.disabled=false;
 
       },
+      // 单号检测到回车触发
       handleEnterKey(event){
       console.log("进入")
       this.form.work_order = event.target.value.split("+")[0];
@@ -356,6 +368,73 @@ export default {
       }
       
     },
+    // 物料编码输入框检测到回车触发
+    handlePartCodeEnterKey(event){
+      const isPCB_code = event.target.value.startsWith("PCB");
+      if(!isPCB_code){
+        // 验证字符串中是否有且仅有两个加号
+        const regex = /^[^+]*\+[^+]*\+[^+]*$/;
+        const hasTwoPlus = regex.test(event.target.value);
+        if(hasTwoPlus){
+          // 验证没重复扫码
+          if (!this.part_code_temp.includes(event.target.value)) {
+            const parts = event.target.value.split("+");
+            this.dataTable[this.dataTableIndex].part_code = parts[0];
+            this.dataTable[this.dataTableIndex].supplier = parts[1];
+            this.dataTable[this.dataTableIndex].parts = parts[2];
+            this.part_code_temp.push(event.target.value)
+            // 焦点设在下一行物料编码输入框
+            this.dataTableIndex += 1;
+            this.dataTable.push({ part_code: '', supplier: '', parts: '' });       
+            const self = this; // 保存this.dataTableIndex的引用
+            setTimeout(function() {
+              const nextInput = document.getElementById(`part_code_inputId_${self.dataTableIndex}`);
+              if(nextInput){
+                nextInput.focus();
+              }
+            }, 100); // 添加100毫秒的延迟
+          }else{
+            this.dataTable.pop();
+            this.dataTable.push({ part_code: '', supplier: '', parts: '' });  
+            this.$message.error({ message: "重复扫码", duration: 3000,});
+          }
+        }else{
+          this.dataTable.pop();
+          this.dataTable.push({ part_code: '', supplier: '', parts: '' });  
+          this.$message.error({ message: "物料编码格式错误", duration: 3000});
+        }
+      }else{
+        // 扫到PCB码触发提交
+        this.PCB_code_temp = event.target.value;
+        this.clickSave();
+      }
+    },
+    // 点击提交按钮触发
+    clickSave(){
+      this.dataTable.pop();
+      if ( this.dataTable.length === 0 ){
+        this.dataTable.push({ part_code: '', supplier: '', parts: '' });
+        const input = document.getElementById(`part_code_inputId_${this.dataTableIndex}`);
+        input.focus();  
+        this.$message.error({ message: "物料信息不能为空", duration: 3000});
+      }else{
+        this.save();
+      }
+    },
+    addInput() {
+      this.dataTable.push(
+        {
+          part_code: '', 
+          supplier: '', 
+          parts: ''
+        });
+    },
+    removeInput() {
+      this.dataTable.pop();
+      if (this.dataTable.length === 0) {
+        this.dataTable.push({ part_code: '', supplier: '', parts: '' }); 
+      } 
+    }
   },
   mounted() {
     this.loadAll();

@@ -90,6 +90,20 @@ class DictForm(forms.ModelForm):
             'max_length': '产品类型长度不得超过150个字符',
         }
     )
+    PCB_code = forms.CharField(
+        max_length=150,
+        error_messages={
+            'required': 'PCB_code不能为空',
+            'max_length': 'PCB_code长度不得超过150个字符',
+        }
+    )
+    part_code = forms.CharField(
+        max_length=150,
+        error_messages={
+            'required': 'part_code不能为空',
+            'max_length': 'part_code长度不得超过150个字符',
+        }
+    )
     supplier = forms.CharField(
         max_length=150,
         error_messages={
@@ -124,4 +138,4 @@ class DictForm(forms.ModelForm):
         model = models.Dict
         # 指定部分字段验证
         #fields = ['name', 'code', 'sort', 'note']
-        fields = ['work_order', 'customer', 'product_name', 'product_type', 'supplier', 'parts','product_number','notes']
+        fields = ['work_order', 'customer', 'product_name', 'product_type', 'supplier', 'parts','product_number','notes','PCB_code','part_code']
