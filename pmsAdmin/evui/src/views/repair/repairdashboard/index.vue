@@ -399,7 +399,7 @@
   background-color:#072e7d;  /* 背景透明*/
   border: 0px;
   color: white;  /* 修改字体颜色*/
-  font-size: 10px;
+  font-size: 15px;
   height: 5px;
 
 }
