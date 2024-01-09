@@ -258,6 +258,13 @@
             align: 'center',
           },
           {
+            prop: 'PCB_Code',
+            label: 'PCB编码',
+            showOverflowTooltip: true,
+            minWidth: 120,
+            align: 'center',
+          },
+          {
             columnKey: 'action',
             label: '操作',
             width: 150,

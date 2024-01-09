@@ -208,6 +208,6 @@ def SNisRepeat(goods_SN):
     if packing:
         return R.failed("SN码" + goods_SN + "重复")
     elif not testdata:
-        return R.failed("SN码" + goods_SN + "未在测试数据内绑定")
+        return R.ok(code=2, msg="SN码" + goods_SN + "未在测试数据内绑定")
     else:
         return R.ok(msg="验证通过")
