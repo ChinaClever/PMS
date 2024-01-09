@@ -11,4 +11,6 @@ urlpatterns = [
     path('update', views.PackingUpdateView.as_view()),
 
     path('delete/<str:packing_id>', views.PackingDeleteView.as_view()),
+
+    path('SNisRepeat/<str:goods_SN>', views.PackingSNisRepeatView.as_view()),
 ]
