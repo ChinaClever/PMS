@@ -54,19 +54,19 @@
         :columns="columns"
         :selection.sync="selection"
         height="calc(100vh - 315px)">
-        <!-- 测试步骤列 -->
-        <template slot="data" slot-scope="{row}">
+        <!-- 数据集合 -->
+        <template slot="myData" slot-scope="{row}">
           <el-popover
             placement="bottom"
             width="500"
             trigger="click">
             <el-table 
-              :data="row.testStep" 
+              :data="row.myData" 
               stripe
               :max-height="300">
-              <el-table-column width="80" property="part_code" label="物料编码"></el-table-column>
-              <el-table-column width="340" property="supplier" label="供应商"></el-table-column>
-              <el-table-column width="80" property="part" label="物料"> </el-table-column>
+              <el-table-column width="170" property="part_code" label="物料编码"></el-table-column>
+              <el-table-column width="170" property="supplier" label="供应商"></el-table-column>
+              <el-table-column width="160" property="parts" label="物料"> </el-table-column>
             </el-table>
             <el-button slot="reference">查看详情</el-button>
           </el-popover>
@@ -197,7 +197,6 @@ export default {
           showOverflowTooltip: true,
           fixed: "left"
         },
-
         {
           prop: 'work_order',
           label: '单号',
@@ -234,38 +233,22 @@ export default {
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
-        },           {
-            prop: 'data',
-            label: '数据',
-            showOverflowTooltip: true,
-            minWidth: 200,
-            align: 'center',
-            slot: 'data'
-          },{
+        },
+        {
           prop: 'PCB_code',
           label: 'PCB编码',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
-        }, {
-          prop: 'part_code',
-          label: '物料编码',
+        }, 
+        {
+          prop: 'myData',
+          label: '物料信息',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
-        }, {
-          prop: 'supplier',
-          label: '供应商',
-          showOverflowTooltip: true,
-          minWidth: 200,
-          align: 'center',
-        }, {
-          prop: 'parts',
-          label: '物料',
-          showOverflowTooltip: true,
-          minWidth: 200,
-          align: 'center',
-        },
+          slot: 'myData'
+        }, 
         {
           prop: 'product_number',
           label: '数量',

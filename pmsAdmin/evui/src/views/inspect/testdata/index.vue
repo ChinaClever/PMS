@@ -51,9 +51,9 @@
               :data="row.testStep" 
               stripe
               :max-height="300">
-              <el-table-column width="80" property="no" label="序号"></el-table-column>
-              <el-table-column width="340" property="name" label="名称"></el-table-column>
-              <el-table-column width="80" property="result" label="结果">
+              <el-table-column width="170" property="no" label="序号"></el-table-column>
+              <el-table-column width="170" property="name" label="名称"></el-table-column>
+              <el-table-column width="160" property="result" label="结果">
                  <template slot-scope="scope">
                   <el-tag v-if="scope.row.result === 1" type="success" size="small">通过</el-tag>
                   <el-tag v-if="scope.row.result === 0" type="danger" size="small">失败</el-tag>

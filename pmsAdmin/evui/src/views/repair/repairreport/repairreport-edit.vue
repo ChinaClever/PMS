@@ -273,6 +273,11 @@ export default {
         this.disabled = false;
       }
     },
+    visibel(){
+      if (!(this.data && this.data.id)) {
+        this.form = {repair_time:new Date().toISOString()};
+      }
+    }
       
   },
   computed: {
