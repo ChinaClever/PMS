@@ -398,7 +398,7 @@ export default {
             this.$message.info({ message: '扫码下一个自动计算工时并保存', duration: 3000 });
             this.isFirstSave = false;
           }else{
-            this.$message.error({ message: `SN码:${this.form.goods_SN}重复`, duration: 3000 });
+            // this.$message.error({ message: `SN码:${this.form.goods_SN}重复`, duration: 3000 });
             this.form.goods_SN = '';
           }
         }).catch((error) => {
@@ -424,7 +424,7 @@ export default {
             this.form.goods_SN = event.target.value.replace(this.goods_SN_temp,'');
             this.goods_SN_temp = this.form.goods_SN;
           }else{
-            this.$message.error({ message: `SN码:${new_goods_SN}重复`, duration: 3000 });
+            // this.$message.error({ message: `SN码:${new_goods_SN}重复`, duration: 3000 });
             this.form.goods_SN = this.goods_SN_temp;
           }
         }).catch((error) => {
@@ -485,9 +485,10 @@ export default {
     checkGoodsSNIsValid(goods_SN) {
       return new Promise((resolve, reject) => {
         this.$http.get('/packing/SNisRepeat/' + goods_SN).then((res) => {
-          if (res.data.code === 0) {
+          if (res.data.code === 0) {      
             resolve(true);
           } else {
+            this.$message.error({ message: res.data.msg, duration: 3000 });
             resolve(false);
           }
         }).catch((error) => {

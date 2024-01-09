@@ -5,6 +5,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage, Empt
 from django.db import transaction
 from django.db.models import Q
 from application.packing.models import Packing
+from application.testdata.models import Testdata
 from constant.constants import PAGE_LIMIT
 from utils import R
 from utils.utils import uid
@@ -203,7 +204,10 @@ def PackingDelete(packing_id):
 
 def SNisRepeat(goods_SN):
     packing = Packing.objects.filter(is_delete=False, goods_SN=goods_SN).first()
-    if not packing:
-        return R.ok(msg="验证通过")
+    testdata = Testdata.objects.filter(is_delete=False, goods_SN=goods_SN).first()
+    if packing:
+        return R.failed("SN码" + goods_SN + "重复")
+    elif not testdata:
+        return R.failed("SN码" + goods_SN + "未在测试数据内绑定")
     else:
-        return R.failed("SN码"+goods_SN+"重复")
+        return R.ok(msg="验证通过")

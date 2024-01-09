@@ -151,6 +151,7 @@ def DebugDataList(request):
                 'testEndTime': str(item.testEndTime.strftime('%Y-%m-%d %H:%M:%S')),
                 'testTime': item.testTime,
                 'testStep': testStep_list,
+                'PCB_Code':item.PCB_Code,
             }
             result.append(data)
     # 返回结果
@@ -212,7 +213,7 @@ def DebugDataAdd(request):
         testEndTime = dict_data.get('testEndTime')
         testTime = dict_data.get('testTime')
         testStep = dict_data.get('testStep')
-        print("接受数据")
+        PCB_Code = dict_data.get('PCB_Code')
         # 创建数据
         debugdata = Debugdata.objects.create(
             softwareType=softwareType,
@@ -227,6 +228,7 @@ def DebugDataAdd(request):
             testStartTime=testStartTime,
             testEndTime=testEndTime,
             testTime=testTime,
+            PCB_Code=PCB_Code
         )
         print("创建debugdata数据")
         # 存id和teststep数据

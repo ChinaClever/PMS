@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('testEndTime', models.DateTimeField(max_length=11, verbose_name='测试结束时间')),
                 ('testTime', models.CharField(help_text='测试时间', max_length=150, verbose_name='测试时间')),
                 ('work_order', models.CharField(help_text='工单号', max_length=255, verbose_name='工单号')),
-                ('goods_SN', models.CharField(help_text='成品SN', max_length=255, verbose_name='成品SN')),
+                ('goods_SN', models.CharField(help_text='成品SN', max_length=255, null=True, verbose_name='成品SN')),
             ],
             options={
                 'verbose_name': '测试数据',
