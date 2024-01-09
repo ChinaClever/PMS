@@ -132,7 +132,7 @@
           <el-popover
             placement="top-start"
             title="问题"
-            width="auto"
+            width="1000"
             trigger="click"
             :content=row.problems>
             <el-button slot="reference">点击查看</el-button>
@@ -142,7 +142,7 @@
           <el-popover
             placement="top-start"
             title="行动"
-            width="auto"
+            width="1000"
             trigger="click"
             :content=row.actions>
             <el-button slot="reference">点击查看</el-button>
@@ -187,7 +187,7 @@ export default {
         {
           prop: 'work_order',
           label: '单号',
-          width: 80,
+          width: 150,
           align: 'center',
           showOverflowTooltip: true,
         },
@@ -225,7 +225,7 @@ export default {
         {
           prop: 'work_hours',
           label: '工时',
-          minWidth: 100,
+          minWidth: 70,
           align: 'center',
           resizable: false,
         },
@@ -239,7 +239,7 @@ export default {
         {
           prop: 'item_number',
           label: '产品型号',
-          width: 70,
+          width: 120,
           align: 'center',
           showOverflowTooltip: true,
         },
@@ -253,7 +253,7 @@ export default {
         {
           prop: 'examine_an_amount',
           label: '检验数量',
-          width: 70,
+          width: 77,
           align: 'center',
           showOverflowTooltip: true,
         },
@@ -261,28 +261,28 @@ export default {
           prop: 'examine_a_bad_amount',
           sortable: 'custom',
           label: '检验不良数量',
-          width: 70,
+          width: 79,
           align: 'center',
           showOverflowTooltip: true,
         },
         {
           prop: 'examine_amount_total_amount',
           label: '检验数量累计',
-          width: 70,
+          width: 78,
           align: 'center',
           showOverflowTooltip: true,
         },
         {
           prop: 'examine_bad_total_amount',
           label: '检验不良累计',
-          width: 70,
+          width: 80,
           align: 'center',
           showOverflowTooltip: true,
         },
         {
           prop: 'target_pass_rate',
           label: 'ERP目标合格率',
-          width: 70,
+          width: 86,
           align: 'center',
           showOverflowTooltip: true,
           formatter: (row, column, cellValue) => {
@@ -293,7 +293,7 @@ export default {
           prop: 'target_actual_pass_rate',
           sortable: 'custom',
           label: '实际合格率',
-          width: 70,
+          width: 92,
           align: 'center',
           showOverflowTooltip: true,
           formatter: (row, column, cellValue) => {

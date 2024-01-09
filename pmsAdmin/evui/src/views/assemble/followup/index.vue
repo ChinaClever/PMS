@@ -132,7 +132,7 @@
           <el-popover
             placement="top-start"
             title="问题"
-            width="auto"
+            width="1000"
             trigger="click"
             :content=row.problems>
             <el-button slot="reference">点击查看</el-button>
@@ -142,7 +142,7 @@
           <el-popover
             placement="top-start"
             title="行动"
-            width="auto"
+            width="1000"
             trigger="click"
             :content=row.actions>
             <el-button slot="reference">点击查看</el-button>
@@ -152,7 +152,7 @@
           <el-popover
             placement="top-start"
             title="备注"
-            width="auto"
+            width="1000"
             trigger="click"
             :content=row.actions>
             <el-button slot="reference">点击查看</el-button>
@@ -197,7 +197,7 @@ export default {
         {
           prop: 'work_order',
           label: '单号',
-          width: 80,
+          width: 150,
           align: 'center',
           showOverflowTooltip: true,
         },
@@ -235,7 +235,7 @@ export default {
         {
           prop: 'work_hours',
           label: '工时',
-          minWidth: 100,
+          minWidth: 70,
           align: 'center',
           resizable: false,
         },
@@ -249,7 +249,7 @@ export default {
         {
           prop: 'item_number',
           label: '产品型号',
-          width: 70,
+          width: 120,
           align: 'center',
           showOverflowTooltip: true,
         },
@@ -263,7 +263,7 @@ export default {
         {
           prop: 'qty_obj_hour',
           label: 'ERP目标/拉/小时',
-          width: 70,
+          width: 100,
           align: 'center',
           showOverflowTooltip: true,
         },
@@ -271,21 +271,21 @@ export default {
           prop: 'qty_prod_hour',
           sortable: 'custom',
           label: '实际产出/拉/小时',
-          width: 70,
+          width: 103,
           align: 'center',
           showOverflowTooltip: true,
         },
         {
           prop: 'cumul_qty_obj',
           label: 'ERP目标累计',
-          width: 70,
+          width: 80,
           align: 'center',
           showOverflowTooltip: true,
         },
         {
           prop: 'cumul_qty_prod',
           label: '实际累计',
-          width: 70,
+          width: 77,
           align: 'center',
           showOverflowTooltip: true,
         },
@@ -300,14 +300,14 @@ export default {
         {
           prop: 'loss_time',
           label: '损耗工时',
-          width: 70,
+          width: 77,
           align: 'center',
           showOverflowTooltip: true,
         },
         {
           prop: 'changeover_time',
           label: '换线时间',
-          width: 70,
+          width: 77,
           align: 'center',
           showOverflowTooltip: true,
         },
