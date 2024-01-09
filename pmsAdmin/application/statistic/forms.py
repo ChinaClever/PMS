@@ -1,6 +1,6 @@
 from django import forms
 
-from application.inspectreport import models
+from application.statistic import models
 
 class StatisticForm(forms.ModelForm):
     # 工单号
@@ -113,7 +113,7 @@ class StatisticForm(forms.ModelForm):
 
     class Meta:
         # 绑定模型
-        model = models.Inspectreport
+        model = models.Statistic
         # 指定部分字段验证
         fields = ['start_time',
                   'end_time',
