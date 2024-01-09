@@ -242,7 +242,11 @@ export default {
           
           const regex = /\s[\S]+A/;  
           const match = shipmentData.shape.match(regex);  
-          this.form.remark = match[0]
+          this.form.remark = match ? match[0] : '';
+          if (this.form.remark === '') {
+            const match = shipmentData.remark.match(regex);  
+            this.form.remark = match ? match[0] : '';
+          }
           this.disabled = true;
         } 
       })
@@ -272,9 +276,14 @@ export default {
           this.form.name = shipmentData.client_name
           this.form.code  = shipmentData.shape
           this.form.delivery_time = shipmentData.delivery_date
+          
           const regex = /\s[\S]+A/;  
           const match = shipmentData.shape.match(regex);  
-          this.form.remark = match[0]
+          this.form.remark = match ? match[0] : '';
+          if (this.form.remark === '') {
+            const match = shipmentData.remark.match(regex);  
+            this.form.remark = match ? match[0] : '';
+          }
           this.disabled = true;
         } 
       })
