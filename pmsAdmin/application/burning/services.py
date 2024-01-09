@@ -76,10 +76,24 @@ def BurningList(request):
     # 遍历数据源
     if len(role_list) > 0:
         for item in role_list:
+            # 情详中的数据
+            data_PCB_code = item.PCB_code.split(',')
+            data_start_time = str(item.start_time).split(',')
+            data_finish_time = str(item.finish_time).split(',')
+            data_work_hours = str(item.work_hours).split(',')
+
+            burndata = []  # 软件信息
+            for i in range(len(data_PCB_code)):
+                burndata.append({
+                    'PCB_code': data_PCB_code[i],
+                    'start_time': data_start_time[i],
+                    'finish_time': data_finish_time[i],
+                    'work_hours' : data_work_hours[i]
+                })
             data = {
                 'id': item.id,
                 'work_order':item.work_order,
-                'PCB_code': item.PCB_code,
+                'burndata': burndata,
                 'name': item.name,
                 'code': item.code,
                 'version': item.version,
@@ -90,13 +104,12 @@ def BurningList(request):
                 'remark': item.remark,
                 'rcerder': item.rcerder,
                 'burning_quantity':item.burning_quantity,
-                'start_time': item.start_time.strftime('%Y-%m-%d %H:%M:%S') if item.start_time else None,
-                'finish_time': item.finish_time.strftime('%Y-%m-%d %H:%M:%S') if item.finish_time else None,
-                'work_hours': item.work_hours,
+                # 'start_time': item.start_time.strftime('%Y-%m-%d %H:%M:%S') if item.start_time else None,
+                # 'finish_time': item.finish_time.strftime('%Y-%m-%d %H:%M:%S') if item.finish_time else None,
+                # 'work_hours': item.work_hours,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d ')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d ')) if item.update_time else None,
             }
-            # 加入数组对象
             result.append(data)
             # 返回结果
     return R.ok(data=result, count=count)
@@ -109,11 +122,25 @@ def BurningDetail(burning_id):
     # 查询结果判空
     if not user:
         return None
+
+    data_PCB_code = user.PCB_code.split(',')
+    data_start_time = str(user.start_time).split(',')
+    data_finish_time = str(user.finish_time).split(',')
+    data_work_hours = str(user.work_hours).split(',')
+
+    burndata = []  # 软件信息
+    for i in range(len(data_PCB_code)):
+        burndata.append({
+            'PCB_code': data_PCB_code[i],
+            'start_time': data_start_time[i],
+            'finish_time': data_finish_time[i],
+            'work_hours': data_work_hours[i]
+        })
     # 声明结构体
     data = {
         'id': user.id,
         'work_order': user.work_order,
-        'PCB_code': user.PCB_code,
+        'burndata': user.burndata,
         'name': user.name,
         'code': user.code,
         'version': user.version,
@@ -124,9 +151,9 @@ def BurningDetail(burning_id):
         'remark': user.remark,
         'rcerder': user.rcerder,
         'burning_quantity': user.burning_quantity,
-        'start_time': user.start_time.strftime('%Y-%m-%d %H:%M:%S') if user.start_time else None,
-        'finish_time': user.finish_time.strftime('%Y-%m-%d %H:%M:%S') if user.finish_time else None,
-        'work_hours': user.work_hours,
+        # 'start_time': user.start_time.strftime('%Y-%m-%d %H:%M:%S') if user.start_time else None,
+        # 'finish_time': user.finish_time.strftime('%Y-%m-%d %H:%M:%S') if user.finish_time else None,
+        # 'work_hours': user.work_hours,
     }
     # 返回结果
     return data
