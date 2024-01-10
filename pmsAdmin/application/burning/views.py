@@ -22,7 +22,7 @@
 # +----------------------------------------------------------------------
 
 from django.shortcuts import render
-
+import json
 # Create your views here.
 
 from django.utils.decorators import method_decorator
@@ -114,13 +114,14 @@ class BurningDeleteView(PermissionRequired, View):
 
 
 
-# 获取JSON格式化数据(废弃代码)
-# @method_decorator(check_login, name='get')
-# class BurningJsonView(View):
-#
-#     # 接收GET请求
-#     def get(self, request):
-#         # 调用查询详情方法
-#         data = services.getBurningJson()
-#         # 返回结果
-#         return R.ok(data)
+# 批量添加
+def adds(request):
+    # 接收请求参数
+    json_data = request.body.decode()
+    # 参数为空判断
+    if not json_data:
+        return R.failed("参数不能为空")
+    # 数据类型转换
+    dict_data = json.loads(json_data)
+    print(dict_data)
+    return R.ok('测试')

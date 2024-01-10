@@ -28,6 +28,11 @@ const routes = [
     component: () => import('@/views/packing/packing/packing-batch-add'),
     meta: {title: '打包记录绑定'}
   },
+  {
+    path: '/burning/batchadd',
+    component: () => import('@/views/burning/burningreport/burning-add'),
+    meta: {title: '打包记录绑定'}
+  },
   // {
   //   path: '/forget',
   //   component: () => import('@/views/login/forget'),

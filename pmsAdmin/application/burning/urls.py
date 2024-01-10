@@ -37,5 +37,6 @@ urlpatterns = [
     path('update', views.BurningUpdateView.as_view()),
     # 删除数据
     path('delete/<str:burning_id>', views.BurningDeleteView.as_view()),
-
+    # 批量增加
+    path('adds',views.adds),
 ]
