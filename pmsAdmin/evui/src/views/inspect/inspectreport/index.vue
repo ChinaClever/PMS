@@ -560,14 +560,8 @@ export default {
           .slice(1, -1) // 排除第一列和最后一列
           .map(column => row[column.prop])
       );
-      console.log(this.selection)
-      console.log(data)
-      const worksheet = XLSX.utils.json_to_sheet(data);
-      // 将字段名称添加到 Excel 文件中
-      XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: 'A1' });
 
-      // 将数据添加到 Excel 文件中
-      XLSX.utils.sheet_add_aoa(worksheet, data, { origin: 'A2' });
+      const worksheet = XLSX.utils.aoa_to_sheet([header, ...data]);
 
       // 调整列宽
       const columnWidths = this.calculateColumnWidths(data, worksheet);
