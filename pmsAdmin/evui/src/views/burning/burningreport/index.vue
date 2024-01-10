@@ -225,41 +225,8 @@ export default {
           minWidth: 200,
           align: 'center',
         },
-        // {
-        //   prop: 'start_time',
-        //   label: '开始时间',
-        //   sortable:'custom',
-        //   order:'',
-        //   sortableMethod:()=>{
-        //     //排序逻辑
-        //     this.where.order = this.order
-        //     this.reload();
-        //   },
-        //   showOverflowTooltip: true,
-        //   minWidth: 200,
-        //   align: 'center',
-        // },
-        // {
-        //   prop: 'finish_time',
-        //   label: '完成时间',
-        //   sortable:'custom',
-        //   order:'',
-        //   sortableMethod:()=>{
-        //     //排序逻辑
-        //     this.where.order = this.order
-        //     this.reload();
-        //   },
-        //   showOverflowTooltip: true,
-        //   minWidth: 200,
-        //   align: 'center',
-        // },
-        // {
-        //   prop: 'work_hours',
-        //   label: '工时',
-        //   showOverflowTooltip: true,
-        //   minWidth: 200,
-        //   align: 'center',
-        // },
+        
+   
         {
           prop: 'version',
           label: '软件版本号',

@@ -136,12 +136,20 @@
        <br>
        <el-row :gutter="20">
          <el-col :span="18">
-          <el-form-item label="备注:" prop="notes" >
+          <el-form-item label="备注:" prop="remark" >
               <el-input
-                  v-model="form.notes"
+                  v-model="form.remark"
                   :rows="2"
                   maxlength="500"
                   show-word-limit
+                  type="textarea"/>
+          </el-form-item>
+         </el-col>
+         <el-col :span="18">
+          <el-form-item label="rcerder:" prop="rcerder" >
+              <el-input
+                  v-model="form.rcerder"
+                  :rows="2"
                   type="textarea"/>
           </el-form-item>
          </el-col>
@@ -202,21 +210,20 @@
   
     methods: {
       /* 保存编辑 */
-      save() {
-        var currentTime = new Date();
-        var timeString = currentTime.toLocaleString();
-        this.time.push(timeString)
+      save() {      
         this.$refs['form'].validate((valid) => {
           if (valid) {
+            var currentTime = new Date();
+            var timeString = currentTime.toLocaleString();
+            this.time.push(timeString)
             const partCodeString = this.dataTable.map(item => item.PCB_code).join(',');
-
             this.form.PCB_code = partCodeString;
             this.form.times = this.time
-  
             this.loading = true;
             this.$http['post']('/burningreport/adds', this.form).then(res => {
               this.loading = false;
               this.count_PCB  = 0
+              this.time = []
               if (res.data.code === 0) {
                 this.$message.success({ message: res.data.msg, duration: 3000 });
                 // 页面数据重置

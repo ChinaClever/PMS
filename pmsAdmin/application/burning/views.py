@@ -20,6 +20,7 @@
 # | 合公安机关调查取证同时保留一切以法律手段起诉的权利，本软件框架只能用于公司和个人内部的
 # | 法律所允许的合法合规的软件产品研发，详细声明内容请阅读《框架免责声明》附件；
 # +----------------------------------------------------------------------
+from datetime import datetime
 
 from django.shortcuts import render
 import json
@@ -29,6 +30,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from application.burning import services
+from application.burning.models import burning
 from application.constants import CITY_LEVEL_LIST
 from config.env import DEBUG
 from middleware.login_middleware import check_login
@@ -124,4 +126,84 @@ def adds(request):
     # 数据类型转换
     dict_data = json.loads(json_data)
     print(dict_data)
-    return R.ok('测试')
+    # 获取数据
+    # 工单号
+    work_order = dict_data.get('work_order')
+    # pcb信息
+    information = dict_data.get('times')
+    time1 = ''
+    time2 = ''
+    time3 = ''
+    for i in range(len(information)-1):
+        if i == len(information)-2:
+            time1 += information[i]
+        else:
+            time1 += information[i]
+            time1 += ','
+    for i in range(1,len(information)):
+        if i == len(information) - 1:
+            time2 += information[i]
+        else:
+            time2 += information[i]
+            time2 += ','
+    # 转换
+    time4 = time1.split(',')
+    time5 = time2.split(',')
+    for i in range(len(time4)):
+        if i == len(time4)-1:
+            time4[i] = datetime.strptime(time4[i] , "%Y/%m/%d %H:%M:%S")
+            time5[i] = datetime.strptime(time5[i] , "%Y/%m/%d %H:%M:%S")
+            a = round((time5[i] - time4[i]).total_seconds()/60/60,6)
+            time3 += str(a)
+        else:
+            time4[i] = datetime.strptime(time4[i], "%Y/%m/%d %H:%M:%S")
+            time5[i] = datetime.strptime(time5[i], "%Y/%m/%d %H:%M:%S")
+            a = round((time5[i] - time4[i]).total_seconds() / 3600,6)
+            time3 += str(a)
+            time3 += ','
+    # 客户名称
+    name = dict_data.get('name')
+    # 规格型号
+    code = dict_data.get('code')
+    # 版本号
+    version = dict_data.get('version')
+    # 程序要求
+    require = dict_data.get('require')
+    # 订单日期
+    order_time = dict_data.get('order_time')
+    # 交货日期
+    delivery_time = dict_data.get('delivery_time')
+    # 数量
+    quantity = dict_data.get('quantity')
+    # 备注
+    remark = dict_data.get('remark')
+    # rxerder
+    rcerder = dict_data.get('rcerder')
+    # 烧录数量
+    burning_quantity = len(information)-1
+    PCB_code = dict_data.get('PCB_code')
+    start_time = time1.replace("/", "-")
+    finish_time = time2.replace("/", "-")
+    work_hours = time3
+
+    # 创建数据
+    burning.objects.create(
+        work_order=work_order,
+        PCB_code=PCB_code,
+        name=name,
+        code=code,
+        version=version,
+        require=require,
+        order_time=order_time,
+        delivery_time=delivery_time,
+        quantity=quantity,
+        remark=remark,
+        rcerder=rcerder,
+        burning_quantity=burning_quantity,
+        start_time=start_time,
+        finish_time=finish_time,
+        work_hours=work_hours,
+    )
+    # 返回结果
+    return R.ok(msg="创建成功")
+

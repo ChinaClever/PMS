@@ -56,11 +56,11 @@ class burning(BaseModel):
     # 烧录数量
     burning_quantity = models.CharField(null=True, max_length=255, verbose_name="烧录数量", help_text="烧录数量")
     # 开始日期
-    start_time = models.DateTimeField(auto_now_add=False, verbose_name="开始日期", max_length=11)
+    start_time = models.CharField(null=True, max_length=255, verbose_name="开始日期", help_text="开始日期")
     # 完成日期
-    finish_time = models.DateTimeField(auto_now_add=False, verbose_name="开始日期", max_length=11)
+    finish_time = models.CharField(null=True,verbose_name="完成日期", max_length=255,help_text="完成日期")
     # 所用工时
-    work_hours = models.DecimalField(max_digits=10, decimal_places=6)
+    work_hours = models.CharField(null=True,verbose_name="所用工时", max_length=255,help_text="完成日期")
     class Meta:
         # 数据表名
         db_table = TABLE_PREFIX + "burning"
