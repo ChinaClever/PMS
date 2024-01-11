@@ -138,7 +138,9 @@ INSTALLED_APPS = [
     'application.product_handover',
     'application.statistic',
     'application.followup',
-    'application.rework'
+    'application.rework',
+    'application.bind.product',
+    'application.bind.module',
 ]
 
 MIDDLEWARE = [
