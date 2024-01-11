@@ -32,7 +32,6 @@
             <el-input
             :disabled="disabled" 
             v-model="form.customer"
-            placeholder="请输入客户"
             clearable/>
           </el-form-item>
         </el-col>
@@ -42,8 +41,7 @@
             prop="product_name">
             <el-input
             :disabled="disabled"
-            v-model="form.product_name"
-            placeholder="请输入产品"         
+            v-model="form.product_name"       
             clearable/>
           </el-form-item>
         </el-col>
@@ -54,7 +52,6 @@
             <el-input
             :disabled="disabled"
             v-model="form.product_type"
-            placeholder="请输入产品类型"
             clearable/>
           </el-form-item>
         </el-col>
@@ -69,7 +66,7 @@
             <el-input
               id="PCB_code_inputId"
               v-model="form.PCB_code"
-              placeholder="请输入PCB编码"
+              placeholder="请扫码输入PCB编码"
               @keyup.enter.native="handlePCBCodeEnterKey"
               clearable/>
         </el-form-item>
@@ -123,7 +120,6 @@
                 v-model="form.notes"
                 :rows="2"
                 maxlength="500"
-                show-word-limit
                 type="textarea"/>
         </el-form-item>
        </el-col>
@@ -271,12 +267,8 @@ export default {
     },
     // 单号清除事件
     handleClear(){
-        this.form.work_order=''
-        this.form.product_name = ''
-        this.form.customer = ''
-        this.form.product_type  = ''
-        this.disabled=false;
-
+      this.form = {};
+      this.disabled=false;
     },
     // 单号检测到回车触发
     handleEnterKey(event){
@@ -288,23 +280,23 @@ export default {
             const shipmentData = res.data.data;
             if (res.data.code === 0 && res.data.data != null) {
             this.form.product_name = shipmentData.product_name
+            this.form.customer = shipmentData.client_name
+            this.form.product_type  = shipmentData.shape
             this.disabled=true;
             }
+            // 焦点在PCB输入框
+            if(this.form.PCB_code){
+              this.form.PCB_code = ''; 
+            }    
+            const input = document.getElementById('PCB_code_inputId');
+            input.focus();
         })
     },
     // 监听workorder为空时解除其他输入框禁用
     checkWorkOrderIsNull(rule, value, callback){
       if (value == '') {
-        this.disabled = false
-        // this.form={
-        //   product_name:'',
-        //   customer: '',
-        //   product_type :''
-        // }
-        this.form.work_order = ''
-        this.form.product_name = ''
-        this.form.customer = ''
-        this.form.product_type  = ''
+        this.form = {};
+        this.disabled = false;
       }
       callback();
     },
@@ -430,13 +422,15 @@ export default {
 }
 
 ::v-deep .el-input__inner{
-  width: auto !important;
+  width: 20vw !important;
   height: 54px !important;
   font-size: 24px;
   /* border: none !important;
   box-shadow: none !important; */
 }
-
+::v-deep .el-input__suffix{
+  padding-right: 45px;
+}
 ::v-deep .el-form-item__label{
   font-size: 24px;
 }

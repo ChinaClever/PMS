@@ -32,7 +32,7 @@ class Testdata(BaseModel):
     # 工单号
     work_order = models.CharField(null=False, max_length=255, verbose_name="工单号", help_text="工单号")
     # 成品SN
-    goods_SN = models.CharField(max_length=255, verbose_name="成品SN", help_text="成品SN")
+    goods_SN = models.CharField(null=False, max_length=255, verbose_name="成品SN", help_text="成品SN")
 
     class Meta:
         # 数据表名

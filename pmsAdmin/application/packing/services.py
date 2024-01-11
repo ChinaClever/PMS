@@ -5,6 +5,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage, Empt
 from django.db import transaction
 from django.db.models import Q
 from application.packing.models import Packing
+from application.testdata.models import Testdata
 from constant.constants import PAGE_LIMIT
 from utils import R
 from utils.utils import uid
@@ -67,6 +68,7 @@ def PackingList(request):
                 'product_module': item.product_module,
                 'work_hours': item.work_hours,
                 'packing_count': item.packing_count,
+                'goods_SN': item.goods_SN
                          }
             result.append(data)
     # 返回结果
@@ -95,6 +97,7 @@ def PackingDetail(packing_id):
         'packing_finish_time': str(packing.packing_finish_time.strftime('%Y-%m-%d %H:%M:%S')) if packing.packing_finish_time else None,
         'work_hours': packing.work_hours,
         'packing_count': packing.packing_count,
+        'goods_SN': packing.goods_SN
     }
     # 返回结果
     return data
@@ -112,12 +115,14 @@ def PackingUpdate(request):
     packing_finish_time = dict_data.get('packing_finish_time')
     work_hours = dict_data.get('work_hours')
     packing_count = dict_data.get('packing_count')
+    goods_SN = dict_data.get('goods_SN')
     # 根据ID查询
     packing = Packing.objects.only('id').filter(id=id, is_delete=False).first()
     # 对象赋值
     packing.packing_finish_time = packing_finish_time
     packing.work_hours = work_hours
     packing.packing_count = packing_count
+    packing.goods_SN = goods_SN
     packing.update_time = datetime.now()
     packing.update_user = uid(request)
     # 更新数据
@@ -148,7 +153,7 @@ def PackingAdd(request):
     packing_finish_time = dict_data.get('packing_finish_time')
     work_hours = dict_data.get('work_hours')
     packing_count = dict_data.get('packing_count')
-
+    goods_SN = dict_data.get('goods_SN')
     Packing.objects.create(
         work_order=work_order,
         client_name = client_name,
@@ -163,7 +168,8 @@ def PackingAdd(request):
         packing_finish_time = packing_finish_time,
         remark=remark if remark else None,
         work_hours = work_hours,
-        packing_count =packing_count,
+        packing_count = packing_count,
+        goods_SN = goods_SN,
         create_user=uid(request)
     )
 
@@ -194,3 +200,14 @@ def PackingDelete(packing_id):
             count += 1
     # 返回结果
     return R.ok(msg="本次共删除{0}条数据".format(count))
+
+
+def SNisRepeat(goods_SN):
+    packing = Packing.objects.filter(is_delete=False, goods_SN=goods_SN).first()
+    testdata = Testdata.objects.filter(is_delete=False, goods_SN=goods_SN).first()
+    if packing:
+        return R.failed("SN码" + goods_SN + "重复")
+    elif not testdata:
+        return R.ok(code=2, msg="SN码" + goods_SN + "未在测试数据内绑定")
+    else:
+        return R.ok(msg="验证通过")

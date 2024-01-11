@@ -41,7 +41,7 @@ class Debug(BaseModel):
     # 完成日期
     finish_time = models.DateTimeField(auto_now_add=False, verbose_name="开始日期", max_length=11)
     # 所用工时
-    work_hours = models.IntegerField(null=True, default=0, verbose_name="所用工时", help_text="所用工时")
+    work_hours = models.DecimalField(null=True, max_digits=10, decimal_places=6, verbose_name="所用工时", help_text="所用工时")
     # 调试数量
     debug_count = models.IntegerField(default=0, verbose_name="调试数量", help_text="调试数量")
     class Meta:

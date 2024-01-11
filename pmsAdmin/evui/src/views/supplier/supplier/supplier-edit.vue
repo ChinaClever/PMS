@@ -208,6 +208,7 @@ export default {
         this.disabled=true;
       } else {
         this.form = {};
+        this.dataTable=[{ part_code: '', supplier: '' , parts: '' }];
         this.isUpdate = false;
         this.disabled = false;
 

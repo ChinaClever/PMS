@@ -105,20 +105,7 @@
             class="ele-btn-icon"
             @click="exportToExcel">导出
           </el-button>
-          <!-- <el-button
-            @click="showImport=true"
-            icon="el-icon-upload2"
-            class="ele-btn-icon"
-            size="small">导入
-          </el-button>
-          <el-button
-            size="small"
-            type="success"
-            icon="el-icon-download"
-            class="ele-btn-icon"
-            @click="exportExcel"
-            v-if="permission.includes('sys:level:export')">导出
-          </el-button> -->
+          
         </template>
         <!-- 操作列 -->
         <template slot="action" slot-scope="{row}">

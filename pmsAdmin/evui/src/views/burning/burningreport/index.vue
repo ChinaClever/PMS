@@ -59,6 +59,24 @@
         :columns="columns"
         :selection.sync="selection"
         height="calc(100vh - 315px)">
+        <!-- 数据集合 -->
+        <template slot="burndata" slot-scope="{row}">
+          <el-popover
+            placement="bottom"
+            width="500"
+            trigger="click">
+            <el-table 
+              :data="row.burndata" 
+              stripe
+              :max-height="300">
+              <el-table-column width="170" property="PCB_code" label="PCB"></el-table-column>
+              <el-table-column width="170" property="start_time" label="开始时间"></el-table-column>
+              <el-table-column width="170" property="finish_time" label="结束时间"></el-table-column>
+              <el-table-column width="160" property="work_hours" label="工时"> </el-table-column>
+            </el-table>
+            <el-button slot="reference">查看详情</el-button>
+          </el-popover>
+        </template>
         <!-- 表头工具栏 -->
         <template slot="toolbar">
           <el-button
@@ -68,6 +86,14 @@
             class="ele-btn-icon"
             @click="openEdit(null)"
             v-if="permission.includes('sys:burningreport:add')">添加
+          </el-button>
+          <el-button
+            size="small"
+            type="primary"
+            icon="el-icon-plus"
+            class="ele-btn-icon"
+            @click="openBatchAddPage"
+            >批量添加
           </el-button>
           <el-button
             size="small"
@@ -171,12 +197,13 @@ export default {
           align: 'center',
         },
         {
-          prop: 'PCB_code',
-          label: 'PCB编码',
+          prop: 'burndata',
+          label: '软件信息',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
-        },
+          slot: 'burndata'
+        }, 
         {
           prop: 'name',
           label: '客户名称',
@@ -198,44 +225,11 @@ export default {
           minWidth: 200,
           align: 'center',
         },
-        {
-          prop: 'start_time',
-          label: '开始时间',
-          sortable:'custom',
-          order:'',
-          sortableMethod:()=>{
-            //排序逻辑
-            this.where.order = this.order
-            this.reload();
-          },
-          showOverflowTooltip: true,
-          minWidth: 200,
-          align: 'center',
-        },
-        {
-          prop: 'finish_time',
-          label: '完成时间',
-          sortable:'custom',
-          order:'',
-          sortableMethod:()=>{
-            //排序逻辑
-            this.where.order = this.order
-            this.reload();
-          },
-          showOverflowTooltip: true,
-          minWidth: 200,
-          align: 'center',
-        },
-        {
-          prop: 'work_hours',
-          label: '工时',
-          showOverflowTooltip: true,
-          minWidth: 200,
-          align: 'center',
-        },
+        
+   
         {
           prop: 'version',
-          label: '版本号',
+          label: '软件版本号',
           showOverflowTooltip: true,
           minWidth: 200,
           align: 'center',
@@ -550,6 +544,10 @@ export default {
       saveAs(blob, newFileName);
       this.selection = temp;
     },
+    // 跳转批量添加界面
+    openBatchAddPage(){
+        this.$router.push("/burning/batchadd")
+    }
   }
 }
 </script>

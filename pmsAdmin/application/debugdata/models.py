@@ -32,7 +32,7 @@ class Debugdata(BaseModel):
     # 测试时间
     testTime = models.CharField(null=True, max_length=255, verbose_name="测试时间", help_text="测试时间")
     # PCB码
-    PCB_Code = models.CharField(max_length=255, verbose_name="PCB码", help_text="PCB码")
+    PCB_Code = models.CharField(null=True, max_length=255, verbose_name="PCB码", help_text="PCB码")
 
     class Meta:
         # 数据表名

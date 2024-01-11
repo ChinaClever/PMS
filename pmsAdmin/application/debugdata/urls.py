@@ -16,4 +16,9 @@ urlpatterns = [
     path('delete/<str:debugdata_id>', views.DebugDataDeleteView.as_view()),
 
     path('newest', views.DebugDataNewestListView.as_view()),
+
+    path('selectAutoMode', views.DebugDataSelectAutoModeView.as_view()),
+
+    path('automode/<str:isOpenAutoMode>', views.DebugDataAutoModeView.as_view()),
+
 ]

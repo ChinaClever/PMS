@@ -244,8 +244,8 @@
           },
           {
             prop: 'PCB_code',
-            label: 'PCB编码',
-            width: 70,
+            label: 'PCB编码/序列号',
+            width: 150,
             align: 'center',
             showOverflowTooltip: true,
           },
