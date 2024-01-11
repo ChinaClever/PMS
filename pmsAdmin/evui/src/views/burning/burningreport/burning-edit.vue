@@ -101,16 +101,6 @@
       </el-form-item>
     </el-col>
     </el-row>
-      
-     <el-form-item
-        label="PCB编码:"
-        prop="PCB_code">
-        <el-input
-          :maxlength="255"
-          v-model="form.PCB_code"
-          placeholder="请输入PCB编码"
-          clearable/>
-      </el-form-item>
 
     <el-row :gutter="6">
     <el-col :span="12">
@@ -137,45 +127,46 @@
       </el-form-item>
     </el-col>
     </el-row>
-
-    <el-row :gutter="6">
-    <el-col :span="12">
-      <el-form-item label="开始时间:"
-      prop="start_time">
-            <el-date-picker
-              class="ele-fluid"
-              type="datetime"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              v-model="form.start_time"
-              placeholder="请选择开始时间"/>
-          </el-form-item>
-    </el-col>
-
-    <el-col :span="12">
-      <el-form-item label="完成时间:"
-      prop="finish_time">
-            <el-date-picker
-              class="ele-fluid"
-              type="datetime"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              v-model="form.finish_time"
-              placeholder="请选择完成时间"/>
-          </el-form-item>
-    </el-col>
-    </el-row>
-
-    <el-row :gutter="6">
-    <el-col :span="12">
-      <el-form-item label="所用工时:" prop="work_hours">
-      <el-input-number
-        :min="0"
-        v-model="form.work_hours"
-        placeholder="请输入所用工时"
-        controls-position="right"
-        class="ele-fluid ele-text-left"/>
-      </el-form-item>
-    </el-col>
     
+    <el-row>
+      <el-table :data="dataTable" editable>
+        <el-table-column prop="start_time" label="开始时间">
+          <template slot-scope="scope">
+            <el-date-picker
+              class="ele-fluid"
+              type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :id="`part_code_inputId_` + scope.$index"
+              v-model="scope.row.start_time"
+              placeholder="请选择开始时间"/>
+          </template>
+        </el-table-column>
+        <el-table-column prop="finish_time" label="完成时间">
+          <template slot-scope="scope">
+            <el-date-picker
+              class="ele-fluid"
+              type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
+               v-model="scope.row.finish_time"
+               placeholder="请选择完成时间"/>
+          </template>
+        </el-table-column>
+        <el-table-column prop="work_hours" label="工时">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.work_hours"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column prop="PCB_code" label="PCB编码">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.PCB_code"></el-input>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-button @click="addInput">添加输入框</el-button>
+        <el-button v-if="this.dataTable && this.dataTable.length > 0" @click="removeInput">删除最后一个输入框</el-button>
+     </el-row>
+
+    <el-row :gutter="6">
     <el-col :span="12">
       <el-form-item
         label="烧录数量:"
@@ -232,14 +223,15 @@ export default {
   data() {
     return {
       // 表单数据
-      form: Object.assign({status: 1, name: '',code : ''}, this.data),
+      form: Object.assign({status: 1, name: '',code : '',dataTable : [],}, this.data),
+      // 物料表格
+      dataTable:[
+        { start_time: '', finish_time: '' , work_hours: '',PCB_code:'' }
+      ],
       // 表单验证规则
       rules: {
         work_order: [
           {required: true, message: '请输入单号', trigger: 'blur'}
-        ],
-        PCB_code: [
-          {required: true, message: '请输入PCB编码', trigger: 'blur'}
         ],
         name: [
           {required: true, message: '请输入客户名称', trigger: 'blur'}
@@ -275,18 +267,9 @@ export default {
             },
             trigger: 'blur'
           }
-        ],
-        start_time: [
-          {required: true, message: '请输入开始时间', trigger: 'blur'}
-        ],
-        finish_time: [
-          {required: true, message: '请输入完成时间', trigger: 'blur'}
-        ],
+        ], 
         order_time: [
           {required: true, message: '请输入订单日期', trigger: 'blur'}
-        ],
-        work_hours: [
-          {required: true, message: '请输入工时', trigger: 'blur'}
         ],
         delivery_time: [
           {required: true, message: '请输入交货日期', trigger: 'blur'},
@@ -312,6 +295,8 @@ export default {
       loading: false,
       // 是否是修改
       isUpdate: false,
+      // 表格索引
+      dataTableIndex: 0,
       // 是否禁用输入框
       disabled: false,
     };
@@ -320,10 +305,12 @@ export default {
     data() {
       if (this.data && this.data.id) {
         this.form = Object.assign({}, this.data);
+        this.dataTable=this.data.burndata
         this.isUpdate = true;
         this.disabled = true;
       } else {
         this.form = {};
+        this.dataTable=[{ start_time: '', finish_time: '' , work_hours: '' ,PCB_code: '',}];
         this.isUpdate = false;
       }
     },
@@ -408,17 +395,6 @@ export default {
     checkWorkOrderIsNull(rule, value, callback){
         if (value == '') {
           this.form = {
-            // product_name : '',
-            // client_name : '',
-            // product_count : '',
-            // order_time : '',
-            // shape : '',
-            // submit_time : '',
-            // product_module : '',
-            // start_time:'',
-            // finish_time:'',
-            // work_hours:'',
-            // welding_count:''
           };
           this.disabled = false;
         }
@@ -428,20 +404,41 @@ export default {
     save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
+          const PCBCodes = [...this.dataTable.map(item => item.PCB_code)];
+          if(new Set(PCBCodes).size !== PCBCodes.length){
+            this.$message.error({ message: "PCB编码重复", duration: 3000});
+            return false;
+          }
+          else if(new Set(PCBCodes).has('')){
+            this.$message.error({ message: "PCB不能为空", duration: 3000});
+            return false;
+          }
+
+
+          const start_timeString = this.dataTable.map(item => item.start_time).join(',');
+          const finish_timeString = this.dataTable.map(item => item.finish_time).join(',');
+          const work_hoursString = this.dataTable.map(item => item.work_hours).join(',');
+          const PCB_codeString = this.dataTable.map(item => item.PCB_code).join(',');
+          this.form.start_time = start_timeString;
+          this.form.finish_time = finish_timeString;
+          this.form.work_hours = work_hoursString;
+          this.form.PCB_code = PCB_codeString;
           this.loading = true;
           this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/burningreport/update' : '/burningreport/add', this.form).then(res => {
             this.loading = false;
             if (res.data.code === 0) {
               this.$message.success(res.data.msg);
               if (!this.isUpdate) {
-                this.form = {name: '',code : ''};
+                this.form = {};
+                this.dataTable = [{ start_time: '', finish_time: '' , work_hours: '', PCB_code:'',}];
+                this.dataTableIndex = 0;
               }
+              this.disabled=false
               this.updateVisible(false);
               this.$emit('done');
             } else {
               this.$message.error(res.data.msg);
             }
-            this.disabled = false;
           }).catch(e => {
             this.loading = false;
             this.$message.error(e.message);
@@ -455,6 +452,24 @@ export default {
     updateVisible(value) {
       this.$emit('update:visible', value);
     },
+    // 输入框检测到回车触发
+    addInput() {
+        this.dataTable.push(
+        {
+          start_time: '', 
+          finish_time: '', 
+          work_hours: '',
+          PCB_code:''
+        });     
+    },
+    //删除行
+    removeInput() {
+      this.dataTable.pop();
+        if (this.dataTable.length === 0) {
+        this.dataTable.push({ start_time: '', finish_time: '', work_hours: '' ,PCB_code:''}); 
+      }
+      
+    }
     
   },
   mounted() {

@@ -15,4 +15,6 @@ urlpatterns = [
     path('delete/<str:debug_id>', views.DebugDeleteView.as_view()),
     # 查询统计维修报表柱状图
     path('listOf', views.DebugreportListOfTotalView1.as_view()),
+    #查询调试看板表格数据
+    path('listOf1', views.DebugreportListOf1TotalView1.as_view()),
 ]
