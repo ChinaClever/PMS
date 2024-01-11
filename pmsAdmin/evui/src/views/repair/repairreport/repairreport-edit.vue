@@ -55,7 +55,7 @@
             <el-input
               :maxlength="20"
               v-model="form.PCB_code"
-              placeholder="请输入PCB编码"
+              placeholder="请输入PCB编码/序列号"
               clearable/>
           </el-form-item>
         </el-col>
