@@ -104,9 +104,6 @@ def BurningList(request):
                 'remark': item.remark,
                 'rcerder': item.rcerder,
                 'burning_quantity':item.burning_quantity,
-                # 'start_time': item.start_time.strftime('%Y-%m-%d %H:%M:%S') if item.start_time else None,
-                # 'finish_time': item.finish_time.strftime('%Y-%m-%d %H:%M:%S') if item.finish_time else None,
-                # 'work_hours': item.work_hours,
                 'create_time': str(item.create_time.strftime('%Y-%m-%d ')) if item.create_time else None,
                 'update_time': str(item.update_time.strftime('%Y-%m-%d ')) if item.update_time else None,
             }
@@ -140,7 +137,7 @@ def BurningDetail(burning_id):
     data = {
         'id': user.id,
         'work_order': user.work_order,
-        'burndata': user.burndata,
+        'burndata': burndata,
         'name': user.name,
         'code': user.code,
         'version': user.version,
@@ -151,9 +148,6 @@ def BurningDetail(burning_id):
         'remark': user.remark,
         'rcerder': user.rcerder,
         'burning_quantity': user.burning_quantity,
-        # 'start_time': user.start_time.strftime('%Y-%m-%d %H:%M:%S') if user.start_time else None,
-        # 'finish_time': user.finish_time.strftime('%Y-%m-%d %H:%M:%S') if user.finish_time else None,
-        # 'work_hours': user.work_hours,
     }
     # 返回结果
     return data
@@ -172,6 +166,7 @@ def BurningAdd(request):
     except Exception as e:
         logging.info("错误信息：\n{}", format(e))
         return R.failed("参数错误")
+    print(dict_data)
     # 表单验证
     form = forms.BurningForm(dict_data)
     if form.is_valid():

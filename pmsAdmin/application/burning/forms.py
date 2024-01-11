@@ -101,7 +101,6 @@ class BurningForm(forms.ModelForm):
             'required': '数量不能为空',
         }
     )
-    print(type(quantity))
     # 备注
     remark = forms.CharField(
         required=False,
@@ -127,22 +126,22 @@ class BurningForm(forms.ModelForm):
         }
     )
     # 开始日期
-    start_time = forms.DateTimeField(
+    start_time = forms.CharField(
         error_messages={
-            'required': '交货日期不能为空',
+            'required': '开始日期不能为空',
         }
     )
     # 完成日期
-    finish_time = forms.DateTimeField(
+    finish_time = forms.CharField(
         error_messages={
-            'required': '交货日期不能为空',
+            'required': '完成日期不能为空',
         }
     )
     # 工时
-    work_hours = forms.IntegerField(
+    work_hours = forms.CharField(
         required=True,
         error_messages={
-            'required': '数量不能为空',
+            'required': '工时不能为空',
         }
     )
     class Meta:
