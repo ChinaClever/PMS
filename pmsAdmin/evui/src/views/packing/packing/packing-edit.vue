@@ -171,7 +171,7 @@
             <el-input-number
               :min="0"
               v-model="form.work_hours"
-              placeholder="请输入所用工时"
+              placeholder="请输入所用工时(单位/小时):"
               controls-position="right"
               class="ele-fluid ele-text-left"/>
           </el-form-item>

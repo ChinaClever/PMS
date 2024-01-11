@@ -1,3 +1,4 @@
+import datetime
 import os
 from application.settings import BASE_DIR
 
@@ -35,3 +36,7 @@ IMAGE_URL = "http://192.168.1.12:8000"
 ATTACHMENT_PATH = "/home/zhan/work/PMS/pmsAdmin/public/uploads"
 IMAGE_PATH = '{}/images'.format(ATTACHMENT_PATH)
 TEMP_PATH = '{}/temp'.format(ATTACHMENT_PATH)
+# 调试数据自动模式
+DEBUGDATA_AUTO_MODE = False
+IS_FIRST_ADD = True
+START_TIME = datetime.datetime.now()

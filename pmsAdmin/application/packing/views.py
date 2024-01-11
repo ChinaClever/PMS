@@ -54,3 +54,10 @@ class PackingDeleteView(PermissionRequired, View):
         result = services.PackingDelete(packing_id)
         # 返回结果
         return result
+
+@method_decorator(check_login, name="dispatch")
+class PackingSNisRepeatView(PermissionRequired, View):
+    permission_required = ("sys:packing:add",)
+    def get(self, request, goods_SN):
+        result = services.SNisRepeat(goods_SN)
+        return result

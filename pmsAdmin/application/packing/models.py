@@ -33,7 +33,7 @@ class Packing(BaseModel):
     # 打包完成日期
     packing_finish_time = models.DateTimeField(null=True, auto_now_add=False, verbose_name="打包完成日期", max_length=11)
     # 打包工时
-    work_hours = models.IntegerField(null=True, default=0, verbose_name="所用工时", help_text="所用工时")
+    work_hours = models.DecimalField(max_digits=10, decimal_places=6)
     # 打包数量
     packing_count = models.IntegerField(default=0, verbose_name="打包数量", help_text="打包数量")
     # 成品SN

@@ -85,11 +85,17 @@
               @click="removeBatch"
               v-if="permission.includes('sys:debugdata:dall')">删除
             </el-button>
-            <pre>                    </pre>
+            <pre>               </pre>
             <el-switch
               v-model="realTime"
               active-text="实时模式"
               inactive-text="正常模式">
+            </el-switch>
+            <pre>               </pre>
+            <el-switch
+              v-model="isOpenAutoMode"
+              active-text="自动插入数据"
+              @change="automodeChange">
             </el-switch>
           </template>
           <!-- 操作列 -->
@@ -258,6 +264,13 @@
             align: 'center',
           },
           {
+            prop: 'PCB_Code',
+            label: 'PCB编码',
+            showOverflowTooltip: true,
+            minWidth: 120,
+            align: 'center',
+          },
+          {
             columnKey: 'action',
             label: '操作',
             width: 150,
@@ -280,6 +293,8 @@
         pageVis: true,
         // 实时模式显示几条
         realTimeCount:5,
+        // 是否开启自动模式
+        isOpenAutoMode: false,
       };
     },
     watch : {
@@ -296,7 +311,31 @@
         }
       }
     },
+    mounted() {
+      // 查自动插入数据模式的状态
+      this.$http.get('/debugdata/selectAutoMode').then((res) => {
+        if (res.data.code == 0) {
+          this.isOpenAutoMode = res.data.data;
+        } else {
+          this.isOpenAutoMode = false;
+        }
+      }).catch(e => {
+        this.$message.error({ message: e.message, duration: 1000 });
+      });
+    },
     methods: {
+      automodeChange(){
+        this.$http.get('/debugdata/automode/' + this.isOpenAutoMode).then((res) => { 
+          if (res.data.code === 0) {
+            this.$message.success({ message: res.data.msg, duration: 1000 });
+          } else {
+            this.$message.info({ message: res.data.msg, duration: 1000});
+          }
+        }).catch(e => {
+          this.$message.error({ message: e.message, duration: 1000 });
+        });
+    
+      },
       /* 刷新表格 */
       reload() {
         this.$refs.table.reload({page: 1, where: this.where});

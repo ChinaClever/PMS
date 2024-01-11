@@ -41,7 +41,6 @@ class DebugDataDetailView(PermissionRequired, View):
 class DebugDataAddView(View):
     # 方法权限标识
     #permission_required = ('sys:debugdata:add',)
-
     # 接收POST网络请求
     def post(self, request):
         if DEBUG:
@@ -92,4 +91,14 @@ class DebugDataNewestListView(PermissionRequired, View):
         # 调用查询职级分页数据服务方法
         result = services.DebugDataNewestList(request)
         # 返回结果
+        return result
+
+class DebugDataSelectAutoModeView(View):
+    def get(self, request,):
+        result = services.DebugDataSelectAutoMode()
+        return result
+
+class DebugDataAutoModeView(View):
+    def get(self, request, isOpenAutoMode):
+        result = services.DebugDataAutoMode(isOpenAutoMode)
         return result

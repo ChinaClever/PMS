@@ -162,7 +162,7 @@
             prop: 'work_hours',
             label: '工时',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 100,
             align: 'center',
           },
           {

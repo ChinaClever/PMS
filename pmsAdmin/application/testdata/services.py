@@ -151,6 +151,7 @@ def TestDataList(request):
                 'testEndTime': str(item.testEndTime.strftime('%Y-%m-%d %H:%M:%S')),
                 'testTime': item.testTime,
                 'testStep': testStep_list,
+                'goods_SN': item.goods_SN
             }
             result.append(data)
     # 返回结果
@@ -211,6 +212,7 @@ def TestDataAdd(request):
         testEndTime = dict_data.get('testEndTime')
         testTime = dict_data.get('testTime')
         testStep = dict_data.get('testStep')
+        goods_SN = dict_data.get('goods_SN')
         # 创建数据
         testdata = Testdata.objects.create(
             softwareType=softwareType,
@@ -225,6 +227,7 @@ def TestDataAdd(request):
             testStartTime=testStartTime,
             testEndTime=testEndTime,
             testTime=testTime,
+            goods_SN=goods_SN,
         )
         # 存id和teststep数据
         for item in testStep:
