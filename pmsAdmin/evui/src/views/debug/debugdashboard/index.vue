@@ -137,7 +137,7 @@
     data() {
       return {
         // 表格数据接口
-        url: '/debugreport/list',
+        url: '/debugreport/listOf1',
         // 表格列配置
         columns: [
           {
@@ -160,6 +160,13 @@
             showOverflowTooltip: true,
             minWidth: 100,
             align: 'center',
+          },
+          {
+            prop: 'number_total',
+            label: '调试数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
           },
           {
             prop: 'product_count',

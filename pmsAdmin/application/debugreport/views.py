@@ -97,3 +97,16 @@ class DebugreportListOfTotalView1(PermissionRequired, View):
 
         # 返回结果
         return result
+#接收看板表格请求
+@method_decorator(check_login, name="get")
+class DebugreportListOf1TotalView1(PermissionRequired, View):
+    # 方法权限标识
+    permission_required = ("sys:repairreport:list",)
+
+    # 接收GET请求
+    def get(self, request):
+        # 调用查询质检报表分页数据方法
+        result = services.DebugreportListOf1Total1(request)
+
+        # 返回结果
+        return result
