@@ -21,7 +21,8 @@ urlpatterns = [
     path('product/list', views.ProductListView.as_view()),
     #  导入功能
     path('importfile', views.uploadFileView.as_view()),
-
+    # 出厂报告扫码查询
+    path('report/<str:goods_SN>', views.reportView.as_view()),
 
     # 获取所有产品名称表的数据
     path('productname/list', views.ProductNameListView.as_view()),

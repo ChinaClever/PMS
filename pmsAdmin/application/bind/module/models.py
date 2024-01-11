@@ -9,10 +9,10 @@ class Module(models.Model):
         serialize=False,
         verbose_name='主键ID'
     )
-    # 成品序列号Id
-    product_id = models.IntegerField(default=0, verbose_name="成品序列号Id", help_text="成品序列号Id")
-    # 序列号
-    key = models.CharField(max_length=255, verbose_name="测试步骤编号", help_text="测试步骤编号")
+    # 成品序列Id
+    product_id = models.IntegerField(default=0, verbose_name="成品序列Id", help_text="成品序列Id")
+    # 模块码
+    module_SN = models.CharField(max_length=255, verbose_name="模块码", help_text="模块码")
 
     class Meta:
         # 数据表名

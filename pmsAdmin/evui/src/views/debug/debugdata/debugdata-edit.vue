@@ -38,11 +38,11 @@
         </el-form-item>
 
         <el-form-item
-          label="产品SN:"
+          label="模块SN:"
           prop="productSN">
           <el-input
             v-model="form.productSN"
-            placeholder="请输入产品SN"
+            placeholder="请输入模块SN"
             clearable/>
         </el-form-item>
 

@@ -9,7 +9,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage, Empt
 from django.db import transaction
 from django.db.models import Q
 from django.utils.timezone import now
-
+from application.bind.product.models import ProductBind
 from application.shipmentreport.models import Shipment
 from application.shipmentreport.models import Product
 from constant.constants import PAGE_LIMIT
@@ -522,6 +522,20 @@ def ShipmentReportImportFile(request):
     if failedList != []:
         return R.failed(msg="导入失败",data=failedList)
     return R.ok(msg="导入成功")
+
+
+# 出厂报告扫码查询
+def report(goods_SN):
+    sql = ("select * from django_bind_product as p  "
+           "left join django_bind_module as m on p.id = m.product_id "
+           "where key = %s")
+    list = ProductBind.objects.raw(sql, [goods_SN])
+    for i in list:
+        print(i)
+    data = {
+        'list':list
+    }
+    return data
 
 # -----------------------产品名称模块-----------------------------------
 #####################################################################

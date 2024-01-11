@@ -9,8 +9,8 @@ class Debugdata(BaseModel):
     softwareType = models.CharField(null=True, max_length=255, verbose_name="软件类型", help_text="软件类型")
     # 产品类型
     productType = models.CharField(null=True, max_length=255, verbose_name="产品类型", help_text="产品类型")
-    # 产品SN
-    productSN = models.CharField(null=True, max_length=255, verbose_name="产品SN", help_text="产品SN")
+    # 模块SN
+    productSN = models.CharField(null=True, max_length=255, verbose_name="模块SN", help_text="模块SN")
     # mac地址
     macAddress = models.CharField(null=True, max_length=255, verbose_name="mac地址", help_text="mac地址")
     # 结果

@@ -773,10 +773,15 @@ export default {
 
   },
   activated() {
-  ['saleChart', ].forEach((name) => {
-    this.$refs[name].resize();
+  ['saleChart'].forEach((name) => {
+    this.$nextTick(() => {
+      if (this.$refs[name]) {
+        this.$refs[name].resize();
+      }
+    });
   });
-  }
+}
+
 }
 </script>
 

@@ -187,7 +187,7 @@
           },
           {
             prop: 'productSN',
-            label: '产品SN',
+            label: '模块SN',
             showOverflowTooltip: true,
             minWidth: 250,
             align: 'center',
