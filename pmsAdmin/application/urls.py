@@ -133,6 +133,10 @@ urlpatterns = ([
     path('statistic/', include('application.statistic.urls')),
     # 组装跟进表
     path('followup/', include('application.followup.urls')),
+    # 返工记录表
+    path('rework/', include('application.rework.urls')),
+    # 成品绑定表
+    path('bind/', include('application.bind.product.urls')),
 ] + static(settings.TEMP_URL, document_root=settings.STATICFILES_DIRS[2])
 + static(settings.IMAGES_URL, document_root=settings.STATICFILES_DIRS[3])
 + static(settings.UPLOADS_URL, document_root=settings.STATICFILES_DIRS[1])

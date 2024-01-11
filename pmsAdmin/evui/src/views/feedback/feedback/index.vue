@@ -129,6 +129,7 @@
         <template slot="expand_1" slot-scope="{row}">
           <el-popover
             placement="top-start"
+            ref="popover"
             title="内容"
             width="1000"
             trigger="click"
@@ -140,6 +141,7 @@
         <template slot="expand_2" slot-scope="{row}" v-if="row.feedback">
           <el-popover
             placement="top-start"
+            ref="popover"
             title="反馈"
             width="1000"
             trigger="click"
@@ -380,4 +382,8 @@ export default {
 </script>
 
 <style scoped>
+.el-popover__popper {
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+  }
 </style>

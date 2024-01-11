@@ -432,6 +432,7 @@
       handleClear(){
         this.reload();
       },
+      
     }
   }
   </script>

@@ -19,15 +19,15 @@
             </el-form-item>
           </el-col>
           <el-col :lg="6" :md="12" :xs="11">
-            <el-form-item label="信号:">
+            <el-form-item label="返工原因:">
               <el-select
                 clearable
-                v-model="where.signal"
-                @clear="handleClear"
-                placeholder="请选择信号"
+                v-model="where.rw_reason"
+                placeholder="请选择返工原因"
                 class="ele-fluid">
-                <el-option label="红色" value="1"/>
-                <el-option label="绿色" value="2"/>
+                <el-option label="物料不良/半成品/成品返工工时" value="1"/>
+                <el-option label="返工/正常作业/原料报废" value="2"/>
+                <el-option label="客户退回产品的维修" value="3"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -79,7 +79,7 @@
             icon="el-icon-plus"
             class="ele-btn-icon"
             @click="openEdit(null)"
-            v-if="permission.includes('sys:followup:add')">添加
+            v-if="permission.includes('sys:rework:add')">添加
           </el-button>
           <el-button
             size="small"
@@ -87,7 +87,7 @@
             icon="el-icon-delete"
             class="ele-btn-icon"
             @click="removeBatch"
-            v-if="permission.includes('sys:followup:dall')">删除
+            v-if="permission.includes('sys:rework:dall')">删除
           </el-button>
            <!-- 导出按钮 -->
           <el-button
@@ -105,7 +105,7 @@
             :underline="false"
             icon="el-icon-edit"
             @click="openEdit(row)"
-            v-if="permission.includes('sys:followup:update')">修改
+            v-if="permission.includes('sys:rework:update')">修改
           </el-link>
           <el-popconfirm
             class="ele-action"
@@ -116,52 +116,23 @@
               slot="reference"
               :underline="false"
               icon="el-icon-delete"
-              v-if="permission.includes('sys:followup:delete')">删除
+              v-if="permission.includes('sys:rework:delete')">删除
             </el-link>
           </el-popconfirm>
         </template>
-        <template slot="signal" slot-scope="{row}">
-          <el-tag v-if="row.signal === 1"  effect="dark" type="danger" size="medium"></el-tag>
-          <el-tag v-if="row.signal === 2"  effect="dark" type="success" size="medium"></el-tag>
+        <template slot="rw_reason" slot-scope="{row}">
+          <el-tag v-if="row.rw_reason === 1"  size="medium">物料不良/半成品/成品返工工时</el-tag>
+          <el-tag v-if="row.rw_reason === 2"  size="medium">返工/正常作业/原料报废</el-tag>
+          <el-tag v-if="row.rw_reason === 3"   size="medium">客户退回产品的维修</el-tag>
         </template>
         <template slot="product_module" slot-scope="{row}">
           <el-tag v-if="row.product_module === 1" type="success" size="medium">成品</el-tag>
           <el-tag v-if="row.product_module === 2" type="success" size="medium">模块</el-tag>
         </template>
-        <template slot="expand_1" slot-scope="{row}" v-if="row.problems">
-          <el-popover
-            placement="top-start"
-            title="问题"
-            width="1000"
-            trigger="click"
-            :content=row.problems>
-            <el-button slot="reference">点击查看</el-button>
-          </el-popover>
-        </template>
-        <template slot="expand_2" slot-scope="{row}" v-if="row.actions">
-          <el-popover
-            placement="top-start"
-            title="行动"
-            width="1000"
-            trigger="click"
-            :content=row.actions>
-            <el-button slot="reference">点击查看</el-button>
-          </el-popover>
-        </template>
-        <template slot="expand_3" slot-scope="{row}" v-if="row.remark">
-          <el-popover
-            placement="top-start"
-            title="备注"
-            width="1000"
-            trigger="click"
-            :content=row.actions>
-            <el-button slot="reference">点击查看</el-button>
-          </el-popover>
-        </template>
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
-    <followup-edit
+    <rework-edit
       :data="current"
       :visible.sync="showEdit"
       @done="reload"/>
@@ -170,20 +141,20 @@
 
 <script>
 import { mapGetters } from "vuex";
-import FollowupEdit from './followup-edit';
+import ReworkEdit from './rework-edit';
 import XLSX from 'xlsx'
 import { saveAs } from 'file-saver';
 
 export default {
-  name: 'followup',
-  components: {FollowupEdit},
+  name: 'rework',
+  components: {ReworkEdit},
   computed: {
     ...mapGetters(["permission"]),
   },
   data() {
     return {
       // 表格数据接口
-      url: '/followup/list',
+      url: '/rework/list',
       selectDateRange: '',
       // 表格列配置
       columns: [
@@ -210,39 +181,9 @@ export default {
           slot: 'product_module',
         },
         {
-          prop: 'start_time',
-          label: '开始时间',
-          showOverflowTooltip: true,
-          sortable: 'custom',
-          minWidth: 160,
-          align: 'center',
-          order: '', // 初始化排序方式为空字符串
-          sortableMethod: ()=> {
-            // 在这里实现自定义的排序逻辑
-            this.where.order = this.order;
-            this.reload();
-          }
-        },
-        {
-          prop: 'end_time',
-          label: '结束时间',
-          showOverflowTooltip: true,
-          sortable: 'custom',
-          minWidth: 160,
-          align: 'center',
-          order: '', // 初始化排序方式为空字符串
-        },
-        {
-          prop: 'work_hours',
-          label: '工时',
-          minWidth: 70,
-          align: 'center',
-          resizable: false,
-        },
-        {
-          prop: 'commit_user',
-          label: '填写者',
-          width: 80,
+          prop: 'respon',
+          label: '责任归属人',
+          width: 92,
           align: 'center',
           showOverflowTooltip: true,
         },
@@ -261,77 +202,42 @@ export default {
           align: 'center',
         },
         {
-          prop: 'qty_obj_hour',
-          label: 'ERP目标/拉/小时',
-          width: 100,
-          align: 'center',
-          showOverflowTooltip: true,
-        },
-        {
-          prop: 'qty_prod_hour',
-          sortable: 'custom',
-          label: '实际产出/拉/小时',
-          width: 103,
-          align: 'center',
-          showOverflowTooltip: true,
-        },
-        {
-          prop: 'cumul_qty_obj',
-          label: 'ERP目标累计',
-          width: 80,
-          align: 'center',
-          showOverflowTooltip: true,
-        },
-        {
-          prop: 'cumul_qty_prod',
-          label: '实际累计',
+          prop: 'rw_qty',
+          label: '返工数量',
           width: 77,
           align: 'center',
           showOverflowTooltip: true,
-        },
-        {
-          prop: 'signal',
-          label: '信号',
-          minWidth: 100,
-          align: 'center',
-          resizable: false,
-          slot: 'signal',
         },
         {
           prop: 'loss_time',
           label: '损耗工时',
-          width: 77,
+          width: 79,
           align: 'center',
           showOverflowTooltip: true,
         },
         {
-          prop: 'changeover_time',
-          label: '换线时间',
-          width: 77,
+          prop: 'rw_reason',
+          label: '返工原因',
+          width: 214,
+          align: 'center',
+          showOverflowTooltip: true,
+          slot: 'rw_reason',
+        },
+        {
+          prop: 'loss_material_qty',
+          label: '损耗材料数量',
+          width: 108,
           align: 'center',
           showOverflowTooltip: true,
         },
         {
-          prop: 'problems',
-          label: '问题',
-          width: 150,
+          prop: 'loss_material_name',
+          label: '损耗材料名称',
+          width: 108,
           align: 'center',
-          slot: 'expand_1',
+          showOverflowTooltip: true,
         },
-        {
-          prop: 'actions',
-          label: '行动',
-          width: 150,
-          align: 'center',
-          slot: 'expand_2',
-        },
-        {
-          prop: 'remark',
-          label: '备注',
-          width: 150,
-          align: 'center',
-          slot: 'expand_3',
-        },
+        
         // {
         //   prop: 'create_time',
         //   label: '创建时间',
@@ -446,7 +352,7 @@ export default {
       } else {
         // 编辑
         this.loading = true;
-        this.$http.get('/followup/detail/' + row.id).then((res) => {
+        this.$http.get('/rework/detail/' + row.id).then((res) => {
           this.loading = false;
           if (res.data.code === 0) {
             this.current = Object.assign({}, res.data.data);
@@ -463,7 +369,7 @@ export default {
     /* 删除 */
     remove(row) {
       const loading = this.$loading({lock: true});
-      this.$http.delete('/followup/delete/' + row.id).then(res => {
+      this.$http.delete('/rework/delete/' + row.id).then(res => {
         loading.close();
         if (res.data.code === 0) {
           this.$message.success(res.data.msg);
@@ -486,7 +392,7 @@ export default {
         type: 'warning'
       }).then(() => {
         const loading = this.$loading({lock: true});
-        this.$http.delete('/followup/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
+        this.$http.delete('/rework/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -539,10 +445,12 @@ export default {
 
       //可以将对应字段的数字经过判断转为对应的中文
       this.selection = this.selection.map(obj => {
-        if (obj.signal === 2) {
-          return { ...obj, signal: '合格' };
-        } else if (obj.signal === 1) {
-          return { ...obj, signal: '不合格' };
+        if (obj.rw_reason === 2) {
+          return { ...obj, rw_reason: '返工/正常作业/原料报废' };
+        } else if (obj.rw_reason === 1) {
+          return { ...obj, rw_reason: '物料不良/半成品/成品返工工时' };
+        } else if(obj.rw_reason === 3) {
+          return { ...obj, rw_reason: '客户退回产品的维修' };
         }
         return obj;
       });
@@ -569,6 +477,7 @@ export default {
           .map(column => row[column.prop])
       );
       const worksheet = XLSX.utils.json_to_sheet(data);
+      
       // 将字段名称添加到 Excel 文件中
       XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: 'A1' });
 
@@ -581,7 +490,7 @@ export default {
         worksheet['!cols'] = worksheet['!cols'] || [];
         worksheet['!cols'][index] = { wch: width };
       });
-
+      
       // 将工作表添加到工作簿中
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
@@ -589,7 +498,7 @@ export default {
       const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
       const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
       // 导出的文件名,下面代码在后面加了时间，如果不加可以直接saveAs(blob, fileName);
-      const fileName = '组装跟进表.xlsx';
+      const fileName = '返工记录表.xlsx';
       
       const currentDate = new Date();
       const year = currentDate.getFullYear();
@@ -670,4 +579,5 @@ export default {
   .time-picker{
     flex: 1;
   }
+
 </style>

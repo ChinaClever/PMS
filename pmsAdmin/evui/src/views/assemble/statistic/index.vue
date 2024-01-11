@@ -565,6 +565,13 @@ export default {
       // 将数据添加到 Excel 文件中
       XLSX.utils.sheet_add_aoa(worksheet, data, { origin: 'A2' });
 
+      // 调整列宽
+      const columnWidths = this.calculateColumnWidths(data, worksheet);
+      columnWidths.forEach((width, index) => {
+        worksheet['!cols'] = worksheet['!cols'] || [];
+        worksheet['!cols'][index] = { wch: width };
+      });
+
       // 将工作表添加到工作簿中
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
@@ -602,7 +609,45 @@ export default {
     handleClear(){
       this.reload();
     },
-    
+    calculateColumnWidths(data, worksheet) {
+      const columnWidths = [];
+      data.forEach(row => {
+        row.forEach((cell, index) => {
+          const cellWidth = this.calculateCellWidth(cell, worksheet, index);
+          if (!columnWidths[index] || cellWidth > columnWidths[index]) {
+            columnWidths[index] = cellWidth;
+          }
+        });
+      });
+
+      // 考虑第一行的内容长度
+      const headerRow = this.columns.slice(1, -1).map(column => column.label);
+      headerRow.forEach((cell, index) => {
+        const cellWidth = this.calculateCellWidth(cell, worksheet, index);
+        if (!columnWidths[index] || cellWidth > columnWidths[index]) {
+          columnWidths[index] = cellWidth;
+        }
+      });
+
+      return columnWidths;
+    },
+    calculateCellWidth(cell, worksheet, columnIndex) {
+      const CHARS_PER_PIXEL = 2; // 字符宽度的估计值，根据实际情况调整
+      const MAX_WIDTH = 100; // 单个单元格的最大宽度
+      const cellValue = String(cell);
+      const cellLength = cellValue.length;
+      const cellWidth = cellLength * CHARS_PER_PIXEL;
+      
+      // 如果是数字列，则使用数字的宽度
+      const cellAddress = XLSX.utils.encode_cell({ r: 0, c: columnIndex });
+      const cellInfo = worksheet[cellAddress];
+      if (cellInfo && cellInfo.t === 'n') {
+        const numberWidth = XLSX.utils.getCellWidth(cellInfo);
+        return Math.max(cellWidth, numberWidth);
+      }
+      
+      return Math.min(cellWidth, MAX_WIDTH);
+    },
   }
 }
 </script>
