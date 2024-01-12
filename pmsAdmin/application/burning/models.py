@@ -34,7 +34,7 @@ class burning(BaseModel):
     # 工单号
     work_order = models.CharField(null=False, max_length=255, verbose_name="工单号", help_text="工单号")
     # pcb
-    PCB_code = models.CharField(null=False, max_length=255, verbose_name="pcb编码", help_text="pcb编码")
+    PCB_code = models.CharField(null=False, max_length=1255, verbose_name="pcb编码", help_text="pcb编码")
     # 客户名称
     name = models.CharField(null=False, max_length=255, verbose_name="客户名称", help_text="客户名称")
     # 规格型号
@@ -56,11 +56,11 @@ class burning(BaseModel):
     # 烧录数量
     burning_quantity = models.CharField(null=True, max_length=255, verbose_name="烧录数量", help_text="烧录数量")
     # 开始日期
-    start_time = models.CharField(null=True, max_length=255, verbose_name="开始日期", help_text="开始日期")
+    start_time = models.CharField(null=True, max_length=1255, verbose_name="开始日期", help_text="开始日期")
     # 完成日期
-    finish_time = models.CharField(null=True,verbose_name="完成日期", max_length=255,help_text="完成日期")
+    finish_time = models.CharField(null=True,verbose_name="完成日期", max_length=1255,help_text="完成日期")
     # 所用工时
-    work_hours = models.CharField(null=True,verbose_name="所用工时", max_length=255,help_text="完成日期")
+    work_hours = models.CharField(null=True,verbose_name="所用工时", max_length=1255,help_text="完成日期")
     class Meta:
         # 数据表名
         db_table = TABLE_PREFIX + "burning"
