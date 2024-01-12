@@ -70,6 +70,7 @@
         <el-date-picker
               type="date"
               class="ele-fluid"
+              :picker-options = 'pickerOptions'
               v-model="form.modify_time"
               value-format="yyyy-MM-dd"
               placeholder="请选择修改日期"/>
@@ -254,6 +255,24 @@ export default {
   },
   data() {
     return {
+      // 让时间可以选择今天昨天
+      pickerOptions: {
+          disabledDate() {
+          },
+          shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.$emit('pick', new Date());
+            }
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit('pick', date);
+            }
+          },]
+       },
     fileList: [],
     radio1: '公司标准',
     // 表单数据

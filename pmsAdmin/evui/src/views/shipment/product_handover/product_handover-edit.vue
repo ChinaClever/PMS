@@ -20,6 +20,7 @@
               type="date"
               class="ele-fluid"
               v-model="form.time"
+              :picker-options = 'pickerOptions'
               value-format="yyyy-MM-dd"
               placeholder="请选择日期"/>
       </el-form-item>
@@ -138,6 +139,24 @@ export default {
   },
   data() {
     return {
+       // 让时间可以选择今天昨天
+       pickerOptions: {
+          disabledDate() {
+          },
+          shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.$emit('pick', new Date());
+            }
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit('pick', date);
+            }
+          },]
+      },
       // 表单数据
       form: Object.assign({status: 1, name: '',code : '',delivery_time : '',remark: ''}, this.data),
       // 表单验证规则

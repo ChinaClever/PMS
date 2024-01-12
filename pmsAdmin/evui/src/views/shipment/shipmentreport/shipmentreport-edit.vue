@@ -123,6 +123,7 @@
                 class="ele-fluid"
                 v-model="form.order_date"
                 value-format="yyyy-MM-dd"
+                :picker-options = 'pickerOptions1'
                 placeholder="请选择订单日期"/>
           </el-form-item>
         </el-col>
@@ -142,6 +143,7 @@
                 type="date"
                 class="ele-fluid"
                 v-model="form.delivery_date"
+                :picker-options = 'pickerOptions2'
                 value-format="yyyy-MM-dd"
                 placeholder="请选择交货日期"/>
           </el-form-item>
@@ -250,7 +252,44 @@
         state: '',
         timeout:  null,
         // 表单数据
-        form: Object.assign({product_code: '', product_name:'', shape:'', product_module:1, priority: 2}, this.data),
+        form: Object.assign({product_code: '', product_name:'', shape:'', product_module:1, priority: 2,order_date: '',
+     }, this.data),
+      // 让时间可以选择今天昨天
+      pickerOptions1: {
+          disabledDate() {
+          },
+          shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.$emit('pick', new Date());
+            }
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit('pick', date);
+            }
+          },]
+       },
+      // 让时间可以选择今天昨天
+      pickerOptions2: {
+          disabledDate() {
+          },
+          shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.$emit('pick', new Date());
+            }
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit('pick', date);
+            }
+          },]
+       },
         // 表单验证规则
         rules: {
           work_order: [
