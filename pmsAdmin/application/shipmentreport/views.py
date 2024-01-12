@@ -103,7 +103,13 @@ class uploadFileView(View):
         result = services.ShipmentReportImportFile(request)
         return result
 
-
+# 出厂报告扫码查询
+@method_decorator(check_login, name="dispatch")
+class reportView(PermissionRequired, View):
+    permission_required = ("sys:report:list",)
+    def get(self, request, goods_SN):
+        data = services.report(goods_SN)
+        return R.ok(data=data)
 
 # -----------------------产品名称模块-----------------------------------
 #####################################################################

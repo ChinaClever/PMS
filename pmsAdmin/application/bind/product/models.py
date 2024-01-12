@@ -3,9 +3,9 @@ from django.db import models
 from application import settings
 from application.models import BaseModel
 
-class Product(BaseModel):
+class ProductBind(BaseModel):
     # 序列号
-    key = models.CharField(max_length=150, verbose_name="序列号", help_text="序列号")
+    goods_SN = models.CharField(max_length=255, verbose_name="序列号", help_text="序列号")
 
     class Meta:
         # 数据表名

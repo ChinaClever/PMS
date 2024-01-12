@@ -463,7 +463,7 @@
       checkWorkOrderId(rule, value, callback){
         const regex = /^[a-zA-Z0-9]+[+][a-zA-Z0-9]+$/;
         const regex1 = /^[a-zA-Z0-9]+$/;
-        if (value != '' && value.includes("+")) {
+        if (value != '' && value != null && value.includes("+")) {
           if (regex.test(value)) {
             const parts = value.split("+");
             this.form.work_order = parts[0];

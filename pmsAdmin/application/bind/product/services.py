@@ -11,7 +11,7 @@ from django.http import HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 
 from application.bind.module import services
-from application.bind.product.models import Product
+from application.bind.product.models import ProductBind
 from application.bind.module.models import Module
 from constant.constants import PAGE_LIMIT
 from utils import R, regular
@@ -99,12 +99,12 @@ def ProductList(request):
     # 每页数
     limit = int(request.GET.get('limit', PAGE_LIMIT))
     # 查询数据
-    query = Product.objects.filter(is_delete=False)
+    query = ProductBind.objects.filter(is_delete=False)
     # 模糊筛选
     keyword  = request.GET.get('keyword')
     if keyword :
         query = query.filter(
-            Q(key__icontains=keyword)
+            Q(goods_SN__icontains=keyword)
         )
     # 排序
     sort = request.GET.get('sort')
@@ -136,7 +136,7 @@ def ProductList(request):
             module_list = services.getModuleList(item.id)
             data = {
                 'id': item.id,
-                'key': item.key,
+                'goods_SN': item.goods_SN,
                 'module': module_list,
             }
             result.append(data)
@@ -146,7 +146,7 @@ def ProductList(request):
 # 根据ID查询详情
 def ProductDetail(product_id):
     # 根据ID查询
-    product = Product.objects.filter(is_delete=False, id=product_id).first()
+    product = ProductBind.objects.filter(is_delete=False, id=product_id).first()
     # 查询结果判空
     if not product:
         return None
@@ -155,7 +155,7 @@ def ProductDetail(product_id):
     # 声明结构体
     data = {
         'id': product.id,
-        'key': product.key,
+        'goods_SN': product.goods_SN,
         'module': module_list,
     }
     # 返回结果
@@ -174,17 +174,17 @@ def ProductAdd(request):
         # 数据类型转换
         dict_data = json.loads(json_data)
 
-        key = dict_data.get('key')
+        goods_SN = dict_data.get('goods_SN')
         module = dict_data.get('module')
         # 创建数据
-        product = Product.objects.create(
-            key=key,
+        product = ProductBind.objects.create(
+            goods_SN=goods_SN,
         )
-        # 存id和teststep数据
+
         for item in module:
             Module.objects.create(
             product_id=product.id,
-            key=item.get('key'),
+            module_SN=item.get('module_SN'),
             )
         # 返回结果
         return R.ok(msg="创建成功")
@@ -210,16 +210,16 @@ def ProductUpdate(request):
         if not product_id or int(product_id) <= 0:
             return R.failed("ID不能为空")
 
-        key = dict_data.get('key')
+        goods_SN = dict_data.get('goods_SN')
         module = dict_data.get('module')
         # 根据ID查询
-        product = Product.objects.only('id').filter(id=product_id, is_delete=False).first()
+        product = ProductBind.objects.only('id').filter(id=product_id, is_delete=False).first()
 
         # 查询结果判断
         if not product:
             return R.failed("数据不存在")
         # 对象赋值
-        product.key = key
+        product.goods_SN = goods_SN
         product.update_user = uid(request)
         product.update_time = datetime.now()
 
@@ -231,7 +231,7 @@ def ProductUpdate(request):
         for item in module:
             Module.objects.create(
             product_id=product.id,
-            key=item.get('key')
+            module_SN=item.get('module_SN')
             )
         # 返回结果
         return R.ok(msg="更新成功")
@@ -253,7 +253,7 @@ def ProductDelete(product_id):
     if len(list) > 0:
         for id in list:
             # 根据ID查询记录
-            tetdata = Product.objects.only('id').filter(id=int(id), is_delete=False).first()
+            tetdata = ProductBind.objects.only('id').filter(id=int(id), is_delete=False).first()
             # 查询结果判空
             if not tetdata:
                 return R.failed("数据不存在")

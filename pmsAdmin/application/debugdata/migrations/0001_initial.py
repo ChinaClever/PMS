@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('is_delete', models.BooleanField(default=0, verbose_name='逻辑删除')),
                 ('softwareType', models.CharField(help_text='软件类型', max_length=255, null=True, verbose_name='软件类型')),
                 ('productType', models.CharField(help_text='产品类型', max_length=255, null=True, verbose_name='产品类型')),
-                ('productSN', models.CharField(help_text='产品SN', max_length=255, null=True, verbose_name='产品SN')),
+                ('productSN', models.CharField(help_text='模块SN', max_length=255, null=True, verbose_name='模块SN')),
                 ('macAddress', models.CharField(help_text='mac地址', max_length=255, null=True, verbose_name='mac地址')),
                 ('result', models.IntegerField(choices=[(1, '通过'), (2, '失败')], default=1, help_text='结果：1-通过 2-失败', null=True, verbose_name='结果：1-通过 2-失败')),
                 ('softwareVersion', models.CharField(help_text='软件版本', max_length=255, null=True, verbose_name='软件版本')),

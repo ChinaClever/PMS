@@ -12,15 +12,15 @@
       :model="form"
       :rules="rules"
       label-width="120px">
-      <el-form-item label="成品序列号:" prop="key">
+      <el-form-item label="成品序列号:" prop="goods_SN" >
         <el-input
-          v-model="form.key"
+          v-model="form.goods_SN"
           placeholder="序列号"
           clearable/>
       </el-form-item>
         <div v-for="(input) in form.module" :key="input.no">
           <span>模块 {{ input.no }}</span>
-          <el-input v-model="input.key" placeholder="序列号"></el-input>
+          <el-input v-model="input.module_SN" placeholder="序列号"></el-input>
         </div>
         
         <el-button @click="addInput">添加输入框</el-button>
@@ -52,8 +52,8 @@ export default {
       form: Object.assign({module:[]}, this.data),
       // 表单验证规则
       rules: {
-        key: [
-        {required: true, message: '请输入单号', trigger: 'blur'},
+        goods_SN: [
+          {required: true, message: '请输入序列号', trigger: 'blur'},
         ],
       },
       // 提交状态
