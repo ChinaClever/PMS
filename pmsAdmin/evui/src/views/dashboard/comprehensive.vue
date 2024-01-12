@@ -357,7 +357,7 @@ export default {
   background-color:#072e7d;  /* 背景透明*/
   border: 0px;
   color: white;  /* 修改字体颜色*/
-  font-size: 18px;
+  font-size: 20px;
   height: 5px;
 }
 /* 去掉最下面的那一条线*/

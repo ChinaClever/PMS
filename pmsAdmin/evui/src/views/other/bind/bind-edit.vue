@@ -80,6 +80,12 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.loading = true;
+          // 取出 module_SN 值组成字符串数组
+          const moduleSNArray = this.form.module.map(item => item.module_SN);
+
+          // 将 this.from.module 赋值为新的字符串数组
+          this.form.module = moduleSNArray;
+          console.log(this.form.module)
           this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/bind/update' : '/bind/add', this.form).then(res => {
             this.loading = false;
             if (res.data.code === 0) {
@@ -112,7 +118,7 @@ export default {
     addInput() {
       this.form.module.push({
         no: this.idCounter,
-        key: '',
+        
       });
       this.idCounter++;
     },
