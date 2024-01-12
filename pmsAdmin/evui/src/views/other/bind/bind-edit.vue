@@ -12,7 +12,7 @@
       :model="form"
       :rules="rules"
       label-width="120px">
-      <el-form-item label="成品序列号:" prop="goods_SN">
+      <el-form-item label="成品序列号:" prop="goods_SN" >
         <el-input
           v-model="form.goods_SN"
           placeholder="序列号"
