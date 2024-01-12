@@ -9,7 +9,7 @@ def getModuleList(productId):
     if list:
         for v in list:
             item = {
-                'key': v.module_SN,
+                'module_SN': v.module_SN,
             }
             # 加入数组
             module_list.append(item)

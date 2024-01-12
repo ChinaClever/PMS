@@ -50,7 +50,7 @@
               :data="row.module" 
               stripe
               :max-height="300">
-              <el-table-column width="170" property="key" label="模块序列号"></el-table-column>
+              <el-table-column width="170" property="module_SN" label="模块序列号"></el-table-column>
             </el-table>
             <el-button slot="reference">查看详情</el-button>
           </el-popover>
@@ -143,7 +143,7 @@
             fixed: "left"
           },
           {
-            prop: 'key',
+            prop: 'goods_SN',
             label: '成品序列号',
             showOverflowTooltip: true,
             minWidth: 150,
