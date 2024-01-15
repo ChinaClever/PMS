@@ -84,6 +84,29 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row :gutter="20">
+          <el-col :span="6">
+            <el-form-item
+              label="备注:"
+              prop="remark">
+              <el-input
+              v-model="form.remark"
+              placeholder="请输入备注"         
+              clearable/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item 
+            label="rcerder:" 
+            prop="rcerder" >
+            <el-input
+              v-model="form.rcerder"
+              :rows="2"
+              placeholder="请输入rcerder"
+              />
+            </el-form-item>
+          </el-col>
+       </el-row>
       <hr>
       <br>
         <el-row>
@@ -119,9 +142,9 @@
          
         </el-row>
           <br>
-       <el-row>
-        <el-table :data="dataTable" editable>
-          <el-table-column prop="PCB_code" label="PCB编码">
+       <el-row  class="transparent-row">
+        <el-table :data="dataTable" editable class="custom-table" >
+          <el-table-column prop="PCB_code" label="PCB编码" placeholder="请扫入PCB编码" >
             <template slot-scope="scope">
               <el-input 
                 :id="`PCB_code_inputId_` + scope.$index"
@@ -129,31 +152,10 @@
                 @keyup.enter.native="handlePartCodeEnterKey"></el-input>
             </template>
           </el-table-column>
-         
-      
         </el-table>
        </el-row>
        <br>
-       <el-row :gutter="20">
-         <el-col :span="18">
-          <el-form-item label="备注:" prop="remark" >
-              <el-input
-                  v-model="form.remark"
-                  :rows="2"
-                  maxlength="500"
-                  show-word-limit
-                  type="textarea"/>
-          </el-form-item>
-         </el-col>
-         <el-col :span="18">
-          <el-form-item label="rcerder:" prop="rcerder" >
-              <el-input
-                  v-model="form.rcerder"
-                  :rows="2"
-                  type="textarea"/>
-          </el-form-item>
-         </el-col>
-       </el-row>
+      
        <el-form-item>
         <el-button type="primary" @click="clickSave" style="float: right;">提交</el-button>
        </el-form-item>
@@ -397,11 +399,15 @@
     mounted() {
       this.loadAll();
     }
+    
   }
+
   </script>
   
   <style scoped>
   /* 全局样式 */
+
+
   ::v-deep .cell{
     font-size: 24px !important;
     color: #606266 !important;
@@ -409,28 +415,42 @@
     line-height: 30px !important;
   }
   
+
   .mainDiv {
     position: fixed;
-    left: 5%;
+    left: 0%;
     padding-right: 0;
-    right: 5%;
+    right: 0%;
     height: 100vh;
     overflow-y: auto; 
     overflow-x: hidden;
+    background-image: url('https://file.xiazaii.com/file/img/202011042704/1-1Q104142637.jpg'), linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)); /* 设置两个背景图层 */
+    background-size: cover; /* 背景图片铺满整个容器 */
+    background-size: 100% 100% ; /* 将背景图片缩放至完全覆盖整个容器 */
+    z-index: 100; /* 设置 z-index 值 */
+    /* 其他背景样式设置，例如背景颜色、重复等 */
   }
+
   .pageDiv {
     margin-top: 2%;
     margin-bottom: 5%;
+  }
+  ::v-deep .custom-table {
+    width: 400px; /* 设置表格宽度 */
+    background-color: transparent !important; /* 设置表格背景透明 */
+    mix-blend-mode: multiply;
   }
   
   ::v-deep .el-input__inner{
     width: auto !important;
     height: 54px !important;
     font-size: 24px;
-    /* border: none !important;
-    box-shadow: none !important; */
+    background-color: transparent !important;
+    border: 2px solid #333 !important;
+    border-radius: 4px !important;
   }
-  
+
+
   ::v-deep .el-form-item__label{
     font-size: 24px;
   }
@@ -442,7 +462,6 @@
   ::v-deep ul.el-scrollbar__view.el-autocomplete-suggestion__list li {
     font-size: 20px !important;
   }
-  
   
   ::v-deep .error-message {
     font-size: 24px !important;
