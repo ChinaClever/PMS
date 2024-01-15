@@ -181,10 +181,11 @@ def ProductAdd(request):
             goods_SN=goods_SN,
         )
 
+
         for item in module:
             Module.objects.create(
             product_id=product.id,
-            module_SN=item.get('module_SN'),
+            module_SN=item,
             )
         # 返回结果
         return R.ok(msg="创建成功")
@@ -231,7 +232,7 @@ def ProductUpdate(request):
         for item in module:
             Module.objects.create(
             product_id=product.id,
-            module_SN=item.get('module_SN')
+            module_SN=item
             )
         # 返回结果
         return R.ok(msg="更新成功")
