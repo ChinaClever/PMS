@@ -180,9 +180,10 @@ def ProductAdd(request):
         product = ProductBind.objects.create(
             goods_SN=goods_SN,
         )
-
+        print(module)
 
         for item in module:
+            print(item)
             Module.objects.create(
             product_id=product.id,
             module_SN=item,
