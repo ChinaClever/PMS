@@ -31,7 +31,7 @@ const routes = [
   {
     path: '/burning/batchadd',
     component: () => import('@/views/burning/burningreport/burning-add'),
-    meta: {title: '打包记录绑定'}
+    meta: {title: '烧录绑定'}
   },
   // {
   //   path: '/forget',
